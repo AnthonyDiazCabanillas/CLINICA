@@ -1,0 +1,208 @@
+﻿@*
+====================================================================================================
+ INFORMACION GENERAL (Tildes omitidas intencionalmente)
+====================================================================================================
+ Proyecto         : HIS
+ Clase            : SearcListResult
+ Desarrollado por : GLLUNCOR
+ Fecha            : 26.10.2023
+====================================================================================================
+ @Copyright  Clinica San Felipe S.A.C. 2023. Todos los derechos reservados.
+====================================================================================================
+ DESCRIPCION FUNCIONAL:
+  Crear web pagina como controlador general las lista flotante de resultados de Busquedas
+====================================================================================================
+ OBSERVACIONES:
+    - .Net 6.0
+====================================================================================================
+ MODIFICACIONES:
+ FECHA        USUARIO     REQUERIMIENTO	    DESCRIPCION
+ 26/10/2023   GLLUNCOR    REQ 2023-020050	Se creo la pagina
+====================================================================================================
+ *@
+
+@inherits InputText;
+@using Ent.Sql.ClinicaE.GeneraE;
+
+@code {
+    [Parameter] public List<FiltroGeneralE> Source { get; set; } = new List<FiltroGeneralE>();
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public bool Active { get; set; } = false;
+    [Parameter] public int MinTextLength { get; set; } = 1;
+    [Parameter] public typeResult TypeResult { get; set; }
+
+    public enum typeResult
+    {
+        CodigoNombre = 1,
+    }
+
+    private List<FiltroGeneralE>? autocomplete = new List<FiltroGeneralE>();
+    private string text = "";
+
+    private string Text
+    {
+        get => text;
+        set
+        {
+            text = value;
+            CurrentValueAsString = value;
+            SetAutocomplete();
+        }
+    }
+
+    private void OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "ArrowDown")
+        {
+            SelectNextItem();
+        }
+        else if (e.Key == "ArrowUp")
+        {
+            SelectPreviousItem();
+        }
+        else if (e.Key == "Enter" && autocomplete?.Any(d => d.IsSelected) == true)
+        {
+            FiltroGeneralEClick(autocomplete.First(d => d.IsSelected).Nombres);
+        }
+        else if (e.Key == "Escape")
+        {
+            autocomplete = new List<FiltroGeneralE>();
+        }
+    }
+
+    private void OnLostFocus() => autocomplete = new List<FiltroGeneralE>();
+
+    private void SetAutocomplete()
+    {
+        if (!string.IsNullOrWhiteSpace(text))
+        {
+            autocomplete = (from n in Source
+                            where
+                            n.Codigo.Contains(text, StringComparison.InvariantCultureIgnoreCase) ||
+                            n.CMP.Contains(text, StringComparison.InvariantCultureIgnoreCase) ||
+                            n.Nombres.Contains(text, StringComparison.InvariantCultureIgnoreCase)
+
+                            select new FiltroGeneralE
+                                {
+                                    Codigo = n.Codigo,
+                                    CMP= n.CMP,
+                                    Nombres = n.Nombres
+                                }
+                 ).Take(4).ToList();
+        }
+        else
+        {
+            autocomplete = new List<FiltroGeneralE>();
+        }
+    }
+
+    private void FiltroGeneralEClick(string item)
+    {
+        Text = item;
+        autocomplete = new List<FiltroGeneralE>();
+        Active = false;
+    }
+
+    private void AutocompleteMouseOver(string item) => autocomplete?.ForEach(d => d.IsSelected = false);
+
+    private void SelectNextItem()
+    {
+        if (autocomplete?.Any() == true)
+        {
+            var prevItem = autocomplete.FirstOrDefault(d => d.IsSelected);
+            if (prevItem is null)
+            {
+                autocomplete.First().IsSelected = true;
+            }
+            else
+            {
+                var index = autocomplete.IndexOf(prevItem);
+                if (index < autocomplete.Count - 1)
+                {
+                    prevItem.IsSelected = false;
+                    autocomplete.ElementAt(index + 1).IsSelected = true;
+                }
+            }
+        }
+    }
+
+    private void SelectPreviousItem()
+    {
+        if (autocomplete?.Any() == true)
+        {
+            var currentItem = autocomplete.FirstOrDefault(d => d.IsSelected);
+            if (currentItem is null)
+            {
+                autocomplete.Last().IsSelected = true;
+            }
+            else
+            {
+                var index = autocomplete.IndexOf(currentItem);
+                if (index > 0)
+                {
+                    currentItem.IsSelected = false;
+                    autocomplete.ElementAt(index - 1).IsSelected = true;
+                }
+            }
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (!string.IsNullOrWhiteSpace(Text) && base.Value is not null)
+        {
+            Text = Value;
+        }
+    }
+}
+
+<input @attributes="AdditionalAttributes"
+       type="search"
+       @bind="Text"
+       @bind:event="oninput"
+       @onkeydown="OnKeyDown"
+       @onfocusout="OnLostFocus"
+       placeholder="@Placeholder"
+       aria-autocomplete="list" aria-haspopup="true" autocomplete="off" role="combobox"
+       aria-expanded="true" />
+<ErrorBoundary>
+    <ChildContent>
+        <div class="floating-search-list">
+            @if (autocomplete.Count > 0 && Active)
+            {
+                <div style="width:98%;">
+                    <div class="autocomplete-panel card" style="margin-top:15px;margin-left:5px; padding:10px;">
+                        <ul role="listbox" class="autocomplete-items">
+                            @foreach (var item in autocomplete)
+                            {
+                                var className = item.IsSelected ? "autocomplete-item-hover" : "";
+                                <li role="option" style="border-bottom:1px solid" class="autocomplete-item @className"
+                                @onmousedown="(() => FiltroGeneralEClick(item.Nombres))"
+                                @onmouseover="(() => AutocompleteMouseOver(item.Nombres))">
+                                    <div class="card autocomplete-item @className" style="border:0px; padding-bottom:10px;">
+                                        @switch (TypeResult)
+                                        {
+                                            case typeResult.CodigoNombre:
+                                                <div class="card-body" style="padding:10px; ">
+                                                    <div class="card-title">
+                                                        <label class="fw-normal">@item.Nombres</label>
+                                                    </div>
+                                                    <div class="card-text">
+                                                        <label>@item.CMP - @item.Nombres </label>
+                                                    </div>
+                                                </div>
+                                                break;
+                                        }
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+        </div>
+    </ChildContent>
+    <ErrorContent>
+    </ErrorContent>
+</ErrorBoundary>

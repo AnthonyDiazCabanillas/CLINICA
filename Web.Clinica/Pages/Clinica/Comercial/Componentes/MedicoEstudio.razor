@@ -1,0 +1,298 @@
+﻿@using Ent.Sql.ClinicaE.MedicosE
+@using Ent.Sql.ClinicaE.EspecialidadesE
+@using Web.Clinica.Components
+@using Ent.Sql.ClinicaE.OtrosE
+@using System.Text.Json
+@using System.Globalization
+
+@inject IJSRuntime js
+
+<div style="background-color: #FFF; width: 100%; min-height:300px; border:1px solid #b3d6ffff; border-radius:8px; padding:20px 10px; margin-bottom:20px;">
+    @{
+        bool ActNoa = false;
+        if (oMedicoE.FlagEstado == true)
+        {
+            ActNoa = false;
+        }
+        else
+        {
+            ActNoa = true;
+        }
+        ActNoa = oMedicoE.CodMedico == "" ? true : ActNoa;
+    }
+
+    @*<div class="row">*@
+    <div id="Layer1" style="width:100%; height:330px; overflow: scroll;">
+        <!--I.TABLA-->
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive"
+             style="background-color: #FFF; width: 99%; min-height:200px; margin:0px 5px 0px 5px; ">
+            <table class="table table-hover table-bordered">
+
+                @foreach (var item in oListaTablasDatoMedico)
+                {
+                    <thead class="table-primary">
+                        <tr class="fw-bolder" height="5px">
+                            <th class="col-1 text-center" height="5px">
+                                <div class="btn-group dropstart">
+                                    <button class="btn btn-menu" disabled="@ActNoa" aria-expanded="false" @onclick="(() => {oTablasE = item; Crea();})">
+                                        <span class="fa-solid fa-plus"></span>
+                                        @*<span class="fa-solid fa-ellipsis-vertical"></span>*@
+                                    </button>
+                                </div>
+                            </th>
+                            <th class="col-6 text-left" style="" height="5px">@item.Nombre</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @*@oListaMedicosDatosEFilter = @oListaMedicosDatosE.Where(x=>x.TipDatomedico == item.Codigo && 1==2).ToList();
+                    @_total = @oListaMedicosDatosEFilter.Count();
+                    @_count = 0;
+                    @if (oListaMedicosDatosEFilter.Count > 0)
+                    {*@
+                        @foreach (var itemMov in @oListaMedicosDatosE.Where(x => x.TipDatomedico == item.Codigo).ToList())
+                        {
+                            <tr>
+                                <td class="text-center">
+                                    <div class="btn-group dropstart">
+                                        <button class="btn" data-bs-toggle="dropdown" disabled="@ActNoa" aria-expanded="false">
+                                            <span class="fa-solid fa-grip-vertical"></span> <span id="TitleView"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li class="dropdown-item btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" @onclick="@(()=> { oMedicosDatosE = itemMov;Edita();})"><span class="fa-regular fa-edit "></span> Editar</li>
+                                            <li class="dropdown-item btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#msgModalEliminarContratoConsultorios" @onclick="@(()=>{oMedicosDatosE = itemMov;Elimina();})"><span class="fa-regular fa-trash-can "></span> Eliminar</li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td style="text-align:left;">@itemMov.Valor</td>
+                            </tr>
+                        }
+                        @*}*@
+                    </tbody>
+                }
+
+            </table>
+        </div>
+        <!--F.TABLA-->
+
+    </div>
+
+    <MessageModal IdMessage="msgModalPregunta"
+                  TitleModal="Confirmación"
+                  BodyMessage=@Mensaje
+                  IconMessage=MessageModal.iconMessage.Question
+                  TypeButton=MessageModal.typeButton.OkCancel
+                  OnClose="@ConfirmaElimina">
+    </MessageModal>
+
+</div>
+
+
+
+<TabModalHijo @ref="@TabModalHijo" Title="@oTablasE.Nombre">
+    <div style="min-height: 300px">
+
+        <!--I.Observaciones-->
+        <div class="row" style="border-radius:8px; padding:20px 10px; margin-bottom:20px;">
+            <div class="omrs-input-group">
+                <textarea @bind="@oMedicosDatosE.Valor"
+                          @bind:event="oninput" style="background-color: #FFF; width: 100%; height:250px;" />
+            </div>
+        </div>
+        <!--F.Observaciones-->
+
+        <div>
+            <button class="btn btn-outline-success col-lg-2 col-3" @onclick="() => Graba()"><span class="fa-regular fa-save"></span> <span id="TitleView"> Guardar</span></button>
+            <button class="btn btn-outline-primary col-lg-2 col-3" @onclick="() => Cancela()"><spam class="fa fa-arrow-rotate-left"></spam> <span id="TitleView"> Cancelar</span></button>
+
+        </div>
+    </div>
+
+    <MessageModal IdMessage="msgModalError"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+</TabModalHijo>
+
+
+
+@*<div style="overflow-y: scroll; background-color: #FFF; width: 100%; height:400px; border:1px solid #b3d6ffff; border-radius:8px; padding:20px 10px; margin-bottom:20px;">
+    <div class="row">
+
+        <h5>Pre-grado 2 (@todos.Count(todo => !todo.IsDone))</h5>
+
+        <input placeholder="Ingrese nuevo Pregado" @bind="newTodo" />
+        <button @onclick="AddTodo">Add todo</button>
+
+        <ul>
+            @foreach (var todo in todos)
+            {
+                <li>
+                    <button type="button" @onclick="@(() => todos.Remove(todo))">Remove</button>
+                    <input type="checkbox" @bind="todo.IsDone" />
+                    <input @bind="todo.Title" />
+                </li>
+            }
+        </ul>
+
+    </div>
+</div>
+*@
+
+@code {
+
+    [Parameter]
+    public MedicoE oMedicoE { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasDatoMedico { get; set; }
+
+    [Parameter]
+    public List<MedicosDatosE> oListaMedicosDatosE { get; set; }
+
+
+    public IEnumerable<MedicosDatosE> oListaMedicosDatosEFilter = new List<MedicosDatosE>();
+
+    TablasE oTablasE = new TablasE();
+    MedicosDatosE oMedicosDatosE = new MedicosDatosE();
+
+    string Mensaje = "";
+    string TextoaBuscar = "";
+
+    private bool ModoEditaExistente { get; set; }
+    private TabModalHijo TabModalHijo { get; set; }
+
+    int? _count = 0;
+    int? _total = 0;
+
+
+
+    protected override void OnInitialized()
+    {
+
+    }
+
+    private void Crea()
+    {
+        ModoEditaExistente = false;
+        oMedicosDatosE = new MedicosDatosE();
+
+        oMedicosDatosE.CodMedico = oMedicoE.CodMedico;
+        oMedicosDatosE.TipDatomedico = oTablasE.Codigo;
+        TabModalHijo.Open();
+    }
+
+    private void Edita()
+    {
+        var options = new JsonSerializerOptions { };
+        string jsonString = System.Text.Json.JsonSerializer.Serialize<MedicosDatosE>(oMedicosDatosE, options);
+        oMedicosDatosE = System.Text.Json.JsonSerializer.Deserialize<MedicosDatosE>(jsonString);
+
+        ModoEditaExistente = true;
+        TabModalHijo.Open();
+    }
+
+    private void Elimina()
+    {
+        Mensaje = " ¿Desea eliminar el registro del siguiente item: <br> <b>" + oMedicosDatosE.Valor + "</b>? ";
+        js.InvokeVoidAsync("ShowMessageModal", true, "msgModalPregunta");
+    }
+
+    private async Task ConfirmaElimina(bool acepted)
+    {
+        try
+        {
+            if (acepted)
+            {
+                oMedicosDatosE.CodMedico = oMedicoE.CodMedico;
+                new Bus.Clinica.Medicos().Sp_MedicosDatos_Delete(oMedicosDatosE);
+
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacionMedicosDatos");
+                //ModalMensaje("ConfirmacionEliminacion", "Informativo");
+                //TabModalHijo.Close();
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            //ModalMensaje("Catch", "Error");
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+    }
+
+
+
+    private async Task Graba()
+    {
+        try
+        {
+
+            //
+            //oMedicosDatosE.Valor = oMedicosDatosE.Valor.ToUpper(); //  text-transform: uppercase;
+
+            if (ValidaGraba() != "") return;
+
+            if (ModoEditaExistente == true)
+                new Bus.Clinica.Medicos().Sp_MedicosDatos_Update(oMedicosDatosE);
+            else
+                new Bus.Clinica.Medicos().Sp_MedicosDatos_Insert(oMedicosDatosE);
+
+
+            js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacionMedicosDatos");
+            TabModalHijo.Close();
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+    }
+
+    private string ValidaGraba()
+    {
+        string resultado = "";
+        if (oMedicosDatosE.CodMedico == "") resultado = resultado + "Seleccione un médico <br>";
+
+        //int outPutCount = oListaMedicosDatosE.Where(x => x.CodMedico == oMedicosDatosE.CodMedico
+        //                                                     && x.IdeMedicosDatos == oMedicosDatosE.IdeMedicosDatos
+        //                                                    ).Count();
+        //if (outPutCount > 0) resultado = resultado + "Ya existe un registro con la información ingresada <br>";
+
+        if (resultado != "")
+        {
+            Mensaje = "<b>Por favor verifique lo siguiente:</b> <br>" + resultado;
+            js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+
+        return resultado;
+    }
+
+
+    private void Cancela()
+    {
+        TabModalHijo.Close();
+    }
+
+
+
+    //private List<TodoItem> todos = new();
+    //private string? newTodo;
+
+    //private void AddTodo()
+    //{
+    //    if (!string.IsNullOrWhiteSpace(newTodo))
+    //    {
+    //        todos.Add(new TodoItem { Title = newTodo });
+    //        newTodo = string.Empty;
+    //    }
+    //}
+
+
+}
+
+
+
+

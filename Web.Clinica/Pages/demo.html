@@ -1,0 +1,514 @@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" />
+    <link rel="stylesheet" href="../wwwroot/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../wwwroot/css/style.css" />
+    <link rel="stylesheet" href="../wwwroot/css/textbox.css">
+
+    <script src="../wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../wwwroot/js/index.js"></script>
+
+    <!--<link rel="stylesheet" href="font-awesome.min.css" />-->
+    <link rel="stylesheet" href="../wwwroot/css/all.css" />
+    <title>Contrato de alquiler de consultorios</title>
+</head>
+<body id="body-pd">
+    <header class="header" id="header">
+        <div class="header_toggle">
+            <i class='fa-solid fa-bars' id="header-toggle" onclick="fndvDataUser();"></i>
+            <h5 id="TitleView"><strong>Contrato de alquiler de consultorios</strong></h5>
+        </div>
+
+        <div><img src="images/csf.png" width="120px" /></div>
+        <div class="header_img">
+            <i class='bx bx-bell nav_icon'></i>
+        </div>
+    </header>
+    <div class="l-navbar" id="nav-bar">
+        <nav class="nav">
+            <div>
+                <!--<a href="#" class="nav_logo">x</a>-->
+                <div id="dvDataUserProfile" style="text-align: center; padding: 20px 10px; background: #fff5; width: 95%; margin-left: 10px; border-radius: 8px; transition:all 0.5s;">
+                    <div id="dvDataUser">
+                        <img src="images/foto1.jpg" alt="" width="140px" style="border-radius:150px; border:1px solid #FFF; text-align:center; vertical-align:middle;">
+                        <br />
+                        <br />
+                        <div style="color:#FFF;"> Jesús Caicedo</div>
+                    </div>
+                    <div id="dvDataUserInitial">
+                        <div style="color:#FFF; text-align:left; font-size:20px;"> JC</div>
+                    </div>
+                </div>
+
+                <script type="text/javascript">
+                    var dataUser = true;
+                    fndvDataUser();
+
+                    function fndvDataUser() {
+                        if (dataUser == false) {
+                            document.getElementById("dvDataUser").style.display = "";
+                            document.getElementById("dvDataUserInitial").style.display = "none";
+                            document.getElementById("dvDataUserProfile").style.width = "95%";
+
+                            dataUser = true;
+                        }
+                        else {
+                            document.getElementById("dvDataUser").style.display = "none";
+                            document.getElementById("dvDataUserInitial").style.display = "";
+                            document.getElementById("dvDataUserProfile").style.width = "40px";
+
+                            dataUser = false;
+                        }
+                    }
+                </script>
+
+                <hr style="background:#FFF;" />
+                <div class="nav_list">
+                    <a href="#" class="nav_link active">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span class="nav_name">Dashboard</span>
+                    </a>
+                    <!--<span style="margin-left:20px; color:#FFF;">Comercial</span>-->
+
+                    <a href="#" class="nav_link">
+                        <i class='fa-solid fa-user nav_icon'></i> <span class="nav_name">Mantenimientos</span>
+                    </a>
+                    <a href="#" class="nav_link">
+                        <i class='fa fa-heart-circle-check nav_icon'></i><span class="nav_name">Clínica</span>
+                    </a>
+
+                    <!--<span style="margin-left:20px; color:#FFF;">Finanzas</span>-->
+
+                    <a href="#" class="nav_link">
+                        <i class="fa-solid fa-briefcase-medical"></i> <span class="nav_name">Enfermeria</span>
+                    </a>
+
+                    <a href="#" class="nav_link"> <i class='fa-solid fa-sack-dollar nav_icon'></i> <span class="nav_name">Cobranzas</span> </a>
+                    <a href="#" class="nav_link"> <i class="fa-solid fa-calculator"></i> <span class="nav_name">Contabilidad</span> </a>
+                    <a href="#" class="nav_link"> <i class="fa-solid fa-calendar-days"></i> <span class="nav_name">Agenda de Citas</span> </a>
+                    <a href="#" class="nav_link"> <i class="fa-solid fa-pills"></i> <span class="nav_name">Logística</span> </a>
+                    <a href="#" class="nav_link"> <i class="fa-solid fa-computer"></i> <span class="nav_name">Sistemas</span> </a>
+                    <a href="#" class="nav_link"> <i class="fa-solid fa-arrow-trend-up"></i> <span class="nav_name">Acceso Directos</span> </a>
+                </div>
+            </div>
+            <a href="#" class="nav_link">
+                <i class='fa-solid fa-right-from-bracket nav_icon'></i> <span class="nav_name">Cerrar Sesión</span>
+            </a>
+        </nav>
+    </div>
+    <!--Container Main start-->
+    <div class="bg-light">
+
+        <div style="background-color: #FDFDFD; background-size: 100%; width: 100%; border:1px solid #b3d6ffff; border-radius:8px; padding:00px 20px 0px 20px;">
+            <div class="row align-items-center" style="border-style: solid; border-color: #b3d6ffff; border-width: 0px; border-bottom-width: 1px; padding:20px 0px; background:#f6f6f645; ">
+                <div>
+                    <button class="btn btn-outline-primary col-lg-1 col-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        <span class="fa-regular fa-file"></span> <span id="TitleView"> Nuevo</span>
+                    </button>
+                    <button class="btn btn-outline-success col-lg-1 col-2"><spam class="fa-solid fa-file-excel"></spam> <span id="TitleView"> Excel</span></button>
+                    <button class="btn btn-outline-danger col-lg-1 col-2"><spam class="fa-solid fa-file-pdf"></spam> <span id="TitleView"> PDF</span></button>
+                </div>
+            </div>
+
+            <!--style="background-color: #FFF; width: 100%; border:1px solid #b3d6ffff; border-radius:8px; padding:20px 10px; margin-bottom:20px;"-->
+            <div>
+                <h5> <strong>Lista de médicos con contrato registrado</strong></h5>
+                <br />
+                <!--I.MEDICO-->
+                <div class="row group align-items-center">
+                    <div class="col-xl-1 col-lg-2 col-md-2 col-sm-3 col-xs-4 col-3">
+                        <label> Médico </label>
+                    </div>
+                    <div class="col-xl-4 col-lg-5 col-md-10 col-sm-9 col-xs-8 col-9" style="border-radius:25px !important;">
+                        <div class="DivSearchInput">
+                            <div class="DivSearch" style="width:100%">
+                                <input type="search" placeholder="Buscar por apellidos y nombres, dni ó colegio médico">
+                                <i id="idBuscarProducto" class="fa-solid fa-magnifying-glass"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--F.MEDICO-->
+
+                <div class="row group align-items-center">
+                    <!--Filtro Por Sede-->
+                    <div class="col-xl-1 col-lg-2 col-md-2 col-sm-3 col-xs-4 col-3">
+                        <label> Sede </label>
+                    </div>
+                    <div class="col-xl-1 col-lg-2 col-md-2 col-sm-3 col-xs-4 col-3">
+                        <select class="form-select ">
+                            <option>Todos</option>
+                            <option>Jesús Maria</option>
+                            <option>Camacho</option>
+                        </select>
+                    </div>
+
+                    <!--Filtro Por Forma de Pago-->
+                    <div class="col-xl-1 col-lg-2 col-md-2 col-sm-3 col-xs-4 col-3">
+                        <label> Forma de Pago </label>
+                    </div>
+                    <div class="col-xl-1 col-lg-2 col-md-2 col-sm-3 col-xs-4 col-3">
+                        <select class="form-select">
+                            <option>Todos</option>
+                            <option>Directo</option>
+                            <option>Compensación</option>
+                        </select>
+                    </div>
+                    <!--Filtro Monto Mensualidad-->
+                    <div class="col-xl-1 col-lg-2 col-md-2 col-sm-3 col-xs-4 col-3">
+                        <label> Mensualidad </label>
+                    </div>
+                    <div class="col-xl-1 col-lg-2 col-md-2 col-sm-3 col-xs-4 col-3">
+                        <input type="search" placeholder="Monto" class="form-control">
+                    </div>
+                </div>
+                <br />
+                <!--I.TABLA-->
+                <div class="col-12 col-lg-9 table-responsive">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                            <tr class="fw-bolder">
+                                <td></td>
+                                <td>Nro</td>
+                                <td>Médico</td>
+                                <td>Sede</td>
+                                <td>Forma de Pago</td>
+                                <td>Mensualidad</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-center">
+                                    <div class="btn-group dropstart">
+                                        <button class="btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fa-solid fa-grip-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li class="dropdown-item btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><span class="fa-regular fa-edit "></span> Editar</li>
+                                            <li class="dropdown-item btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#msgModal"><span class="fa-regular fa-trash-can "></span> Pantalla de Espera</li>
+                                            <li class="dropdown-item btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#msgModal2"><span class="fa-regular fa-trash-can "></span> Pantalla de Espera 2</li>
+                                            <li class="dropdown-item btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#msgModal3"><span class="fa-regular fa-trash-can "></span> Pantalla de Espera 3</li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td>1</td>
+                                <td>Jesús Caicedo</td>
+                                <td>Jesús Maria</td>
+                                <td>Directo</td>
+                                <td>S/ 1,500</td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">
+                                    <div class="btn-group dropstart">
+                                        <button class="btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="fa-solid fa-grip-vertical"></span> <span id="TitleView"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li class="dropdown-item btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><span class="fa-regular fa-edit "></span> Editar</li>
+                                            <li class="dropdown-item btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#msgModal"><span class="fa-regular fa-trash-can "></span> Eliminar</li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td>2</td>
+                                <td>Jesús Caicedo</td>
+                                <td>Camacho</td>
+                                <td>Directo</td>
+                                <td>S/ 1,000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!--I.PAGINACIÓN-->
+                    <div class="text-center">
+                        <nav aria-label="Página de navegación">
+                            <ul class="pagination">
+                                <li class="page-item"><a class="page-link" href="#">Anterior</a></li>
+                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">Siguiente</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <!--F.PAGINACIÓN-->
+                </div>
+                <!--F.TABLA-->
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <!-- I.MANTENIMIENTO DE CONTRATO -->
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Mantenimiento de contratos</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="background-color: #FFF; width: 100%; border:1px solid #b3d6ffff; border-radius:8px; padding:20px 10px; margin-bottom:20px;">
+                            <div class="row align-items-center" style="border-style: solid; border-color: #b3d6ffff; border-width: 0px; border-bottom-width: 1px; padding:20px 0px; background:#f6f6f645; ">
+                                <div>
+                                    <button class="btn btn-outline-success col-lg-2 col-2"><span class="fa-regular fa-save"></span> <span id="TitleView"> Guardar</span></button>
+                                    <!--<button class="btn btn-outline-primary col-lg-2 col-2"><span class="fa-regular fa-edit"></span> <span id="TitleView"> Editar</span></button>
+                                    <button class="btn btn-outline-danger col-lg-2 col-2"><spam class="fa-regular fa-trash-can"></spam> <span id="TitleView"> Eliminar</span></button>-->
+                                    <button class="btn btn-outline-primary col-lg-2 col-2"><spam class="fa fa-arrow-rotate-left"></spam> <span id="TitleView"> Cancelar</span></button>
+                                </div>
+                            </div>
+
+                            <div class="row align-items-center">
+                                <!--I.ID-->
+                                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-9 col-9">
+                                    <div class="omrs-input-group">
+                                        <label class="omrs-input-underlined">
+                                            <input required>
+                                            <span class="omrs-input-label">Id</span>
+                                            <span class="omrs-input-helper"></span>
+                                            <!--<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z" /><circle cx="15.5" cy="9.5" r="1.5" /><circle cx="8.5" cy="9.5" r="1.5" /><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm-5-6c.78 2.34 2.72 4 5 4s4.22-1.66 5-4H7z" /></svg>-->
+                                        </label>
+                                    </div>
+                                </div>
+                                <!--F.ID-->
+                            </div>
+
+                            <!--I.MEDICO-->
+                            <div class="row group align-items-center">
+                                <div class="col-xl-7 col-lg-8 col-md-10 col-sm-9 col-xs-8 col-9">
+                                    <div class="omrs-input-group">
+                                        <label class="omrs-input-underlined">
+                                            <input required="">
+                                            <span class="omrs-input-label">Médico</span>
+                                            <span class="omrs-input-helper"></span>
+                                            <i id="idBuscarProducto" class="fa-solid fa-magnifying-glass"></i>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--F.MEDICO-->
+                            <div class="row align-items-center">
+                                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-9 col-12">
+
+                                    <select class="form-select form-select-control" aria-label="Default select example">
+                                        <option>Eliga la Sede</option>
+                                        <option>Jesús Maria</option>
+                                        <option>Camacho</option>
+                                    </select>
+                                </div>
+                                <!--I.RENTA MENSUAL-->
+
+                                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+                                    <div class="omrs-input-group">
+                                        <label class="omrs-input-underlined">
+                                            <input required="">
+                                            <span class="omrs-input-label">Renta Mensual</span>
+                                            <span class="omrs-input-helper"></span>
+                                            <!--<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z" /><circle cx="15.5" cy="9.5" r="1.5" /><circle cx="8.5" cy="9.5" r="1.5" /><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm-5-6c.78 2.34 2.72 4 5 4s4.22-1.66 5-4H7z" /></svg>-->
+                                        </label>
+                                    </div>
+                                </div>
+                                <!--F.RENTA MENSUAL-->
+                                <!--I.FORMA DE PAGO-->
+
+
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12">
+                                    <div class="col-12">
+                                        <label style="font-size: 0.8rem;">Forma Pago</label>
+                                    </div>
+                                    <div class="col-12 row">
+                                        <div class="col-xl-6 col-md-12 col-6">
+                                            <label>Directo <input type="checkbox" id="rbTipoPago"></label>
+                                        </div>
+                                        <div class="col-xl-6 col-md-12 col-6">
+                                            <label>Compensación <input type="checkbox" id="rbTipoPago"></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!--F.FORMA DE PAGO-->
+                            </div>
+
+                            <div class="row align-items-center">
+                                <!--I.FECHA INICIO-->
+                                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-9 col-9">
+                                    <div class="omrs-input-group">
+                                        <label class="omrs-input-underlined">
+                                            <input required="" type="date" placeholder=" ">
+                                            <span class="omrs-input-label">Fecha Inicio</span>
+                                            <span class="omrs-input-helper"></span>
+                                            <!--<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z" /><circle cx="15.5" cy="9.5" r="1.5" /><circle cx="8.5" cy="9.5" r="1.5" /><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm-5-6c.78 2.34 2.72 4 5 4s4.22-1.66 5-4H7z" /></svg>-->
+                                        </label>
+                                    </div>
+                                </div>
+                                <!--F.FECHA INICIO-->
+                                <!--I.FECHA FIN-->
+                                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-9 col-9">
+                                    <div class="omrs-input-group">
+                                        <label class="omrs-input-underlined">
+                                            <input required="" type="date" placeholder=" ">
+                                            <span class="omrs-input-label">Fecha Fin</span>
+                                            <span class="omrs-input-helper"></span>
+                                            <!--<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z" /><circle cx="15.5" cy="9.5" r="1.5" /><circle cx="8.5" cy="9.5" r="1.5" /><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm-5-6c.78 2.34 2.72 4 5 4s4.22-1.66 5-4H7z" /></svg>-->
+                                        </label>
+                                    </div>
+                                </div>
+                                <!--F.FECHA FIN-->
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Understood</button>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+        <!-- F.MANTENIMIENTO DE CONTRATO -->
+        <!-- I.MODAL MESSAGE -->
+        <!--<div class="modal fade" id="msgModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Información</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Desea seguir?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success">Confirmar</button>
+                        <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+        <!-- F.MODAL MESSAGE -->
+        <!-- I.ESPERA -->
+        <div class="modal fade" id="msgModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!--<div class="modal-header">-->
+                    <!--<h5 class="modal-title" id="staticBackdropLabel">Información</h5>-->
+                    <!--</div>-->
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <br /><br />
+                            Espere un momento por favor. <br /><br />
+                            90%<br /><br />
+                            <img src="images/801.gif" /> <br /><br />
+                        </div>
+
+                        <!--<div>
+                            <div style="border:1px solid #CCC;">
+                                <h6>Mientras esperamos, sabias que?</h6>
+                                No puedes hacerte cosquillas a ti mismo
+                            </div>
+                        </div>-->
+                        <br />
+                    </div>
+                    <!--<div class="modal-footer text-center">
+                    <div class="text-center">-->
+                    <!--<button type="button" class="btn btn-success">Confirmar</button>-->
+                    <!--<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+                    <!--</div>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+        <!-- F.ESPERA -->
+
+        <div class="modal fade" id="msgModal2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!--<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div style="border: 1px solid #cfdff6;margin: 20px 30px;padding: 20px;border-radius: 10px;">
+                            <h5>Mientras esperamos, sabias que?</h5><br>
+
+                            <div class="row">
+                                <div class="col-12 col-sm-1 text-center align-self-center">
+                                    <button type="button" class="btn btn-outline-secondary"><</button>
+                                </div>
+                                <div class="col-12 col-sm-10">
+                                    <strong>No puedes hacerte cosquillas a ti mismo</strong>
+                                    <br><br>
+                                    Aunque hayas intentado hacerte cosquillas a ti mismo, es algo imposible. Esto se debe aquel cerebro conoce tus intenciones, lo que anula el factor sorpresa que las produce.
+                                </div>
+                                <div class="col-12 col-sm-1 text-center align-self-center">
+                                    <button type="button" class="btn btn-outline-secondary">></button>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <br />
+                                <img src="images/801.gif"> <br>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                    <!--<div class="modal-footer text-center">
+                        <div class="text-center">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="msgModal3" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <br />
+                            Lo sentimos, no logramos encontrar lo que buscabas. <br />
+                            <br />
+                            Por favor intenta ser más especifico con la búsqueda.
+                            <br />
+                            <h1 class="text-center">&#128532;</h1>
+                            <br />
+                        </div>
+                    </div>
+                    <!--<div class="modal-footer text-center">
+                        <div class="text-center">
+                        </div>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!--</div>-->
+    <!--Container Main end-->
+    <footer style="background:#FAFAFA; border-top:1px solid #CCC; padding:10px 8px; margin-top:5px;">
+        <div style="display:inline">
+            <div style="display:inline-grid; width:50%;">Todo los derechos reservados © 2022 - Clinica San Felipe</div>
+            <div style="display:inline-grid; width:47%; text-align:right; ">Ambiente: <label style="font-weight:bold; display:contents;">PRODUCCIÓN</label> </div>
+        </div>
+    </footer>
+
+    <!--<script type="text/javascript">
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+
+        var myModal = document.getElementById('myModal')
+        var myInput = document.getElementById('myInput')
+
+        myModal.addEventListener('shown.bs.modal', function () {
+            myInput.focus()
+        })
+    </script>-->
+</body>
+
+</html>

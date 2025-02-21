@@ -1,0 +1,28 @@
+﻿<h1>@Title</h1>
+
+<div class="summary">
+    @Summary(this)
+</div>
+<div class="content">
+    @Body(this)
+</div>
+
+<p>Post content goes here...</p>
+@code {
+    [Parameter]
+    public string Title { get; set; }
+    [Parameter]
+    public DateTime DatePublished { get; set; }
+
+    [Parameter]
+    public RenderFragment<Article> Summary { get; set; }
+    [Parameter]
+    public RenderFragment<Article> Body { get; set; }
+    [Parameter]
+    public string derecho_reservado { get; set; } = "CSF";
+}
+
+
+@*https://www.variablenotfound.com/2020/05/componentes-con-cuerpo-en-blazor.html
+*@
+

@@ -1,0 +1,583 @@
+﻿@* **********************************************************************************************************************
+    Copyright Clinica San Felipe S.A.C 2024. Todos los derechos reservados.
+    Version     Fecha           Autor       Requerimiento
+    1.1         01/04/2024      AROMERO     REQ-2024-006637:  FINANCIAMIENTO LABORATORIO
+*********************************************************************************************************************** *@
+
+@page "/Clinica/Clinica/Mantenimientos/FinanciamientoLaboratorio"
+@inject IJSRuntime js
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@using Bus.Clinica.Clinica;
+@using Bus.Utilities
+@using Dat.Sql
+@using Ent.Sql.ClinicaE.FinanciamientoDetalleE;
+@using System.Xml.Serialization
+@using System.Text.Json
+@using RestSharp
+@using System.Data;
+@using Web.Clinica.Data
+@using System.Text.RegularExpressions;
+@using Web.Clinica.Pages.Clinica.Comercial.Componentes
+@using Ent.Sql;
+@using Ent.Sql.ClinicaE;
+@using ClosedXML.Excel
+@inherits MainLayout
+
+@code {
+    string NombreExcel = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss").Replace("/", "").Replace(":", "").Replace(" ", "") + ".xlsx"; //Nombre del archivo
+    string RutaDescarga = "";
+
+    FinanciamientoDetalleE ofinanciamientoDetE = new FinanciamientoDetalleE("", 0, 25, 19);
+    List<FinanciamientoDetalleE> oListaFinanciamientoDet = new List<FinanciamientoDetalleE>();   
+
+    public string Mensaje { get; set; } = ""; 
+
+    [CascadingParameter]
+    PageIndexStateProvider State { get; set; }
+
+    private int itemsPerPage = 5;
+    private int totalPages = 1;
+
+    List<int> oListItemsPerPage = new List<int>() { 5, 25, 50, 100 };
+
+    Utilitario utilitario = new Utilitario();
+    FinanciamientoBuscaE oFinanciamientoBuscaE = new FinanciamientoBuscaE();
+
+    protected override void OnInitialized()
+    {
+        State = new PageIndexStateProvider();   
+        base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        BuscarFinanciamientoDet(1,1);
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        js.InvokeVoidAsync("fnActualizarTitulo", "Financiamiento de Laboratorio");
+
+        if (firstRender)
+        {
+            js.InvokeVoidAsync("eval", @"
+		          window.downloadFile = function(url, fileName) {
+		              var link = document.createElement('a');
+		              link.href = url;
+		              link.download = fileName;
+		              document.body.appendChild(link);
+		              link.click();
+		              document.body.removeChild(link);
+		          }");
+        }
+    }
+
+    private async Task ModalMensaje(string Mensajes, string TipoModal)
+    {
+        if (TipoModal == "Advertencia")
+        {
+            switch (Mensajes)
+            {
+                case "FinanciamientoNull":
+                    Mensaje = "Lo sentimos, no logramos encontrar registros.<br>Por favor intenta ser más especifico con la búsqueda.";
+                    break;
+            }
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalAdvertencia");
+        }
+        if (TipoModal == "Error")
+        {
+            switch (Mensajes)
+            {
+                case "Catch":
+                    Mensaje = "Error: " + Mensaje;
+                    break;                
+            }
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+    }    
+
+    async Task AbrirRegistro()
+    {
+        //Lleva a la pantalla para registro unitario
+        await js.InvokeVoidAsync("CloseModalMessageName", "msjcloseFinanciamientoHide");
+        NavigationManager.NavigateTo("/Clinica/Clinica/Mantenimientos/FinanciamientoLaboratorioRegistro");
+    }
+
+
+    async Task AbrirCargaMasiva()
+    {
+        //Lleva a la pantalla para carga masiva
+        await js.InvokeVoidAsync("CloseModalMessageName", "msjcloseFinanciamientoHide");
+        NavigationManager.NavigateTo("/Clinica/Clinica/Mantenimientos/FinanciamientoLaboratorioCargaMasiva");
+    }
+
+
+    private async Task ChangueIitemsPerPage(ChangeEventArgs e)
+    {
+        //Consulta segun cantidad de lineas seleccionadas
+        itemsPerPage = Convert.ToInt32(e.Value.ToString());
+        if (oFinanciamientoBuscaE.Buscar.Trim().Equals(""))
+        {
+            BuscarFinanciamientoDet(1, 1);
+        }
+        else
+        {
+            BuscarFinanciamientoDet(1, 2);
+        }
+
+    }
+
+    private async Task BuscarFinanciamientoDet(int selectedPageIndex, int orden)
+    {
+        //Consulta general de financiamiento
+        try
+        {
+            var serializer = new XmlSerializer(typeof(FinanciamientoDetalleE));
+            ofinanciamientoDetE.Orden = orden;
+            ofinanciamientoDetE.NumeroLineas = itemsPerPage;
+            StringWriter writer = new StringWriter();
+            serializer.Serialize(writer, ofinanciamientoDetE);
+            ofinanciamientoDetE.Buscar = oFinanciamientoBuscaE.Buscar;
+            oListaFinanciamientoDet = new Bus.Clinica.FinanciamientoLaboratorio().Financiamiento_ConsultaDetalle(ofinanciamientoDetE);
+
+            if (oListaFinanciamientoDet.Count == 0)
+            {
+                ModalMensaje("FinanciamientoNull", "Advertencia");
+            }
+            else
+            {
+                State.PageIndex = selectedPageIndex;
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+
+    async Task EnterBuscarFinanciamiento(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await BuscarFinanciamientoDet(1,2);
+        }
+    }
+
+    private async Task EditarFinanciamiento()
+    {
+        //Lleva a la pantalla de actualizacion de financiamiento
+        NavigationManager.NavigateTo("/Clinica/Clinica/Mantenimientos/FinanciamientoLaboratorioActualizar");
+    }
+
+
+    private async Task ExportarExcel(int flgdescarga, string xNombreExcel, string xRutaDescarga)
+    {
+        //Exportar consulta que se muestra en la pantalla
+        try
+        {
+            int FilaCab = 4;
+            int FilaCuerpo = FilaCab + 1, ColumnaCuerpo = oListaFinanciamientoDet.Count;
+            MemoryStream excelStream;
+            string fileUrl;
+
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Financiamiento");
+                var RangoCab_Hoja = worksheet.Range(2, 1, 2, 20).Merge();
+                RangoCab_Hoja.Value = "Lista de Financiamiento Laboratorio";
+                RangoCab_Hoja.Style.Fill.BackgroundColor = XLColor.FromHtml("#7ebf2a"); //Indicamos el color de background
+                RangoCab_Hoja.Style.Font.FontSize = 17; //Indicamos el tamaño de la fuente
+                RangoCab_Hoja.Style.Font.Bold = true;
+                RangoCab_Hoja.Style.Font.FontColor = XLColor.FromHtml("#ffffff");
+                RangoCab_Hoja.Style.Font.SetFontName("Calibri"); //Fuente
+                RangoCab_Hoja.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                //I-Cuerpo_Tabla
+                worksheet.Cell(FilaCab, 1).Value = "ID";
+                worksheet.Cell(FilaCab, 2).Value = "CIE-10";
+                worksheet.Cell(FilaCab, 3).Value = "Descripción";
+                worksheet.Cell(FilaCab, 4).Value = "Cód. Prestación";
+                worksheet.Cell(FilaCab, 5).Value = "Ide Análisis";
+                worksheet.Cell(FilaCab, 6).Value = "Tipo Atención";
+                worksheet.Cell(FilaCab, 7).Value = "Cód. ROE";
+                worksheet.Cell(FilaCab, 8).Value = "Prueba ROE";
+                worksheet.Cell(FilaCab, 9).Value = "Pacifico S.A. Entidad Prestadora de Salud";
+                worksheet.Cell(FilaCab, 10).Value = "Pacifico Compañia de Seguros y Reaseguros S.A.";
+                worksheet.Cell(FilaCab, 11).Value = "Rimac S.A. Entidad Prestadora de Salud";
+                worksheet.Cell(FilaCab, 12).Value = "Rimac Seguros y Reaseguros";
+                worksheet.Cell(FilaCab, 13).Value = "Sanitas Perú S.A. - EPS";
+                worksheet.Cell(FilaCab, 14).Value = "La Positiva S.A. Entidad Prestadora de Salud";
+                worksheet.Cell(FilaCab, 15).Value = "Fondo para Enfermedades, Seg y Pensiones de Empleados - BCRP";
+                worksheet.Cell(FilaCab, 16).Value = "BNP Paribas Cardif S.A Compañia de Seguros y Reaseguros";
+                worksheet.Cell(FilaCab, 17).Value = "Particular";
+                worksheet.Cell(FilaCab, 18).Value = "La Positiva Seguros y Reaseguros";
+                worksheet.Cell(FilaCab, 19).Value = "Mapfre Perú CIA. de Seguros y Reaseguros";
+                worksheet.Cell(FilaCab, 20).Value = "Mapfre Perú S.A. Entidad Prestadora de Salud";
+
+                for (int i = 1; ColumnaCuerpo > i - 1; i++)
+                {
+                    worksheet.Cell(FilaCuerpo, 1).Value = oListaFinanciamientoDet[i - 1].Item;
+                    worksheet.Cell(FilaCuerpo, 2).Value = oListaFinanciamientoDet[i - 1].Cod_Diagnostico;
+                    worksheet.Cell(FilaCuerpo, 3).Value = oListaFinanciamientoDet[i - 1].Nombre_Diagnostico;
+                    worksheet.Cell(FilaCuerpo, 4).Value = oListaFinanciamientoDet[i - 1].Cod_Prestacion;
+                    worksheet.Cell(FilaCuerpo, 5).Value = oListaFinanciamientoDet[i - 1].Ide_Analisis;
+                    worksheet.Cell(FilaCuerpo, 6).Value = oListaFinanciamientoDet[i - 1].Tipo_Atencion;
+                    worksheet.Cell(FilaCuerpo, 7).Value = oListaFinanciamientoDet[i - 1].Cod_ROE;
+                    worksheet.Cell(FilaCuerpo, 8).Value = oListaFinanciamientoDet[i - 1].Prueba_ROE;
+                    worksheet.Cell(FilaCuerpo, 9).Value = oListaFinanciamientoDet[i - 1].CodAseguradora1;
+                    worksheet.Cell(FilaCuerpo, 10).Value = oListaFinanciamientoDet[i - 1].CodAseguradora2;
+                    worksheet.Cell(FilaCuerpo, 11).Value = oListaFinanciamientoDet[i - 1].CodAseguradora3;
+                    worksheet.Cell(FilaCuerpo, 12).Value = oListaFinanciamientoDet[i - 1].CodAseguradora4;
+                    worksheet.Cell(FilaCuerpo, 13).Value = oListaFinanciamientoDet[i - 1].CodAseguradora5;
+                    worksheet.Cell(FilaCuerpo, 14).Value = oListaFinanciamientoDet[i - 1].CodAseguradora6;
+                    worksheet.Cell(FilaCuerpo, 15).Value = oListaFinanciamientoDet[i - 1].CodAseguradora7;
+                    worksheet.Cell(FilaCuerpo, 16).Value = oListaFinanciamientoDet[i - 1].CodAseguradora8;
+                    worksheet.Cell(FilaCuerpo, 17).Value = oListaFinanciamientoDet[i - 1].CodAseguradora9;
+                    worksheet.Cell(FilaCuerpo, 18).Value = oListaFinanciamientoDet[i - 1].CodAseguradora10;
+                    worksheet.Cell(FilaCuerpo, 19).Value = oListaFinanciamientoDet[i - 1].CodAseguradora11;
+                    worksheet.Cell(FilaCuerpo, 20).Value = oListaFinanciamientoDet[i - 1].CodAseguradora12;
+
+                    worksheet.Range(FilaCuerpo, 1, FilaCuerpo, 20).Style.Border.BottomBorder = XLBorderStyleValues.Dotted;
+                    worksheet.Range(FilaCuerpo, 1, FilaCuerpo, 20).Style.Border.BottomBorderColor = XLColor.Black;
+                    FilaCuerpo++;
+                }
+
+                //I-Estilo Cabecera_Tabla
+                var RangoCab = worksheet.Range(FilaCab, 1, FilaCab, 20); //Selecciona Rango
+                RangoCab.Style.Border.RightBorder = XLBorderStyleValues.Medium;
+                RangoCab.Style.Border.RightBorderColor = XLColor.White;
+                RangoCab.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; //Alineamos horizontalmente
+                RangoCab.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;  //Alineamos verticalmente
+                RangoCab.Style.Fill.BackgroundColor = XLColor.FromHtml("#124498"); //Indicamos el color de background
+                RangoCab.Style.Font.FontSize = 13; //Indicamos el tamaño de la fuente
+                RangoCab.Style.Font.Bold = true;
+                RangoCab.Style.Font.FontColor = XLColor.FromHtml("#ffffff");
+                RangoCab.Style.Font.SetFontName("Sitka Display Semibold"); //Fuente
+
+                worksheet.Columns(1, 20).AdjustToContents(); //Ajustamos el ancho de las columnas para que se muestren todos los contenidos
+
+                // Guardar el archivo Excel en un MemoryStream
+                excelStream = new MemoryStream();
+                workbook.SaveAs(excelStream);
+
+                if (flgdescarga == 1) 
+                {
+                    workbook.SaveAs(xRutaDescarga + xNombreExcel);//Ruta para guardar
+                }
+
+                // Obtener la URL del archivo Excel
+                if (flgdescarga == 0)
+                {
+                    xNombreExcel = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss").Replace("/", "").Replace(":", "").Replace(" ", "") + ".xlsx"; //Nombre del archivo
+                    fileUrl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{Convert.ToBase64String(excelStream.ToArray())}";
+                    OnAfterRender(true);//crea la funcion
+                    await js.InvokeVoidAsync("downloadFile", fileUrl, xNombreExcel);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+}
+@{
+    async Task MostraMOdalFInanciamiento()
+    {        
+        await js.InvokeVoidAsync("ShowModalPopupControl", "msjNuevoFinanciamientoShow");
+    }
+}
+
+<style>
+    .modal-center {
+        margin: 35% auto; /* 15% desde la parte superior y centrado horizontalmente */
+        max-width: 600px; /* Ancho máximo del modal */
+    }
+    /* Estilos adicionales para el ícono de búsqueda */
+    .DivSearch i {
+        cursor: pointer; /* Cambiar cursor al pasar por encima */
+        margin-left: 5px; /* Espacio entre input y ícono */
+        right: 5px !important;
+    }
+  
+    .GrillaSmall {
+        align-content: center;
+        font-size: smaller;
+    }
+    
+    .GrillaXXSmall {
+        align-content: center;
+        font-size: xx-small
+    }    
+</style>
+
+<div class="bg-light">
+    <div class="form-bg">
+
+        <div class="row align-items-center form-toolbar justify-content-between">
+            <div class="col-auto">
+                <button class="btn btn-primary" @onclick="MostraMOdalFInanciamiento">
+                    <span class="fa-regular fa-file"></span> <span role="toolbar"> Nuevo</span>
+                </button>  
+                <button class="btn btn-primary" @onclick="EditarFinanciamiento">
+                    <span class="fa-solid fa-file-pen"></span> <span role="toolbar"> Actualizar</span>
+                </button>
+            </div>          
+            <div class="col-auto">                
+                <button id="IdButtonExcel" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target @onclick="(()=>ExportarExcel(0,NombreExcel,RutaDescarga))">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <i id="idIcnExportar" class="fa-solid fa-file-excel"></i>
+                        <span class="ml-2">&nbsp;&nbsp;Excel</span>
+                    </div>
+                </button>
+                <button id="btnImprimir" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target onclick="btnImprimir();">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <i id="idIcnExportar" class="fa-solid fa-file-pdf"></i>
+                        <span class="ml-2">&nbsp;&nbsp;PDF</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 buscar-menuNuevo" style="border-radius:25px !important;">
+                <div class="input-group">
+                    <div class="DivSearchNuevo" style="width:100%">
+                        <div class="row group align-items-center">                           
+                            <div class="col-xl-1 col-lg-2 col-md-3 col-sm-12 col-xs-12 col-12">
+                                <label>Financiamiento:</label>
+                            </div>
+                            <div class="col-xl-11 col-lg-10 col-md-9 col-sm-12 col-xs-12 col-12" style="border-radius:25px !important;">
+                                <div class="DivSearchInput">
+                                    <div class="DivSearch" style="width:100%">
+                                        <input id="txtFiltro" style="text-transform:uppercase" type="search" placeholder="Buscar por CIE-10,  Descripción CIE-10, Prestación, Cod. ROE o Pruebas ROE"
+                                        @bind-value="@oFinanciamientoBuscaE.Buscar" @onkeyup="@EnterBuscarFinanciamiento">
+                                        <i id="idSearchFinanciamiento" class="fa-solid fa-magnifying-glass" role="button" @onclick="@(()=>BuscarFinanciamientoDet(1,2))" typeof="AdvancedSearch"></i>                                        
+                                    </div>
+                                </div>
+                            </div>                          
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>  
+
+        <div class="container" style="margin-top: 20px;">
+            <div class="col-12 col-lg-12 col-md-12 buscar-menuNuevo">
+                <div class="input-group">
+                    <div class="card w-100">
+                        <div class="card-header text-white fs-5" style="background:#124498;padding: 1rem 2rem; ">
+                            Resultado de búsqueda
+                        </div>
+                        <div class="card-body">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive">
+                                <table class="table table-hover   table-bordered">
+                                    <thead class="table-primary">
+                                        <tr class="fw-bolder">                                            
+                                            <th class="col-1 text-center GrillaSmall">ID</th>
+                                            <th class="col-1 text-center GrillaSmall">CIE-10</th>
+                                            <th class="col-3 text-center GrillaSmall">Descripción</th>
+                                            <th class="col-1 text-center GrillaSmall">Cod. Prestación</th>
+                                            <th class="col-1 text-center GrillaSmall">Id Análisis</th>
+                                            <th class="col-1 text-center GrillaSmall" style="display:none">Tipo Atención</th>
+                                            <th class="col-1 text-center GrillaSmall">Cod. ROE</th>
+                                            <th class="col-3 text-center GrillaSmall">Pruebas ROE</th>
+                                            <th class="col-1 text-center GrillaXXSmall">PACIFICO S.A. ENTIDAD PRESTADORA DE SALUD</th>
+                                            <th class="col-1 text-center GrillaXXSmall">PACIFICO COMPAÑIA DE SEGUROS Y REASEGUROS S.A.</th>
+                                            <th class="col-1 text-center GrillaXXSmall">RIMAC S.A. ENTIDAD PRESTADORA DE SALUD</th>
+                                            <th class="col-1 text-center GrillaXXSmall">RIMAC SEGUROS Y REASEGUROS</th>
+                                            <th class="col-1 text-center GrillaXXSmall">SANITAS PERU S.A. - EPS</th>
+                                            <th class="col-1 text-center GrillaXXSmall">LA POSITIVA S.A. ENTIDAD PRESTADORA DE SALUD</th>
+                                            <th class="col-1 text-center GrillaXXSmall">FONDO PARA ENFERMEDADES, SEG Y PENSIONES DE EMPLEADOS - BCRP</th>
+                                            <th class="col-1 text-center GrillaXXSmall">BNP PARIBAS CARDIF S.A COMPAÑIA DE SEGUROS Y REASEGUROS</th>
+                                            <th class="col-1 text-center GrillaXXSmall">PARTICULAR</th>
+                                            <th class="col-1 text-center GrillaXXSmall">LA POSITIVA SEGUROS Y REASEGUROS</th>
+                                            <th class="col-1 text-center GrillaXXSmall">MAPFRE PERU CIA. DE SEGUROS Y REASEGUROS</th>
+                                            <th class="col-1 text-center GrillaXXSmall">MAPFRE PERU S.A. ENTIDAD PRESTADORA DE SALUD</th>                                                                                      
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (oListaFinanciamientoDet != null)
+                                        {
+                                            @foreach (var item in oListaFinanciamientoDet)
+                                            {
+                                                <tr>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color">@item.Item</span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color">@item.Cod_Diagnostico</span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color">@item.Nombre_Diagnostico</span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color">@item.Cod_Prestacion</span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color">@item.Ide_Analisis</span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall" style="display:none">
+                                                        <span class="span-color">@item.Tipo_Atencion</span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color">@item.Cod_ROE</span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color">@item.Prueba_ROE</span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color">@item.CodAseguradora1</span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color">@item.CodAseguradora2</span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color">@item.CodAseguradora3</span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color">@item.CodAseguradora4</span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color">@item.CodAseguradora5</span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color">@item.CodAseguradora6</span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color">@item.CodAseguradora7</span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color">@item.CodAseguradora8</span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color">@item.CodAseguradora9</span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color">@item.CodAseguradora10</span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color">@item.CodAseguradora11</span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color">@item.CodAseguradora12</span><br>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="2">
+                                            </td>
+                                            <td colspan="5">
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                <div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 0px 0px; ">
+                                    <div class="col-sm-12 col-md-2  col-lg-2">
+                                        <div class="form-floating mb-3">
+                                            <select class="form-select" id="oListaFinanciamientoDet" aria-label="Tipo de documento" value="@itemsPerPage" @onchange="ChangueIitemsPerPage">
+                                                @foreach (var item in oListItemsPerPage)
+                                                {
+                                                    <option value=@item>@item</option>
+                                                }
+                                            </select>
+                                            <label for="oListaFinanciamientoDet">Cantidad de filas:</label>
+                                        </div>
+                                    </div>    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div>
+    @*==========================================0*@
+    <MessageModal IdMessage="msgModalAdvertencia"
+                  TitleModal="Advertencia"
+                  IconMessage=MessageModal.iconMessage.Advertencia
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalError"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>    
+</div>
+
+<div>
+    <!-- I.MODAL PARA REGISTRAR O HACER CARGA MASIVA -->
+    <div class="modal" id="msjNuevoFinanciamientoShow" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dm">
+            <div class="modal-content modal-center">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Registra Nuevo Financiamiento</h5>
+                    <button type="button" class="btn-close" id="msjcloseFinanciamientoHide" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div style="background-color: #FFF; width: 100%; border:1px solid #b3d6ffff; border-radius:8px; padding:0px 0px; margin-bottom:0px;">
+                        <div class="row align-items-center" style="border-style: solid; border-color: #b3d6ffff; border-width: 0px; border-bottom-width: 0px; padding:0px 0px 0px 0px; background:#f6f6f645; ">
+                            <div style ="display:flex; justify-content: center">
+                                <h5 style="margin-top: 15px; color: darkblue" id="staticBackdropLabel">
+                                    Seleccionar Opción
+                                </h5>
+                            </div>
+                            <div style="display:flex; justify-content: center">
+                                <button class="btn btn-outline-primary" style="margin:15px" @onclick="AbrirRegistro">
+                                    <span class="fa-regular fa-file"></span> <span id="TitleView"> Registro</span>                                    
+                                </button>
+
+                                <button class="btn btn-outline-primary" style="margin:15px" @onclick="AbrirCargaMasiva">
+                                    <spam class="fa-solid fa-file-arrow-up"></spam> <span id="TitleView"> Cargar Archivo</span>
+                                </button>                               
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-auto">
+                        <button class="btn btn-primary" data-bs-dismiss="modal">
+                            <span role="toolbar"> Cancelar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- I.MODAL MESSAGE -->
+    @*==========================================0*@
+    <MessageModal IdMessage="msgModalAdvertencia"
+                  TitleModal="Advertencia"
+                  IconMessage=MessageModal.iconMessage.Advertencia
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalError"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+</div>
+
+

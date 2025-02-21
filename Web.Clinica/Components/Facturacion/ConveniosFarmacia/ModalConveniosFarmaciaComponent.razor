@@ -1,0 +1,414 @@
+﻿@using Bus.Clinica.Logistica
+@using Bus.Utilities
+@using ClosedXML.Excel
+@using Ent.Sql
+@using Bus.Clinica;
+@using Ent.Sql.LogisticaE.ConveniosE
+@using RestSharp
+@using Web.Clinica.Data
+@using System.Net;
+@using Web.Clinica.Pages
+@inject IJSRuntime js
+
+@code {
+    /********************************************************************************************************************
+       Copyright Clinica San Felipe S.A.C. 2024. Todos los derechos reservados.
+
+       Version  Fecha        Autor           Requerimiento
+       1.0      11/09/2024   FCHUJE         REQ 2024-015619 Creación Módulo de Prestaciones
+       ********************************************************************************************************************/
+    [Parameter]
+    public bool acceder { get; set; }
+    [Parameter]
+    public EventCallback<bool> oReloadConvenio { get; set; }
+
+    bool activabotongrabar = false;
+    string Mensaje = "";
+    ApiRutaConexion _app = new ApiRutaConexion();
+    List<ConveniosE> ListaConvenios = new List<ConveniosE>();
+    IEnumerable<ConveniosE> ListaConveniosFiltrados = new List<ConveniosE>();
+
+    [CascadingParameter]
+    PageIndexStateProvider State { get; set; }
+    int itemsPerPage = 30;
+    int totalPages = 1;
+    List<ErrorDataInsercionE> ListadoError = new List<ErrorDataInsercionE>();
+
+    protected override void OnParametersSet()
+    {
+        State = new PageIndexStateProvider();
+        js.InvokeVoidAsync("resetInputFile", "ifCargaExcelCargaConvenios");
+        activabotongrabar = false;
+        ListaConvenios = new List<ConveniosE>();
+        ListaConveniosFiltrados = new List<ConveniosE>();
+        base.OnParametersSet();
+    }
+
+    async Task CargaExcelConvenios(InputFileChangeEventArgs e)
+    {
+        var ExcelName = e.File.ContentType;
+        var FileName = e.File.Name;
+        var Archivo = e.File;
+        ListaConvenios = new List<ConveniosE>();
+        ListaConveniosFiltrados = new List<ConveniosE>();
+        try
+        {
+            if (ExcelName.Contains("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+            {
+                long maxSize = 5 * 1024 * 1024;
+                if (Archivo.Size < maxSize)//5MB
+                {
+                    await js.InvokeVoidAsync("ShowModalSpinner", "components-modal-await");
+                    using (var stream = new MemoryStream())
+                    {
+                        await e.File.OpenReadStream().CopyToAsync(stream);
+                        stream.Position = 0;
+                        using (var workbook = new XLWorkbook(stream))
+                        {
+                            var worksheet = workbook.Worksheet(1);
+                            int valoracceso = 0;
+                            foreach (var row in worksheet.Rows())
+                            {
+                                if (valoracceso > 0)
+                                {
+                                    ConveniosE objconvenios = new ConveniosE();
+                                    objconvenios.Codaseguradora = row.Cell(1).Value.ToString();
+                                    objconvenios.Codtipocliente = row.Cell(2).Value.ToString();
+                                    objconvenios.Codproducto = row.Cell(3).Value.ToString();
+                                    objconvenios.Fechadocumento = Convert.ToDateTime(row.Cell(4).Value.ToString());
+                                    objconvenios.Fechainicio = Convert.ToDateTime(row.Cell(5).Value.ToString());
+                                    objconvenios.FactorLogistica = Convert.ToInt32(row.Cell(6).Value.ToString());
+                                    objconvenios.PrecioUnitario = Math.Round(Convert.ToDouble(row.Cell(7).Value.ToString()), 2);
+                                    ListaConvenios.Add(objconvenios);
+                                }
+                                valoracceso++;
+                            }
+                        }
+                        if (ListaConvenios.Count() > 0)
+                        {
+                            decimal _decimal = (decimal)ListaConvenios.Count() / itemsPerPage;
+                            decimal _int = (int)(ListaConvenios.Count() / itemsPerPage);
+                            decimal _tot = _decimal - _int;
+                            if (_tot == 0)
+                            {
+                                totalPages = Convert.ToInt32(_int);
+                            }
+                            else
+                            {
+                                totalPages = Convert.ToInt32(_int) + 1;
+                            }
+                            State.PageIndex = 1;
+                            var skipCount = itemsPerPage * (State.PageIndex - 1);
+                            ListaConveniosFiltrados = ListaConvenios.Skip(skipCount).Take(itemsPerPage);
+                            activabotongrabar = true;
+                        }
+                        else
+                        {
+                            activabotongrabar = false;
+                        }
+                        await js.InvokeVoidAsync("CloseModalSpinner", "components-modal-await");
+                    }
+                }
+                else
+                {
+                    activabotongrabar = false;
+                    await js.InvokeVoidAsync("resetInputFile", "ifCargaExcelCargaConvenios");
+                    Mensaje = "El archivo seleccionado es demasiado grande. Seleccione un archivo más pequeño. Tamaño máximo 5 MB";
+                    await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorCargaConvenio");
+                }
+            }
+            else
+            {
+                activabotongrabar = false;
+                await js.InvokeVoidAsync("resetInputFile", "ifCargaExcelCargaConvenios");
+                Mensaje = "Por favor, selecciona un archivo Excel válido (formato XLSX).";
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorCargaConvenio");
+            }
+        }
+        catch (Exception ex)
+        {
+            activabotongrabar = false;
+            await js.InvokeVoidAsync("resetInputFile", "ifCargaExcelCargaConvenios");
+            await js.InvokeVoidAsync("CloseModalSpinner", "components-modal-await");
+            Mensaje = ex.Message;
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorCargaConvenio");
+        }
+    }
+
+    void SelectedPage(int SelectedPageIndex)
+    {
+        State.PageIndex = SelectedPageIndex;
+        var skipCount = itemsPerPage * (State.PageIndex - 1);
+        ListaConveniosFiltrados = ListaConvenios.Skip(skipCount).Take(itemsPerPage);
+    }
+
+    async void PreguntaRegistro()
+    {
+        Mensaje = "Está seguro de realizar esta operación?";
+        await js.InvokeVoidAsync("NotFoundSpinner", "msgModalPreguntaCargaConvenio");
+    }
+
+    async void ConfirmarRegistroConvenios(bool accep)
+    {
+        if (accep)
+        {
+            try
+            {
+                await js.InvokeVoidAsync("ShowModalSpinner", "components-modal-await");
+                ListadoError = new List<ErrorDataInsercionE>();
+
+                var ListadoRegistrar = (from n in ListaConvenios
+                                        select new ConveniosE
+                                            {
+                                                Fechadocumento = n.Fechadocumento,
+                                                Codalmacen = "",
+                                                Tipomovimiento = "DV",
+                                                Codtipocliente = n.Codtipocliente,
+                                                Codcliente = "",
+                                                Codpaciente = "",
+                                                Codaseguradora = n.Codaseguradora,
+                                                Codcia = "",
+                                                Codproducto = n.Codproducto,
+                                                Fechainicio = n.Fechainicio,
+                                                Fechafin = "",
+                                                Excepto = 0,
+                                                Tipomonto = "M",
+                                                Monto = n.MontoFinal(),
+                                                Moneda = "S",
+                                                Estado = 1
+                                            }
+                                        ).ToList();
+
+                var registro = new Convenios().Sp_Convenios_Insert_Masivo(ListadoRegistrar);
+
+                await js.InvokeVoidAsync("CloseModalSpinner", "components-modal-await");
+                if (registro.IdRegistro == -1)
+                {
+                    Mensaje = "Error al momento de Carga la data, comunicarse con el área de TI!.";
+                    await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorCargaConvenio");
+                    return;
+
+                }
+                if (registro.IdRegistro == 1)//registro Correcto
+                {
+                    Mensaje = "Registro Correcto";
+                    await js.InvokeVoidAsync("NotFoundSpinner", "msgModalInformacionCargaConvenio");
+
+                }
+                else
+                {
+                    ListadoError = registro.DataList;
+                    await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrordeCargaInformacion");
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                await js.InvokeVoidAsync("CloseModalSpinner", "components-modal-await");
+                Mensaje = ex.Message;
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorCargaConvenio");
+            }
+        }
+    }
+
+    async void OnCloseModal()
+    {
+        await oReloadConvenio.InvokeAsync(true);
+        await js.InvokeVoidAsync("CloseModalMessageName", "idCloseModalRegistrarPrestacion");
+    }
+
+    async void OnCloseModalError()
+    {
+        await oReloadConvenio.InvokeAsync(true);
+        await js.InvokeVoidAsync("CloseModalMessageName", "idCloseModalRegistrarPrestacion");
+    }
+
+    async void OnDownloadArchivo()
+    {
+        try
+        {
+            await js.InvokeVoidAsync("ShowModalSpinner", "components-modal-await");
+            UtilsDataE _utils = new UtilsDataE();
+            var dataTable = _utils.ToDataTable(ListadoError);
+            using (var libro = new XLWorkbook())
+            {
+                IXLWorksheet hoja = libro.Worksheets.Add(dataTable, "Registro de Errores");
+                hoja.Table(0).Theme = XLTableTheme.TableStyleLight20;
+                hoja.Row(1).Style.Font.Bold = true;
+                hoja.SheetView.FreezeRows(1);
+                hoja.Columns().AdjustToContents(10.0, 50.0);
+                using (var memoria = new MemoryStream())
+                {
+                    await js.InvokeVoidAsync("CloseModalSpinner", "components-modal-await");
+
+                    libro.SaveAs(memoria);
+                    var nombreExcel = string.Concat("Reporte de Errores - Registro Convenios", DateTime.Now.ToString(), ".xlsx");
+                    await js.InvokeAsync<object>(
+                            "ArchivoDataDownloadFile",
+                            nombreExcel,
+                            Convert.ToBase64String(memoria.ToArray())
+                            );
+                }
+            }
+
+        }
+        catch (Exception ex)
+        {
+            await js.InvokeVoidAsync("CloseModalSpinner", "components-modal-await");
+            Mensaje = ex.Message;
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorCargaPrestacion");
+        }
+    }
+
+}
+
+@if (acceder)
+{
+    <div class="row mt-2">
+        <div class="col-4">
+            <InputFile accept=".xlsx" id="ifCargaExcelCargaConvenios" class="form-control" OnChange="CargaExcelConvenios"></InputFile>
+        </div>
+        <div class="col-2">
+        </div>
+        <div class="col-3">
+            @if (activabotongrabar)
+            {
+                <button class="btn btn-primary btn-lg form-control" @onclick="PreguntaRegistro">
+                    <i class="fas fa-save me-3"></i>Guardar
+                </button>
+            }
+            else
+            {
+                <button class="btn btn-primary btn-lg form-control" disabled>
+                    <i class="fas fa-save me-3"></i>Guardar
+                </button>
+            }
+        </div>
+        <div class="col-3">
+            <a class="btn btn-success btn-lg form-control" download="FormatoCargaConveniosFarmacia.xlsx" href="plantillas/formatoCargaConvenios.xlsx">
+                <i class="fas fa-file-excel me-3"></i>Download Plantilla
+            </a>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <label class="fw-bold">Resultado de Carga</label>
+    </div>
+    <div class="row">
+        <div class="col-12 table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <td class="text-center">Cod. Aseguradora</td>
+                        <td class="text-center">Cod. Tipo Paciente</td>
+                        <td class="text-center">Cod. Producto</td>
+                        <td class="text-center">Fecha Documento</td>
+                        <td class="text-center">Fecha Inicio</td>
+                        <td class="text-center">Factor Logistica</td>
+                        <td class="text-center">Precio Unitario</td>
+                        <td class="text-center">Monto</td>
+                    </tr>
+                </thead>
+                @if (ListaConveniosFiltrados.Count() > 0)
+                {
+                    <tbody>
+                        @foreach (var item in ListaConveniosFiltrados)
+                        {
+                            <tr>
+                                <td class="text-center">@item.Codaseguradora</td>                               
+                                <td class="text-center">@item.Codtipocliente</td>                               
+                                <td class="text-center">@item.Codproducto</td>                               
+                                <td class="text-center">@item.Fechadocumento.ToString("dd/MM/yyyy")</td>                               
+                                <td class="text-center">@item.Fechainicio.ToString("dd/MM/yyyy")</td>                               
+                                <td class="text-center">@item.FactorLogistica</td>                               
+                                <td class="text-center">@item.PrecioUnitario</td>                               
+                                <td class="text-center">@item.MontoFinal()</td>                               
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="8">
+                                <Pagination TotalPages="@(totalPages != 0 ? totalPages : 1)"
+                                            PageIndex="@State.PageIndex"
+                                            Radius="3"
+                                            OnSelectedPage="@SelectedPage">
+                                </Pagination>
+                            </td>
+                        </tr>
+                    </tfoot>
+                }
+            </table>
+        </div>
+    </div>
+
+
+    <div id="components-modal-await">
+        <div class="components-modal-await-messages">
+            <div class="components-modal-await-messages-text">
+                <br />
+                <p>Estamos cargando, espere unos segundos... <i class="fa-thin fa-bell-on"></i> </p>
+                <br />
+                <br />
+                <div class="spinner-border"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="msgModalErrordeCargaInformacion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 30%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center text-black" id="staticBackdropLabel">Información</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <i class="fa-regular fa-circle-question modal-icon modal-icon-question"></i>
+                        <br />
+                        <br />
+                        <br />
+                        Registros con Observaciones
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6 col-sm-6 col-md-6 col-lg-6  text-end">
+                            <button class="btn btn-lg btn-success" @onclick="OnDownloadArchivo">
+                                Dowload Excel
+                            </button>
+                        </div>
+                        <div class="col-6 col-sm-6 col-md-6 col-lg-6 ">
+                            <button class="btn btn-lg btn-danger" style="width: 150px;" @onclick="OnCloseModalError" data-bs-dismiss="modal" aria-label="Close">
+                                Cerrar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <MessageModal IdMessage="msgModalErrorCargaConvenio"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+    <MessageModal IdMessage="msgModalPreguntaCargaConvenio"
+                  TitleModal="Confirmación"
+                  BodyMessage=@Mensaje
+                  IconMessage=MessageModal.iconMessage.Question
+                  TypeButton=MessageModal.typeButton.OkCancel
+                  OnClose="@ConfirmarRegistroConvenios">
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalInformacionCargaConvenio"
+                  TitleModal="Informacion"
+                  IconMessage=MessageModal.iconMessage.Informacion
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  OnClose="OnCloseModal"
+                  BodyMessage="Registro Correcto">
+    </MessageModal>
+} 

@@ -1,0 +1,34 @@
+﻿@page "/PagoBot"
+@page "/PagoBot/{ErrorMessage}"
+@page "/PagoBot/{ErrorMessage}/{Usuario}"
+@page "/PagoBot/{ErrorMessage}/{Usuario}/{Clave}"
+@inject IJSRuntime js;
+
+
+<h3>Login</h3>
+
+@code {
+    [Parameter] public string ErrorMessage { get; set; } = "";
+
+    [Parameter] public string Usuario { get; set; } = "";
+
+    [Parameter] public string Clave { get; set; } = "";
+
+    protected override async void OnParametersSet()
+    {
+        if (Clave != "" && Clave != null)
+        {
+            ////Se invoca cuando se envia una cadena de codigo
+            //credenciales.UsernameClinica = Usuario;
+            //credenciales.PasswordClinica = Clave;
+            //await ejecutar.LoginAsync(credenciales);
+
+            var authModule = await js.InvokeAsync<IJSObjectReference>("import", "./js/auth.js");
+            await authModule.InvokeVoidAsync("SignInCSF", "denis@voituron.net", "MyPassword", "/PagoBot");
+
+
+        }
+    }
+
+
+}

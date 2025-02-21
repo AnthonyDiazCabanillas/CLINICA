@@ -1,0 +1,134 @@
+﻿@* ********************************************************************************************************************
+    Copyright Clinica San Felipe S.A.C. 2024. Todos los derechos reservados.
+
+    Version  Fecha        Autor           Requerimiento
+    1.0      14/06/2024   CPARRALES       REQ 2024-005048 Proyecto buscador web
+******************************************************************************************************************** *@
+@using Ent.Sql.ClinicaE.MedicosE
+@using Ent.Sql.ClinicaE.EspecialidadesE
+
+
+@code {
+    [Parameter]
+    public MedicoE oMedicoE { get; set; }
+
+    [Parameter]
+    public bool FlagCambiaFoto { get; set; }
+
+    [Parameter]
+    public MedicoObsAuxE oMedicoObsAux { get; set; }
+
+    [Parameter]
+    public bool FlgNuevo { get; set; }
+
+    bool FlgVisible = false;
+
+    protected override void OnInitialized()
+    {
+
+    }
+
+    async Task OnFileChange(InputFileChangeEventArgs e)
+    {
+        string imageBase64;
+        var imageName = e.File.ContentType;
+        var filename = e.File.Name;
+        MemoryStream ms = new MemoryStream();
+        await e.File.OpenReadStream().CopyToAsync(ms);
+        var buffer = ms.ToArray();
+        imageBase64 = Convert.ToBase64String(buffer);
+        oMedicoObsAux.FlagCambiaFoto = true;
+        oMedicoObsAux.Foto = imageBase64;
+        oMedicoObsAux.NombreFoto = filename;
+        this.StateHasChanged();
+    }
+
+}
+
+<div style="background-color: #FFF; width: 100%; min-height:300px; border:1px solid #b3d6ffff; border-radius:8px; padding:20px 10px; margin-bottom:0px; ">
+    <div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 0px 0px; ">
+        @{
+            bool ActNoa = false;
+            if (oMedicoE.FlagEstado == true)
+            {
+                ActNoa = false;
+            }
+            else
+            {
+                ActNoa = true;
+            }
+
+            ActNoa = FlgNuevo ? FlgNuevo : ActNoa;
+        }
+        <div class="col-sm-12 col-md-2  col-lg-2">
+            @{
+                if (ActNoa == false)
+                {
+                    <label for="fileInput3" class="file-input-zone">Cambiar foto</label>
+                    <InputFile id="fileInput3" OnChange="OnFileChange" hidden multiple accept=".jpg, .jpeg, .png"  />
+                }
+            }
+
+        </div>
+
+        <div class="col-sm-12 col-md-5  col-lg-5">
+            <img src="data:image/jpg;base64,@oMedicoObsAux.Foto" alt="imagen" width="300" height="350" class="right"
+                 style="padding:20px 0px 0px 20px; margin:0px 0px 0px 0px; " />
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 col-12">
+            <!--I.NombreComercial-->
+            <div class="omrs-input-group">
+                <label class="omrs-input-underlined">
+                    <input id="txtNombreComercial" disabled="@ActNoa" required="" @bind-value="oMedicoE.NombreComercial" maxlength="100" oninput="this.value=this.value.toUpperCase()">
+                    <span class="omrs-input-label">Nombre Comercial</span>
+                    <span class="omrs-input-helper"></span>
+                </label>
+            </div>
+            <!--F.NombreComercial-->
+            <!--I.CampoClinica-->
+            <div class="omrs-input-group">
+                <label class="omrs-input-underlined">
+                    <input id="txtCampoClinica" disabled="@ActNoa" required="" @bind-value="oMedicoE.CampoClinico" maxlength="50" oninput="this.value=this.value.toUpperCase()">
+                    <span class="omrs-input-label">Campo clínico:</span>
+                    <span class="omrs-input-helper"></span>
+                </label>
+            </div>
+            <!--F.CampoClinica-->
+            <!--I.MensajePersonalizado-->
+            <div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 0px 0px;">
+                <span class="omrs-input-label" style="color: #7491c2;">Mensaje Personalizado:</span>
+            </div>
+
+            <div class="omrs-input-group">
+                <label class="omrs-input-underlined">
+                    @* <textarea id="txtMensajePersonalizado" disabled="@ActNoa" required="" @bind="oMedicoE.MensajePersonalizado" maxlength="250" oninput="this.value=this.value.toUpperCase()" style="height:110px;width: 100%;" /> *@
+                    <textarea id="txtMensajePersonalizado" disabled="@ActNoa" required="" @bind="oMedicoE.MensajePersonalizado" maxlength="250" style="height:110px;width: 100%;" />
+                </label>
+            </div>
+            <!--F.MensajePersonalizado-->
+            <!--I.TelefonoSecretaria-->
+            <div class="omrs-input-group">
+                <label class="omrs-input-underlined">
+                    <input id="txtTelefonoSecretaria" disabled="@ActNoa" required="" @bind-value="oMedicoE.TelefonoSecretaria" maxlength="9" oninput="this.value=this.value.toUpperCase()" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
+                    <span class="omrs-input-label">Teléfono Secretaría:</span>
+                    <span class="omrs-input-helper"></span>
+                </label>
+            </div>
+            <!--F.TelefonoSecretaria-->
+            @* 1.0 INI *@
+            <br />
+            <br />
+            <div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 0px 0px;">
+                <span class="omrs-input-label" style="color: #7491c2;">Keywords:</span>
+            </div>
+            <div class="omrs-input-group">
+                <label class="omrs-input-underlined">
+                    <textarea id="txtPalabraClave" disabled="@ActNoa" required="" @bind="oMedicoE.PalabraClave" maxlength="1000" style="height:110px;width: 100%;" onKeypress="if (event.keyCode >= 48 && event.keyCode <= 57) event.returnValue = false;" />
+                </label>
+            </div>
+            @* 1.0 FIN *@
+        </div>
+    </div>
+
+</div>

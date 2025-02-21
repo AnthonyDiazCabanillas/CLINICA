@@ -1,0 +1,174 @@
+﻿@using Bus.Utilities
+@using Ent.Sql
+@using Bus.Clinica;
+@using RestSharp
+@using Web.Clinica.Data
+@using System.Net;
+@using Web.Clinica.Pages
+@inject IJSRuntime js
+@code 
+{
+    [Parameter]
+    public bool acceder { get; set; }
+    [Parameter]
+    public EventCallback<PrestacionesClinicaE> oPrestacionSeleccionada { get; set; }
+    string _MensajeBody = "";
+    string TextoBuscar = "";
+    IEnumerable<PrestacionesClinicaE> ListadoPrestaciones = new List<PrestacionesClinicaE>();
+    List<PrestacionesClinicaE> dataResultado = new List<PrestacionesClinicaE>();
+    ApiRutaConexion _app = new ApiRutaConexion();
+
+    [CascadingParameter]
+    PageIndexStateProvider State { get; set; }
+    int itemsPerPage = 10;
+    int totalPages = 1;
+
+
+    protected override void OnParametersSet()
+    {
+        if (acceder)
+        {
+            TextoBuscar = "";
+            State = new PageIndexStateProvider();
+            ListarPrestaciones();
+
+        }
+        base.OnParametersSet();
+    }
+
+    async void ListarPrestaciones()
+    {
+        try
+        {
+            PrestacionBusqE objBuscar = new PrestacionBusqE();
+            objBuscar.orden = 1;
+            objBuscar.codprestacion = "";
+            objBuscar.codtarifa = "";
+            objBuscar.busq = TextoBuscar;
+            objBuscar.flglimit = 1;
+
+            var encriptado = Criptography.EncryptConectionString(_app.Key);
+            var rutaApi = MetaGlobal.RutaApiClinica + "PrestacionesClinica/API/Clinica/Listado_Prestaciones";
+            var Json = JsonConvert.SerializeObject(objBuscar);
+
+            var _client = new RestClient(rutaApi);
+            var _request = new RestRequest();
+            _request.Method = Method.Post;
+            _request.AddHeader("Authorization", encriptado);
+            _request.AddBody(Json);
+            var _response = _client.Execute(_request);
+            if (_response.StatusCode == HttpStatusCode.OK)
+            {                
+                var resultado = JsonConvert.DeserializeObject<ResultadoTransactionE<PrestacionesClinicaE>>(_response.Content);
+                if (resultado.DataList.Count() > 0)
+                {
+                    dataResultado = resultado.DataList;
+                    decimal _decimal = (decimal)dataResultado.Count() / itemsPerPage;
+                    decimal _int = (int)(dataResultado.Count() / itemsPerPage);
+                    decimal _tot = _decimal - _int;
+                    if (_tot == 0)
+                    {
+                        totalPages = Convert.ToInt32(_int);
+                    }
+                    else
+                    {
+                        totalPages = Convert.ToInt32(_int) + 1;
+                    }
+                    State.PageIndex = 1;
+                    var skipCount = itemsPerPage * (State.PageIndex - 1 );
+                    ListadoPrestaciones = dataResultado.Skip(skipCount).Take(itemsPerPage);
+                }
+                else
+                {
+                    ListadoPrestaciones = new List<PrestacionesClinicaE>();
+                }
+            }
+            else
+            {
+                ListadoPrestaciones = new List<PrestacionesClinicaE>();
+                _MensajeBody = _response.Content.ToString();
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+            }
+
+        }
+        catch (Exception ex)
+        {
+            _MensajeBody = ex.Message;
+           await js.InvokeVoidAsync("NotFoundSpinner", "msgModalPrestacionComponentError");
+        }
+    }
+
+    void SelectedPage(int SelectedPageIndex)
+    {
+        State.PageIndex = SelectedPageIndex;
+        var skipCount = itemsPerPage * (State.PageIndex - 1);
+        ListadoPrestaciones = dataResultado.Skip(skipCount).Take(itemsPerPage);
+    }
+
+    async void OnclickSeleccionar(PrestacionesClinicaE item)
+    {
+        await oPrestacionSeleccionada.InvokeAsync(item);
+        await js.InvokeVoidAsync("CloseModalMessageName", "idCloseModalBusquedaPrestacion");
+    }
+}
+
+
+@if (acceder)
+{
+    <div class="row mt-2">
+        <div class="col-md-6">
+            Buscar por código o nombre
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" @bind="TextoBuscar" >
+                <button class="btn-primary input-group-text" @onclick="ListarPrestaciones"> <i class="fas fa-search-plus"></i></button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 mt-2 table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-center col-md-1">Cod. Prestación</th>
+                    <th class="text-center col-md-10">Prestación</th>
+                    <th class="text-center col-md-1">Seleccionar</th>
+                </tr>
+            </thead>
+            @if (ListadoPrestaciones.Count() > 0)
+            {
+                <tbody>
+                    @foreach (var item in ListadoPrestaciones)
+                    {
+                        <tr>
+                            <td>@item.codprestacion</td>
+                            <td>@item.prestacion</td>
+                            <td>
+                                <button class="btn btn-primary" @onclick="(()=>OnclickSeleccionar(item))"><i class="far fa-hand-pointer"></i></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>   
+                <tfoot>
+                    <tr>
+                        <td colspan="3">
+                            <Pagination TotalPages="@(totalPages != 0 ? totalPages : 1)"
+										PageIndex="@State.PageIndex"
+										Radius="3"
+										OnSelectedPage="@SelectedPage">
+							</Pagination>
+                        </td>
+                    </tr>
+                </tfoot>
+            }
+        </table>
+    </div>
+
+
+
+    <MessageModal IdMessage="msgModalPrestacionComponentError"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true" 
+                  BodyMessage=@_MensajeBody>
+    </MessageModal>
+}

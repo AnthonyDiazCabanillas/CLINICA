@@ -1,0 +1,1141 @@
+﻿@page "/Clinica/Comercial/Mantenimientos/ConveniosMedicamentosLogistica"
+@inject IJSRuntime js
+@using Ent.Sql.ClinicaE.HospitalE
+@using Ent.Sql.ClinicaE.OtrosE
+@using Ent.Sql.ClinicaE.PacientesE
+@using Ent.Sql.LogisticaE.ProductosE;
+@using Ent.Sql.LogisticaE.ConveniosE;
+@using Ent.Sql.SeguridadE.SeguridadE;
+@inherits MainLayout
+
+@*@if (xDeleteConvenio)
+{
+	js.InvokeVoidAsync("ShowMessageModal", true, "msgModalPregunta");
+}*@
+
+@code {
+	public bool xDeleteConvenio { get; set; }
+
+	List<ProductosE> oListProductos = new List<ProductosE>();
+	List<ProductosE> oListProductos1 = new List<ProductosE>();
+	List<ConveniosE> oListConvenios = new List<ConveniosE>();
+	List<AseguradorasE> oListaAseguradoras = new List<AseguradorasE>();
+	List<AseguradorasE> oListaAseguradoras1 = new List<AseguradorasE>();
+	List<PacientesE> oListaPacientes = new List<PacientesE>();
+	List<PacientesE> oListaPacientes1 = new List<PacientesE>();
+	List<TablasE> oListaTiposClientes = new List<TablasE>();
+	TablasE oTablasE = new TablasE();
+	ProductosE oProductosE = new ProductosE(1, "", 10);
+	ProductosE oProductosE1 = new ProductosE(1, "", 10);
+	ConveniosE oConveniosE = new ConveniosE(1, "", "", "", 25, "", "DV", "", "", "", 0, 1);
+	AseguradorasE oAseguradorasE = new AseguradorasE(1, "", 25);
+	AseguradorasE oAseguradorasE1 = new AseguradorasE(1, "", 25);
+	PacientesE oPacientesE = new PacientesE(0, "", 10);
+	PacientesE oPacientesE1 = new PacientesE(0, "", 10);
+	int X = 0;
+	Boolean b;
+	string Mensaje = "";
+	string Y = "";
+
+	bool InicializarCargaMasiva = false;
+
+	//JVALVERDE - 06/06/2023  PERMISOS CONTROLES
+	List<SegOpcionE> segOpcions = new List<SegOpcionE>();
+
+
+	protected override void OnInitialized()
+	{
+		//INICIO - JVALVERDE - 06/06/2023  PERMISOS CONTROLES
+		segOpcions = new Bus.Clinica.Seguridad.Seguridad().CargarPermisos(new SegOpcionE(4, 102, "02/01/02", Convert.ToInt32(SessionUser(TypeSession.IdeUsuario).Result)));
+		//FIN - JVALVERDE - 06/06/2023  PERMISOS CONTROLES
+
+		oConveniosE.Nomaseguradora = "";
+		oConveniosE.Nompaciente = "";
+		oConveniosE.Nomproducto = "";
+		oListConvenios = new Bus.Clinica.Logistica.Convenios().ListaConvenios(oConveniosE);
+
+		base.OnInitialized();
+	}
+
+	protected override void OnAfterRender(bool firstRender)
+	{
+		js.InvokeVoidAsync("fnActualizarTitulo", "Convenios de Medicamentos - Logística");
+		js.InvokeVoidAsync("eliminarElementosHtml", segOpcions);
+	}
+
+	private void Limpiar(){
+		oConveniosE.Codpaciente = "";
+		oConveniosE.Codproducto = "";
+		oConveniosE.Codaseguradora = "";
+		oConveniosE.Monto = 0;
+
+	}
+
+	private async Task ModalMensaje(string Mensajes, string TipoModal)
+	{
+
+		if (TipoModal == "Advertencia")
+		{
+			switch (Mensajes)
+			{
+				case "PacienteNull":
+					Mensaje = "al PACIENTE";
+					break;
+				case "AseguradoraNull":
+					Mensaje = "la ASEGURADORA";
+					break;
+				case "ProductoNull":
+					Mensaje = "el PRODUCTO";
+					break;
+				case "ConveniosNull":
+					Mensaje = "el CONVENIO";
+					break;
+			}
+			Mensaje = "Lo sentimos, no logramos encontrar " + Mensaje + " .<br>Por favor intenta ser más especifico con la búsqueda.";
+			await js.InvokeVoidAsync("NotFoundSpinner", "msgModalAdvertencia");
+		}
+
+		if (TipoModal == "AdvertenciaSelect")
+		{
+			switch (Mensajes)
+			{
+				case "NoSelectTipoMonto":
+					Mensaje = "TIPO DE MONTO";
+					break;
+				case "NoSelectTipoMoneda":
+					Mensaje = "TIPO DE MONEDA";
+					break;
+				case "NoSelectAseguradora":
+					Mensaje = "TIPO DE ASEGURADORA";
+					break;
+				case "NoSelectTipoCliente":
+					Mensaje = "TIPO DE CLIENTE";
+					break;
+			}
+			Mensaje = "Por favor Seleccione un: " + Mensaje;
+			await js.InvokeVoidAsync("NotFoundSpinner", "msgModalAdvertencia");
+		}
+
+		if (TipoModal == "Error")
+		{
+			switch (Mensajes)
+			{
+				case "MontoPorcentajeInvalido":
+					Mensaje = "El Monto es TIPO: PORCENTAJE y no puede ser menor a 0% o mayor al 100%";
+					break;
+				case "MontoInvalido":
+					Mensaje = "El Monto es TIPO: MONEDA y no puede ser meno a 0";
+					break;
+				case "ProductoNull":
+					Mensaje = "Se requiere un PRODUCTO valido para crear el Convenio";
+					break;
+				case "AseguradoraNull":
+					Mensaje = "Se requiere una ASEGURADORA valido para crear el Convenio";
+					break;
+				case "Catch":
+					Mensaje = "Error: " + Mensaje;
+					break;
+			}
+			await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+		}
+		if (TipoModal == "Informativo")
+		{
+			switch (Mensajes)
+			{
+				case "ConfirmacionRegistro":
+					Mensaje = "Se registraron los datos de manera correcta";
+					break;
+				case "ConfirmacionEliminacion":
+					Mensaje = "Se eliminaron los datos de manera correcta";
+					break;
+			}
+			await js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacion");
+		}
+		if (TipoModal == "Preguntas")
+		{
+			switch (Mensajes)
+			{
+				case "PreguntaEliminar":
+					Mensaje = "¿Desea dar de baja el convenio <b>" +oConveniosE.Nomproducto +"</b>?";
+					break;
+			}
+			//xDeleteConvenio = true;
+			await js.InvokeVoidAsync("ShowMessageModal", true, "msgModalPregunta");
+			//await js.InvokeVoidAsync("NotFoundSpinner", "msgModalPregunta");
+
+		}
+	}
+
+	private async Task ValidarMonto()
+	{
+		try
+		{
+			if (oConveniosE.Tipomonto != null && oConveniosE.Tipomonto != "")
+			{
+				if (oConveniosE.Tipomonto == "Porcentaje")
+				{
+					if (oConveniosE.Monto > 100 || oConveniosE.Monto < 0)
+					{
+						X = 1;
+						await ModalMensaje("MontoPorcentajeInvalido", "Error");
+						//await js.InvokeVoidAsync("NotFoundSpinner", "msgerrorMonto");
+					}
+				}
+				else
+				{
+					if (oConveniosE.Monto < 0)
+					{
+						X = 1;
+						await ModalMensaje("MontoInvalido", "Error");
+						//await js.InvokeVoidAsync("NotFoundSpinner", "msgerrorMontoNegativo");
+					}
+				}
+			}
+			else
+			{
+				X = 1;
+				await ModalMensaje("NoSelectTipoMonto", "AdvertenciaSelect");
+				//await js.InvokeVoidAsync("NotFoundSpinner", "msgerrorTipoMonto");
+			}
+		}
+		catch (Exception ex)
+		{
+			Mensaje = ex.ToString();
+			await ModalMensaje("Catch", "Error");
+			//await js.InvokeVoidAsync("NotFoundSpinner", "msjError");
+		}
+	}
+
+	private async Task ValidarPaciente()
+	{
+
+		b = oConveniosE.Codpaciente.Contains(" |~| ");
+		if (b == true)
+		{
+			X = 1;
+			Y = oConveniosE.Codpaciente.Substring(0, oConveniosE.Codpaciente.IndexOf("~") - 1);
+			for (var i = 0; i < oListaPacientes1.Count; i++)
+			{
+				if (oListaPacientes1[i].CodPaciente == Y)
+				{ X = 0; }
+			}
+
+			if (X == 1)
+			{
+				await ModalMensaje("PacienteNull", "Advertencia");
+				//Mensaje = "PACIENTE";
+				//await js.InvokeVoidAsync("NotFoundSpinner", "msjFaltaCampo");
+			}
+		}
+	}
+
+	private async Task ValidarProducto()
+	{
+		X = 1;
+		if (oConveniosE.Codproducto == null || oConveniosE.Codproducto == "")
+		{ X = 1; }
+		else
+		{
+			b = oConveniosE.Codproducto.Contains(" ~ ");
+			if (b == true)
+			{
+				if (oListProductos1.Count == 0)
+				{
+					oProductosE1.Dscproducto = oConveniosE.Codproducto;
+					oProductosE1.Dscproducto = oProductosE1.Dscproducto.Substring(oProductosE1.Dscproducto.IndexOf("~") + 1);
+					oProductosE1.Orden = 1;
+					oListProductos1 = new Bus.Clinica.Logistica.Productos().ListaProductos(oProductosE1);
+				}
+				Y = oConveniosE.Codproducto.Substring(0, oConveniosE.Codproducto.IndexOf("~") - 1);
+
+				for (var i = 0; i < oListProductos1.Count; i++)
+				{
+					if (oListProductos1[i].Codproducto == Y)
+					{ X = 0; }
+				}
+			}
+			else
+			{ X = 1; }
+		}
+		if (X == 1)
+		{
+			await ModalMensaje("ProductoNull", "Error");
+			//Mensaje = "PRODUCTO";
+			//await js.InvokeVoidAsync("NotFoundSpinner", "msjFaltaCampo");
+		}
+	}
+
+	private async Task ValidarAseguradora()
+	{
+		X = 1;
+		if (oConveniosE.Codaseguradora == null || oConveniosE.Codaseguradora == "")
+		{ X = 1; }
+		else
+		{
+			b = oConveniosE.Codaseguradora.Contains(" ~ ");
+			if (b == true)
+			{
+				if (oListaAseguradoras1.Count == 0)
+				{
+					oAseguradorasE1.Dscaseguradora = oConveniosE.Codaseguradora;
+					oAseguradorasE1.Dscaseguradora = oAseguradorasE1.Dscaseguradora.Substring(0, oAseguradorasE1.Dscaseguradora.IndexOf("|~|") - 1);
+					oAseguradorasE1.Orden = 1;
+					oListaAseguradoras1 = new Bus.Clinica.Clinica.Aseguradoras().ConsultaAseguradoras(oAseguradorasE1);
+					//new AseguradorasE(1,pAseguradoras.Dscaseguradora, 25)
+				}
+
+				Y = oConveniosE.Codaseguradora.Substring(0,oConveniosE.Codaseguradora.IndexOf("~") - 1);
+				for (var i = 0; i < oListaAseguradoras1.Count; i++)
+				{
+					if (oListaAseguradoras1[i].Codaseguradora == Y)
+					{ X = 0; }
+				}
+			}
+			else
+			{ X = 1; }
+		}
+
+		if (X == 1)
+		{
+			await ModalMensaje("AseguradoraNull", "Error");
+			//Mensaje = "ASEGURADORA";
+			//await js.InvokeVoidAsync("NotFoundSpinner", "msjFaltaCampo");
+		}
+	}
+
+	private async Task ValidarTipoMonto()
+	{
+		if (oConveniosE.Tipomonto == "Eliga un Tipo de Monto" || oConveniosE.Tipomonto == null)
+		{
+			X = 1;
+			await ModalMensaje("NoSelectTipoMonto", "AdvertenciaSelect");
+			//Mensaje = "un: TIPO DE MONTO";
+			//await js.InvokeVoidAsync("NotFoundSpinner", "msjSelect");
+		}
+	}
+
+	private async Task ValidarTipoMoneda()
+	{
+		if (oConveniosE.Moneda == "Eliga un Tipo de Moneda" || oConveniosE.Moneda == null)
+		{
+			X = 1;
+			await ModalMensaje("NoSelectTipoMoneda", "AdvertenciaSelect");
+			//Mensaje = "un :TIPO DE MONEDA";
+			//await js.InvokeVoidAsync("NotFoundSpinner", "msjSelect");
+		}
+	}
+
+	private async Task ValidarTipoCliente()
+	{
+		if (oConveniosE.Codtipocliente == "Eliga un Tipo de Cliente" || oConveniosE.Codtipocliente == null)
+		{
+			X = 1;
+			await ModalMensaje("NoSelectTipoCliente", "AdvertenciaSelect");
+			//Mensaje = "un :TIPO DE CLIENTE";
+			//await js.InvokeVoidAsync("NotFoundSpinner", "msjSelect");
+		}
+	}
+
+	private async Task AgregarConvenios()
+	{
+		try
+		{
+			List<ProductosE> oListTempProd = new List<ProductosE>();
+			List<AseguradorasE> oListTempAseg = new List<AseguradorasE>();
+			List<PacientesE> oListTempPac = new List<PacientesE>();
+			X = 0;
+
+			if (X == 0)
+			{ await ValidarTipoCliente(); }
+
+			if (X == 0)
+			{ await ValidarPaciente(); }
+
+			if (X == 0)
+			{ await ValidarProducto(); }
+
+			if (X == 0)
+			{ await ValidarAseguradora(); }
+
+			if (X == 0)
+			{ await ValidarTipoMonto(); }
+
+			if (X == 0)
+			{ await ValidarMonto(); }
+
+			if (X == 0)
+			{ await ValidarTipoMoneda(); }
+
+			if (X == 0)
+			{
+				oConveniosE.Codproducto = oConveniosE.Codproducto.Substring(0,oConveniosE.Codproducto.IndexOf("~") - 1);
+				oConveniosE.Codaseguradora = oConveniosE.Codaseguradora.Substring(0, oConveniosE.Codaseguradora.IndexOf("~") - 1);
+				if (oConveniosE.Codpaciente != "" && oConveniosE.Codpaciente != null)
+				{
+					oConveniosE.Codpaciente = oConveniosE.Codpaciente.Substring(0,oConveniosE.Codpaciente.IndexOf("~") - 1);
+				}
+
+
+				oConveniosE.Codtipocliente = oConveniosE.Codtipocliente.Replace(" ", string.Empty);
+				oConveniosE.Tipomonto = oConveniosE.Tipomonto.Substring(0, 1);
+				oConveniosE.Moneda = oConveniosE.Moneda.Substring(0, 1);
+
+				new Bus.Clinica.Logistica.Convenios().InsertarConvenio(oConveniosE);
+				await ModalMensaje("ConfirmacionRegistro", "Informativo");
+				//await js.InvokeVoidAsync("NotFoundSpinner", "msjAddConfirmacion");
+			}
+		}
+		catch (Exception e)
+		{
+			Mensaje = e.ToString();
+			//await js.InvokeVoidAsync("NotFoundSpinner", "msjError");
+			await ModalMensaje("Catch", "Error");
+		}
+	}
+
+
+
+	private async Task BuscarProducto_Tabla()
+	{
+		X = 0;
+		await BuscarProducto();
+		if (X == 0)
+		{ await BuscarConvenios(); }
+	}
+
+	private async Task BuscarAseguradoras_Tabla()
+	{
+		X = 0;
+		await BuscarAseguradoras();
+		if (X == 0)
+		{ await BuscarConvenios(); }
+
+	}
+
+	private async Task BuscarPaciente_Tabla()
+	{
+		X = 0;
+		await BuscarPaciente();
+		if (X == 0)
+		{ await BuscarConvenios(); }
+
+	}
+
+	private async Task BuscarProducto()
+	{
+		await js.InvokeVoidAsync("ShowSpinnerSearch", "idspinnerProducto", "idSearchProducto");
+		try
+		{
+			if (oProductosE.Dscproducto == null || oProductosE.Dscproducto == "")
+			{ oProductosE.Dscproducto = ""; }
+
+			oProductosE.Dscproducto = oProductosE.Dscproducto.ToUpper();
+			oProductosE.Orden = 1;
+			oListProductos = new Bus.Clinica.Logistica.Productos().ListaProductos(oProductosE);
+
+			if (oListProductos.Count == 0)
+			{
+				await ModalMensaje("ProductoNull", "Advertencia");
+				//await js.InvokeVoidAsync("NotFoundSpinner", "msgModalNotFoundProducto");
+				X = 1;
+			}
+		}
+		catch { }
+		await js.InvokeVoidAsync("CloseSpinnerSearch", "idspinnerProducto", "idSearchProducto");
+	}
+
+	private async Task BuscarAseguradoras()
+	{
+		await js.InvokeVoidAsync("ShowSpinnerSearch", "idSpinnerAseguradora", "idSearchAseguradora");
+		try
+		{
+			if (oAseguradorasE.Dscaseguradora == null || oAseguradorasE.Dscaseguradora == " ")
+			{ oAseguradorasE.Dscaseguradora = ""; }
+
+			oAseguradorasE.Dscaseguradora = oAseguradorasE.Dscaseguradora.ToUpper();
+			oAseguradorasE.Orden = 1;
+			oListaAseguradoras = new Bus.Clinica.Clinica.Aseguradoras().ConsultaAseguradoras(oAseguradorasE);
+
+
+			if (oListaAseguradoras.Count == 0)
+			{
+				await ModalMensaje("AseguradoraNull", "Advertencia");
+				X = 1;
+			}
+		}
+		catch (Exception e)
+		{
+			Mensaje = e.ToString();
+			await js.InvokeVoidAsync("NotFoundSpinner", "msjError");
+		}
+		await js.InvokeVoidAsync("CloseSpinnerSearch", "idSpinnerAseguradora", "idSearchAseguradora");
+	}
+
+	private async Task BuscarPaciente()
+	{
+		await js.InvokeVoidAsync("ShowSpinnerSearch", "idSpinnerPaciente", "idSearchPaciente");
+		try
+		{
+			if (oPacientesE.Nombres == null)
+			{ oPacientesE.Nombres = ""; }
+			else
+			{
+				int n;
+				bool result = Int32.TryParse(oPacientesE.Nombres, out n);
+
+				if (result == true)
+				{
+					oPacientesE.Orden = 3;
+					oListaPacientes = new Bus.Clinica.Pacientes().ConsultaPacientes(oPacientesE);
+				}
+				else
+				{
+					oPacientesE.Nombres = oPacientesE.Nombres.ToUpper();
+					oPacientesE.Orden = 2;
+					oListaPacientes = new Bus.Clinica.Pacientes().ConsultaPacientes(oPacientesE);
+				}
+				if (oListaPacientes.Count == 0)
+				{
+					X = 1;
+					await ModalMensaje("PacienteNull", "Advertencia");
+					//await js.InvokeVoidAsync("NotFoundSpinner", "msgModalNotFoundPaciente");
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			Mensaje = e.ToString();
+			await ModalMensaje("Catch", "Error");
+		}
+		await js.InvokeVoidAsync("CloseSpinnerSearch", "idSpinnerPaciente", "idSearchPaciente");
+	}
+
+
+
+	private async Task BuscarProductoReg()
+	{
+		await js.InvokeVoidAsync("ShowSpinnerSearch", "idSpinnerProductoReg", "idSearchProductoReg");
+		try
+		{
+			oProductosE1.Dscproducto = oConveniosE.Codproducto;
+			if (oProductosE1.Dscproducto == null || oProductosE1.Dscproducto == "")
+			{ oProductosE1.Dscproducto = ""; }
+
+			oProductosE1.Dscproducto = oProductosE1.Dscproducto.ToUpper();
+			oProductosE1.Orden = 1;
+			oListProductos1 = new Bus.Clinica.Logistica.Productos().ListaProductos(oProductosE1);
+
+			if (oListProductos1.Count == 0)
+			{
+				await ModalMensaje("ProductoNull", "Advertencia");
+				X = 1;
+			}
+		}
+		catch { }
+		await js.InvokeVoidAsync("CloseSpinnerSearch", "idSpinnerProductoReg", "idSearchProductoReg");
+	}
+
+	private async Task BuscarAseguradorasReg()
+	{
+		await js.InvokeVoidAsync("ShowSpinnerSearch", "idSpinnerAseguradoraReg", "idSearchAseguradoraReg");
+		try
+		{
+			oAseguradorasE1.Dscaseguradora = oConveniosE.Codaseguradora;
+			if (oAseguradorasE1.Dscaseguradora == null || oAseguradorasE1.Dscaseguradora == " ")
+			{ oAseguradorasE1.Dscaseguradora = ""; }
+
+			oAseguradorasE1.Dscaseguradora = oAseguradorasE1.Dscaseguradora.ToUpper();
+			oAseguradorasE1.Orden = 1;
+			oListaAseguradoras1 = new Bus.Clinica.Clinica.Aseguradoras().ConsultaAseguradoras(oAseguradorasE1);
+
+
+			if (oListaAseguradoras1.Count == 0)
+			{
+				await ModalMensaje("AseguradoraNull", "Advertencia");
+				//await js.InvokeVoidAsync("NotFoundSpinner", "msgModalNotFoundAseguradora");
+				X = 1;
+			}
+		}
+		catch (Exception e)
+		{
+			Mensaje = e.ToString();
+			await ModalMensaje("catch", "Error");
+			//await js.InvokeVoidAsync("NotFoundSpinner", "msjError");
+		}
+		await js.InvokeVoidAsync("CloseSpinnerSearch", "idSpinnerAseguradoraReg", "idSearchAseguradoraReg");
+	}
+
+	private async Task BuscarPacienteReg()
+	{
+		await js.InvokeVoidAsync("ShowSpinnerSearch", "idSpinnerPacienteReg", "idSearchPacienteReg");
+		try
+		{
+			oPacientesE1.Nombres = oConveniosE.Codpaciente;
+			if (oPacientesE1.Nombres == null)
+			{ oPacientesE1.Nombres = ""; }
+			else
+			{
+				int n;
+				bool result = Int32.TryParse(oPacientesE1.Nombres, out n);
+
+				if (result == true)
+				{
+					oPacientesE1.Orden = 3;
+					oListaPacientes1 = new Bus.Clinica.Pacientes().ConsultaPacientes(oPacientesE1);
+				}
+				else
+				{
+					oPacientesE1.Nombres = oPacientesE1.Nombres.ToUpper();
+					oPacientesE1.Orden = 2;
+					oListaPacientes1 = new Bus.Clinica.Pacientes().ConsultaPacientes(oPacientesE1);
+				}
+				if (oListaPacientes1.Count == 0)
+				{
+					X = 1;
+					await ModalMensaje("PacienteNull", "Advertencia");
+					//await js.InvokeVoidAsync("NotFoundSpinner", "msgModalNotFoundPaciente");
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			Mensaje = e.ToString();
+			await ModalMensaje("Catch", "Error");
+			//await js.InvokeVoidAsync("NotFoundSpinner", "msjError");
+		}
+		await js.InvokeVoidAsync("CloseSpinnerSearch", "idSpinnerPacienteReg", "idSearchPacienteReg");
+	}
+
+
+
+	private async Task BuscarConvenios()
+	{
+		try
+		{
+			List<ProductosE>
+				oListTempProd = new List<ProductosE>
+					();
+			List<AseguradorasE>
+				oListTempAseg = new List<AseguradorasE>
+					();
+			List<PacientesE>
+				oListTempPac = new List<PacientesE>
+					();
+			oConveniosE.Orden = 1;
+
+			if (oProductosE.Dscproducto == null || oProductosE.Dscproducto == "") { oConveniosE.Nomproducto = ""; }
+			else { oConveniosE.Nomproducto = oProductosE.Dscproducto; }
+
+			if (oAseguradorasE.Dscaseguradora == null || oAseguradorasE.Dscaseguradora == "") { oConveniosE.Nomaseguradora = ""; }
+			else { oConveniosE.Nomaseguradora = oAseguradorasE.Dscaseguradora; }
+
+			if (oPacientesE.Nombres == null || oPacientesE.Nombres == "") { oConveniosE.Nompaciente = ""; }
+			else { oConveniosE.Nompaciente = oPacientesE.Nombres; oConveniosE.Orden = 2; }
+
+
+			oListConvenios = new Bus.Clinica.Logistica.Convenios().ListaConvenios(oConveniosE);
+			//if (oListConvenios.Count == 0)
+			//{ await js.InvokeVoidAsync("NotFoundSpinner", "msgModalNotFoundProducto"); }
+			if (oListConvenios.Count == 0)
+			{
+				await ModalMensaje("ConveniosNull", "Advertencia");
+				//Mensaje = "Convenio No Encontrado";
+				//await js.InvokeVoidAsync("NotFoundSpinner", "msjError");
+			}
+		}
+		catch (Exception e)
+		{
+			Mensaje = e.ToString();
+			await ModalMensaje("Catch", "Error");
+			//await js.InvokeVoidAsync("NotFoundSpinner", "msjError");
+		}
+	}
+
+	private async Task BuscarConvenioenTabla(int x)
+	{
+		try
+		{
+			for (var i = 0; i < oListConvenios.Count; i++)
+			{
+				if (oListConvenios[i].Idconvenio == x)
+				{
+					oConveniosE = oListConvenios[i];
+					await ModalMensaje("PreguntaEliminar", "Preguntas");
+
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			Mensaje = e.ToString();
+			await ModalMensaje("Catch", "Error");
+			//await js.InvokeVoidAsync("NotFoundSpinner", "msjError");
+		}
+	}
+
+	private async Task ConfirmarEliminarConvenio(bool acepted)
+	{
+		try
+		{
+			if (acepted)
+			{
+				new Bus.Clinica.Logistica.Convenios().ActualizarxCampoConvenio(new ConveniosE(oConveniosE.Idconvenio, "0", "estado"));
+				new Bus.Clinica.Logistica.Convenios().ActualizarxCampoConvenio(new ConveniosE(oConveniosE.Idconvenio, "", "fechafin"));
+				xDeleteConvenio = false;
+
+				//await js.InvokeVoidAsync("CloseDiv", "msgModalEliminarConvenio");
+				//await js.InvokeVoidAsync("CloseDiv", "msgModalPregunta");
+				await ModalMensaje("ConfirmacionEliminacion", "Informativo");
+				//await js.InvokeVoidAsync("NotFoundSpinner", "msgConfirmacion");
+			}
+		}
+		catch (Exception e)
+		{
+			Mensaje = e.ToString();
+			await ModalMensaje("Catch", "Error");
+		}
+	}
+
+	private async Task Actualizarpagina()
+	{ await js.InvokeVoidAsync("locationreload"); }
+
+	private void ListaTipoClientes()
+	{
+		try
+		{
+			oProductosE = new ProductosE();
+			oAseguradorasE = new AseguradorasE();
+			oPacientesE = new PacientesE();
+			oConveniosE.Tipomonto = "Eliga un Tipo de Monto";
+			oConveniosE.Moneda = "Eliga un Tipo de Moneda";
+			oListaTiposClientes = new Bus.Clinica.Clinica.Tablas().ListaTipoCliente(new TablasE(1, "TIPOCLIENTE", 5));
+		}
+		catch (Exception e)
+		{
+			Mensaje = e.ToString();
+			ModalMensaje("Catch", "Error");
+		}
+	}
+
+	async Task EnterBuscarProducto(KeyboardEventArgs e)
+	{
+		if (e.Code == "Enter" || e.Code == "NumpadEnter")
+		{ await BuscarProductoReg(); }
+	}
+
+	async Task EnterBuscarPaciente(KeyboardEventArgs e)
+	{
+		if (e.Code == "Enter" || e.Code == "NumpadEnter")
+		{ await BuscarPacienteReg(); }
+	}
+
+	async Task EnterBuscarAseguradora(KeyboardEventArgs e)
+	{
+		if (e.Code == "Enter" || e.Code == "NumpadEnter")
+		{ await BuscarAseguradorasReg(); }
+	}
+
+	async Task EnterMonto(KeyboardEventArgs e)
+	{
+		if (e.Code == "Enter" || e.Code == "NumpadEnter" || e.Code == "Tab")
+		{ await ValidarTipoMonto(); }
+	}
+
+	async Task EnterBuscarProducto_Tabla(KeyboardEventArgs e)
+	{
+		if (e.Code == "Enter" || e.Code == "NumpadEnter")
+		{ await BuscarProducto_Tabla(); }
+	}
+
+	async Task EnterBuscarAseguradoras_Tabla(KeyboardEventArgs e)
+	{
+		if (e.Code == "Enter" || e.Code == "NumpadEnter")
+		{ await BuscarAseguradoras_Tabla(); }
+	}
+
+	async Task EnterBuscarPaciente_Tabla(KeyboardEventArgs e)
+	{
+		if (e.Code == "Enter" || e.Code == "NumpadEnter")
+		{ await BuscarPaciente_Tabla(); }
+	}
+
+
+	async void ActivarModalCargaMasivaConvenio()
+	{
+		InicializarCargaMasiva = true;
+		await js.InvokeVoidAsync("NotFoundSpinner", "msgModalCargaConvenio");
+	}
+
+	void DesactivarAccessoRegistroConvenio()
+	{
+		InicializarCargaMasiva = false;
+	}
+
+	async void SetObtieneResultadoCargaConvenio(bool reload)
+	{
+		if (reload)
+		{
+			await BuscarConvenios();
+		}
+	}
+}
+
+<!--I. Container Main-->
+<div class="bg-light">
+	<div class="form-bg">
+		<div class="row align-items-center form-toolbar">
+			<div class="col-6">
+				<button class="btn btn-primary" @onclick="ListaTipoClientes" data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-permiso="02/01/02/01">
+					<span class="fa-regular fa-file"></span> <span role="toolbar" @onclick="Limpiar"> Nuevo</span>
+				</button>
+			</div>
+			<div class="col-6 text-end">
+				<button class="btn btn-success" data-permiso="02/01/02/03" @onclick="ActivarModalCargaMasivaConvenio">
+					<i class="me-3 fas fa-upload"></i> Carga masiva de convenios 
+				</button>
+			</div>
+		</div>
+
+		<div>
+			<div class="row group align-items-center">
+
+				<!--I.Producto-->
+				<div class="col-xl-1 col-lg-2 col-md-3 col-sm-12 col-xs-12 col-12">
+					<label>Producto:</label>
+				</div>
+				<div class="col-xl-5 col-lg-10 col-md-9 col-sm-12 col-xs-12 col-12" style="border-radius:25px !important;">
+					<div class="DivSearchInput">
+						<div class="DivSearch" style="width:100%">
+							<input id="txtProducto" type="search" list="lstProductos" placeholder="Buscar por el Nombre del Producto" @bind-value="oProductosE.Dscproducto" @onkeyup="@EnterBuscarProducto_Tabla">
+							<i id="idSearchProducto" class="fa-solid fa-magnifying-glass" role="button" @onclick="BuscarProducto_Tabla"></i>
+							<i id="idspinnerProducto" class="spinner-border text-success" tipo="spinner" role="spinbutton" style="display:none;">
+								<span class="visually-hidden">Loading...</span>
+							</i>
+							<datalist id="lstProductos">
+								@foreach (var lista in oListProductos)
+								{
+									<option>@lista.Dscproducto</option>
+								}
+							</datalist>
+						</div>
+					</div>
+				</div>
+				<!--F.Producto-->
+				<!--I.Aseguradora-->
+				<div class="col-xl-1 col-lg-2 col-md-3 col-sm-12 col-xs-12 col-12">
+					<label>Aseguradora:</label>
+				</div>
+				<div class="col-xl-5 col-lg-10 col-md-9 col-sm-12 col-xs-12 col-12" style="border-radius:25px !important;">
+					<div class="DivSearchInput">
+						<div class="DivSearch" style="width:100%">
+							<input id="txtAseguradora" type="search" list="lstAseguradoras" placeholder="Buscar por el Nombre de la Aseguradora" @bind-value="oAseguradorasE.Dscaseguradora" @onkeyup="@EnterBuscarAseguradoras_Tabla">
+							<i id="idSearchAseguradora" class="fa-solid fa-magnifying-glass" role="button" @onclick="BuscarAseguradoras_Tabla"></i>
+							<i id="idSpinnerAseguradora" class="spinner-border text-success" tipo="spinner" role="spinbutton" style="display:none;">
+								<span class="visually-hidden">Loading...</span>
+							</i>
+							<datalist id="lstAseguradoras">
+								@foreach (var lista in oListaAseguradoras)
+								{
+									<option>@lista.Dscaseguradora</option>
+								}
+							</datalist>
+						</div>
+					</div>
+				</div>
+				<!--F.Aseguradora-->
+				<!--I.Paciente-->
+				<div class="col-xl-1 col-lg-2 col-md-3 col-sm-12 col-xs-12 col-12">
+					<label>Paciente:</label>
+				</div>
+				<div class="col-xl-5 col-lg-10 col-md-9 col-sm-12 col-xs-12 col-12" style="border-radius:25px !important;">
+					<div class="DivSearchInput">
+						<div class="DivSearch" style="width:100%">
+							<input id="txtPaciente" type="search" list="lstPacientes" placeholder="Buscar por el Nombre del Paciente" @bind-value="oPacientesE.Nombres" @onkeyup="@EnterBuscarPaciente_Tabla">
+							<i id="idSearchPaciente" class="fa-solid fa-magnifying-glass" role="button" @onclick="BuscarPaciente_Tabla"></i>
+							<i id="idSpinnerPaciente" class="spinner-border text-success" tipo="spinner" role="spinbutton" style="display:none;">
+								<span class="visually-hidden">Loading...</span>
+							</i>
+							<datalist id="lstPacientes">
+								@foreach (var lista in oListaPacientes)
+								{
+									<option>@lista.Nombres</option>
+								}
+							</datalist>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<!--I.TABLA-->
+			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive">
+				<table class="table table-hover table-borderless">
+					<thead>
+						<tr class="table-primary">
+							<th style="width:5%"></th>
+							<th class="text-center" style="width:10%;">Fecha Documento</th>
+							<th class="text-center" style="width:20%">Producto</th>
+							<th class="text-center" style="width:20%">Aseguradora</th>
+							<th class="text-center" style="width:5%">T. Cliente</th>
+							<th class="text-center" style="width:20%">Paciente</th>
+							<th class="text-center" style="width:5%">Tipo</th>
+							<th class="text-center" style="width:5%">Monto</th>
+							<th class="text-center" style="width:5%">Tip. Mon.</th>
+						</tr>
+					</thead>
+					<tbody>
+
+						@foreach (var item in oListConvenios)
+						{
+							<tr>
+								<td class="text-center">
+									<div class="btn-group dropstart" data-permiso="02/01/02/02">
+										<li class="dropdown-item btn btn-outline-warning" data-bs-toggle="modal" @onclick="@(()=> BuscarConvenioenTabla(item.Idconvenio))"><span class="fa-regular fa-trash-can "></span></li>
+									</div>
+								</td>
+								<td style="text-align: center;">@item.Fechadocumento.ToString("yyyy/MM/dd HH:mm")</td>
+								<td>@item.Nomproducto</td>
+								<td>@item.Nomaseguradora</td>
+								<td>@item.Nomtipocliente</td>
+								<td>@item.Nompaciente</td>
+								<td style="text-align: center;">@item.Tipomonto</td>
+								<td style="text-align: right;">@item.Monto.ToString("###,###.00")</td>
+								<td style="text-align: center;">@item.Moneda</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+			<!--F.TABLA-->
+		</div>
+	</div>
+</div>
+<!--F. Container Main-->
+
+
+<div>
+	<!--I. Registra un Nuevo Convenio -->
+	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="staticBackdropLabel">Registra un Nuevo Convenio</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="Actualizarpagina"></button>
+				</div>
+				<div class="modal-body">
+					<div style="background-color: #FFF; width: 100%; border:1px solid #b3d6ffff; border-radius:8px; padding:20px 10px; margin-bottom:20px;">
+						<div class="row align-items-center" style="border-style: solid; border-color: #b3d6ffff; border-width: 0px; border-bottom-width: 1px; padding:0px 0px 20px 0px; background:#f6f6f645; ">
+							<div>
+								<button class="btn btn-outline-success col-lg-2 col-3" @onclick="AgregarConvenios"><span class="fa-regular fa-save"></span> <span id="TitleView"> Guardar</span></button>
+								<button class="btn btn-outline-primary col-lg-2 col-3" @onclick="Actualizarpagina"><spam class="fa fa-arrow-rotate-left"></spam> <span id="TitleView"> Cancelar</span></button>
+							</div>
+						</div>
+						<!--I.Paciente-->
+						<div class="row align-items-center">
+							<!--I.Tipo de Cliente-->
+							<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+								<select id="selectTipCliente" @bind="oConveniosE.Codtipocliente" class="form-select form-select-control" aria-label="Default select example">
+									<option>Eliga un Tipo de Cliente</option>
+									@foreach (var item in oListaTiposClientes)
+									{
+										<option value="@item.Codigo">@item.Codigo ~ @item.Nombre</option>
+									}
+								</select>
+							</div>
+							<!--F.Tipo de Cliente-->
+							<!--I.Paciente-->
+							<div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-xs-12 col-12">
+								<div class="omrs-input-group">
+									<label class="omrs-input-underlined">
+										<input id="txtPacienteReg" required="" @bind="oConveniosE.Codpaciente" @onkeyup="@EnterBuscarPaciente" list="lstPacientes1">
+										<span class="omrs-input-label">Paciente</span>
+										<span class="omrs-input-helper"></span>
+										<i id="idSearchPacienteReg" class="fa-solid fa-magnifying-glass text-primary" @onclick="@BuscarPacienteReg"></i>
+										<i id="idSpinnerPacienteReg" class="spinner-border text-success" role="status" style="display:none; width:20px; height:20px;">
+											<span class="visually-hidden">Loading...</span>
+										</i>
+
+										@*<i id="idSearchPacienteReg" class="fa-solid fa-magnifying-glass" @onclick="BuscarPacienteReg"></i>
+										<div id="idSpinnerPacienteReg" class="spinner-border text-success" role="status" style="display:none; width:20px; height:20px;">
+										<span class="visually-hidden">Loading...</span>
+										</div>*@
+										<datalist id="lstPacientes1" style="width:70%" data-li>
+											@foreach (var lista1 in oListaPacientes1)
+											{
+												<option>Doc.Identidad:@lista1.Docidentidad- NOMBRE:@lista1.Nombres |~| @lista1.CodPaciente </option>
+											}
+										</datalist>
+									</label>
+								</div>
+							</div>
+							<!--F.Paciente-->
+						</div>
+						<!--F.Paciente-->
+
+						<!--I.Producto-->
+						<div class="row group align-items-center">
+							<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+								<div class="omrs-input-group">
+									<label class="omrs-input-underlined">
+										<input id="txtProductoReg" required="" @bind-value="@oConveniosE.Codproducto" @onkeyup="@EnterBuscarProducto" list="lstProducto1">
+										<span class="omrs-input-label">Producto</span>
+										<span class="omrs-input-helper"></span>
+										<i id="idSearchProductoReg" class="fa-solid fa-magnifying-glass text-primary" @onclick="@BuscarProductoReg"></i>
+										<i id="idSpinnerProductoReg" class="spinner-border text-success" role="status" style="display:none; width:20px; height:20px;">
+											<span class="visually-hidden">Loading...</span>
+										</i>
+
+										@* <i id="idSearchProductoReg" class="fa-solid fa-magnifying-glass" @onclick="BuscarProductoReg"></i>
+										<div id="idSpinnerProductoReg" class="spinner-border text-success" role="status" style="display:none; width:20px; height:20px;">
+										<span class="visually-hidden">Loading...</span>
+										</div>*@
+										<datalist id="lstProducto1" style="width:100%">
+											@foreach (var listaP1 in oListProductos1)
+											{
+												<option>@listaP1.Codproducto ~ @listaP1.Dscproducto</option>
+											}
+										</datalist>
+									</label>
+								</div>
+							</div>
+						</div>
+
+						<!--I.Aseguradora-->
+						<div class="row group align-items-center">
+							<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+								<div class="omrs-input-group">
+									<label class="omrs-input-underlined">
+										<input id="txtAseguradoraReg" required="" @bind-value="@oConveniosE.Codaseguradora" @onkeyup="@EnterBuscarAseguradora" list="lstAseguradora1">
+										<span class="omrs-input-label">Aseguradora</span>
+										<span class="omrs-input-helper"></span>
+										<i id="idSearchAseguradoraReg" class="fa-solid fa-magnifying-glass text-primary" @onclick="@BuscarAseguradorasReg"></i>
+										<i id="idSpinnerAseguradoraReg" class="spinner-border text-success" role="status" style="display:none; width:20px; height:20px;">
+											<span class="visually-hidden">Loading...</span>
+										</i>
+
+										@*<i id="idSearchAseguradoraReg" class="fa-solid fa-magnifying-glass" @onclick="BuscarAseguradorasReg"></i>
+										<div id="idSpinnerAseguradoraReg" class="spinner-border text-success" role="status" style="display:none; width:20px; height:20px;">
+										<span class="visually-hidden">Loading...</span>
+										</div>*@
+										<datalist id="lstAseguradora1" style="width:70%">
+											@foreach (var listaA1 in oListaAseguradoras1)
+											{
+												<option>@listaA1.Codaseguradora ~ @listaA1.Dscaseguradora </option>
+											}
+										</datalist>
+									</label>
+								</div>
+							</div>
+						</div>
+						<!--F.Aseguradora-->
+						<!--I.Monto-->
+						<div class="row align-items-center" id="Monto">
+							<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+								<select class="form-select form-select-control" @bind="@oConveniosE.Tipomonto" aria-label="Default select example">
+									<option selected>Eliga un Tipo de Monto</option>
+									<option>Moneda</option>
+									<option>Porcentaje</option>
+								</select>
+							</div>
+
+							<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+								<div class="omrs-input-group">
+									<label class="omrs-input-underlined">
+										<input required="" @bind-value="oConveniosE.Monto" @onkeydown="EnterMonto" list="oListaAseguradoras" type="number" step="any">
+										<span class="omrs-input-label">Monto</span>
+										<span class="omrs-input-helper"></span>
+									</label>
+								</div>
+							</div>
+
+							<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+								<select class="form-select form-select-control" @bind="@oConveniosE.Moneda" aria-label="Default select example">
+									<option selected>Eliga un Tipo de Moneda</option>
+									<option>Soles</option>
+									<option>Dolares</option>
+								</select>
+							</div>
+						</div>
+						<!--f.Monto-->
+						<!--I.FECHA DOCUMENTO-->
+						<div class="row align-items-center">
+							<div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-xs-12 col-12">
+								<div class="omrs-input-group">
+									<label class="omrs-input-underlined">
+										<input required="" type="date" placeholder="" @bind-value="oConveniosE.Fechainicio">
+										<span class="omrs-input-label">Fecha Inicio</span>
+										<span class="omrs-input-helper"></span>
+									</label>
+								</div>
+							</div>
+
+							<div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-xs-12 col-12">
+								<div class="omrs-input-group">
+									<label class="omrs-input-underlined">
+										<input required="" type="date" placeholder="" @bind-value="oConveniosE.Fechadocumento">
+										<span class="omrs-input-label">Fecha de Registro</span>
+										<span class="omrs-input-helper"></span>
+									</label>
+								</div>
+							</div>
+						</div>
+						<!--F.FECHA DOCUMENTO-->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--F. Registra un Nuevo Convenio -->
+
+	<div class="modal" id="msgModalCargaConvenio" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl" style="max-width: 90%;  margin: 10px auto;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title text-center text-black" id="staticBackdropLabel">Carga masiva de convenios</h5>
+					<button type="button" class="btn-close" id="idCloseModalRegistrarPrestacion" @onclick="DesactivarAccessoRegistroConvenio" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<Web.Clinica.Components.Facturacion.ConveniosFarmacia.ModalConveniosFarmaciaComponent acceder="InicializarCargaMasiva" oReloadConvenio="SetObtieneResultadoCargaConvenio"></Web.Clinica.Components.Facturacion.ConveniosFarmacia.ModalConveniosFarmaciaComponent>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- I.MODAL MESSAGE -->
+
+	@*==========================================0*@
+	<MessageModal IdMessage="msgModalAdvertencia"
+				  TitleModal="Advertencia"
+				  IconMessage=MessageModal.iconMessage.Advertencia
+				  TypeButton=MessageModal.typeButton.Ok
+				  EscapeKey="true"
+				  BodyMessage=@Mensaje>
+	</MessageModal>
+
+	<MessageModal IdMessage="msgModalError"
+				  TitleModal="Error"
+				  IconMessage=MessageModal.iconMessage.Error
+				  TypeButton=MessageModal.typeButton.Ok
+				  EscapeKey="true"
+				  BodyMessage=@Mensaje>
+	</MessageModal>
+
+	<MessageModal IdMessage="msgModalConfirmacion"
+				  TitleModal="Información"
+				  TypeButton=MessageModal.typeButton.Ok
+				  EscapeKey="true"
+				  OnClose="@Actualizarpagina"
+				  BodyMessage=@Mensaje>
+	</MessageModal>
+
+	<MessageModal IdMessage="msgModalPregunta"
+				  TitleModal="Confirmación"
+				  BodyMessage=@Mensaje
+				  IconMessage=MessageModal.iconMessage.Question
+				  TypeButton=MessageModal.typeButton.OkCancel
+				  OnClose="@ConfirmarEliminarConvenio">
+	</MessageModal>
+	@*==========================================0*@
+	<!-- F.MESSAGE NOT FOUND -->
+</div>

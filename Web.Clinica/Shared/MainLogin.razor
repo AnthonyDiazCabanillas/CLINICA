@@ -1,0 +1,20 @@
+﻿@inherits LayoutComponentBase
+
+@code {
+    string LoginX = "";
+}
+
+<div class=""col-12">       
+    <main>  
+        <AuthorizeView>
+            <Authorized>
+            </Authorized>
+            <NotAuthorized>               
+                <article class="content">
+                    @Body 
+                </article>
+            </NotAuthorized>
+        </AuthorizeView>         
+    </main>
+</div>
+

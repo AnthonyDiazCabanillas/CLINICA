@@ -1,0 +1,168 @@
+﻿@using Ent.Sql.ClinicaE.MedicosE
+@using Ent.Sql.ClinicaE.EspecialidadesE
+@using Web.Clinica.Components
+@using Ent.Sql.ClinicaE.OtrosE
+@using Ent.Sql.ClinicaE.HospitalE
+
+@inject IJSRuntime js
+
+
+<div class="modal @modalClass" tabindex="-1" role="dialog" style="display:@modalDisplay; overflow-y: auto;">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" height="100%">
+            <div class="modal-header">
+                <h5 class="modal-title">Búsqueda de ubigeo</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" @onclick="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <!--I.Prestación-->
+
+                <div class="row group align-items-center">
+                    <div class="DivSearchInput">
+                        <div class="DivSearch" style="width:100%">
+                            <input id="txtDatoaBuscar" type="search" list="lstPrestaciones"
+                                   placeholder="Buscar por código de ubigeo, departamento, provincia o distrito"
+                                   @bind="@TextoaBuscar"
+                                   @onkeydown="@EnterBuscarUbigeo">
+                            <i id="idBuscarPrestacion" class="fa-solid fa-magnifying-glass" role="button" @onclick="@(()=>BuscarUbigeo())"></i>
+                            <i id="idspinnerPrestacion" class="spinner-border text-success" tipo="spinner" role="spinbutton" style="display:none;">
+                                <span class="visually-hidden">Loading...</span>
+                            </i>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div style="background-color: #FFF; width: 100%; min-height:300px; border:1px solid #b3d6ffff; border-radius:8px; padding:20px 10px; margin-bottom:20px;">
+
+
+                    <div class="row">
+
+                        <!--I.TABLA-->
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive"
+                             style="background-color: #FFF; width: 99%; height:400px; margin:0px 5px 0px 5px; ">
+                            <table class="table table-hover table-bordered ListaTabla header_fijo" >
+                                <thead class="table-primary">
+                                    <tr class="fw-bolder">
+                                        <th class="col-1 text-center"></th>
+                                        <th class="col-3 text-center" style="">País</th>
+                                        <th class="col-3 text-center" style="">Departamento</th>
+                                        <th class="col-3 text-center" style="">ProvinciaF</th>
+                                        <th class="col-3 text-center" style="">Distrito</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in oListaUbigeoE)
+                                    {
+                                        <tr>
+                                            <td class="text-center">
+                                                <div class="btn-group dropstart">
+                                                    <button class="btn btn-light" aria-expanded="false" @onclick="@(() =>{oUbigeoE = item; Close();})">
+                                                        <span class="fa-solid fa-check"></span>
+                                                        @*<span class="fa-solid fa-ellipsis-vertical"></span>*@
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td style="text-align:left;">@item.NombrePais</td>
+                                            <td style="text-align:left;">@item.NombreDpto</td>
+                                            <td style="text-align:left;">@item.NombreProv</td>
+                                            <td style="text-align:left;">@item.NombreDist</td>
+
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <!--F.TABLA-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--F.Prestación-->
+    </div>
+
+    <MessageNotFound IdMessage="msgerrorBusqueda"
+                     BodyMessage=" Lo sentimos, no logramos encontrar lo que buscabas.">
+    </MessageNotFound>
+
+</div>
+
+
+@if (showBackdrop)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+    [Parameter]
+    public UbigeoE oUbigeoE { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public EventCallback<UbigeoE> OnClick { get; set; }
+
+    private List<UbigeoE> oListaUbigeoE { get; set; } = new List<UbigeoE>();
+    private string TextoaBuscar { get; set; } = "";
+
+    private string modalDisplay = "none;";
+    private string modalClass = string.Empty;
+    private bool showBackdrop = false;
+
+    public string Retorno = "none;";
+
+    public void Open()
+    {
+        modalDisplay = "block";
+        modalClass = "show";
+        showBackdrop = true;
+        js.InvokeVoidAsync("ClearText", "txtDatoaBuscar");
+    }
+
+    public void Close()
+    {
+        modalDisplay = "none";
+        modalClass = string.Empty;
+        showBackdrop = false;
+
+        OnClick.InvokeAsync(oUbigeoE);
+    }
+
+    private void ReturnRowData(UbigeoE _pUbigeoE)
+    {
+        oUbigeoE = _pUbigeoE;
+    }
+
+
+    async Task EnterBuscarUbigeo(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        { await BuscarUbigeo(); }
+    }
+
+    private async Task BuscarUbigeo()
+    {
+        await js.InvokeVoidAsync("ShowSpinnerSearch", "idspinnerPrestacion", "idBuscarPrestacion");
+        try
+        {
+            if (TextoaBuscar != "")
+            {
+                oListaUbigeoE = new Bus.Clinica.Otros().Ubigeo_ConsultaPeru(TextoaBuscar);
+                if (oListaUbigeoE.Count == 0)
+                {
+                    await js.InvokeVoidAsync("ShowMessageModal", true, "msgerrorBusqueda");
+                }
+                await js.InvokeVoidAsync("focusControl", "txtDatoaBuscar");
+            }
+            else
+            { await js.InvokeVoidAsync("ShowMessageModal", true, "msgerrorBusqueda"); }
+        }
+        catch { }
+        await js.InvokeVoidAsync("CloseSpinnerSearch", "idspinnerPrestacion", "idBuscarPrestacion");
+    }
+
+
+}

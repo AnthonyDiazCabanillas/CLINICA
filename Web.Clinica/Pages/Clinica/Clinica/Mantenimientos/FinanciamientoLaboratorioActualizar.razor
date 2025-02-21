@@ -1,0 +1,533 @@
+﻿@* **********************************************************************************************************************
+    Copyright Clinica San Felipe S.A.C 2024. Todos los derechos reservados.
+    Version     Fecha           Autor       Requerimiento
+    1.1         01/04/2024      AROMERO     REQ-2024-006637:  FINANCIAMIENTO LABORATORIO
+*********************************************************************************************************************** *@
+
+@page "/Clinica/Clinica/Mantenimientos/FinanciamientoLaboratorioActualizar"
+@inject IJSRuntime js
+@inject IJSRuntime JSRuntime
+
+@inject NavigationManager NavigationManager
+@using Bus.Clinica.Clinica;
+@using Bus.Utilities
+@using Dat.Sql
+@using Ent.Sql.ClinicaE.FinanciamientoDetalleE;
+@using System.Xml.Serialization
+@using Json = System.Text.Json.JsonSerializer
+@using RestSharp
+@using System.Data;
+@using Web.Clinica.Data
+@using System.Text.RegularExpressions;
+@using Web.Clinica.Pages.Clinica.Comercial.Componentes
+@using Ent.Sql;
+@using Ent.Sql.ClinicaE;
+@using ClosedXML.Excel
+@inherits MainLayout
+
+@code {
+    FinanciamientoDetalleE ofinanciamientoDetE = new FinanciamientoDetalleE("", 0, 25, 19);
+    public string Mensaje { get; set; } = "";
+    [CascadingParameter]
+    PageIndexStateProvider State { get; set; }
+    private int itemsPerPage = 5;
+
+    List<FinanciamientoDetalleE> oListarFinanciamiento = new List<FinanciamientoDetalleE>();
+    List<int> oListItemsPerPage = new List<int>() { 5, 25, 50, 100 };
+    Utilitario utilitario = new Utilitario();
+    FinanciamientoBuscaE oFinanciamientoBuscaE = new FinanciamientoBuscaE();
+    List<FinanciamientoDetalleE> oListaFinanciamientoDet = new List<FinanciamientoDetalleE>();
+
+    protected override void OnInitialized()
+    {
+        State = new PageIndexStateProvider();   
+        base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        BuscarFinanciamientoDet(1, 15);
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        js.InvokeVoidAsync("fnActualizarTitulo", "Actualización de Financiamiento");
+
+        if (firstRender)
+        {
+            js.InvokeVoidAsync("eval", @"
+		          window.downloadFile = function(url, fileName) {
+		              var link = document.createElement('a');
+		              link.href = url;
+		              link.download = fileName;
+		              document.body.appendChild(link);
+		              link.click();
+		              document.body.removeChild(link);
+		          }");
+        }
+    }
+
+    private async Task ModalMensaje(string Mensajes, string TipoModal)
+    {
+        if (TipoModal == "Advertencia")
+        {
+            switch (Mensajes)
+            {
+                case "FinanciamientoNull":
+                    Mensaje = "No hay registros para actualizar. Por favor seleccione algun registro.";
+                    break;
+                case "BusquedaSinRegistros":
+                    Mensaje = "No se encontraron registros.";
+                    break;
+            }
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalAdvertencia");
+        }
+
+        if (TipoModal == "Error")
+        {
+            switch (Mensajes)
+            {
+                case "Catch":
+                    Mensaje = "Error: " + Mensaje;
+                    break;
+                case "UpdateNull":
+                    Mensaje = "La actualizacion de datos no se completo correctamente. Volver a intentar o contactar con el administrador.";
+                    break;
+            }
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+        if (TipoModal == "Informativo")
+        {
+            switch (Mensajes)
+            {
+                case "ConfirmacionRegistro":
+                    Mensaje = "Se actualizaron los datos correctamente.";
+                    break;                
+            }
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacion");
+        }        
+    }
+
+    private async Task Actualizarpagina()
+    {
+        //Volver a la pagina principal despues de actualizar
+        await js.InvokeVoidAsync("CloseModalMessageName", "msjcloseFinanciamientoHide");
+        NavigationManager.NavigateTo("/Clinica/Clinica/Mantenimientos/FinanciamientoLaboratorio");
+    }
+
+    private async Task ChangueIitemsPerPage(ChangeEventArgs e)
+    {
+        itemsPerPage = Convert.ToInt32(e.Value.ToString());
+        if (oFinanciamientoBuscaE.Buscar.Trim().Equals(""))
+        {
+            BuscarFinanciamientoDet(1, 15);
+        }
+        else
+        {
+            BuscarFinanciamientoDet(1, 16);
+        }
+    }
+
+    private async Task BuscarFinanciamientoDet(int selectedPageIndex, int orden)
+    {
+        //Consulta de financiamientos para actualizar
+        try
+        {
+            var serializer = new XmlSerializer(typeof(FinanciamientoDetalleE));
+            ofinanciamientoDetE.Orden = orden;
+            ofinanciamientoDetE.NumeroLineas = itemsPerPage;
+            StringWriter writer = new StringWriter();
+            serializer.Serialize(writer, ofinanciamientoDetE);
+            ofinanciamientoDetE.Buscar = oFinanciamientoBuscaE.Buscar;
+            oListaFinanciamientoDet = new Bus.Clinica.FinanciamientoLaboratorio().Financiamiento_Consulta_Update(ofinanciamientoDetE);
+
+            if (oListaFinanciamientoDet.Count == 0)
+            {
+                ModalMensaje("BusquedaSinRegistros", "Advertencia");
+            }
+            else
+            {
+                State.PageIndex = selectedPageIndex;
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }    
+
+    async Task EnterBuscarFinanciamiento(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await BuscarFinanciamientoDet(1, 16);
+        }
+    }
+
+    public void completarLista(string idanalisisxdiagnostico, string cod_cie10, string cod_aseguradora, string nuevoEstado)
+    {
+        FinanciamientoDetalleE oFinanciamientoItems = new FinanciamientoDetalleE();
+        var existe = false;
+
+        //Al desmarcar una fila eliminar duplicado
+        if (oListarFinanciamiento.Count() == 0)
+        {
+            oFinanciamientoItems.Item = 1;
+            oFinanciamientoItems.Ide_AnalisisxDiagnostico = idanalisisxdiagnostico;
+            oFinanciamientoItems.Cod_Diagnostico = cod_cie10;
+            oFinanciamientoItems.CodAseguradora1 = cod_aseguradora;
+            oFinanciamientoItems.Flag_Estado = nuevoEstado;
+            oListarFinanciamiento.Add(oFinanciamientoItems);
+        }
+        else
+        {
+            foreach (var item in oListarFinanciamiento)
+            {
+                if (item.Ide_AnalisisxDiagnostico == idanalisisxdiagnostico)
+                {
+                    existe = true;
+                    oListarFinanciamiento.Remove(item);
+                    break;
+                }
+            }
+
+            if (!existe)
+            {
+                oFinanciamientoItems.Item = 1;
+                oFinanciamientoItems.Ide_AnalisisxDiagnostico = idanalisisxdiagnostico;
+                oFinanciamientoItems.Cod_Diagnostico = cod_cie10;
+                oFinanciamientoItems.CodAseguradora1 = cod_aseguradora;
+                oFinanciamientoItems.Flag_Estado = nuevoEstado;
+                oListarFinanciamiento.Add(oFinanciamientoItems);
+            }
+        }
+    }
+
+    private async Task ActualizarLista(ChangeEventArgs e, string idanalisisxdiagnostico)
+    {
+        string nuevoestado = e.Value.ToString();
+
+        foreach (var rowUpdate in oListarFinanciamiento)
+        {
+            if (rowUpdate.Ide_AnalisisxDiagnostico == idanalisisxdiagnostico)
+            {
+                rowUpdate.Flag_Estado = nuevoestado;
+            }
+        }
+    }
+
+    private async Task ActualizarFinanciamiento()
+    {
+        if (oListarFinanciamiento.Count() > 0)
+        {
+            //Enviar actualizar
+            bool xresult = false;
+            var usrModifica = Convert.ToInt32(SessionUser(TypeSession.CodUser).Result);
+            xresult = new Bus.Clinica.FinanciamientoLaboratorio().ActualizarFinanciamiento(oListarFinanciamiento, usrModifica);
+            if (xresult)
+            {
+                //Actualizo con exito
+                ModalMensaje("ConfirmacionRegistro", "Informativo");
+            }
+            else
+            {
+                //Actualizo con error
+                ModalMensaje("UpdateNull", "Error");
+            }
+        }
+        else
+        {
+            ModalMensaje("FinanciamientoNull", "Advertencia");
+        }
+    }
+}
+
+<script>
+    function habilitarDeshabilitarSelect(idSelect) {
+        var select = document.getElementById(idSelect);
+        select.disabled = !select.disabled;
+    }
+</script>
+
+<style>
+    .form-group {
+        border: 1px solid #ced4da; /* Agregar borde a los form-group */
+        padding: 10px; /* Añadir espacio interior */
+        margin-bottom: 0px; /* Espacio entre grupos de formulario */
+    }
+
+    .DivSearchInput {
+        position: relative; /* Posicionamiento relativo para el ícono */
+    }
+
+    .DivSearch {
+        display: flex; /* Para alinear ícono y input */
+        align-items: center; /* Centrar verticalmente */
+        justify-content: space-between; /* Espacio entre ícono y input */
+    }
+
+    .form-group label {
+        display: block;
+        text-align: center; /* Centrar el texto del label */
+        margin-bottom: 5px; /* Espacio entre label y input */
+        color: #13489e;
+    }
+
+    /* Estilos adicionales para el ícono de búsqueda */
+    .DivSearch i {
+        cursor: pointer; /* Cambiar cursor al pasar por encima */
+        margin-left: 5px; /* Espacio entre input y ícono */
+        right:5px !important;
+    }
+
+    .Divmedio {
+        padding: 0px !important; /* Cambiar cursor al pasar por encima */
+    }
+    
+
+    .Divizquierdo {
+        padding-right: 0px !important; /* Cambiar cursor al pasar por encima */
+    }
+
+    .Divderecho {
+        padding-left: 0px !important; /* Cambiar cursor al pasar por encima */
+    }
+
+    .InputCenter {
+        text-align: center !important; /* Cambiar cursor al pasar por encima */
+    }
+</style>
+
+<div class="bg-light">
+    <div class="form-bg">
+        <div class="container" style="margin-top: 20px;">
+            <div class="col-12 col-lg-12 col-md-12 buscar-menuNuevo">
+                <div class="input-group">
+                    <div class="card w-100">                        
+                        <div class="card-body">
+                            <div class="container-fluid">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 buscar-menuNuevo" style="border-radius:25px !important;">
+                                    <div class="input-group">
+                                        <div class="DivSearchNuevo" style="width:100%">
+                                            <div class="row group align-items-center">
+                                                <div class="col-xl-1 col-lg-2 col-md-3 col-sm-12 col-xs-12 col-12">
+                                                    <label>Financiamiento:</label>
+                                                </div>
+                                                <div class="col-xl-11 col-lg-10 col-md-9 col-sm-12 col-xs-12 col-12" style="border-radius:25px !important;">
+                                                    <div class="DivSearchInput">
+                                                        <div class="DivSearch" style="width:100%">
+                                                            <input id="txtMedico" style="text-transform:uppercase" type="search" placeholder="Buscar por CIE-10,  Descripción CIE-10, Id análisis, Análisis o Aseguradora"
+                                                            @bind-value="@oFinanciamientoBuscaE.Buscar" @onkeyup="@EnterBuscarFinanciamiento">
+                                                            <i id="idfiltroavanzado" class="fa-solid fa-sliders" role="button" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false"></i>
+                                                            <i id="idSearchMedico" class="fa-solid fa-magnifying-glass" role="button" @onclick="@(()=>BuscarFinanciamientoDet(1,16))" typeof="AdvancedSearch"></i>
+                                                            <i id="idspinnerMedico" class="spinner-border text-success" tipo="spinner" role="spinbutton" style="display:none;">
+                                                                <span class="visually-hidden">Loading...</span>
+                                                            </i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="container" style="margin-top: 20px;">
+                                <div class="col-12 col-lg-12 col-md-12 buscar-menuNuevo">
+                                    <div class="input-group">
+                                        <div class="card w-100">
+                                            <div class="card-header text-white fs-5" style="background:#124498;padding: 1rem 2rem; ">
+                                                Resultado de búsqueda
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive">
+                                                    <table class="table table-hover   table-bordered">
+                                                        <thead class="table-primary">
+                                                            <tr class="fw-bolder">
+                                                                <th class="col-1 text-center" style="align-content:center; font-size:smaller">Marcar</th>
+                                                                <th class="col-1 text-center" style="align-content:center; font-size:smaller">CIE-10</th>
+                                                                <th class="col-3 text-center" style="align-content:center; font-size:smaller">Descripción CIE-10</th>
+                                                                <th class="col-1 text-center" style="align-content:center; font-size:smaller">Id. Análisis</th>
+                                                                <th class="col-1 text-center" style="align-content:center; font-size:smaller; display:none">CodAnalisis</th>                                                                
+                                                                <th class="col-1 text-center" style="align-content:center; font-size:smaller">Análisis</th>
+                                                                <th class="col-1 text-center" style="align-content:center; font-size:smaller; display:none">Tipo Atención</th>
+                                                                <th class="col-3 text-center" style="align-content:center; font-size:smaller; display:none">CodAseguradora</th>
+                                                                <th class="col-3 text-center" style="align-content:center; font-size:smaller">Aseguradora</th>
+                                                                <th class="col-1 text-center" style="align-content:center; font-size:smaller">Financiamiento</th>                                                                
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @if (oListaFinanciamientoDet != null)
+                                                            {
+                                                                @foreach (var item in oListaFinanciamientoDet)
+                                                                {
+                                                                    <tr>
+
+                                                                        <td class="text-center">
+                                                                            <div class="col-12 col-lg-12 col-md-12 col-sm-12 col-xl-12" style="text-align: center;">
+                                                                                <label for="@("option"+item.Ide_AnalisisxDiagnostico)">
+                                                                                    <input id="@("option"+item.Ide_AnalisisxDiagnostico)" name="options" value="@("option"+item.Ide_AnalisisxDiagnostico)" type="checkbox" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;" @onclick="@(()=> completarLista(item.Ide_AnalisisxDiagnostico, item.Cod_Diagnostico, item.CodAseguradora1, item.Flag_Estado))" onchange="habilitarDeshabilitarSelect('@(""+item.Ide_AnalisisxDiagnostico)')" />
+                                                                                </label>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="text-center" style="align-content:center;">
+                                                                            <span class="span-color" style="font-size:smaller">@item.Cod_Diagnostico</span><br>
+                                                                        </td>
+                                                                        <td class="text-center" style="align-content:center;">
+                                                                            <span class="span-color" style="font-size:smaller">@item.Nombre_Diagnostico</span><br>
+                                                                        </td>
+                                                                        <td class="text-center" style="align-content:center">
+                                                                            <span class="span-color" style="font-size:smaller">@item.Ide_Analisis</span><br>
+                                                                        </td>
+                                                                        <td class="text-center" style="align-content:center; display:none">
+                                                                            <span class="span-color" style="font-size:smaller">@item.Cod_ROE</span><br>
+                                                                        </td>
+                                                                        <td class="text-center" style="align-content:center;">
+                                                                            <span class="span-color" style="font-size:smaller">@item.Prueba_ROE</span><br>
+                                                                        </td>
+                                                                        <td class="text-center" style="align-content:center; display:none">
+                                                                            <span class="span-color" style="font-size:smaller">@item.Tipo_Atencion</span><br>
+                                                                        </td>
+                                                                        <td class="text-center" style="align-content:center; display:none">
+                                                                            <span class="span-color" style="font-size:smaller">@item.CodAseguradora1</span><br>
+                                                                        </td>   
+                                                                        <td class="text-center" style="align-content:center;">
+                                                                            <span class="span-color" style="font-size:smaller">@item.Nombre_Aseguradora</span><br>
+                                                                        </td>
+                                                                        <td class="text-center" style="align-content:center;">
+                                                                            <select id="@(item.Ide_AnalisisxDiagnostico)" name="estado" disabled style="font-size:smaller;" @onchange="@(async (e) => await ActualizarLista(e, item.Ide_AnalisisxDiagnostico))">                                                                              
+                                                                                @if (item.Flag_Estado == "A")
+                                                                                {
+                                                                                    <option value="A" selected>SI</option>
+                                                                                    <option value="X">NO</option>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <option value="A">SI</option>
+                                                                                    <option value="X" selected>NO</option>
+                                                                                }
+                                                                            </select>
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                        </tbody>
+                                                        <tfoot>
+                                                            <tr>
+                                                                <td colspan="2">
+                                                                </td>
+                                                                <td colspan="5">
+                                                                </td>
+                                                            </tr>
+                                                        </tfoot>
+                                                    </table>
+                                                    <div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 0px 0px; ">
+                                                        <div class="col-sm-12 col-md-2  col-lg-2">
+                                                            <div class="form-floating">
+                                                                <select class="form-select" id="oListaFinanciamientoDet" aria-label="Tipo de documento" value="@itemsPerPage" @onchange="ChangueIitemsPerPage">
+                                                                    @foreach (var item in oListItemsPerPage)
+                                                                    {
+                                                                        <option value=@item>@item</option>
+                                                                    }
+                                                                </select>
+                                                                <label for="oListaFinanciamientoDet">Cantidad de filas:</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="display:flow; text-align:right; padding:7px 0px 0px 0px; margin:0px 0px 0px 0px; ">
+                                                    <div class="form-floating mb-3">
+                                                        <div class="col-auto">
+                                                            <a class="btn btn-outline-success" @onclick="ActualizarFinanciamiento">
+                                                                <span class="fa-regular fa-save"></span>
+                                                                <span role="toolbar"> Guardar</span>                                                                
+                                                            </a>
+                                                            <a class="btn btn-outline-primary" href="/Clinica/Clinica/Mantenimientos/FinanciamientoLaboratorio">
+                                                                <span class="fa fa-arrow-rotate-left"></span>
+                                                                <span role="toolbar"> Regresar</span>
+                                                            </a>                                                            
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                           
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    
+    <!-- I.MODAL MESSAGE -->
+    @*==========================================0*@
+    <MessageModal IdMessage="msgModalAdvertencia"
+                  TitleModal="Advertencia"
+                  IconMessage=MessageModal.iconMessage.Advertencia
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalError"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalConfirmacion"
+                  TitleModal="Información"
+                  IconMessage=MessageModal.iconMessage.Check
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  OnClose="@Actualizarpagina"
+                  BodyMessage=@Mensaje>
+    </MessageModal>    
+
+    @*==========================================0*@
+    <!-- F.MESSAGE NOT FOUND -->
+</div>
+
+
+
+<div>
+    <!--I. Modal para cerrar -->
+    <div class="modal" id="msjNuevoFinanciamientoShow5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Registra Nuevo Financiamiento</h5>
+                    <button type="button" class="btn-close" id="msjcloseFinanciamientoHide" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--F. Modal para cerrar -->
+    <!-- I.MODAL MESSAGE -->
+    @*==========================================0*@
+    <MessageModal IdMessage="msgModalAdvertencia"
+                  TitleModal="Advertencia"
+                  IconMessage=MessageModal.iconMessage.Advertencia
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalError"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+</div>
+
+

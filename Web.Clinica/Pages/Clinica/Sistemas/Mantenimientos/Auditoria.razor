@@ -1,0 +1,471 @@
+﻿@**********************************************************************************************************
+	Copyright Clinica San Felipe S.A.C. 2023. Todos los derechos reservados.
+
+	Version  Fecha        Autor           Requerimiento
+	1.0      10/10/2023   PHERMENEGILDO   REQ 2023-016358 GENERADOR DE TRIGGERS Y AUDITORIA
+***********************************************************************************************************@
+
+@page "/Clinica/Sistemas/Mantenimientos/Auditoria"
+@inject IJSRuntime js
+@using ClosedXML.Excel
+@using Ent.Sql.ClinicaE.OtrosE
+@using Ent.Sql.ClinicaE.PacientesE
+@using Ent.Sql.AuditoriaE.TablasE;
+@using Ent.Sql.AuditoriaE.CamposE;
+@using Ent.Sql.AuditoriaE.BDatosE;
+@using Ent.Sql.AuditoriaE;
+@using Ent.Sql.SeguridadE.SeguridadE;
+@inherits MainLayout
+
+@code {
+	List<BDatosE> oListBDatos = new List<BDatosE>();
+	List<TablasBdE> oListTablasBd = new List<TablasBdE>();
+	List<AuditoriaE> oListAuditoria = new List<AuditoriaE>();
+	List<CamposE> oListaCampos = new List<CamposE>();
+	TablasE oTablasE = new TablasE();
+	BDatosE oBDatosE = new BDatosE("");
+	TablasBdE oTablasbdE = new TablasBdE("");
+	AuditoriaE oAuditoriaE = new AuditoriaE(1, "", 1, "", "", "", "clinica", "", "", DateTime.Now, "", "", "", "", new[] { "" });
+	CamposE oCamposE = new CamposE("","","");
+	int X = 0;
+	Boolean b;
+	string Mensaje = "";
+	string Y = "";
+	public string[] camposSeleccionados { get; set; } = new[] { "" };
+	string NombreExcel = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss").Replace("/", "").Replace(":", "").Replace(" ", "") + ".xlsx"; //Nombre del archivo
+	string Recibo = "", FileType = "", FileAdjunto = "", FileName = "", RutaDescarga = "", EstadoPlanilla = "", DscRespuestaOK = "", DscRespuestaError = "";
+
+	//JVALVERDE - 06/06/2023  PERMISOS CONTROLES
+	List<SegOpcionE> segOpcions = new List<SegOpcionE>();
+
+	protected override void OnInitialized()
+	{
+		//INICIO - JVALVERDE - 06/06/2023  PERMISOS CONTROLES
+		segOpcions = new Bus.Clinica.Seguridad.Seguridad().CargarPermisos(new SegOpcionE(4, 102, "02/01/02", Convert.ToInt32(SessionUser(TypeSession.IdeUsuario).Result)));
+		//FIN - JVALVERDE - 06/06/2023  PERMISOS CONTROLES
+
+		oAuditoriaE.Dsctabla = "";
+		oAuditoriaE.Dsccampo = "";
+		oAuditoriaE.Idetransaccional = "";
+		oAuditoriaE.SelectCamposSeleccionados = new[] { "" };
+		oListAuditoria = new Bus.Clinica.Auditoria.Auditoria().ListaAuditorias(oAuditoriaE);
+
+		oBDatosE.Nombdatos = "";
+		oListBDatos = new Bus.Clinica.Auditoria.BDatos().ListaBasedatos(oBDatosE);
+
+		base.OnInitialized();
+	}
+
+	protected override void OnAfterRender(bool firstRender)
+	{
+		js.InvokeVoidAsync("fnActualizarTitulo", "Consulta de Auditoria");
+		js.InvokeVoidAsync("eliminarElementosHtml", segOpcions);
+
+		if (firstRender)
+		{
+			js.InvokeVoidAsync("eval", @"
+		          window.downloadFile = function(url, fileName) {
+		              var link = document.createElement('a');
+		              link.href = url;
+		              link.download = fileName;
+		              document.body.appendChild(link);
+		              link.click();
+		              document.body.removeChild(link);
+		          }");
+		}
+	}
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await js.InvokeVoidAsync("initializeSelect2");
+		}
+	}
+
+	private void Limpiar()
+	{
+		oAuditoriaE.Dsctabla = "";
+		oAuditoriaE.Dsccampo = "";
+	}
+
+	private async Task BuscarTablabd()
+	{
+		try
+		{
+			await js.InvokeAsync<string[]>("limpiarCampo", "");
+			if (oTablasbdE.Nomtablabd == null || oTablasbdE.Nomtablabd == "")
+			{ oTablasbdE.Nomtablabd = ""; }
+
+			oTablasbdE.Nomtablabd = oTablasbdE.Nomtablabd.ToUpper();
+			oTablasbdE.Nombasedatos = oBDatosE.Nombdatos;
+			oListTablasBd = new Bus.Clinica.Auditoria.Tablasbd().ListaTablasbd(oTablasbdE);
+		}
+		catch (Exception e)
+		{
+
+			Mensaje = e.ToString();
+			await js.InvokeVoidAsync("NotFoundSpinner", "msjError");}
+	}
+
+	private async Task BuscarCampos()
+	{
+		try
+		{
+			if (oTablasbdE.Nomtablabd == null || oTablasbdE.Nomtablabd == "")
+			{ oTablasbdE.Nomtablabd = ""; }
+			await js.InvokeAsync<string[]>("limpiarCampo", "");
+			oCamposE.NomTabla = oTablasbdE.Nomtablabd.ToUpper();
+			oCamposE.Nombasedatos = oBDatosE.Nombdatos;
+			oListaCampos = new List<CamposE>();
+			oListaCampos = new Bus.Clinica.Auditoria.Campos().ListaCampos(oCamposE);
+		}
+		catch (Exception e)
+		{
+			Mensaje = e.ToString();
+			await js.InvokeVoidAsync("NotFoundSpinner", "msjError");
+		}
+	}
+
+	private async Task BuscarAuditorias()
+	{
+		try
+		{
+			if (oBDatosE.Nombdatos == null || oBDatosE.Nombdatos == "") { oAuditoriaE.Dscbasedatos = ""; }
+			else { oAuditoriaE.Dscbasedatos = oBDatosE.Nombdatos; }
+
+			if (oTablasbdE.Nomtablabd == null || oTablasbdE.Nomtablabd == "") { oAuditoriaE.Dsctabla = ""; }
+			else { oAuditoriaE.Dsctabla = oTablasbdE.Nomtablabd; }
+
+			if (oCamposE.NomCampo == null || oCamposE.NomCampo == "") { oAuditoriaE.Dsccampo = ""; }
+			else { oAuditoriaE.Dsccampo = oCamposE.NomCampo; }
+
+			if (oAuditoriaE.Idetransaccional == null || oAuditoriaE.Idetransaccional == "") { oAuditoriaE.Idetransaccional = ""; }
+			else { oAuditoriaE.Idetransaccional = oAuditoriaE.Idetransaccional.ToUpper(); }
+
+			oAuditoriaE.SelectCamposSeleccionados = await ObtenerCamposSeleccionados();
+			oListAuditoria = new Bus.Clinica.Auditoria.Auditoria().ListaAuditorias(oAuditoriaE);
+		}
+		catch (Exception e)
+		{
+			Mensaje = e.ToString();
+		}
+	}
+
+	public async Task<string[]> ObtenerCamposSeleccionados()
+	{
+		try
+		{
+			camposSeleccionados = await js.InvokeAsync<string[]>("obtnerCamposSeleccionados", "");
+			return camposSeleccionados;
+		}
+		catch (Exception e)
+		{
+			Mensaje = e.ToString();
+			return camposSeleccionados;
+		}
+	}
+
+	private async Task Actualizarpagina()
+	{ await js.InvokeVoidAsync("locationreload"); }
+
+	async Task EnterBuscarTablabd_Tabla(KeyboardEventArgs e)
+	{
+		if (e.Code == null)
+		{			
+			await BuscarCampos();
+		}
+		else if(e.Code == "Enter" || e.Key == "Enter")
+		{
+			await BuscarTablabd();
+		}
+	}
+
+	private async Task ExportarExcel(int flgdescarga, string xNombreExcel, string xRutaDescarga)
+	{
+		int FilaCab = 4;
+		int FilaCuerpo = FilaCab + 1, ColumnaCuerpo = oListAuditoria.Count;
+		MemoryStream excelStream;
+		string fileUrl;
+
+		using (var workbook = new XLWorkbook())
+		{
+			var worksheet = workbook.Worksheets.Add("Honorarios Medicos"); //Nombre de la Hoja
+
+			//I-Contenido
+			//I-Cabecera			
+			var RangoCab_Hoja = worksheet.Range(2, 1, 2, 9).Merge();
+			RangoCab_Hoja.Value = "Consulta de Auditoria";
+			RangoCab_Hoja.Style.Fill.BackgroundColor = XLColor.FromHtml("#7ebf2a"); //Indicamos el color de background
+			RangoCab_Hoja.Style.Font.FontSize = 17; //Indicamos el tamaño de la fuente
+			RangoCab_Hoja.Style.Font.Bold = true;
+			RangoCab_Hoja.Style.Font.FontColor = XLColor.FromHtml("#ffffff");
+			RangoCab_Hoja.Style.Font.SetFontName("Calibri"); //Fuente
+			RangoCab_Hoja.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+			
+			//I-Logo
+			string relativePath;
+			relativePath = @"wwwroot\images\csf.jpg";
+			string basePath = AppDomain.CurrentDomain.BaseDirectory;
+			string fullPath = Path.GetFullPath(Path.Combine(basePath, relativePath));
+			worksheet.AddPicture(fullPath).MoveTo(worksheet.Cell(2, 10)).Scale(0.1); // Imagen
+
+
+			//F-Logo
+			//F-Cabecera
+
+			//I-Cuerpo_Tabla
+			worksheet.Cell(FilaCab, 1).Value = "Codigo";
+			worksheet.Cell(FilaCab, 2).Value = "Cod. User";
+			worksheet.Cell(FilaCab, 3).Value = "Nombre Usuario";
+			worksheet.Cell(FilaCab, 4).Value = "Maquina";
+			worksheet.Cell(FilaCab, 5).Value = "Tabla";
+			worksheet.Cell(FilaCab, 6).Value = "Campo";
+			worksheet.Cell(FilaCab, 7).Value = "Valor Antiguo";
+			worksheet.Cell(FilaCab, 8).Value = "Valor Nuevo";
+			worksheet.Cell(FilaCab, 9).Value = "Fecha Modificación";
+			worksheet.Cell(FilaCab, 10).Value = "Tipo";
+			worksheet.Cell(FilaCab, 11).Value = "Usuario BD";
+						
+			for (int i = 1; ColumnaCuerpo > i - 1; i++)
+			{
+				worksheet.Cell(FilaCuerpo, 1).Value = oListAuditoria[i - 1].Idetransaccional;
+				worksheet.Cell(FilaCuerpo, 2).Value = oListAuditoria[i - 1].Ideusuariosistema;
+				worksheet.Cell(FilaCuerpo, 3).Value = oListAuditoria[i - 1].Dscusuariosistema;
+				worksheet.Cell(FilaCuerpo, 4).Value = oListAuditoria[i - 1].Dscestacion;
+				worksheet.Cell(FilaCuerpo, 5).Value = oListAuditoria[i - 1].Dsctabla;
+				worksheet.Cell(FilaCuerpo, 6).Value = oListAuditoria[i - 1].Dsccampo;
+				worksheet.Cell(FilaCuerpo, 7).Value = oListAuditoria[i - 1].Dscvalorantiguo;
+				worksheet.Cell(FilaCuerpo, 8).Value = oListAuditoria[i - 1].Dscvalornuevo;
+				worksheet.Cell(FilaCuerpo, 9).Value = oListAuditoria[i - 1].Fechora.ToString("yyyy/MM/dd HH:mm");
+				worksheet.Cell(FilaCuerpo, 10).Value = oListAuditoria[i - 1].Codaccion;
+				worksheet.Cell(FilaCuerpo, 11).Value = oListAuditoria[i - 1].Dscusuariobd;
+
+				worksheet.Range(FilaCuerpo, 1, FilaCuerpo, 11).Style.Border.BottomBorder = XLBorderStyleValues.Dotted;
+				worksheet.Range(FilaCuerpo, 1, FilaCuerpo, 11).Style.Border.BottomBorderColor = XLColor.Black;
+				FilaCuerpo++;
+			}
+			//F-Cuerpo_Tabla
+			//F-Contenido
+
+			//I-Estilo Cabecera_Tabla
+			var RangoCab = worksheet.Range(FilaCab, 1, FilaCab, 11); //Selecciona Rango
+			RangoCab.Style.Border.RightBorder = XLBorderStyleValues.Medium;
+			RangoCab.Style.Border.RightBorderColor = XLColor.White;
+			RangoCab.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; //Alineamos horizontalmente
+			RangoCab.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;  //Alineamos verticalmente
+			RangoCab.Style.Fill.BackgroundColor = XLColor.FromHtml("#124498"); //Indicamos el color de background
+			RangoCab.Style.Font.FontSize = 13; //Indicamos el tamaño de la fuente
+			RangoCab.Style.Font.Bold = true;
+			RangoCab.Style.Font.FontColor = XLColor.FromHtml("#ffffff");
+			RangoCab.Style.Font.SetFontName("Sitka Display Semibold"); //Fuente
+
+			worksheet.Columns(1, 11).AdjustToContents(); //Ajustamos el ancho de las columnas para que se muestren todos los contenidos
+           
+			// Guardar el archivo Excel en un MemoryStream
+			excelStream = new MemoryStream();
+			workbook.SaveAs(excelStream);
+
+			if (flgdescarga == 1) //Guardar el archivo para que sea enviado por correo
+			{
+				workbook.SaveAs(xRutaDescarga + xNombreExcel);//Ruta para guardar
+			}
+
+			// Obtener la URL del archivo Excel
+			if (flgdescarga == 0)
+			{
+				xNombreExcel = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss").Replace("/", "").Replace(":", "").Replace(" ", "") + ".xlsx"; //Nombre del archivo
+				fileUrl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{Convert.ToBase64String(excelStream.ToArray())}";
+				OnAfterRender(true);//crea la funcion
+				await js.InvokeVoidAsync("downloadFile", fileUrl, xNombreExcel);
+			}
+		}
+	}
+}
+
+<script>
+	$(document).ready(function () {
+		limpiarCampo("");
+		initializeSelect2();
+	});
+
+	window.obtnerCamposSeleccionados = (param) => {
+		let camposSeleccionados = $("#selectCampos").val();
+		return camposSeleccionados;
+	};
+
+	window.limpiarCampo = (param) => {
+	    $("#selectCampos").val(null).trigger("change");
+		initializeSelect2();
+	};
+	
+</script>
+
+<!--I. Container Main-->
+<div class="bg-light">
+	<div class="form-bg">
+		<div class="row align-items-center d-print-none form-toolbar">
+			<div>
+				<button id="btnExcel" class="btn btn-outline-success col-lg-1 col-2" @onclick="(()=>ExportarExcel(0,NombreExcel,RutaDescarga))">
+					<span class="fa-solid fa-file-excel"></span><span id="TitleView"> Excel</span>
+				</button>
+			</div>
+		</div>
+
+		<div>
+			<div class="row group align-items-center">
+
+				<!--I.BDatos-->
+				<div class="col-xl-1 col-lg-2 col-md-3 col-sm-12 col-xs-12 col-12">
+					<label>Base de Datos:</label>
+				</div>
+				<div class="col-xl-2 col-lg-10 col-md-9 col-sm-12 col-xs-12 col-12" style="border-radius:25px !important;">
+					<div class="DivSearchInput">
+						<div class="DivSearch" style="width:100%">
+							<select id="selectBDatos" class="form-select form-select-control" aria-label="Default select example" @bind="oBDatosE.Nombdatos">
+								<option value="" disabled selected>Seleccione una base de datos</option>
+								@foreach (var lista in oListBDatos)
+								{
+									<option value="@lista.Nombdatos">@lista.Nombdatos</option>
+								}
+							</select>
+						</div>
+					</div>
+				</div>
+				<!--F.BDatos-->
+
+				<!--I.Tabla-->
+				<div class="col-xl-1 col-lg-2 col-md-3 col-sm-12 col-xs-12 col-12">
+					<label>Tablas:</label>
+				</div>
+				<div class="col-xl-3 col-lg-10 col-md-9 col-sm-12 col-xs-12 col-12" style="border-radius:25px !important;">
+					<div class="DivSearchInput">
+						<div class="DivSearch" style="width:100%">
+							<input id="txtTabla" type="search" list="lstTablas" placeholder="Buscar por el Nombre de la tabla" @bind-value="oTablasbdE.Nomtablabd" @onkeyup="@EnterBuscarTablabd_Tabla">
+							<i id="idSearchTabla" class="fa-solid fa-magnifying-glass" role="button" @onclick="BuscarTablabd"></i>
+							<i id="idspinnerTabla" class="spinner-border text-success" tipo="spinner" role="spinbutton" style="display:none;">
+								<span class="visually-hidden">Loading...</span>
+							</i>
+							<datalist id="lstTablas">
+								@foreach (var lista in oListTablasBd)
+								{
+									<option>@lista.Nomtablabd</option>
+								}
+							</datalist>							
+						</div>
+					</div>
+				</div>
+				<!--F.Tabla-->
+				<!--I.Campos-->
+				<div class="col-xl-1 col-lg-2 col-md-3 col-sm-12 col-xs-12 col-12">
+					<label>Campos:</label>
+				</div>
+				<div class="col-xl-3 col-lg-10 col-md-9 col-sm-12 col-xs-12 col-12" style="border-radius:25px !important;">
+							<select id="selectCampos" class="form-control" multiple="multiple">
+								@* <option>Seleccione un campo</option> *@
+								@foreach (var lista in oListaCampos)
+								{
+									<option value="@lista.NomCampo" >@lista.NomCampo</option>
+								}
+							</select>				
+				</div>
+				<!--F.Campos-->				
+			</div>
+
+			<!--I.SEGUNDA SECCION-->
+			<div class="row group align-items-center">
+				<!--I.Valor-->
+				<div class="col-xl-1 col-lg-2 col-md-3 col-sm-12 col-xs-12 col-12">
+					<label>Valor:</label>
+				</div>
+				<div class="col-xl-2 col-lg-10 col-md-9 col-sm-12 col-xs-12 col-12" style="border-radius:25px !important;">
+					<div class="DivSearchInput">
+						<div class="DivSearch" style="width:100%">
+							<input id="id_valor1" type="search" @bind-value="oAuditoriaE.Idetransaccional">
+						</div>
+					</div>
+				</div>
+				<!--F.Valor-->
+				<!--I.Desde-->
+				<div class="col-xl-1 col-lg-2 col-md-3 col-sm-12 col-xs-12 col-12">
+					<label>Desde:</label>
+				</div>
+				<div class="col-xl-3 col-lg-10 col-md-9 col-sm-12 col-xs-12 col-12" style="border-radius:25px !important;">
+					<div class="DivSearchInput">
+						<div class="DivSearch" style="width:100%">
+							<input id="id_valor2" type="date" class="form form-control" @bind-value="oAuditoriaE.FecDesde">
+							<span class="omrs-input-helper"></span>
+						</div>
+					</div>
+				</div>
+				<!--F.Desde-->
+				<!--I.Hasta-->
+				<div class="col-xl-1 col-lg-2 col-md-3 col-sm-12 col-xs-12 col-12">
+					<label>Hasta:</label>
+				</div>
+				<div class="col-xl-3 col-lg-10 col-md-9 col-sm-12 col-xs-12 col-12" style="border-radius:25px !important;">
+					<div class="DivSearchInput">
+						<div class="DivSearch" style="width:100%">
+							<input id="id_valor3" type="date" class="form form-control" @bind-value="oAuditoriaE.FecHasta">
+							<span class="omrs-input-helper"></span>
+						</div>
+					</div>
+				</div>
+				<!--F.Hasta-->
+				<div class="col-xl-1 col-lg-2 col-md-3 col-sm-12 col-xs-12 col-12">
+					<i id="idSearchCampo1" class="fa-solid fa-magnifying-glass" role="button" @onclick="BuscarAuditorias"></i>
+				</div>
+			</div>
+			<!--F.SEGUNDA SECCION-->
+
+			<!--I.TABLA-->
+			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive">
+				<table class="table table-hover table-borderless">
+					<thead>
+						<tr class="table-primary">
+							<th class="text-center" style="width:5%;">Codigo</th>
+							<th class="text-center" style="width:5%">Cod. User</th>
+							<th class="text-center" style="width:15%">Nombre Usuario</th>
+							<th class="text-center" style="width:5%">Maquina</th>
+							<th class="text-center" style="width:10%">Tabla</th>
+							<th class="text-center" style="width:5%">Campo</th>
+							<th class="text-center" style="width:5%">Valor Antiguo</th>
+							<th class="text-center" style="width:5%">Valor Nuevo</th>
+							<th class="text-center" style="width:10%">Fecha Modificación</th>
+							<th class="text-center" style="width:3%">Tipo</th>
+							<th class="text-center" style="width:5%">Usuario BD</th>
+						</tr>
+					</thead>
+					<tbody>
+						@if (oListAuditoria != null)
+						{							
+							@foreach (var item in oListAuditoria)
+							{
+								<tr>
+									<td>@item.Idetransaccional</td>
+									<td>@item.Ideusuariosistema</td>
+									<td>@item.Dscusuariosistema</td>
+									<td>@item.Dscestacion</td>
+									<td class="text-center">@item.Dsctabla</td>
+									<td class="text-center">@item.Dsccampo</td>
+									<td class="text-center">@item.Dscvalorantiguo</td>
+									<td class="text-center">@item.Dscvalornuevo</td>
+									<td class="text-center">@item.Fechora.ToString("yyyy/MM/dd HH:mm")</td>
+									<td class="text-center">@item.Codaccion</td>
+									<td class="text-center">@item.Dscusuariobd</td>
+								</tr>
+							}
+
+							@* if (oListAuditoria.Count == 0)
+							{
+								<tr><td colspan="11" class="text-center">No se encontraron registros...</td></tr>	
+							} *@
+						}
+					</tbody>
+				</table>
+			</div>
+			<!--F.TABLA-->
+		</div>
+	</div>
+</div>
+<!--F. Container Main-->

@@ -1,0 +1,319 @@
+﻿@* ====================================================================================================
+@Copyright Clinica San Felipe S.A.C. 2024. Todos los derechos reservados.
+====================================================================================================
+MODIFICACIONES:
+Version     Fecha       Autor       Requerimiento
+ 1.0        29/02/2024  GLLUNCOR    REQ 2024-002288: Alquiler de consultorios
+==================================================================================================== *@
+
+@inherits Microsoft.AspNetCore.Components.ComponentBase
+@inject IJSRuntime js
+@using ClosedXML.Excel
+@using Ent.Sql.ClinicaE.GeneraE
+@using Ent.Sql.ClinicaE.MedicosE
+@using Ent.Sql.ClinicaE.ContratosE
+
+@code {
+    [Parameter] public tipButtonExportDetalle TipButtonExportDetalle { get; set; }
+    [Parameter] public bool IsButtonDisabled { get; set; } = false;
+    [Parameter] public bool Descargar { get; set; } = false;
+    [Parameter] public string NombreDescargar { get; set; } = "";
+    [Parameter] public string RutaDescarga { get; set; } = "";
+    [Parameter] public MedicosE DatosMedicos { get; set; }
+    [Parameter] public HisContratoconsultorioCabE DatosContrato { get; set; }
+    [Parameter] public List<HisContratoconsultorioadendaCabE> ListaAdendas { get; set; }
+    [Parameter] public List<HisDatospagosconsultoriosE> ListaPagos { get; set; }
+
+
+
+    [Parameter] public string IdButton { get; set; } = "";
+    [Parameter] public string IdIcono { get; set; } = "";
+    [Parameter] public string TipoButton { get; set; } = "";
+    [Parameter] public string IconoButtonEnabled { get; set; } = "";
+    [Parameter] public string TxtButtonEnabled { get; set; } = "";
+    [Parameter] public string IconoButtonDisabled { get; set; } = "";
+    [Parameter] public string TxtButtonDisabled { get; set; } = "";
+
+    protected override void OnInitialized()
+    {
+        @switch (TipButtonExportDetalle)
+        {
+            case (tipButtonExportDetalle.Excel):
+                if (string.IsNullOrEmpty(IdButton)) { IdButton = "IdButtonExportar"; }
+                if (string.IsNullOrEmpty(IdIcono)) { IdIcono = "idIcnExportar"; }
+                if (string.IsNullOrEmpty(TipoButton)) { TipoButton = "btn btn-outline-success"; }
+                if (string.IsNullOrEmpty(IconoButtonEnabled)) { IconoButtonEnabled = "fa-solid fa-file-excel"; }
+                if (string.IsNullOrEmpty(TxtButtonEnabled)) { TxtButtonEnabled = "Excel"; }
+                if (string.IsNullOrEmpty(IconoButtonDisabled)) { IconoButtonDisabled = "spinner-border spinner-border-sm"; }
+
+                if (string.IsNullOrEmpty(NombreDescargar)) { NombreDescargar = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss").Replace("/", "").Replace(":", "").Replace(" ", "") + ".xlsx"; }
+                if (string.IsNullOrEmpty(RutaDescarga)) { RutaDescarga = "C:\temp"; }
+                break;
+            case (tipButtonExportDetalle.PDF):
+                if (string.IsNullOrEmpty(IdButton)) { IdButton = "IdButtonPDF"; }
+                if (string.IsNullOrEmpty(IdIcono)) { IdIcono = "idIcnExportar"; }
+                if (string.IsNullOrEmpty(TipoButton)) { TipoButton = "btn btn-outline-danger"; }
+                if (string.IsNullOrEmpty(IconoButtonEnabled)) { IconoButtonEnabled = "fa-solid fa-file-pdf"; }
+                if (string.IsNullOrEmpty(TxtButtonEnabled)) { TxtButtonEnabled = "PDF"; }
+                if (string.IsNullOrEmpty(IconoButtonDisabled)) { IconoButtonDisabled = "spinner-border spinner-border-sm"; }
+
+                if (string.IsNullOrEmpty(NombreDescargar)) { NombreDescargar = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss").Replace("/", "").Replace(":", "").Replace(" ", "") + ".pdf"; }
+                if (string.IsNullOrEmpty(RutaDescarga)) { RutaDescarga = "C:\temp"; }
+                break;
+        }
+    }
+
+    public enum tipButtonExportDetalle
+    {
+        PDF = 1,
+        Excel = 2,
+    }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await js.InvokeVoidAsync("eval", @"
+                window.downloadFile = function(url, fileName) {
+                    var link = document.createElement('a');
+                    link.href = url;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);}"
+            );
+        }
+    }
+
+    private async Task ExportarPDF()
+    { await js.InvokeVoidAsync("btnImprimir"); }
+
+    private async Task ExportarExcel()
+    {
+        try
+        {
+            string NombreHoja = "Hoja1";
+
+            MemoryStream excelStream;
+            MemoryStream pdfStream;
+
+            string fileUrl = "";
+
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add(NombreHoja); //Nombre de la Hoja
+
+
+                var Estilo = workbook.Style;
+                Estilo.Border.BottomBorder = XLBorderStyleValues.Medium;
+                Estilo.Border.BottomBorderColor = XLColor.White;
+                Estilo.Border.RightBorder = XLBorderStyleValues.Medium;
+                Estilo.Border.RightBorderColor = XLColor.White;
+
+                Estilo.Fill.BackgroundColor = XLColor.FromHtml("#7ebf2a"); // Indicamos el color de fondo
+                Estilo.Font.FontSize = 12; // Indicamos el tamaño de la fuente
+                Estilo.Font.Bold = true;
+                Estilo.Font.FontColor = XLColor.FromHtml("#ffffff");
+                Estilo.Font.SetFontName("Calibri"); // Fuente
+
+                // Datos
+                worksheet.Cell(1, 1).Value = "Datos del Médico:";
+                worksheet.Cell(1, 1).Style = Estilo;
+                worksheet.Cell(1, 2).Value = DatosMedicos.NombresMedico;
+
+                worksheet.Cell(2, 1).Value = "Tipo Documento:";
+                worksheet.Cell(2, 1).Style = Estilo;
+                worksheet.Cell(3, 1).Value = DatosMedicos.TipDocIdentidad;
+
+                worksheet.Cell(2, 3).Value = "N. Documento:";
+                worksheet.Cell(2, 3).Style = Estilo;
+                worksheet.Cell(3, 3).Value = DatosMedicos.DocIdentidad;
+
+                worksheet.Cell(2, 5).Value = "RUC";
+                worksheet.Cell(2, 5).Style = Estilo;
+                worksheet.Cell(3, 5).Value = DatosMedicos.Ruc;
+
+                worksheet.Cell(2, 7).Value = "CMP";
+                worksheet.Cell(2, 7).Style = Estilo;
+                worksheet.Cell(3, 7).Value = DatosMedicos.CMP;
+
+                worksheet.Cell(2, 9).Value = "RNE";
+                worksheet.Cell(2, 9).Style = Estilo;
+                worksheet.Cell(3, 9).Value = DatosMedicos.RNE;
+
+                worksheet.Cell(2, 11).Value = "Correo";
+                worksheet.Cell(2, 11).Style = Estilo;
+                worksheet.Cell(3, 11).Value = DatosMedicos.DscEmail;
+
+                worksheet.Cell(5, 1).Value = "Celular";
+                worksheet.Cell(5, 1).Style = Estilo;
+                worksheet.Cell(6, 1).Value = DatosMedicos.Telefono;
+
+                worksheet.Cell(5, 3).Value = "Direccion";
+                worksheet.Cell(5, 3).Style = Estilo;
+                worksheet.Cell(6, 3).Value = DatosMedicos.DscDireccion;
+
+                worksheet.Cell(5, 5).Value = "Nombre de Contacto";
+                worksheet.Cell(5, 5).Style = Estilo;
+                worksheet.Cell(6, 5).Value = DatosContrato.DscContacto;
+
+                worksheet.Cell(5, 7).Value = "Telefono de Contacto";
+                worksheet.Cell(5, 7).Style = Estilo;
+                worksheet.Cell(6, 7).Value = DatosContrato.TelContacto;
+
+                worksheet.Cell(5, 9).Value = "Email de Contacto";
+                worksheet.Cell(5, 9).Style = Estilo;
+                worksheet.Cell(6, 9).Value = DatosContrato.EmailContacto;
+
+                worksheet.Cell(8, 1).Value = "Datos del Contrato:";
+                worksheet.Cell(8, 1).Style = Estilo;
+
+                worksheet.Cell(9, 1).Value = "Renta Mensual";
+                worksheet.Cell(9, 1).Style = Estilo;
+                worksheet.Cell(10, 1).Value = DatosContrato.CntRentaMensual;
+
+                worksheet.Cell(9, 3).Value = "Moneda";
+                worksheet.Cell(9, 3).Style = Estilo;
+                worksheet.Cell(10, 3).Value = DatosContrato.DscMoneda;
+
+                worksheet.Cell(9, 5).Value = "Sede";
+                worksheet.Cell(9, 5).Style = Estilo;
+                worksheet.Cell(10, 5).Value = DatosContrato.DscSede;
+
+                worksheet.Cell(9, 7).Value = "Ubicacion";
+                worksheet.Cell(9, 7).Style = Estilo;
+                worksheet.Cell(10, 7).Value = DatosContrato.DscTorre;
+
+                worksheet.Cell(9, 9).Value = "Forma de Pago";
+                worksheet.Cell(9, 9).Style = Estilo;
+                worksheet.Cell(10, 9).Value = DatosContrato.DscTipPago;
+
+                worksheet.Cell(9, 11).Value = "Comprobante";
+                worksheet.Cell(9, 11).Style = Estilo;
+                worksheet.Cell(10, 11).Value = DatosContrato.TipComprobante;
+
+                worksheet.Cell(11, 1).Value = "Inicio de Contrato";
+                worksheet.Cell(11, 1).Style = Estilo;
+                worksheet.Cell(12, 1).Value = DatosContrato.FecInicioContrato;
+
+                worksheet.Cell(11, 3).Value = "Fin de Contrato";
+                worksheet.Cell(11, 3).Style = Estilo;
+                worksheet.Cell(12, 3).Value = DatosContrato.FecFinContrato;
+
+                worksheet.Cell(11, 5).Value = "Total de Horas";
+                worksheet.Cell(11, 5).Style = Estilo;
+                worksheet.Cell(12, 5).Value = DatosContrato.CntTotalHoras;
+
+                worksheet.Cell(11, 7).Value = "Estado";
+                worksheet.Cell(11, 7).Style = Estilo;
+                worksheet.Cell(12, 7).Value = DatosContrato.DscEstContratoConsultorio;
+
+                worksheet.Cell(11, 9).Value = "Observaciones";
+                worksheet.Cell(11, 9).Style = Estilo;
+                worksheet.Cell(12, 9).Value = DatosContrato.DscObservaciones;
+
+                worksheet.Cell(13, 11).Value = "Beneficios";
+                worksheet.Cell(13, 11).Style = Estilo;
+                worksheet.Cell(14, 11).Value = DatosContrato.DscContratoBeneficio;
+
+                worksheet.Cell(16, 1).Value = "Lista de Adendas";
+                worksheet.Cell(16, 1).Style = Estilo;
+
+                int Fila = 17;
+                int FilaInicio = Fila;
+
+                worksheet.Cell(Fila, 1).Value = "Fecha de Creación";
+                worksheet.Cell(Fila, 2).Value = "Usuario Registra";
+
+                if (ListaAdendas != null && ListaAdendas.Count > 0)
+                {
+                    Fila++;
+                    foreach (var Adenda in ListaAdendas)
+                    {
+                        worksheet.Cell(Fila, 1).Value = Adenda.FecRegistro;
+                        worksheet.Cell(Fila, 2).Value = Adenda.DscUsrRegistra;
+                        Fila++;
+                    }
+                }
+
+                var RangoCab = worksheet.Range(FilaInicio, 1, FilaInicio, 2); //Selecciona Rango
+                RangoCab.Style.Border.RightBorder = XLBorderStyleValues.Medium;
+                RangoCab.Style.Border.RightBorderColor = XLColor.White;
+                RangoCab.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; //Alineamos horizontalmente
+                RangoCab.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;  //Alineamos verticalmente
+                RangoCab.Style.Fill.BackgroundColor = XLColor.FromHtml("#124498"); //Indicamos el color de background
+                RangoCab.Style.Font.FontSize = 13; //Indicamos el tamaño de la fuente
+                RangoCab.Style.Font.Bold = true;
+                RangoCab.Style.Font.FontColor = XLColor.FromHtml("#ffffff");
+                RangoCab.Style.Font.SetFontName("Sitka Display Semibold"); //Fuente
+
+                Fila = Fila + 2;
+                worksheet.Cell(Fila, 1).Value = "Lista de Pagos";
+                worksheet.Cell(Fila, 1).Style = Estilo;
+
+                Fila++;
+                FilaInicio = Fila;
+
+                worksheet.Cell(Fila, 1).Value = "Vence";
+                worksheet.Cell(Fila, 2).Value = "N° de Comprobante";
+                worksheet.Cell(Fila, 3).Value = "Forma Pago";
+                worksheet.Cell(Fila, 4).Value = "Monto Comprobante	";
+                worksheet.Cell(Fila, 5).Value = "Monto Pagar";
+                worksheet.Cell(Fila, 6).Value = "Canal de Pago";
+                worksheet.Cell(Fila, 7).Value = "Estado";
+
+                if (ListaPagos != null)
+                {
+                    Fila++;
+                    foreach (var Pago in ListaPagos)
+                    {
+                        worksheet.Cell(Fila, 1).Value = Pago.FecVencimiento;
+                        worksheet.Cell(Fila, 2).Value = Pago.CodComprobante;
+                        worksheet.Cell(Fila, 3).Value = Pago.TipPago;
+                        worksheet.Cell(Fila, 4).Value = Pago.CntRentaMensual.ToString("C");
+                        worksheet.Cell(Fila, 5).Value = Pago.CntPagar.ToString("C");
+                        worksheet.Cell(Fila, 6).Value = Pago.OrigenPago;
+                        worksheet.Cell(Fila, 7).Value = Pago.Estado;
+                        Fila++;
+                    }
+                }
+
+                var RangoCab2 = worksheet.Range(FilaInicio, 1, FilaInicio, 7); //Selecciona Rango
+                RangoCab2.Style.Border.RightBorder = XLBorderStyleValues.Medium;
+                RangoCab2.Style.Border.RightBorderColor = XLColor.White;
+                RangoCab2.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; //Alineamos horizontalmente
+                RangoCab2.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;  //Alineamos verticalmente
+                RangoCab2.Style.Fill.BackgroundColor = XLColor.FromHtml("#124498"); //Indicamos el color de background
+                RangoCab2.Style.Font.FontSize = 13; //Indicamos el tamaño de la fuente
+                RangoCab2.Style.Font.Bold = true;
+                RangoCab2.Style.Font.FontColor = XLColor.FromHtml("#ffffff");
+                RangoCab2.Style.Font.SetFontName("Sitka Display Semibold"); //Fuente
+
+                worksheet.Columns(1, 11).AdjustToContents(); //Ajustamos el ancho de las columnas para que se muestren todos los contenidos
+
+                excelStream = new MemoryStream();
+                workbook.SaveAs(excelStream);
+
+                if (Descargar)
+                {
+                    fileUrl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{Convert.ToBase64String(excelStream.ToArray())}";
+                    OnAfterRenderAsync(true);//crea la funcion
+                    await js.InvokeVoidAsync("downloadFile", fileUrl, NombreDescargar);
+                }
+            }
+        }
+        catch (Exception ex) { }
+    }
+}
+
+
+@switch (TipButtonExportDetalle)
+{
+    case tipButtonExportDetalle.Excel:
+        <ButtonGeneral IdButton=@IdButton IdIcono=@IdIcono IsButtonDisabled=@IsButtonDisabled TipoButton=@TipoButton IconoButtonEnabled=@IconoButtonEnabled TxtButtonEnabled=@TxtButtonEnabled IconoButtonDisabled=@IconoButtonDisabled TxtButtonDisabled=@TxtButtonDisabled OnClick="ExportarExcel" />
+        break;
+    case tipButtonExportDetalle.PDF:
+        <ButtonGeneral IdButton=@IdButton IdIcono=@IdIcono IsButtonDisabled=@IsButtonDisabled TipoButton=@TipoButton IconoButtonEnabled=@IconoButtonEnabled TxtButtonEnabled=@TxtButtonEnabled IconoButtonDisabled=@IconoButtonDisabled TxtButtonDisabled=@TxtButtonDisabled OnClick="ExportarPDF" />
+        break;
+}

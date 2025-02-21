@@ -1,0 +1,572 @@
+﻿@using Ent.Sql.ClinicaE.MedicosE
+@using Ent.Sql.ClinicaE.EspecialidadesE
+@using Ent.Sql.ClinicaE.OtrosE
+
+
+<div class="container" style="background-color: #FFF; width: 100%; min-height:300px; border:1px solid #b3d6ffff; border-radius:8px; padding:10px 10px 0px 0px; margin-bottom:5px;">
+
+    <div class="row">
+        @{
+            bool ActNoa = false;
+            if (oMedicoE.FlagEstado == true)
+            {
+                ActNoa = false;
+            }
+            else
+            {
+                ActNoa = true;
+            }
+        }
+        <div class="col-sm-12 col-md-6  col-lg-4">
+            <fieldset class="omrs-fieldset">
+                <legend>Seguro de Pensiones</legend>
+
+                <!--I.FlagAfectoSnp-->
+                <div class="col 2">
+                    <div class="form-check">
+                        <input class="form-check-input" disabled="@ActNoa" name="flexRadioDefault" type="checkbox" id="chkFlagAfectoSnp"
+                               @bind="@oMedicoE.FlagAfectoSnp" @oninput="ChkFlagAfectoSnpChanged">
+                        <label class="form-check-label" for="chkFlagAfectoSnp">
+                            Afecto a SNP (Seguro Nacional )desde
+                        </label>
+                    </div>
+                </div>
+                <!--F.FlagAfectoSnp-->
+
+                <div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 0px 0px;">
+                    <div class="col-sm-6 col-md-6  col-lg-6">
+                        <!--I.FechaSnp-->
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined">
+                                @* @{
+                                var FecSnp = "";
+                                if (oMedicoE.FechaSnp == Convert.ToDateTime("01/01/1900 12:00:00 AM") || Convert.ToString(oMedicoE.FechaSnp) == "")
+                                {
+                                FecSnp = "";
+                                }
+                                else
+                                {
+                                FecSnp = Convert.ToString(oMedicoE.FechaSnp).Substring(0, 10);
+                                }
+                                } *@
+                                <input id="dtFechaSnp" disabled="@ActNoa" class="form-control" type="date" required="" value="@(oMedicoE.FechaSnp == DateTime.Parse("1900-01-01") ? "": oMedicoE.FechaSnp.ToString("yyyy-MM-dd"))" @oninput="@(e=>ActualizarFecha(e,"FechaSnp"))"> @*@bind-value="@oMedicoE.FechaSnp">*@
+                                <span class="omrs-input-label">Fecha</span>
+                                @*<span class="omrs-input-helper"></span>*@
+                            </label>
+                        </div>
+                        <!--F.FechaSnp-->
+                    </div>
+                    <div class="col-sm-6 col-md-6  col-lg-6">
+                        <!--I.PorcentajeSnp-->
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined">
+                                <input id="txtPorcentajeSnp" disabled="@ActNoa" required="" @bind-value="@oMedicoE.PorcentajeSnp" type="number" min="0" step="0.001" pattern="\d*"
+                                       onkeyup="if(this.value<0){this.value= this.value * -1}">
+                                <span class="omrs-input-label">% de Ret</span>
+                                @* <span class="omrs-input-helper"></span>*@
+                            </label>
+                        </div>
+                    </div>
+                    <!--F.PorcentajeSnp-->
+                </div>
+
+
+
+                <!--I.FlagAfectospp-->
+                <div class="col 2">
+                    <div class="form-check">
+                        <input class="form-check-input" disabled="@ActNoa" name="flexRadioDefault" type="checkbox" id="chkFlagAfectospp"
+                               @bind="@oMedicoE.FlagAfectoSpp" @oninput="ChkFlagAfectoSppChanged">
+                        <label class="form-check-label" for="chkFlagAfectospp">
+                            Afecto a SPP (Seguro Privado) desde
+                        </label>
+                    </div>
+                </div>
+                <!--F.FlagAfectospp-->
+
+                <div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 0px 0px;">
+                    <div class="col-sm-6 col-md-6  col-lg-6">
+                        <!--I.FechaSpp-->
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined">
+                                @* @{
+                                var FecSpp = "";
+                                if (Convert.ToString(oMedicoE.FechaSpp) == "01/01/1900 12:00:00 AM" || Convert.ToString(oMedicoE.FechaSpp) == "")
+                                {
+                                FecSpp = "";
+                                }
+                                else
+                                {
+                                FecSpp = Convert.ToString(oMedicoE.FechaSpp).Substring(0, 10);
+                                }
+                                } *@
+                                <input id="dtFechaSpp" disabled="@ActNoa" class="form-control" type="date" required="" value="@(oMedicoE.FechaSpp == DateTime.Parse("1900-01-01") ? "": oMedicoE.FechaSpp.ToString("yyyy-MM-dd"))" @oninput="@(e=>ActualizarFecha(e,"FechaSpp"))"> @*@bind-value="@oMedicoE.FechaSpp">*@
+                                <span class="omrs-input-label">Fecha</span>
+                                @* <span class="omrs-input-helper"></span>*@
+                            </label>
+                        </div>
+                        <!--F.FechaSpp-->
+                    </div>
+
+                    <div class="col-sm-6 col-md-6  col-lg-6">
+                        <!--I.PorcentajeSpp-->
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined">
+                                <input id="txtPorcentajeSpp" disabled="@ActNoa" required="" @bind-value="@oMedicoE.PorcentajeSpp" type="number" min="0" step="0.001" pattern="\d*"
+                                       onkeyup="if(this.value<0){this.value= this.value * -1}">
+                                <span class="omrs-input-label">% de Ret</span>
+                                @*<span class="omrs-input-helper"></span>*@
+                            </label>
+                        </div>
+                    </div>
+                    <!--F.PorcentajeSpp-->
+
+                </div>
+
+
+                <!--I.CodAfp-->
+                <div class="form-floating mb-3">
+                    <select class="form-select" disabled="@ActNoa" id="lstCodAfp" aria-label="Sexo" @bind="@oMedicoE.CodAfp">
+                        @foreach (var item in oListaTablasAFP)
+                        {
+                            <option value="@item.Codigo">@item.Nombre</option>
+                        }
+                    </select>
+                    <label for="lstCodAfp">AFP</label>
+                </div>
+                <!--F.CodAfp-->
+
+                <div class="col-sm-6 col-md-6  col-lg-6">
+                    <!--I.Cuspp-->
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined">
+                            <input id="txtCuspp" disabled="@ActNoa" required="" @bind-value="@oMedicoE.Cuspp" maxlength="20">
+                            <span class="omrs-input-label">Nro de Afiliado</span>
+                            @*<span class="omrs-input-helper"></span>*@
+                        </label>
+                    </div>
+                    <!--F.Cuspp-->
+                </div>
+
+
+            </fieldset>
+
+
+        </div>
+
+        <div class="col-sm-12 col-md-6  col-lg-4">
+
+
+            <fieldset class="omrs-fieldset">
+                <legend>Pronto Pago</legend>
+
+                <!--I.FlagAfectoProntoPago-->
+                <div class="col 6">
+                    <div class="form-check">
+                        <input class="form-check-input" disabled="@ActNoa" type="checkbox" id="chkFlagAfectoProntoPago" @bind="@oMedicoE.FlagAfectoProntoPago">
+                        <label class="form-check-label" for="chkFlagAfectoProntoPago">
+                            Afecto a Pronto Pago
+                        </label>
+                    </div>
+                </div>
+                <!--F.FlagAfectoProntoPago-->
+
+                <div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 0px 0px;">
+                    <div class="col-sm-12 col-md-6  col-lg-6">
+                        <!--I.PorcentajeProntoPago-->
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined">
+                                <input id="txtPorcentajeProntoPago" disabled="@ActNoa" required="" @bind-value="@oMedicoE.PorcentajeProntoPago" type="number" min="0" step="0.001" pattern="\d*"
+                                       onkeyup="if(this.value<0){this.value= this.value * -1}">
+                                <span class="omrs-input-label">% Pronto pago</span>
+                                @*<span class="omrs-input-helper"></span>*@
+                            </label>
+                        </div>
+                    </div>
+                    <!--F.PorcentajeProntoPago-->
+                    <!--I.FechaProntoPago-->
+                    <div class="col-sm-12 col-md-12  col-lg-6">
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined">
+                                @*  @{
+                                var FecPpp = "";
+                                if (Convert.ToString(oMedicoE.FechaProntoPago) == "01/01/1900 12:00:00 AM" || Convert.ToString(oMedicoE.FechaProntoPago) == "")
+                                {
+                                FecPpp = "";
+                                }
+                                else
+                                {
+                                FecPpp = Convert.ToString(oMedicoE.FechaProntoPago).Substring(0, 10);
+                                }
+                                } *@
+                                <input id="dtFechaProntoPago" disabled="@ActNoa" class="form-control" type="date" required="" value="@(oMedicoE.FechaProntoPago == DateTime.Parse("1900-01-01") ? "" : oMedicoE.FechaProntoPago.ToString("yyyy-MM-dd"))" @oninput="@(e=>ActualizarFecha(e,"FechaProntoPago"))"> @*@bind-value="@oMedicoE.FechaProntoPago"*@
+                                <span class="omrs-input-label">Fecha</span>
+                                @*<span class="omrs-input-helper"></span>*@
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 0px 0px;">
+                    <!--F.FechaProntoPago-->
+                    <!--I.PorcentajeRetencion-->
+                    <div class="col-sm-12 col-md-12  col-lg-6">
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined">
+                                <input id="txtPorcentajeRetencion" disabled="@ActNoa" required="" @bind-value="@oMedicoE.PorcentajeRetencion" type="number" min="0" step="0.001" pattern="\d*"
+                                       onkeyup="if(this.value<0){this.value= this.value * -1}">
+                                <span class="omrs-input-label">% de Retención</span>
+                                @*<span class="omrs-input-helper"></span>*@
+                            </label>
+                        </div>
+                    </div>
+                    <!--F.PorcentajeRetencion-->
+                    <!--I.XXX-->
+                    <div class="col-sm-12 col-md-12  col-lg-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="flexCheckRNormal" disabled>
+                            <label class="form-check-label" for="flexCheckRNormal">
+                                R.Normal
+                            </label>
+                        </div>
+                    </div>
+                    <!--F.XXX-->
+                </div>
+
+
+            </fieldset>
+
+
+
+
+
+
+            <div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 0px 0px;">
+
+                <div class="col-sm-12 col-md-6  col-lg-6">
+
+                    <fieldset class="omrs-fieldset">
+                        <legend>Fonavi</legend>
+
+
+
+                        <!--I.FlagAfectoFonavi-->
+                        <div class="col 2">
+                            <div class="form-check">
+                                <input class="form-check-input" disabled="@ActNoa" type="checkbox" value="" id="chkFlagAfectoFonavi" @bind="@oMedicoE.FlagAfectoFonavi">
+                                <label class="form-check-label" for="chkFlagAfectoFonavi">
+                                    Afecto a Fonavi desde
+                                </label>
+                            </div>
+                        </div>
+                        <!--F.FlagAfectoFonavi-->
+
+
+                        <div class="col-sm-12 col-md-12  col-lg-12">
+                            <!--I.FechaFonavi-->
+                            <div class="omrs-input-group">
+                                <label class="omrs-input-underlined">
+                                    @* @{
+                                    var FecFon = "";
+                                    if (Convert.ToString(oMedicoE.FechaFonavi) == "01/01/1900 12:00:00 AM" || Convert.ToString(oMedicoE.FechaFonavi) == "")
+                                    {
+                                    FecFon = "";
+                                    }
+                                    else
+                                    {
+                                    FecFon = Convert.ToString(oMedicoE.FechaFonavi).Substring(0, 10);
+                                    }
+                                    } *@
+                                    <input id="dtFechaFonavi" disabled="@ActNoa" class="form-control" type="date" required="" value="@(oMedicoE.FechaFonavi == DateTime.Parse("1900-01-01") ? "": oMedicoE.FechaFonavi.ToString("yyyy-MM-dd"))" @oninput="@(e=>ActualizarFecha(e,"FechaFonavi"))">@* @bind-value="@oMedicoE.FechaFonavi">*@
+                                    <span class="omrs-input-label">Fecha</span>
+
+                                    @*<span class="omrs-input-helper"></span>*@
+                                </label>
+
+
+                            </div>
+                        </div>
+                        <!--F.FechaFonavi-->
+
+
+                    </fieldset>
+
+                    @*    <div class="omrs-input-group">
+                    <label class="omrs-input-underlined">
+                    <input type="date" required="" value="@(oMedicoE.FechaFonavi == DateTime.Parse("1900-01-01") ? "": oMedicoE.FechaFonavi.ToString("yyyy-MM-dd"))" @oninput="@(e=>ActualizarFecha(e,"FechaFonavi"))" />
+                    <span class="omrs-input-label">Fecha</span>
+                    </label>
+                    </div> *@
+
+
+                </div>
+
+                <div class="col-sm-12 col-md-6  col-lg-6">
+
+                    <fieldset class="omrs-fieldset">
+                        <legend>Cuarta categoría</legend>
+
+
+
+                        <!--I.FlagAfectoCuarta-->
+                        <div class="col 2">
+                            <div class="form-check">
+                                <input class="form-check-input" disabled="@ActNoa" type="checkbox" value="" id="chkFlagAfectoCuarta" @bind="@oMedicoE.FlagAfectoCuarta">
+                                <label class="form-check-label" for="chkFlagAfectoCuarta">
+                                    Afecto a cuarta desde
+                                </label>
+                            </div>
+                        </div>
+                        <!--F.FlagAfectoCuarta-->
+
+
+                        <div class="col-sm-12 col-md-12  col-lg-12">
+                            <!--I.FechaCuarta-->
+                            <div class="omrs-input-group">
+                                <label class="omrs-input-underlined">
+                                    @* @{
+                                    var FecCua = "";
+                                    if (Convert.ToString(oMedicoE.FechaCuarta) == "01/01/1900 12:00:00 AM" || Convert.ToString(oMedicoE.FechaCuarta) == "")
+                                    {
+                                    FecCua = "";
+                                    }
+                                    else
+                                    {
+                                    FecCua = Convert.ToString(oMedicoE.FechaCuarta).Substring(0, 10);
+                                    }
+                                    } *@
+                                    <input id="dtFechaCuarta" disabled="@ActNoa" class="form-control" type="date" required="" value="@(oMedicoE.FechaCuarta == DateTime.Parse("1900-01-01") ? "": oMedicoE.FechaCuarta.ToString("yyyy-MM-dd"))" @oninput="@(e=>ActualizarFecha(e,"FechaCuarta"))"> @*@bind-value="@oMedicoE.FechaCuarta">*@
+                                    <span class="omrs-input-label">Fecha</span>
+                                    @* <span class="omrs-input-helper"></span>*@
+                                </label>
+                            </div>
+                        </div>
+                        <!--F.FechaCuarta-->
+                    </fieldset>
+                </div>
+            </div>
+            @* <div class="row">
+                <!--I.Email-->
+                <div class="omrs-input-group">
+                    <label class="omrs-input-underlined">
+                        <input id="txtEmail" disabled="@ActNoa" required="" @bind-value="@oMedicoE.Email" maxlength="100">
+                        <span class="omrs-input-label">E-mail</span>
+                        <span class="omrs-input-helper"></span>
+                    </label>
+                </div>
+                <!--F.Email-->
+            </div> *@
+
+        </div>
+
+
+
+        <div class="col-sm-12 col-md-6  col-lg-4">
+
+            <fieldset class="omrs-fieldset">
+                <!--I.FlgPlanilla-->
+                <div class="col 2">
+                    <div class="form-check">
+                        <input class="form-check-input" disabled="@ActNoa" type="checkbox" id="chkFlgPlanilla" @bind="@oMedicoE.FlgPlanilla">
+                        <label class="form-check-label" for="chkFlgPlanilla">
+                            Pago por Planilla
+                        </label>
+                    </div>
+                </div>
+                <!--F.FlgPlanilla-->
+
+            </fieldset>
+
+            <fieldset class="omrs-fieldset">
+                <!--I.FlgPrestacion-->
+                <div class="col 2">
+                    <div class="form-check">
+                        <input class="form-check-input" disabled="@ActNoa" type="checkbox" id="chkFlgPrestacion" @bind="@oMedicoE.FlgPrestacion">
+                        <label class="form-check-label" for="chkFlgPrestacion">
+                            Prestación
+                        </label>
+                    </div>
+                </div>
+                <!--F.FlgPrestacion-->
+                <!--I.FlgMf-->
+                <div class="col 2">
+                    <div class="form-check">
+                        <input class="form-check-input" disabled="@ActNoa" type="checkbox" id="chkFlgMf" @bind="@oMedicoE.FlgMf">
+                        <label class="form-check-label" for="chkFlgMf">
+                            Medicina Física
+                        </label>
+                    </div>
+                </div>
+                <!--F.FlgMf-->
+
+            </fieldset>
+
+            <fieldset class="omrs-fieldset">
+                <!--I.FlgHospitalario-->
+                <div class="col 2">
+                    <div class="form-check">
+                        <input class="form-check-input" disabled="@ActNoa" type="checkbox" id="chkFlgHospitalario" @bind="@oMedicoE.FlgHospitalario">
+                        <label class="form-check-label" for="chkFlgHospitalario">
+                            Hospitalario (Planilla GDH)
+                        </label>
+                    </div>
+                </div>
+                <!--F.FlgHospitalario-->
+                <!--I.FechaPagorrhh-->
+                <div class="omrs-input-group">
+                    <label class="omrs-input-underlined">
+                        @* @{
+                        var FecPrh = "";
+                        if (Convert.ToString(oMedicoE.FechaPagorrhh) == "01/01/1900 12:00:00 AM" || Convert.ToString(oMedicoE.FechaPagorrhh) == "")
+                        {
+                        FecPrh = "";
+                        }
+                        else
+                        {
+                        FecPrh = Convert.ToString(oMedicoE.FechaPagorrhh).Substring(0, 10);
+                        }
+                        } *@
+                        <input id="dtFechaPagorrhh" disabled="@ActNoa" class="form-control" type="date" required="" value="@(oMedicoE.FechaPagorrhh == DateTime.Parse("1900-01-01") ? "": oMedicoE.FechaPagorrhh.ToString("yyyy-MM-dd"))" @oninput="@(e=>ActualizarFecha(e,"FechaPagorrhh"))"> @*@bind-value="@oMedicoE.FechaPagorrhh">*@
+                        <span class="omrs-input-label">Fecha inicial</span>
+                        @* <span class="omrs-input-helper"></span>*@
+                    </label>
+                </div>
+                <!--F.FechaPagorrhh-->
+
+
+
+            </fieldset>
+
+            <!--I.TipDocEmite-->
+            <div class="form-floating mb-3">
+                <select class="form-select" disabled="@ActNoa" id="lstTipDocEmite" aria-label="Sexo" @bind=@oMedicoE.TipDocEmite>
+                    @foreach (var item in oListaTablasTipDocEmitira)
+                    {
+                        <option value="@item.Codigo">@item.Nombre</option>
+                    }
+                </select>
+                <label for="lstTipDocEmite">Tipo de Documento que emitirá</label>
+            </div>
+            <!--F.TipDocEmite-->
+
+            <div class="form-floating mb-3">
+                <div class="row" style="padding-top: 13px;">
+                   @*  <div class="col-sm-12 col-md-6  col-lg-6">
+                        <!--I.Telefono-->
+                         <div class="omrs-input-group">
+                            <label class="omrs-input-underlined">
+                                <input id="txtTelefono" disabled="@ActNoa" required="" @bind-value="@oMedicoE.Telefono" maxlength="7"
+                                       onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
+                                <span class="omrs-input-label">Teléfono</span>
+                                <span class="omrs-input-helper"></span>
+                            </label>
+                        </div> 
+                        <!--F.Telefono-->
+                    </div> *@
+                   @*  <div class="col-sm-12 col-md-6  col-lg-6">
+                        <!--I.Celular-->
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined">
+                                <input id="txtCelular" disabled="@ActNoa" required="" @bind-value="@oMedicoE.Beeper" maxlength="9"
+                                       onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
+                                <span class="omrs-input-label">Celular</span>
+                                <span class="omrs-input-helper"></span>
+                            </label>
+                        </div>
+                        <!--F.Celular-->
+                    </div> *@
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+@code {
+    [Parameter]
+    public MedicoE oMedicoE { get; set; }
+
+
+    [Parameter]
+    public List<TablasE> oListaTablasAFP { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasTipDocEmitira { get; set; }
+
+    private string fechaVacia = "";
+
+    protected override void OnInitialized()
+    {
+    }
+
+    protected override void OnParametersSet()
+    {
+        //isChecked = this.IsChecked;
+    }
+
+
+    protected void ChkFlagAfectoSnpChanged(ChangeEventArgs e)
+    {
+        var value = e.Value;
+        if ((bool)value == true)
+        {
+            oMedicoE.FlagAfectoSpp = false;
+            StateHasChanged();
+        }
+    }
+
+    protected void ChkFlagAfectoSppChanged(ChangeEventArgs e)
+    {
+        var value = e.Value;
+        if ((bool)value == true)
+        {
+            oMedicoE.FlagAfectoSnp = false;
+            StateHasChanged();
+        }
+    }
+
+    protected void absValor()
+    {
+
+    }
+
+    protected void actualizaFechaFonavi(string fecha)
+    {
+        oMedicoE.FechaFonavi = DateTime.Parse(fecha);
+    }
+
+    private void ActualizarFecha(ChangeEventArgs e, string strFecha)
+    {
+        if (DateTime.TryParse(e.Value.ToString(), out DateTime nuevaFecha))
+        {
+            switch (strFecha)
+            {
+                case "FechaSnp":
+                    oMedicoE.FechaSnp = nuevaFecha;
+                    break;
+                case "FechaSpp":
+                    oMedicoE.FechaSpp = nuevaFecha;
+                    break;
+                case "FechaProntoPago":
+                    oMedicoE.FechaProntoPago = nuevaFecha;
+                    break;
+                case "FechaFonavi":
+                    oMedicoE.FechaFonavi = nuevaFecha;
+                    break;
+                case "FechaCuarta":
+                    oMedicoE.FechaCuarta = nuevaFecha;
+                    break;
+                case "FechaPagorrhh":
+                    oMedicoE.FechaPagorrhh = nuevaFecha;
+                    break;
+                default:
+                    // oMedicoE.FechaFonavi = nuevaFecha;
+                    break;
+            }
+        }
+    }
+
+}

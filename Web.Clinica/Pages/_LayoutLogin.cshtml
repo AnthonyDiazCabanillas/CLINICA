@@ -1,0 +1,64 @@
+﻿@*@using Microsoft.AspNetCore.Components.Web*@
+@namespace Web.Clinica.Pages
+@*@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers*@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@MetaGlobal.PageTitle: CSF</title>
+    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+
+    <link rel="stylesheet" href="~/css/all.css" />
+    <link href="~/plugins/css/style.css" rel="stylesheet" />
+
+    @*<link href="~/plugins/css/icheck-bootstrap.min.css" rel="stylesheet" />*@
+    @*<link href="~/css/adminlte.min.css" rel="stylesheet" />*@
+    @*<link href="~/plugins/css/jquery.loading.min.css" rel="stylesheet" />*@
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/style.css" />
+
+    <link href="~/css/stylePantalla.css" rel="stylesheet" />
+
+    @*<link href="~/plugins/css/sweetalert.css" rel="stylesheet" />*@
+</head>
+
+<body class="hold-transition login-page">
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    @*<div class="slider-frame">
+        <div class="contenedor">
+            <ul>
+                <li><img src="~/images/banner1.jpeg" /></li>
+                <li><img src="~/images/banner2.jpeg" /></li>
+                <li><img src="~/images/banner3.jpeg" /></li>
+                <li><img src="~/images/imagenprueba1.jpeg" /></li>
+                </ul>
+            <div class="centrado">
+                <div class="login-box slider">
+                    <center class="col clearfix">
+                        <div class="row">
+                            <div class="card">
+                                <div class="card-body">
+                                    <p style="color: #0043A5" class="login-box-msg"><strong>Iniciar Sesión</strong></p>
+                                    <p>Ingrese las Credenciales para el Nuevo Sistema de Clinica</p>
+                                    @RenderBody()
+                                </div>
+                            </div>
+                        </div>
+                    </center>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+</body>
+
+
+</html>

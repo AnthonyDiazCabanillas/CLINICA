@@ -1,0 +1,137 @@
+﻿@inherits LayoutComponentBase
+@using Web.Clinica.Pages.Login;
+@inject IJSRuntime js;
+@*Se agrego un inject de autenticación*@
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="page">
+    <main>
+        <RadzenDialog />
+        <RadzenNotification />
+        <RadzenContextMenu />
+        <RadzenTooltip />
+        <AuthorizeView>
+            <Authorized>
+                <article class="content">
+                    @Body
+                </article>
+            </Authorized>
+            <NotAuthorized>
+                <Login></Login>
+            </NotAuthorized>
+        </AuthorizeView>
+    </main>
+</div>
+@code {
+
+    //-----------------------------------------------------------------------------
+    //Autor: CMendez
+    //Fecha: 12/05/2022
+    //Objetivo:
+    //Guardar en variables publicas la información almacenada en ClaimsIdentity
+    //para ello se tiene que ejecutar el método CargarSessionLayout()
+    //dichas variables podrán ser accedidas desde la sección @core{} de cualquier
+    //página Razor, siempre que se use en la cabecera: @inherits MainLayout.
+    //-----------------------------------------------------------------------------
+    //Se crean las variables publicas a las cuales se accedera
+    public string NombreClaimsLayout = "";
+    public string LoginClaimsLayout = "";
+    public string CodSexoClaimsLayout = "";
+    public string UrlFotoClaimsLayout = "";
+    public string DnsClaimsLayout = "";
+    public int IdUsuarioClaimsLayout = 0;
+    //Se pueden guardar como un objeto claims
+    //public IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
+
+
+    public async Task CargarSessionLayout()
+    {
+        //Se obtiene la informacion de Autenticación almacenada
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        //y se almacena en la variable "user"
+        //var user = authState.User;
+        var user = authState.User;
+        //validamos que el usuario se encuentre autenticado
+        if (user.Identity.IsAuthenticated)
+        {
+            //Podemos usar de manera directa: "user.Identity.Name" seria el
+            //equivalenta a acceder a la variable @context.User.Identity.Name
+            //Nombre = user.Identity.Name
+            //Se accede a todas las variables mediante el método: FindFirst
+            NombreClaimsLayout = user.FindFirst(ClaimTypes.Name).Value;
+            LoginClaimsLayout = user.FindFirst(ClaimTypes.NameIdentifier).Value;
+            CodSexoClaimsLayout = user.FindFirst(ClaimTypes.Gender).Value;
+            UrlFotoClaimsLayout = user.FindFirst(ClaimTypes.Uri).Value;
+            DnsClaimsLayout = user.FindFirst(ClaimTypes.Dns).Value;
+            IdUsuarioClaimsLayout = Convert.ToInt32(user.FindFirst(ClaimTypes.Sid).Value);
+            //Se llena el objeto claims con la informacion de user.Claims
+            //claims = user.Claims;
+        }
+    }
+
+    #region SessionUser
+    /// <summary>
+    /// Sirve para obtener la session del usuario
+    /// </summary>
+    /// <param name="typeSession"></param>
+    /// <returns></returns>
+    public async Task<string> SessionUser(TypeSession typeSession)
+    {
+        string xResult = "";
+        //Se obtiene la informacion de Autenticación almacenada
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        //y se almacena en la variable "user"
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            switch (typeSession)
+            {
+                case TypeSession.IdeUsuario:
+                    xResult = user.FindFirst(ClaimTypes.Sid).Value;
+                    break;
+                case TypeSession.UserLogin:
+                    xResult = user.FindFirst(ClaimTypes.NameIdentifier).Value;
+                    break;
+                case TypeSession.CodUser:
+                    xResult = user.FindFirst(ClaimTypes.UserData).Value;
+                    break;
+            }
+        }
+
+        return xResult;
+    }
+    #endregion
+
+    public enum TypeSession
+    {
+        IdeUsuario = 1,
+        UserLogin = 2,
+        UserFullName = 3,
+        UserName = 4,
+        UserLastName = 5,
+        UserMotherLastName = 6,
+        UserSex = 7,
+        UserUrlPhoto = 8,
+        CodUser = 9,
+    }
+
+    //-----------------------------------------------------------------------------
+    //Fin CMendez 12/05/2022
+    //-----------------------------------------------------------------------------
+    protected override void OnAfterRender(bool firstRender)
+    {
+        //if (firstRender = false)
+        //js.InvokeVoidAsync("ShowMenuPrincipal", true);
+        //else
+        //js.InvokeVoidAsync("ShowMenuPrincipal", false);
+    }
+
+    public async Task CapturaUserLogin()
+    { Web.Clinica.MetaGlobal.IdUserLogin = Convert.ToInt32(SessionUser(TypeSession.CodUser).Result); }
+}
+
+@{
+    CargarSessionLayout();
+
+}

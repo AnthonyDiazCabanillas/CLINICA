@@ -1,0 +1,464 @@
+﻿@page "/Clinica/Facturacion/Prestaciones/ListadoPrestaciones"
+@using Bus.Utilities
+@using Ent.Sql
+@using Ent.Sql.SeguridadE.SeguridadE
+@using RestSharp
+@using System.Net
+@using Web.Clinica.Data
+@inject IJSRuntime js
+@inherits MainLayout
+
+ <AuthorizeView>
+     <Authorized Context="FrmPrestaciones">
+        @code
+        {
+            /********************************************************************************************************************
+        Copyright Clinica San Felipe S.A.C. 2024. Todos los derechos reservados.
+
+        Version  Fecha        Autor           Requerimiento
+        1.0      09/08/2024   FCHUJE       REQ 2024-015620 Creación Módulo de Prestaciones
+        ********************************************************************************************************************/
+
+        ApiRutaConexion _app = new ApiRutaConexion();
+        int IdUser = 0;
+        bool accederBusquedaPrestaciones = false;
+        bool accederActualizacionMasiva = false;
+        bool accederBusquedaTarifa = false;
+        bool accedernuevoregistroprestacion = false;
+        bool acceso = false;
+        bool flgnuevaprestacion = false;
+        string _MensajeBody = "";
+        string _TituloRegistroPrestacion = "";
+
+        PrestacionesClinicaE    objPrestacion = new PrestacionesClinicaE();
+        TarifaClinicaE          objTarifa = new TarifaClinicaE();
+        PrestacionesClinicaE objnuevoregistroprestacion = new PrestacionesClinicaE();
+
+        IEnumerable<PrestacionesClinicaE> ListadoPrestaciones = new List<PrestacionesClinicaE>();
+        List<PrestacionesClinicaE> dataResultado = new List<PrestacionesClinicaE>();
+
+        [CascadingParameter]
+        PageIndexStateProvider State { get; set; }
+        int itemsPerPage = 100;
+        int totalPages = 1;
+
+        List<SegOpcionE> segOpcions = new List<SegOpcionE>();
+
+        protected override void OnInitialized()
+        {
+            js.InvokeVoidAsync("fnActualizarTitulo", "Facturación - Listado de Prestaciones");
+            IdUser = Convert.ToInt32(SessionUser(TypeSession.IdeUsuario).Result);
+            segOpcions = new Bus.Clinica.Seguridad.Seguridad().CargarPermisos(new SegOpcionE(4, 102, "03/01/04", IdUser));
+
+            if (segOpcions.Where(w => w.CodOpcion.Trim() == "03/01/04/01").ToList().Count() > 0)
+            {
+                acceso = true;
+                objPrestacion = new PrestacionesClinicaE();
+                objTarifa = new TarifaClinicaE();
+                State = new PageIndexStateProvider();
+            }
+            else
+            {
+                acceso = false;
+            }
+
+
+            base.OnInitialized();
+        }
+
+        #region prestacion
+        void LimpiarFiltroPrestacion()
+        {
+            objPrestacion = new PrestacionesClinicaE();    
+        }
+
+        async void MostrarModalPrestacion()
+        {
+            accederBusquedaPrestaciones = true;
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalBusquedaPrestacion");
+        }
+
+        void SetObtienePrestacionCurrent(PrestacionesClinicaE prestacionseleccionada)
+        {
+            LimpiarFiltroPrestacion();
+            objPrestacion.codprestacion = prestacionseleccionada.codprestacion;
+            objPrestacion.prestacion = prestacionseleccionada.prestacion;
+        }
+        #endregion
+
+        #region Tarifario
+        void LimpiarFiltroTarifario()
+        {
+            objTarifa = new TarifaClinicaE();
+        }
+
+        async void MostrarModalTarifario()
+        {
+            accederBusquedaTarifa = true;
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalBusquedaTarifario");
+        }
+
+        void SetObtieneTarifarioCurrent(TarifaClinicaE tarifarioseleccionado)
+        {
+            LimpiarFiltroTarifario();
+            objTarifa.codtarifa = tarifarioseleccionado.codtarifa;
+            objTarifa.tarifa = tarifarioseleccionado.tarifa;
+        }
+        #endregion
+
+        #region Registrar Editar Prestaciones
+
+        async void NuevoRegistroPrestacion()
+        {
+            _TituloRegistroPrestacion = "Registrar Nueva Prestación";
+            objnuevoregistroprestacion = new PrestacionesClinicaE();
+            flgnuevaprestacion = true;
+            accedernuevoregistroprestacion = true;
+            await MostrarModalRegistroPrestacion();
+        }
+
+
+        async void EditarRegistroPrestacion(PrestacionesClinicaE item)
+        {
+            _TituloRegistroPrestacion = "Editar Prestación";
+            objnuevoregistroprestacion = new PrestacionesClinicaE();
+            objnuevoregistroprestacion = item;
+            flgnuevaprestacion = false;
+            accedernuevoregistroprestacion = true;
+            await MostrarModalRegistroPrestacion();
+        }
+
+        async Task MostrarModalRegistroPrestacion()
+        {
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalRegistrarPrestacion");
+        }
+
+        void DesactivarAccessoRegistroPrestacion()
+        {
+            accedernuevoregistroprestacion = false;
+        }
+
+        void SetObtieneResultadoRegistroPrestacion(bool reload)
+        {
+            if (reload)
+            {
+                if (string.IsNullOrWhiteSpace(objPrestacion.prestacion) && string.IsNullOrWhiteSpace(objTarifa.tarifa)) { }
+                else
+                {
+                    OnclickBuscar();
+                }
+            }
+        }
+
+        #endregion
+        async void OnclickBuscar()
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(objPrestacion.prestacion) && string.IsNullOrWhiteSpace(objTarifa.tarifa))
+                {
+                    _MensajeBody = "Selecciones una Prestación y/o Tarifa";
+                    await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorPrestacion");
+                    return;
+                }
+                PrestacionBusqE objBuscar = new PrestacionBusqE();
+                objBuscar.orden = 3;
+                objBuscar.codprestacion = objPrestacion.codprestacion??"";
+                objBuscar.codtarifa = objTarifa.codtarifa??"";
+                objBuscar.busq = "";
+                objBuscar.flglimit = 1;
+
+                var Json = JsonConvert.SerializeObject(objBuscar);
+
+                var rutaApi = MetaGlobal.RutaApiClinica + "PrestacionesClinica/API/Clinica/Listado_PrestacionTarifa";
+                var encriptado = Criptography.EncryptConectionString(_app.Key);
+                var _client = new RestClient(rutaApi);
+                var _request = new RestRequest();
+                _request.Method = Method.Post;
+                _request.AddHeader("Authorization", encriptado);
+                _request.AddBody(Json);
+                var _response = _client.Execute(_request);
+                if (_response.StatusCode == HttpStatusCode.OK)
+                {
+                    var resultado = JsonConvert.DeserializeObject<ResultadoTransactionE<PrestacionesClinicaE>>(_response.Content);
+                    if (resultado.DataList.Count() > 0)
+                    {
+                        dataResultado = resultado.DataList;
+
+                        decimal _decimal = (decimal)dataResultado.Count() / itemsPerPage;
+                        decimal _int = (int)(dataResultado.Count() / itemsPerPage);
+                        decimal _tot = _decimal - _int;
+                        if (_tot == 0)
+                        {
+                            totalPages = Convert.ToInt32(_int);
+                        }
+                        else
+                        {
+                            totalPages = Convert.ToInt32(_int) + 1;
+                        }
+                        State.PageIndex = 1;
+                        var skipCount = itemsPerPage * (State.PageIndex - 1);
+                        ListadoPrestaciones = dataResultado.Skip(skipCount).Take(itemsPerPage);
+
+                    }
+                    else
+                    {
+                        ListadoPrestaciones = new List<PrestacionesClinicaE>();
+                    }
+                }
+                else
+                {
+                    ListadoPrestaciones = new List<PrestacionesClinicaE>();
+                    _MensajeBody = _response.Content.ToString();
+                    await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+                }
+            }
+            catch (Exception ex)
+            {
+                _MensajeBody = ex.Message;
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorPrestacion");
+            }
+        }
+
+        void SelectedPage(int SelectedPageIndex)
+        {
+            State.PageIndex = SelectedPageIndex;
+            var skipCount = itemsPerPage * (State.PageIndex - 1);
+            ListadoPrestaciones = dataResultado.Skip(skipCount).Take(itemsPerPage);
+        }
+
+        async void MostrarCargaPrestacion()
+        {
+            accederActualizacionMasiva = true;
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalCargaPrestaciones");
+        }
+
+        void OcultarCargaPrestacion()
+        {
+            accederActualizacionMasiva = false;
+        }
+
+        }
+        @if (acceso)
+        {
+            <div class="mt-2 row">
+                <div class="bg-light mt-4">
+                    <div class="form-bg">
+                        <div class="container-fluid">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 buscar-menuNuevo" style="border-radius:25px !important;">
+                                <div class="mt-3">
+                                    <div class="row">
+                                        <div class="col-md-3 col-sm-3 col-lg-3 col-xs-12">
+                                            <label class="fw-bold fs-6">Prestación</label>
+                                            <div class="input-group mb-3">
+                                                <button class="btn-danger input-group-text" @onclick="LimpiarFiltroPrestacion"><i class="fas fa-trash-alt"></i></button>
+                                                <input type="text" readonly class="form-control" @bind="objPrestacion.prestacion" disabled>
+                                                <button class="btn-primary input-group-text" @onclick="MostrarModalPrestacion"><i class="fas fa-search-plus"></i></button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-sm-3 col-lg-3 col-xs-12">
+                                            <label class="fw-bold fs-6">Tarifario</label>
+                                            <div class="input-group mb-3">
+                                                <button class="btn-danger input-group-text" @onclick="LimpiarFiltroTarifario"><i class="fas fa-trash-alt"></i></button>
+                                                <input type="text" readonly class="form-control" @bind="objTarifa.tarifa" disabled>
+                                                <button class="btn-primary input-group-text" @onclick="MostrarModalTarifario"><i class="fas fa-search-plus"></i></button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-2 col-lg-2 col-xs-12">
+                                            <div class="mt-3">
+                                                <button class="btn btn-lg btn-primary" @onclick="OnclickBuscar"><i class=" me-3 fas fa-search-plus"></i> Buscar</button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1 col-sm-1 col-lg-1 col-xs-12"></div>
+                                        <div class="col-md-3 col-sm-3 col-lg-3 col-xs-12">
+                                            <div class="mt-3">
+                                                @if (segOpcions.Where(w => w.CodOpcion.Trim() == "03/01/04/04").ToList().Count() > 0)
+                                                {
+                                                    <button class="btn form-control btn-lg btn-success" @onclick="MostrarCargaPrestacion">
+                                                        <i class="me-3 fas fa-upload"></i> Actualizar Prestaciones
+                                                    </button>
+                                                }
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-ld-6 col-sm-6  col-xs-12">
+                                            Resultados: <label class="fw-bold me-3">@dataResultado.Count()</label>
+                                        </div>
+                                        <div class="col-lg-6 col-ld-6 col-sm-6 col-xs-12 text-end">
+                                            @if (segOpcions.Where(w => w.CodOpcion.Trim() == "03/01/04/02").ToList().Count() > 0)
+                                            {
+                                                <button class="btn btn-primary" @onclick="NuevoRegistroPrestacion">
+                                                    <i class="fas fa-plus me-3"></i>
+                                                    Registrar nueva prestación
+                                                </button>
+                                            }                                            
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">                                        
+                                        <div class="col-md-12 table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <td class="text-center">#</td>
+                                                        <td class="text-center fw-bold">Período</td>
+                                                        <td class="text-center fw-bold">Cod Prestación</td>
+                                                        <td class="text-center fw-bold">Prestación</td>
+                                                        <td class="text-center fw-bold">Cod Tarifa</td>
+                                                        <td class="text-center fw-bold">Tarifa</td>
+                                                        <td class="text-center fw-bold">Peso</td>
+                                                        <td class="text-center fw-bold">Valor</td>
+                                                        <td class="text-center fw-bold">Moneda</td>
+                                                        <td class="text-center fw-bold">Opción</td>
+                                                    </tr>
+                                                </thead>
+                                                @if (ListadoPrestaciones.Count() > 0)
+                                                {
+                                                    <tbody>
+                                                        @foreach (var item in ListadoPrestaciones)
+                                                        {
+                                                            <tr>
+                                                                <td class="text-center">@item.Item</td>
+                                                                <td class="text-center">@item.codperiodo</td>
+                                                                <td class="text-center">@item.codprestacion</td>
+                                                                <td>@item.prestacion</td>
+                                                                <td class="text-center">@item.codtarifa</td>
+                                                                <td>@item.tarifa</td>
+                                                                <td class="text-center">@item.peso</td>
+                                                                <td class="text-end">@item.valor</td>
+                                                                <td class="text-center">@item.moneda</td>
+                                                                <td class="text-center">
+                                                                    @if (segOpcions.Where(w => w.CodOpcion.Trim() == "03/01/04/03").ToList().Count() > 0)
+                                                                    {
+                                                                        <button class="btn btn-primary" @onclick="(()=>EditarRegistroPrestacion(item))">
+                                                                            <i class="fas fa-edit"></i>
+                                                                        </button>
+                                                                    }
+                                                                   
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <td colspan="10">
+                                                                <Pagination TotalPages="@(totalPages != 0 ? totalPages : 1)"
+                                                                            PageIndex="@State.PageIndex"
+                                                                            Radius="3"
+                                                                            OnSelectedPage="@SelectedPage">
+                                                                </Pagination>
+                                                            </td>
+                                                        </tr>
+                                                    </tfoot>
+                                                }
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal" id="msgModalBusquedaPrestacion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl" style="max-width: 50%;  margin: 10px auto;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-center text-black" id="staticBackdropLabel">Buscar Prestación</h5>
+                            <button type="button" class="btn-close" id="idCloseModalBusquedaPrestacion" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <Web.Clinica.Components.Facturacion.Prestaciones.ModalPrestacionesComponent acceder="@accederBusquedaPrestaciones" oPrestacionSeleccionada="@SetObtienePrestacionCurrent">
+
+                            </Web.Clinica.Components.Facturacion.Prestaciones.ModalPrestacionesComponent>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal" id="msgModalBusquedaTarifario" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl" style="max-width: 50%;  margin: 10px auto;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-center text-black" id="staticBackdropLabel">Buscar Tarifario</h5>
+                            <button type="button" class="btn-close" id="idCloseModalBusquedaTarifario" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <Web.Clinica.Components.Facturacion.Prestaciones.ModalTarifarioComponent acceder="@accederBusquedaTarifa" oTarifarioSeleccionada="@SetObtieneTarifarioCurrent">
+
+                            </Web.Clinica.Components.Facturacion.Prestaciones.ModalTarifarioComponent>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal" id="msgModalCargaPrestaciones" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl" style="max-width: 90%;  margin: 10px auto;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-center text-black" id="staticBackdropLabel">Cargar Pretaciones</h5>
+                            <button type="button" class="btn-close" @onclick="OcultarCargaPrestacion" id="idCloseModalCargaPrestaciones" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <Web.Clinica.Components.Facturacion.Prestaciones.ModalCargaPrestacionesComponent acceder="@accederActualizacionMasiva" Iduser="@IdUser" oReloadPrestacion="SetObtieneResultadoRegistroPrestacion">
+                            </Web.Clinica.Components.Facturacion.Prestaciones.ModalCargaPrestacionesComponent>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal" id="msgModalRegistrarPrestacion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl" style="max-width: 90%;  margin: 10px auto;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-center text-black" id="staticBackdropLabel">@_TituloRegistroPrestacion</h5>
+                            <button type="button" class="btn-close" id="idCloseModalRegistrarPrestacion" @onclick="DesactivarAccessoRegistroPrestacion" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <Web.Clinica.Components.Facturacion.Prestaciones.ModalRegistrarPrestacionComponent acceder="@accedernuevoregistroprestacion"
+                                                                                                               IdUser="@IdUser"
+                                                                                                               _PrestacionClinica="objnuevoregistroprestacion"
+                                                                                                               flgNuevo="flgnuevaprestacion"
+                                                                                                               oReloadPrestacion="SetObtieneResultadoRegistroPrestacion">
+                           </Web.Clinica.Components.Facturacion.Prestaciones.ModalRegistrarPrestacionComponent>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <MessageModal IdMessage="msgModalInformacionPrestacion"
+                          TitleModal="Informacion"
+                          IconMessage=MessageModal.iconMessage.Informacion
+                          TypeButton=MessageModal.typeButton.Ok
+                          EscapeKey="true"
+                          BodyMessage=@_MensajeBody>
+            </MessageModal>
+
+            <MessageModal IdMessage="msgModalErrorPrestacion"
+                          TitleModal="Error"
+                          IconMessage=MessageModal.iconMessage.Error
+                          TypeButton=MessageModal.typeButton.Ok
+                          EscapeKey="true"
+                          BodyMessage=@_MensajeBody>
+            </MessageModal>
+
+        }
+        else
+        {
+            <Web.Clinica.Components.Utils.PaginaAccesoRestringido></Web.Clinica.Components.Utils.PaginaAccesoRestringido>
+        }
+
+       
+
+     </Authorized>
+    <NotAuthorized>
+        <h2>Debe identificarse para poder acceder a la aplicación</h2>
+    </NotAuthorized>
+ </AuthorizeView>
+
+

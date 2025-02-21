@@ -1,0 +1,116 @@
+﻿@code {
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public RenderFragment ChilcontentFilter { get; set; }
+    [Parameter] public bool Collapsed { get; set; }
+    [Parameter] public string Title { get; set; }
+    [Parameter] public string Title2 { get; set; }
+    [Parameter] public string Icons { get; set; }
+    [Parameter] public string ButtonText { get; set; }
+    [Parameter] public string Separador { get; set; }
+    [Parameter] public string IdTab { get; set; }
+    [Parameter] public EventCallback<bool> FlgCollapsed2Changed { get; set; } // Evento de cambio de estado
+
+    string datatoggle = "";
+    string _collpased = "collapsed";
+    string _collapse = "collapse";
+    string colorbutton = "btn-primary";
+
+
+    /**/
+    string _ID;
+
+    protected override void OnInitialized()
+    {
+
+        _ID = "";
+        datatoggle = "";
+
+        _ID = "Collapse" + IdTab.Replace("/", "_").Replace("-", "_");
+        datatoggle = "#" + _ID.Replace("/", "_").Replace("-", "_");
+
+        if (Collapsed == false)
+        {
+            _collpased = "collapsed";
+            _collapse = "collapse";
+            colorbutton = "btn-primary";
+        }
+        else
+        {
+            _collpased = "";
+            _collapse = "collapse show";
+            colorbutton = "btn-success";
+        }
+    }
+
+    void Toggle()
+    {
+        Collapsed = !Collapsed;
+
+        if (Collapsed == false)
+        {
+            _collpased = "collapsed";
+            _collapse = "collapse";
+            colorbutton = "btn-primary";
+        }
+        else
+        {
+            _collpased = "";
+            _collapse = "collapse show";
+            colorbutton = "btn-success";
+        }
+        FlgCollapsed2Changed.InvokeAsync(Collapsed);
+    }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        _collpased = "collapsed";
+        _collapse = "collapse";
+        colorbutton = "btn-primary";
+
+        if (Collapsed)
+        {
+            _collpased = "collapsed";
+            _collapse = "collapse show";
+            colorbutton = "btn-success";
+        }
+
+    }
+}
+
+
+<div class="card-title">
+    <label class="h5" style="color:#124498; font-weight: bold; ">
+        <span style="margin-right:10px;">
+            <i class="@Icons" aria-hidden="true"></i>
+            @ButtonText &ensp; @Separador
+        </span>
+    </label> <label class="fw-bold">@Title &ensp;</label>
+    @if (!Collapsed)
+    {
+        <label class="badge bg-danger" style="font-size:12pt;">@Title2</label>
+    }
+
+    @* <button style="position: absolute;right: 3%;  z-index:auto;" role="button" class="rounded-circle btn btn-sm @colorbutton @_collpased" @onclick="@Toggle" data-bs-toggle="collapse" data-bs-target="@datatoggle" aria-controls="@_ID" aria-expanded="@Collapsed"> *@
+    <button style="position: absolute;right: 3%;  z-index:auto;" role="button" class="rounded-circle btn btn-sm @((Collapsed==true)? "btn-success":"btn-primary") @_collpased" @onclick="@Toggle" data-bs-toggle="collapse" data-bs-target="@datatoggle" aria-controls="@_ID" aria-expanded="@Collapsed">
+        <i class="fa @((Collapsed==false)? "fa-chevron-down":"fa-chevron-up")" style="color:white;" aria-hidden="true" />
+        @* @if (!Collapsed)
+        {
+        <i class="fa fa-chevron-down" style="color:white;" aria-hidden="true">
+        </i>
+        }
+        else if (Collapsed && _collpased == "collapsed")
+        {
+        <i class="fa fa-chevron-down" style="color:white;" aria-hidden="true">
+        </i>
+        }
+        else
+        {
+        <i class="fa fa-chevron-up" style="color:white;" aria-hidden="true"> </i>
+        } *@
+    </button>
+    @ChilcontentFilter
+</div>
+
+
+<div class="collapse @((Collapsed==true) ? "show":"") CollapseAnimate" id="@_ID">
+    @ChildContent
+</div>

@@ -1,0 +1,448 @@
+﻿@page "/Clinica/Clinica/Mantenimientos/CalculadoraPrestaciones"
+@inject IJSRuntime js
+@using Ent.Sql.ClinicaE.HospitalE
+
+@code {
+    PrestacionesE prestacion = new PrestacionesE(0, "", "", "", "", 25);
+    List<PrestacionesE> oListPrestaciones = new List<PrestacionesE>();
+    List<PrestacionesE> oListTabla = new List<PrestacionesE>();
+    double xCostoTotalListTabla = 0;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender == true)
+        {
+            js.InvokeVoidAsync("fnActualizarTitulo", "Calculadora de Prestaciones");
+        }
+    }
+
+    private async Task Actualizarpagina()
+    { await js.InvokeVoidAsync("locationreload"); }
+
+    private async Task BuscarAtencion()
+    {
+        oListTabla = new List<PrestacionesE>();
+        oListPrestaciones = new List<PrestacionesE>();
+        prestacion.Dscprestacion = "";
+        await js.InvokeVoidAsync("ShowSpinnerSearch", "idSpinnerBuscarAtencion", "idBuscarCodAtencion");
+        try
+        {
+            if (prestacion.Codatencion != null && prestacion.Codatencion != " ")
+            {
+                string value = prestacion.Codatencion.ToUpper();
+                prestacion.Codatencion = value;
+                prestacion.Orden = 1;
+
+                prestacion = new Bus.Clinica.Prestaciones().ConsultaDatosPacientePrestacion(prestacion);
+                if (prestacion.Codatencion != null && prestacion.Codatencion != " ")
+                {
+                    prestacion.Descuentoporcentaje = Math.Round(100 - prestacion.Monto, 2);
+
+                    await js.InvokeVoidAsync("CloseSpinnerSearch", "idSpinnerBuscarAtencion", "idBuscarCodAtencion");
+                    await js.InvokeVoidAsync("focusControl", "txtPrestacion");
+                }
+                else
+                { await js.InvokeVoidAsync("ShowMessageModal", true, "AtencionNoEncontrada"); }
+            }
+            else
+            {
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgerrorAtencion");
+                await js.InvokeVoidAsync("focusControl", "BscAtencion");
+            }
+
+        }
+        catch { }
+        await js.InvokeVoidAsync("CloseSpinnerSearch", "idSpinnerBuscarAtencion", "idBuscarCodAtencion");
+    }
+
+    private async Task BuscarPrestacion()
+    {
+        await js.InvokeVoidAsync("ShowSpinnerSearch", "idspinnerPrestacion", "idBuscarPrestacion");
+        try
+        {
+            if (prestacion.Codatencion != null && prestacion.Codatencion != "")
+            {
+                if (prestacion.Dscprestacion != null && prestacion.Dscprestacion != "")
+                {
+                    string value = prestacion.Dscprestacion.ToUpper();
+                    prestacion.Dscprestacion = value;
+                    prestacion.Orden = 2;
+                    prestacion.NroFilas = 10;
+                    prestacion.Codprestacion = "";
+                    oListPrestaciones = new Bus.Clinica.Prestaciones().ConsultaValorPrestaciones(prestacion);
+                    if (oListPrestaciones.Count == 0)
+                    {
+                        prestacion.Dscprestacion = "";
+                        await js.InvokeVoidAsync("ShowMessageModal", true, "msgerrorPrestacion");
+                        await js.InvokeVoidAsync("focusControl", "BscAtencion");
+
+                    }
+
+                    await js.InvokeVoidAsync("focusControl", "txtPrestacion");
+                }
+                else
+                { await js.InvokeVoidAsync("ShowMessageModal", true, "msgerrorPrestacion"); }
+            }
+            else
+            {
+                await js.InvokeVoidAsync("ShowMessageModal", true,"msgerrorAtencion");
+                await js.InvokeVoidAsync("focusControl", "BscAtencion");
+            }
+
+        }
+        catch { }
+        await js.InvokeVoidAsync("CloseSpinnerSearch", "idspinnerPrestacion", "idBuscarPrestacion");
+    }
+
+    private async Task AgregarPrestacionTabla()
+    {
+        List<PrestacionesE> oListTemp = new List<PrestacionesE>();
+        PrestacionesE otemp = new PrestacionesE();
+        await js.InvokeVoidAsync("ShowSpinnerSearch", "idspinnerPrestacion", "idBuscarPrestacion");
+        try
+        {
+
+            if (prestacion.Dscprestacion == null || prestacion.Dscprestacion == "")
+            { await js.InvokeVoidAsync("NotFoundSpinner", "msgerrorPrestacion"); }
+
+            else
+            {
+                prestacion.Codprestacion = prestacion.Dscprestacion.Substring(0, prestacion.Dscprestacion.IndexOf("-") - 1);
+                //prestacion.Codprestacion = prestacion.Dscprestacion.Substring(prestacion.Dscprestacion.IndexOf("-") + 1);
+                prestacion.Orden = 3;
+                otemp = new Bus.Clinica.Prestaciones().ConsultaDatosPacientePrestacion(prestacion);
+                if (otemp.Codprestacion == null)
+                {
+                    await js.InvokeVoidAsync("NotFoundSpinner", "msgerrorPrestacion");
+
+                    await js.InvokeVoidAsync("focusControl", "txtPrestacion");
+                }
+                else
+                {
+                    otemp.Descuentosoles = Math.Round(otemp.Valprestacion * prestacion.Descuentoporcentaje / 100, 2);
+                    otemp.Total = Math.Round(otemp.Valprestacion - otemp.Descuentosoles, 2);
+                    oListTabla.Add(otemp);
+                    xCostoTotalListTabla = 0;
+
+                    for (var i = 0; i < oListTabla.Count(); i++)
+                    { xCostoTotalListTabla = xCostoTotalListTabla + oListTabla[i].Total; }
+
+                    prestacion.Dscprestacion = new PrestacionesE().Dscprestacion;
+                }
+            }
+        }
+        catch
+        {
+            BuscarPrestacion();
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgerrorPrestacionValidacion");
+        }
+        await js.InvokeVoidAsync("CloseSpinnerSearch", "idspinnerPrestacion", "idBuscarPrestacion");
+    }
+
+    private void EliminarRegistro(string x)
+    {
+        for (var i = 0; i < oListTabla.Count; i++)
+        {
+            if (oListTabla[i].Codprestacion == x)
+            {
+                xCostoTotalListTabla = xCostoTotalListTabla - oListTabla[i].Total;
+                oListTabla.Remove(oListTabla[i]);
+            }
+        }
+    }
+
+    async Task EnterBuscarPrestacion(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        { await BuscarPrestacion(); }
+    }
+
+    async Task EnterBuscarAtencion(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        { await BuscarAtencion(); }
+    }
+}
+
+<!--Container Main start-->
+<div class="bg-light">
+    <div class="form-bg">
+        <div class="row align-items-center d-print-none form-toolbar">
+            <div>
+                <button id="btnImprimir" class="btn btn-success" onclick="btnImprimir();">
+                    <i class="fa fa-print"></i><span role="toolbar"> Imprimir</span>
+                </button>
+            </div>
+        </div>
+        <div class="container-fluid">
+
+            <div class="row group align-items-center">
+                <!--I.Atencion-->
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-xs-12 col-12">
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined">
+                            <input required minlength="8" maxlength="8" class="form-control text-uppercase" @bind-value="prestacion.Codatencion" @onkeydown="EnterBuscarAtencion">
+                            <span class="omrs-input-label">Atención</span>
+                            <span class="omrs-input-helper"></span>
+                            <i id="idBuscarCodAtencion" class="fa-solid fa-magnifying-glass text-primary" @onclick="BuscarAtencion"></i>
+                            <i id="idSpinnerBuscarAtencion" class="spinner-border text-success" role="status" style="display:none; width:20px; height:20px;">
+                                <span class="visually-hidden">Loading...</span>
+                            </i>
+                        </label>
+                    </div>
+                </div>
+                <!--F.Atencion-->
+                <!--I.Paciente-->
+                <div class="col-xl-10 col-lg-10 col-md-9 col-sm-8 col-xs-12 col-12">
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined">
+                            <input required disabled class="form-control" @bind-value="@(prestacion.Nompaciente)">
+                            <span class="omrs-input-label">Paciente</span>
+                            <span class="omrs-input-helper"></span>
+                        </label>
+                    </div>
+                </div>
+                <!--F.Paciente-->
+            </div>
+
+            <div class="row group align-items-center">
+                <!--I.Coaseguro-->
+                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-xs-12 col-12">
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined">
+                            <input required disabled class="form-control" @bind-value="@(prestacion.Descuentoporcentaje)">
+                            <span class="omrs-input-label">Coberturado(%)</span>
+                            <span class="omrs-input-helper"></span>
+                        </label>
+                    </div>
+                </div>
+                <!--F.Coaseguro-->
+                <!--I.Aseguradora-->
+                <div class="col-xl-5 col-lg-5 col-md-8 col-sm-8 col-xs-12 col-12">
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined">
+                            <input required disabled class="form-control" @bind-value="@(prestacion.Nomaseguradora)">
+                            <span class="omrs-input-label">Aseguradora</span>
+                            <span class="omrs-input-helper"></span>
+                        </label>
+                    </div>
+                </div>
+                <!--F.Aseguradora-->
+                <!--I.Tarifa-->
+                <div class="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-xs-12 col-12">
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined">
+                            <input required disabled class="form-control" @bind-value="@(prestacion.Nomtarifa)">
+                            <span class="omrs-input-label">Tarifa</span>
+                            <span class="omrs-input-helper"></span>
+                        </label>
+                    </div>
+                </div>
+                <!--F.Tarifa-->
+            </div>
+
+            <!--I.Prestación-->
+            <div class="row group align-items-center">
+                <div class="col-xl-11 col-lg-11 col-md-11 col-sm-11 col-xs-10 col-10" style="border-radius:25px !important;">
+                    <div class="DivSearchInput">
+                        <div class="DivSearch" style="width:100%">
+                            <input id="txtPrestacion" type="search" list="lstPrestaciones" placeholder="Buscar por nombre de la prestación" 
+                            @bind-value="prestacion.Dscprestacion" @onkeydown="@EnterBuscarPrestacion">
+                            <i id="idBuscarPrestacion" class="fa-solid fa-magnifying-glass" role="button"></i>
+                            <i id="idspinnerPrestacion" class="spinner-border text-success" tipo="spinner" role="spinbutton" style="display:none;">
+                                <span class="visually-hidden">Loading...</span>
+                            </i>
+                        </div>
+                    </div>
+                    <datalist id="lstPrestaciones" style="width:100%">
+                        @foreach (var lista in oListPrestaciones)
+                        {
+                            <option>@lista.Codprestacion - @lista.Nomprestacion</option>
+                        }
+                    </datalist>                    
+                </div>
+                <div class="col-1 text-end">
+                    <button class="btn btn-success" @onclick="@AgregarPrestacionTabla">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <!--F.Prestación-->
+            <!--I.TABLA-->
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive">
+                <table class="table table-hover table-bordered">
+                    <thead class="table-primary">
+                        <tr class="fw-bolder">
+                            <th class="col-1"> </th>
+                            <th class="col-5 text-center" style="">Prestación</th>
+                            <th class="col-2 text-center" style="">Costo</th>
+                            <th class="col-2 text-center" style="">Coberturado</th>
+                            <th class="col-2 text-center" style="">Pago Paciente</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in oListTabla)
+                        {
+                            <tr>
+                                <td class="text-center">
+                                    <div class="btn-group dropstart">
+                                        <button class="btn" data-bs-toggle="dropdown" aria-expanded="false" @onclick="@(()=> EliminarRegistro(item.Codprestacion))">
+                                            <span class="fa-regular fa-trash-can"></span> <span id="TitleView"></span>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td>@item.Nomprestacion</td>
+                                <td style="text-align:center;">@item.Valprestacion</td>
+                                <td style="text-align:center;">@item.Descuentosoles</td>
+                                <td style="text-align:right;">@item.Total</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot class="table-primary-footer">
+                        <tr>
+                            <th></th>
+                            <td colspan="3" style="text-align:right">Total sin IGV</td>
+                            <td style="text-align:right">
+                                S/ @Math.Round(@xCostoTotalListTabla, 2)
+                            </td>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <td colspan="3" style="text-align:right; font-weight:900;">Total IGV</td>
+                            <td style="text-align:right; font-weight:900;">
+                                S/ @Math.Round(@xCostoTotalListTabla*1.18, 2)
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <!--F.TABLA-->
+        </div>
+    </div>
+</div>
+
+<div>
+    <!-- I.MODAL MESSAGE -->
+    <div class="modal fade" id="msgModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Información</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Desea seguir?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" asp-action="Mostrar()">Confirmar</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- F.MODAL MESSAGE -->
+    <!-- I.MESSAGE NOT FOUND -->
+    @*<MessageNotFound @IdMessage="msgerrorPrestacion" @BodyMessage="Lo sentimos, no logramos encontrar lo que buscabas."></MessageNotFound>*@
+    <MessageNotFound IdMessage="msgerrorPrestacion"
+                     BodyMessage=" Lo sentimos, no logramos encontrar lo que buscabas.">
+    </MessageNotFound>
+
+    @*    <div class="modal fade" id="msgerrorPrestacion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+    <div class="modal-header">
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+    <div class="text-center">
+    <br />
+    Lo sentimos, no logramos encontrar lo que buscabas. <br />
+    Por favor intenta ser más especifico con la búsqueda.
+    <br />
+    <br />
+    <h1 class="text-center">&#128532;</h1>
+    <br />
+    </div>
+    </div>
+    <!--<div class="modal-footer text-center">
+    <div class="text-center">
+    </div>
+    </div>-->
+    </div>
+    </div>
+    </div>
+    *@
+    <div class="modal fade" id="msgerrorPrestacionValidacion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <br />
+                        Por favor seleccione una PRESTACION
+
+                    </div>
+                </div>
+                <!--<div class="modal-footer text-center">
+                    <div class="text-center">
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="msgerrorAtencion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <br />
+                        Lo sentimos, el N° de atención no existe <br />
+
+                        <br />
+                        <br />
+                        <h1 class="text-center">&#128532;</h1>
+                        <br />
+                    </div>
+                </div>
+                <!--<div class="modal-footer text-center">
+                    <div class="text-center">
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="AtencionNoEncontrada" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" @onclick="@Actualizarpagina" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <br />
+                        Lo sentimos, el Nro. de Atencion no existe. <br />
+
+                        <br />
+                        <br />
+                        <h1 class="text-center">&#128532;</h1>
+                        <br />
+                    </div>
+                </div>
+                <!--<div class="modal-footer text-center">
+                    <div class="text-center">
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+    <!-- F.MESSAGE NOT FOUND -->
+
+</div>
+<!--Container Main end-->

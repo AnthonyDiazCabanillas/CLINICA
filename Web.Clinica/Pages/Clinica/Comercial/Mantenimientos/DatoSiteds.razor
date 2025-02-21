@@ -1,0 +1,434 @@
+﻿@page "/Clinica/Comercial/Mantenimientos/DatoSiteds"
+@inject IJSRuntime js
+
+@using static Bus.AgendaClinica.Clinica.SitedsWs;
+@using Bus.AgendaClinica.Clinica;
+
+@code {
+    string DNI;
+
+    List<AsegCodRequestFull> lstAsegCodRequestFull = new List<AsegCodRequestFull>();
+    List<AsegCodRequest> lstAsegCodRequest = new List<AsegCodRequest>();
+    AsegCodRequest oAsegCodRequest = new AsegCodRequest();
+
+    private List<string> oListStyleInfo = new List<string> { "text-decoration: line-through; color:darkred;", "", "font-family: 'Calibri'; color: blue !important;", "" };
+
+    private void BuscaPorDNI()
+    {
+        RetornaIAFASporDni(DNI);
+    }
+
+    private void RetornaIAFASporDni(string nro_documento, string tipo_documento = "1")
+    {
+
+        if (nro_documento == "") return;
+
+        lstAsegCodRequestFull.Clear();
+        SitedsWs oWsSiteds = new SitedsWs();
+        lstAsegCodRequest = oWsSiteds.RetornaIAFASporDniParalelo(Dat.Sql.VariablesGlobales.ClinicaE, tipo_documento, nro_documento);
+
+        foreach (AsegCodRequest oAsegCodRequest in lstAsegCodRequest)
+        {
+            AsegCodRequestFull obAsegCodRequestFull = new AsegCodRequestFull(oAsegCodRequest);
+            string stringJson = ConsultaAsegCod(oWsSiteds.RutaWS_Siteds, oAsegCodRequest);
+            if (stringJson != null)
+            {
+                AsegCodResponse obAsegCodResponse = (AsegCodResponse)Newtonsoft.Json.JsonConvert.DeserializeObject(stringJson, typeof(AsegCodResponse));
+                obAsegCodRequestFull.oAsegCodResponse = obAsegCodResponse;
+                lstAsegCodRequestFull.Add(obAsegCodRequestFull);
+            }
+        }
+    }
+
+    async Task EnterBuscaPorDNI(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        { BuscaPorDNI(); }
+    }
+
+    private void CargaIAFAS()
+    {
+        RetornaIAFASporDni(DNI);
+
+    }
+
+    //string myHtml = "Hello, <b>this is bold</b>";
+    //MarkupString myMarkup = new MarkupString("Hello, <b>this is bold</b>");
+
+}
+
+
+@*<p>This text is encoded: @myHtml</p>
+<p>This text is not encoded: @myMarkup</p>
+*@
+
+<!--I.DNI-->
+<div class="col-xl-1 col-lg-2 col-md-3 col-sm-12 col-xs-12 col-12">
+    <label>DNI:</label>
+</div>
+<div class="col-xl-5 col-lg-10 col-md-9 col-sm-12 col-xs-12 col-12" style="border-radius:25px !important;">
+    <div class="DivSearchInput">
+        <div class="DivSearch" style="width:100%">
+            <input id="txtProducto" type="search" list="lstProductos" placeholder="Buscar por DNI" @bind-value="DNI" @onkeyup="@EnterBuscaPorDNI">
+            <i id="idSearchProducto" class="fa-solid fa-magnifying-glass" role="button" @onclick="BuscaPorDNI"></i>
+            <i id="idspinnerProducto" class="spinner-border text-success" tipo="spinner" role="spinbutton" style="display:none;">
+                <span class="visually-hidden">Loading...</span>
+            </i>
+        </div>
+    </div>
+</div>
+<!--F.DNI-->
+
+
+<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 buscar-menuNuevo" style="border-radius:25px !important;">
+    <div class="input-group">
+
+
+        <div class="container" style="margin-top: 20px;">
+            <div class="col-12 col-lg-12 col-md-12 buscar-menuNuevo">
+                <div class="input-group">
+                    <div class="card w-100">
+                        <div class="card-header text-white fs-5" style="background:#124498;padding: 1rem 2rem; ">
+                            Resultado de búsqueda
+                        </div>
+
+
+
+
+                        @if (lstAsegCodRequestFull != null)
+                        {
+                            @foreach (var item in lstAsegCodRequestFull)
+                            {
+                                <div class="input-group">
+                                    <div class="form-group card card-menu-search">
+                                        <div class="col-12">
+                                            <div class="contenedor">
+
+                                                <CollapsePanelComponent Title=""
+                                                                Icons="fa fa-folder-open-o"
+                                                                Separador=""
+                                                                ButtonText=@item.IAFAS
+                                                                Collapsed="true">
+                                                    <ChildContent>
+
+                                                        <div class="card-body">
+                                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive">
+
+                                                                @*<table class="table table-hover   table-bordered">
+                                                        <thead class="table-primary">
+                                                        <tr class="fw-bolder">
+                                                        <th class="col-4 text-center">Producto</th>
+                                                        <th class="col-4 text-center">Afiliado</th>
+                                                        <th class="col-4 text-center">Contratante</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+
+                                                        <tr>
+                                                        <td class="text-left">
+                                                        <span class="span-color">IAFA: </span> @item.IAFAS
+                                                        <span class="span-color">RUC: </span> @item.RUC
+                                                        <span class="span-color">SUNASA: </span> @item.SUNASA<br>
+                                                        <span class="span-color">Código del producto: </span> @item.CodProducto<br>
+                                                        <span class="span-color">Desxripciòn del producto: </span> @item.DesProducto<br>
+                                                        <span class="span-color">Número del plan: </span> @item.NumeroPlan<br>
+                                                        </td>
+                                                        <td style="@oListStyleInfo[1]">
+                                                        <span class="span-color">Código del afiliado: </span> @item.CodigoAfiliado<br>
+                                                        <span class="span-color">Nombre Afiliado: </span> @item.NombresAfiliado<br>
+                                                        <span class="span-color">Apellido paterno afiliado: </span> @item.ApellidoPaternoAfiliado<br>
+                                                        <span class="span-color">Apellido materno afiliado: </span> @item.ApellidoMaternoAfiliado<br>
+                                                        </td>
+                                                        <td style="@oListStyleInfo[1]">
+                                                        <span class="span-color">Tipo de doc del contratante: </span> @item.CodTipoDocumentoContratante<br>
+                                                        <span class="span-color">Número de doc del contratante: </span> @item.NumeroDocumentoContratante<br>
+                                                        <span class="span-color">Nombre del contratante: </span> @item.NombreContratante<br>
+                                                        <span class="span-color">Tipo de Calificador del contratante: </span> @item.TipoCalificadorContratante<br>
+                                                        </td>
+                                                        </tr>
+
+                                                        </tbody>
+                                                        </table>*@
+
+                                                                @if (item.oAsegCodResponse.DatosAfiliado != null)
+                                                                {
+                                                                    <table class="table table-hover   table-bordered">
+                                                                        <thead class="table-primary">
+                                                                            <tr class="fw-bolder">
+                                                                                <th class="col-3 text-center">Producto</th>
+                                                                                <th class="col-3 text-center">Afiliado</th>
+                                                                                <th class="col-3 text-center">Titular</th>
+                                                                                <th class="col-3 text-center">Contratante</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+
+                                                                            <tr>
+                                                                                <td class="text-left">
+
+
+                                                                                    Producto: <span class="span-color"> @item.oAsegCodResponse.DatosAfiliado.DesProducto</span>
+
+                                                                                    <br>
+                                                                                    Estado:<span class="span-color"> @item.oAsegCodResponse.DatosAfiliado.DesEstado</span>
+
+                                                                                    <br>
+                                                                                    <span>Cod. Producto: </span> @item.oAsegCodResponse.DatosAfiliado.CodProducto
+
+                                                                                    <br>
+                                                                                    <span>Poliza: </span> @item.oAsegCodResponse.DatosAfiliado.NumeroPoliza
+
+                                                                                    <br>
+                                                                                    <span>Contrato: </span> @item.oAsegCodResponse.DatosAfiliado.NumeroContrato
+
+                                                                                    <br>
+                                                                                    <span>Certificado: </span> @item.oAsegCodResponse.DatosAfiliado.NumeroCertificado
+
+                                                                                    <br>
+                                                                                    @*<span class="span-color">CodTipoPlan: </span> @item.oAsegCodResponse.DatosAfiliado.CodTipoPlan
+                                                                        <br>*@
+                                                                                    <span>Tipo Plan: </span> @item.oAsegCodResponse.DatosAfiliado.DesTipoPlan
+                                                                                    <br>
+                                                                                    <span>Numero Plan: </span> @item.oAsegCodResponse.DatosAfiliado.NumeroPlan
+
+                                                                                    <br>
+                                                                                    @* <span class="span-color">CodEstado: </span> @item.oAsegCodResponse.DatosAfiliado.CodEstado
+                                                                        <br>*@
+                                                                                    @* <span class="span-color">CodFechaActualizacionFoto: </span> @item.oAsegCodResponse.DatosAfiliado.CodFechaActualizacionFoto
+                                                                        <br>
+                                                                        <span class="span-color">FechaActualizacionFoto: </span> @item.oAsegCodResponse.DatosAfiliado.FechaActualizacionFoto
+                                                                        <br>*@
+
+
+
+
+                                                                                </td>
+                                                                                <td style="@oListStyleInfo[1]">
+
+
+                                                                                    @*Apellido Paterno: <span class="span-color"> @item.oAsegCodResponse.DatosAfiliado.ApellidoPaternoAfiliado</span>
+
+                                                                                    <br>
+                                                                                    Apellido Materno: <span class="span-color"> @item.oAsegCodResponse.DatosAfiliado.ApellidoMaternoAfiliado</span>
+
+                                                                                    <br>
+                                                                                    Nombres: <span class="span-color">  @item.oAsegCodResponse.DatosAfiliado.NombresAfiliado</span>
+*@
+                                                                                    <br>
+                                                                                    @item.oAsegCodResponse.DatosAfiliado.DesTipoDocumentoAfiliado: <span class="span-color">@item.oAsegCodResponse.DatosAfiliado.NumeroDocumentoAfiliado</span>
+
+                                                                                    <br>
+
+                                                                                    <span>CodigoAfiliado: </span> @item.oAsegCodResponse.DatosAfiliado.CodigoAfiliado
+
+                                                                                    <br>
+
+                                                                                    @*<span >CodParentesco: </span> @item.oAsegCodResponse.DatosAfiliado.CodParentesco
+
+                                                                        <br>*@
+                                                                                    <span>Parentesco: </span> @item.oAsegCodResponse.DatosAfiliado.DesParentesco
+
+                                                                                    <br>
+                                                                                    @*<span class="span-color">CodTipoDocumentoAfiliado: </span> @item.oAsegCodResponse.DatosAfiliado.CodTipoDocumentoAfiliado
+                                                                        <br>*@
+                                                                                    @*<span>Tipo Documento: </span> @item.oAsegCodResponse.DatosAfiliado.DesTipoDocumentoAfiliado
+
+                                                                        <br>*@
+                                                                                    @*<span class="span-color">CodGenero: </span> @item.oAsegCodResponse.DatosAfiliado.CodGenero
+                                                                        <br>*@
+                                                                                    <span>Genero: </span> @item.oAsegCodResponse.DatosAfiliado.DesGenero
+
+                                                                                    <br>
+
+
+                                                                                    @* </td>
+
+
+
+                                                                        <td style="@oListStyleInfo[1]">*@
+
+
+
+
+
+                                                                                    @*<span class="span-color">CodFechaNacimiento: </span> @item.oAsegCodResponse.DatosAfiliado.CodFechaNacimiento
+                                                                        <br>*@
+                                                                                    <span>FechaNacimiento: </span> @item.oAsegCodResponse.DatosAfiliado.FechaNacimiento
+
+                                                                                    <br>
+                                                                                    <span>Edad: </span> @item.oAsegCodResponse.DatosAfiliado.Edad
+
+                                                                                    <br>
+                                                                                    @*<span class="span-color">CodFechaInicioVigencia: </span> @item.oAsegCodResponse.DatosAfiliado.CodFechaInicioVigencia
+                                                                        <br>*@
+                                                                                    <span>Fecha Inicio Vigencia: </span> @item.oAsegCodResponse.DatosAfiliado.FechaInicioVigencia
+
+                                                                                    <br>
+                                                                                    @*<span class="span-color">CodFechaFinVigencia: </span> @item.oAsegCodResponse.DatosAfiliado.CodFechaFinVigencia
+                                                                        <br>*@
+                                                                                    <span>Fecha Fin Vigencia: </span> @item.oAsegCodResponse.DatosAfiliado.FechaFinVigencia
+
+                                                                                    <br>
+                                                                                    @* <span class="span-color">CodEstadoCivil: </span> @item.oAsegCodResponse.DatosAfiliado.CodEstadoCivil
+                                                                        <br>*@
+                                                                                    <span>Estado Civil: </span> @item.oAsegCodResponse.DatosAfiliado.DesEstadoCivil
+
+                                                                                    <br>
+
+
+                                                                                </td>
+
+
+
+
+                                                                                <td style="@oListStyleInfo[1]">
+                                                                                   @* Apellido Paterno: <span class="span-color"> @item.oAsegCodResponse.DatosAfiliado.ApellidoPaternoTitular</span>
+
+                                                                                    <br>
+                                                                                    Apellido Materno:<span class="span-color">  @item.oAsegCodResponse.DatosAfiliado.ApellidoMaternoTitular</span>*@
+
+                                                                                    <br>
+                                                                                    Nombres:<span class="span-color"> @item.oAsegCodResponse.DatosAfiliado.NombresTitular</span>
+
+                                                                                    <br>
+                                                                                    @* <span class="span-color">CodigoTitular: </span> @item.oAsegCodResponse.DatosAfiliado.CodigoTitular
+                                                                        <br>*@
+                                                                                    @* <span class="span-color">CodTipoDocumentoTitular: </span> @item.oAsegCodResponse.DatosAfiliado.CodTipoDocumentoTitular
+                                                                        <br>*@
+                                                                                    @*<span>Tipo Documento: </span> @item.oAsegCodResponse.DatosAfiliado.DesTipoDocumentoTitular
+
+                                                                        <br>*@
+                                                                                    @item.oAsegCodResponse.DatosAfiliado.DesTipoDocumentoTitular: <span class="span-color"> @item.oAsegCodResponse.DatosAfiliado.NumeroDocumentoTitular</span>
+
+
+
+
+                                                                                    <br>
+                                                                                    @*<span class="span-color">CodMoneda: </span> @item.oAsegCodResponse.DatosAfiliado.CodMoneda
+                                                                        <br>*@
+                                                                                    <span>Moneda: </span> @item.oAsegCodResponse.DatosAfiliado.DesMoneda
+
+                                                                                    <br>
+                                                                                    @* <span class="span-color">CodTipoAfiliacion: </span> @item.oAsegCodResponse.DatosAfiliado.CodTipoAfiliacion
+                                                                        <br>*@
+                                                                                    <span>Tipo Afiliacion: </span> @item.oAsegCodResponse.DatosAfiliado.DesTipoAfiliacion
+
+                                                                                    <br>
+                                                                                    @* <span class="span-color">CodFechaAfiliacion: </span> @item.oAsegCodResponse.DatosAfiliado.CodFechaAfiliacion
+                                                                        <br>*@
+                                                                                    <span>Fecha Afiliacion: </span> @item.oAsegCodResponse.DatosAfiliado.FechaAfiliacion
+                                                                                    <br>
+
+                                                                                </td>
+
+
+
+                                                                                <td style="@oListStyleInfo[1]">
+
+                                                                                    Nombre:<span class="span-color"> @item.oAsegCodResponse.DatosAfiliado.NombreContratante</span>
+                                                                                    <br>
+                                                                                    @*<span class="span-color">CodTipoDocumentoContratante: </span> @item.oAsegCodResponse.DatosAfiliado.CodTipoDocumentoContratante
+                                                                        <br>
+                                                                        <span class="span-color">Tipo Doc: </span> @item.oAsegCodResponse.DatosAfiliado.DesTipoDocumentoContratante
+                                                                        <br>*@
+                                                                                    @item.oAsegCodResponse.DatosAfiliado.DesTipoDocumentoContratante : <span class="span-color">@item.oAsegCodResponse.DatosAfiliado.NumeroDocumentoContratante </span>
+                                                                                    <br>
+
+                                                                                </td>
+                                                                            </tr>
+
+                                                                        </tbody>
+                                                                    </table>
+
+
+                                                                }
+
+
+                                                                @if (item.oAsegCodResponse.Coberturas != null)
+                                                                {
+
+                                                                    <CollapsePanelComponent Title=""
+                                                                                Icons="fa-solid fa-book"
+                                                                                Separador=":"
+                                                                                ButtonText="Coberturas"
+                                                                                Collapsed="false">
+                                                                        <ChildContent>
+
+                                                                            <table class="table table-hover   table-bordered">
+                                                                                <thead class="table-primary">
+                                                                                    <tr class="fw-bolder">
+                                                                                        <th class="col-1 text-center">Cobertura</th>
+                                                                                        <th class="col-3 text-left">Beneficios</th>
+                                                                                        <th class="col-1 text-center">Restricciones</th>
+                                                                                        <th class="col-1 text-right">Copago Fijo</th>
+                                                                                        <th class="col-1 text-right">Copago Variable %</th>
+                                                                                        <th class="col-1 text-center">Moneda</th>
+
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+
+
+                                                                                    @foreach (Coberturas_AsegCode oCoberturas_AsegCode in item.oAsegCodResponse.Coberturas)
+                                                                                    {
+
+                                                                                        <tr>
+                                                                                            <td class="text-center">
+                                                                                                @oCoberturas_AsegCode.CodigoCobertura
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                @oCoberturas_AsegCode.Beneficios
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                @oCoberturas_AsegCode.Restricciones
+                                                                                            </td>
+                                                                                            <td align='right'>
+                                                                                                @oCoberturas_AsegCode.CodCopagoFijo
+                                                                                            </td>
+                                                                                            <td align='right'>
+                                                                                                @oCoberturas_AsegCode.CodCopagoVariable
+                                                                                            </td>
+                                                                                            <td class="text-center">
+                                                                                                @oCoberturas_AsegCode.DesTipoMoneda
+                                                                                            </td>
+
+                                                                                        </tr>
+
+
+                                                                                    }
+
+                                                                                </tbody>
+                                                                            </table>
+
+                                                                        </ChildContent>
+                                                                    </CollapsePanelComponent>
+
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </ChildContent>
+                                                </CollapsePanelComponent>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+
+
+
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+

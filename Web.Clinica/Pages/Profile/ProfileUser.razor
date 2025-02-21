@@ -1,0 +1,238 @@
+﻿@page "/Profile/ProfileUser"
+@inject IJSRuntime js
+
+@attribute [Authorize]
+@using System.Security.Claims
+@using Bus.Clinica.Clinica
+@using Ent.Sql.ClinicaE.UsuariosE
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Data
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+<AuthorizeView>
+    <Authorized Context="AuthenticationState">
+        @code
+        {
+        SeguridadE _objSeguridad;
+        Seguridad seguridadBL = new Seguridad();
+
+        private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
+        private Claim _ObjClaim;
+        ElementReference file_upload;
+
+        string _MensajeBody;
+        string _Nombres { get; set; } = "";
+        string _login { get; set; } = "";
+        byte[] imageBase64 { get; set; }
+        bool _cambiarImagen { get; set; } = false;
+
+        /*trae imagenes*/
+        string _uri { get; set; } = "";
+        string _imagen64 { get; set; } = "";
+        /*rutas*/
+        string rutalocal = "images/";
+        string rutaString64 = "data:image/jpg;base64,";
+        string rutafinal;
+
+        string _hidden = "";
+        string _hidden2 = "hidden";
+        string _messajeBody = "";
+
+        protected override void OnInitialized()
+        {
+            js.InvokeVoidAsync("fnActualizarTitulo", "Perfil de Usuario");
+            js.InvokeVoidAsync("ekUploadImagenes");
+            obtenerPerfil();
+            mostrar_imagen_final();
+
+        }
+
+        private async Task obtenerPerfil()
+        {
+            try
+            {
+                var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+                var user = authState.User;
+                if (user.Identity.IsAuthenticated)
+                {
+                    claims = user.Claims;
+                }
+                _login = (from n in claims where n.Type == ClaimTypes.NameIdentifier select n).FirstOrDefault().Value.ToString();
+                _Nombres = (from n in claims where n.Type == ClaimTypes.Name select n).FirstOrDefault().Value.ToString();
+                _uri = (from n in claims where n.Type == ClaimTypes.Uri select n).FirstOrDefault().Value.ToString();
+
+            }
+            catch (Exception ex) { }
+        }
+
+        private void mostrar_imagen_final()
+        {
+            try
+            {
+                DataTable _perfilnuevo = new DataTable();
+                _objSeguridad = new SeguridadE();
+                _objSeguridad.Login = _login;
+                _perfilnuevo = seguridadBL.MostrarFotoPerfil(_objSeguridad);
+                if (_perfilnuevo.Rows.Count > 0)
+                {
+                    foreach (DataRow item in _perfilnuevo.Rows)
+                    {
+                        Byte[] _pb = (Byte[])item["img_perfil"];
+                        _imagen64 = Convert.ToBase64String(_pb);
+
+                    }
+                    rutafinal = rutaString64 + _imagen64;
+                }
+                else
+                {
+                    rutafinal = rutalocal + _uri;
+                }
+
+            }
+            catch (Exception ex) { rutafinal = rutalocal + _uri; }
+
+
+        }
+
+
+        async Task OnFileChange(InputFileChangeEventArgs e)
+        {
+
+            var imageName = e.File.ContentType;
+            var filename = e.File.Name;
+
+            if (imageName.Contains("image/"))
+            {
+                MemoryStream ms = new MemoryStream();
+                await e.File.OpenReadStream().CopyToAsync(ms);
+                var buffer = ms.ToArray();
+                //IBrowserFile browserFile = await e.File.RequestImageFileAsync(format, maxLenth, maxLenth);
+                //var buffer = new Byte[browserFile.Size];
+                //await browserFile.OpenReadStream().ReadAsync(buffer);
+                imageBase64 = buffer;
+                _cambiarImagen = true;
+                string base64string = Convert.ToBase64String(buffer);
+                rutafinal = rutaString64 + base64string;
+                this.StateHasChanged();
+                _hidden = "hidden";
+                _hidden2 = "";
+                _messajeBody = filename;
+                ms.Dispose();
+                buffer = null;
+            }
+        }
+
+        private void OnclickguardarRegistro()
+        {
+            try
+            {
+                if (_cambiarImagen == true)
+                {
+                    _objSeguridad = new SeguridadE();
+                    _objSeguridad.Login = _login;
+                    _objSeguridad.Img_Perfil = imageBase64;
+                    var menssaje = seguridadBL.GetActulizacionPerilPersonal(_objSeguridad);
+                    bool _exito = menssaje.exito;
+                    _MensajeBody = menssaje.message;
+                    if (_exito == true)
+                    {
+                        js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacion");
+                    }
+                    else
+                    {
+                        js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+                    }
+
+                }
+            }
+            catch (Exception ex) { }
+        }
+        private async Task Actualizarpagina()
+        { await js.InvokeVoidAsync("locationreload"); }
+        }
+
+        <div class="bg-light" style="margin-top:20px;">
+            <div class="form-bg" style="border:0px;">
+                <div class="container-fluid">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 buscar-menuNuevo" style="border-radius:25px !important;">
+                        <div class="card-group card">
+                            <div class="card-title">
+                            </div>
+                            <div class="card-body col-lg-12 row">
+                                <div class="col-md-4 col-xs-12 border-right">
+                                    <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                                        <img class="rounded-circle mt-2" width="300" id="file_upload" src="@rutafinal">
+                                        <div style="margin-top:15px;">
+                                            <form>
+                                                <div id="file-upload-form" class="uploader">
+                                                    <InputFile type="file" OnChange="OnFileChange" id="file-upload" name="fileupload" accept="image/*">
+                                                    </InputFile>
+                                                    <label for="file-upload" id="file-drag">
+                                                        <div class="@_hidden" id="start">
+                                                            <i class="fa fa-download" aria-hidden="true"></i>
+                                                            <div>Seleccione un archivo o arrastre aquí</div>
+                                                            <div id="notimage" hidden class="hidden">Seleccione una imagen</div>
+                                                            <span id="file-upload-btn" class="btn btn-primary">Seleccione una imagen</span>
+                                                        </div>
+                                                        <div id="response" class="@_hidden2">
+                                                            <div id="messages" style="max-width:250px;">@_messajeBody</div>
+                                                            <progress class="progress" id="file-progress" value="0">
+                                                                <span>0</span>%
+                                                            </progress>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 col-xs-12">
+                                    <div class="p-3 py-8">
+                                        <div class="d-flex justify-content-between align-items-center mb-3 col-md-12 row">
+                                            <div class="col-md-6 col-xs-9">
+                                                <h4 class="text-right">Usuario:&nbsp; <label class="fw-bold">@_login</label></h4>
+                                            </div>
+                                            <div class="col-md-6 col-xs-3">
+                                                <div class="text-right">
+                                                    <button class="btn btn-primary profile-button" @onclick="@OnclickguardarRegistro" style="right: 1.8rem;position: absolute;">
+                                                        <i class="fa fa-save"></i>&nbsp; Guardar Perfil
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col-md-12">
+                                                <label class="labels">Nombres:</label>
+                                                <input type="text" class="form-control  text-uppercase  color_texto_bloqueado" readonly="readonly" placeholder="nombres" @bind="@_Nombres">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <MessageModal IdMessage="msgModalError"
+                      TitleModal="Error"
+                      IconMessage=MessageModal.iconMessage.Error
+                      TypeButton=MessageModal.typeButton.Ok
+                      EscapeKey="true"
+                      OnClose="@Actualizarpagina"
+                      BodyMessage=@_MensajeBody>
+        </MessageModal>
+        <MessageModal IdMessage="msgModalConfirmacion"
+                      TitleModal="Información"
+                      TypeButton=MessageModal.typeButton.Ok
+                      IconMessage="MessageModal.iconMessage.Informacion"
+                      EscapeKey="true"
+                      OnClose="@Actualizarpagina"
+                      BodyMessage=@_MensajeBody>
+        </MessageModal>
+    </Authorized>
+</AuthorizeView>

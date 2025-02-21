@@ -1,0 +1,486 @@
+@page "/Clinica/Comercial/Componentes/MedicoInformacion"
+
+@using Ent.Sql.ClinicaE
+@using Ent.Sql.ClinicaE.MedicosE
+@using RestSharp
+@using Web.Clinica.Shared
+@using Web.Clinica.Components
+@using Ent.Sql.ClinicaE.OtrosE
+@using Ent.Sql.ClinicaE.EspecialidadesE
+@using Ent.Sql.SeguridadE.SeguridadE;
+@using Web.Clinica.Data
+@using Bus.Utilities
+
+
+
+@code {
+    [Parameter]
+    public MedicoE oMedicoE { get; set; }
+    [Parameter]
+    public string RutaEmbed { get; set; }
+    [Parameter]
+    public List<TablasE> oListaTablasSexo { get; set; }
+    [Parameter]
+    public List<HorariosE> oListaHorarioMedico { get; set; }
+    [Parameter]
+    public List<TablasE> oListaTablasCodCivil { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasTipoIdentidad { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasTipoColegio { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasAreas { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasAFP { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasTipDocEmitira { get; set; }
+
+    [Parameter]
+    public List<EspecialidadxMedicoE> oListaEspecialidades { get; set; }
+
+    [Parameter]
+    public List<MedicosEspecialidadE> oListaMedicosEspecialidadE { get; set; }
+
+    [Parameter]
+    public List<PrestacionxMedicoE> oListaPrestacionxMedicoE { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasSedes { get; set; }
+
+    [Parameter]
+    public List<EspecialidadesE> oListEspecialidadesE { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListTablasTipoAtencion { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListTablasTipoPaciente { get; set; }
+
+    [Parameter]
+    public bool FlagCambiaFoto { get; set; }
+
+    [Parameter]
+    public MedicoObsAuxE oMedicoObsAux { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasMoneda { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasDatoMedico { get; set; }
+
+    [Parameter]
+    public List<AsistentexMedicoE> oListaAsistentexMedicoE { get; set; }
+
+    [Parameter]
+    public List<MedicoxEmpresaE> oListaMedicoxEmpresaE { get; set; }
+
+    [Parameter]
+    public List<MedicosDatosE> oListaMedicosDatosE { get; set; }
+
+    [Parameter]
+    public List<MedicosCtaBancoE> oListaMedicosCtaBancoE { get; set; }
+
+
+    [Parameter]
+    public bool FlgNuevo { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasBancos { get; set; }
+
+    [Parameter]
+    public List<SegOpcionE> oListSegOpcions { get; set; }
+
+    /**/
+    List<HorariosE> olIstaHorarioSede = new List<HorariosE>();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        try
+        {
+            olIstaHorarioSede = new List<HorariosE>();
+            olIstaHorarioSede = oListaHorarioMedico
+                                .GroupBy(g => new { g.IdSede, g.Sede })
+                                .Select(
+                                    s => new HorariosE
+                                        { IdSede = s.First().IdSede, Sede = s.First().Sede }).ToList();
+        }
+        catch
+        {
+            olIstaHorarioSede = new List<HorariosE>();
+
+        }
+        base.OnParametersSet();
+    }
+
+}
+
+<div class="row" style="margin-left:5px;">
+    <div class="col-sm-4 col-lg-3 col-sm-3 col-12 ml-2 border border-2" style="border-radius:15px; ">
+        <div class="card-body box-profile">
+            <div class="text-center mb-3">
+                @if (oMedicoObsAux.Foto == "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7")
+                {
+                    <img alt="imagen" class="img-thumbnail" style="border-radius: 50%;" src="/images/hombre2.png">
+                }
+
+                else if (!string.IsNullOrWhiteSpace(@oMedicoObsAux.Foto))
+                {
+                    <div class="text-center">
+                        <img src="data:image/jpg;base64,@oMedicoObsAux.Foto" alt="imagen" class="img-thumbnail" style="border-radius: 50%;" />
+                    </div>
+                }
+                else
+                {
+
+                    <img alt="imagen" class="img-thumbnail" style="border-radius: 50%;" src="/images/hombre2.png">
+                }
+
+
+            </div>
+
+            @if (@oMedicoE.FlgCia != true)
+            {
+
+                <div class="col-20">
+                    <label class="col-20 control-label">
+                        <span class="span-jap"><strong> NOMBRES :</strong></span>
+                        <span id="spnMedicoNombre">@oMedicoE.Nombre</span>
+                    </label>
+                </div>
+                <div class="col-20">
+                    <label class="col-20 control-label">
+                        <span span class="span-jap"><strong>A. PATERNO :</strong></span>
+                        <span id="spnMedicoPaterno">@oMedicoE.ApPaterno</span>
+                    </label>
+                </div>
+                <div class="col-20 mb-3">
+                    <label class="col-20 control-label">
+                        <span span class="span-jap"><strong>A. MATERNO :</strong></span>
+                        <span id="spnMedicoMaterno">@oMedicoE.ApMaterno</span>
+                    </label>
+                </div>
+            }
+            else
+            {
+                <div class="col-20 mb-3">
+                    <label class="col-20 control-label">
+                        <span class="span-jap"><strong>EMPRESA :</strong></span>
+                        <span id="spnMedicoNombre">@oMedicoE.Nombres</span>
+                    </label>
+                </div>
+            }
+
+            <div class="col-20">
+                @if (!string.IsNullOrWhiteSpace(@oMedicoE.Email))
+                {
+                    <div class="col-20">
+                        <label class="col-20 control-label">
+                            <span class="span-japx"><i class="fa-regular fa-envelope"></i></span>
+                            <span id="spnMedicoEmail">@oMedicoE.Email</span>
+                        </label>
+                    </div>
+                }
+
+
+            </div>
+            <div class="col-20">
+                @if (!string.IsNullOrWhiteSpace(@oMedicoE.Telefono))
+                {
+                    <div class="col-20">
+                        <label class="col-20 control-label">
+                            <span class="span-japx"><i class="fa-solid fa-phone"></i></span>
+                            <span id="spnMedicoTelefono">@oMedicoE.Telefono</span>
+                        </label>
+                    </div>
+                }
+
+            </div>
+            @if (!string.IsNullOrWhiteSpace(@oMedicoE.Beeper))
+            {
+                <div class="col-20">
+                    <label class="col-20 control-label">
+                        <span class="span-japx"><i class="fa-solid fa-mobile-screen"></i></span>
+                        <span id="spnMedicoTelefono">@oMedicoE.Beeper</span>
+                    </label>
+                </div>
+            }
+
+            @* <div class="col-20 mb-3">
+            <label class="col-20 control-label">
+            <span class="span-japx"><i class="fa-solid fa-mobile-screen"></i></span>
+            <span id="spnMedicoTelefono">@oMedicoE.Beeper</span>
+            </label>
+            </div> *@
+            <div class="col-20 mt-3">
+                <label class="col-20 control-label">
+                    <span class="span-japx"><strong>CÓDIGO :</strong></span>
+                    <span id="spnMedicoCodigo">@oMedicoE.CodMedico</span>
+                </label>
+            </div>
+            <div class="col-20">
+                <label class="col-20 control-label">
+                    <span class="span-japx"><strong>TIPO DE COLEGIATURA :</strong></span>
+                    <span id="spnMedicoTipoColegiatura">@oMedicoE.TipColegio</span>
+                </label>
+            </div>
+            <div class="col-20">
+                <label class="col-20 control-label">
+                    <span class="span-japx"><strong>NÚMERO DE COLEGIATURA :</strong></span>
+                    <span id="spnMediconumeroColegiatura">@oMedicoE.ColMedico</span>
+                </label>
+            </div>
+            <div class="col-20">
+                <label class="col-20 control-label">
+                    <span class="span-japx"><strong>@oMedicoE.NombreTipDocIdentidad :</strong></span>
+                    <span id="spnMedicoDNI">@oMedicoE.DocIdentidad</span>
+                </label>
+            </div>
+            <div class="col-20 mb-2">
+                <label class="col-20 control-label">
+                    <span class="span-japx"><strong>NACIMIENTO :</strong></span>
+                    <span id="spnMedicoNacimiento">@oMedicoE.FechaNacimiento.ToShortDateString()</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-sm-8 col-lg-9 col-sm-9 col-12">
+        <div class="card-body box-profile">
+            <div class="row">
+                <TabControl>
+                    <TabPage Text="Datos Informativos" _ICons="fa-solid fa-user">
+                        @if (@oMedicoE.FlagAmbulatorio == true)
+                        {
+                            <div class="row" style="margin-top:15px; align-content: center;">
+                                <div class="col-lg-12 col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <i class="fas fa-user-tag"></i><label style="margin-left:15px; font-weight:bold;">Sedes y Especialidad</label>
+                                        </div>
+
+                                        <div cclass="width: 70%; margin-left: 15px; margin-top: 17px; padding-bottom:0px;  margin-bottom: 0px; ">
+
+                                            <div class="row" style="width: 70%; margin-left:15px; margin-top: 10px;">
+                                                <div class="col-sm-12 col-md-4  col-lg-4">
+                                                    <!--I.FlgPresencialJm-->
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" id="chkFlgPresencialJm" @bind="@oMedicoE.FlgPresencialJm" disabled>
+                                                        <label for="flexCheckChecked"> Sede Jesús Maria</label>
+                                                    </div>
+                                                    <!--F.FlgPresencialJm-->
+                                                </div>
+                                                <div class="col-sm-12 col-md-4  col-lg-4">
+                                                    <!--I.FlgPresencialCm-->
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" id="chkFlgPresencialCm" @bind="@oMedicoE.FlgPresencialCm" disabled>
+                                                        <label for="flexCheckChecked">Sede Camacho</label>
+                                                    </div>
+                                                    <!--F.FlgPresencialCm-->
+                                                </div>
+                                                <div class="col-sm-12 col-md-4  col-lg-4">
+                                                    <!--I.FlgPresencialLm-->
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" id="chkFlgPresencialLm" @bind="@oMedicoE.FlgPresencialLm" disabled>
+                                                        <label for="flexCheckChecked">Sede la Molina</label>
+                                                    </div>
+                                                    <!--F.FlgPresencialLm-->
+                                                </div>
+
+                                                @*<!--I.FlgTeleConsulta-->
+                                            <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="chkFlgTeleConsulta" @bind="@oMedicoE.FlgTeleConsulta">
+                                            <label class="form-check-label" for="flexCheckChecked">C. Mèd Virtual</label>
+                                            </div>
+                                            <!--F.FlgTeleConsulta-->*@
+
+                                            </div>
+
+                                            <div class="card-body">
+
+                                                <div class="table table-responsive row">
+
+
+                                                    <table class="table table-bordered table-striped">
+                                                        <thead class="table-primary">
+                                                            <tr style="text-align: center;">
+                                                                <th>Especialidad</th>
+                                                                <th>Tipo de Atención</th>
+                                                                <th>Tipo de Paciente</th>
+                                                                <th>Tipo de Agenda</th>
+                                                                <th>Tarifa</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @if (oListaMedicosEspecialidadE.Count() > 0)
+                                                            {
+
+                                                                @foreach (var item in oListaMedicosEspecialidadE)
+                                                                {
+                                                                    <tr>
+                                                                        <td>@item.DscEspecialidad</td>
+                                                                        <td>@item.DscTipAtencion</td>
+                                                                        <td>@item.DscTipPaciente</td>
+                                                                        <td>
+                                                                            <div class="form-check">
+                                                                                <input class="form-check-input" type="checkbox" value="" id="chkFlgPresencialJm" @bind="@item.TipAgendaCallCenter" disabled>
+                                                                                <label class=""> Call Center</label>
+                                                                            </div>
+
+                                                                            <div class="form-check">
+                                                                                <input class="form-check-input" type="checkbox" value="" id="chkFlgTeleConsulta" @bind="@item.TipAgendaInternet" disabled>
+                                                                                <label class="">Internet-Apps</label>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td style="font-weight:bold;">
+                                                                            Moneda: @item.DscMoneda
+                                                                            <br>Importe: @item.ImporteTarifa
+
+                                                                        </td>
+
+                                                                    </tr>
+                                                                }
+
+                                                            }
+
+
+                                                        </tbody>
+                                                    </table>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        else
+                        {
+
+                        }
+
+
+                        <div class="row" style="margin-top:15px;">
+                            <div class="col-lg-12 col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <i class="fas fa-user-friends"></i><label style="margin-left:15px; font-weight: bold;">Asistentes</label>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table table-responsive row">
+                                            <table class="table table-bordered table-striped">
+                                                <thead class="table-primary">
+                                                    <tr style="text-align: center;">
+                                                        <th>N°</th>
+                                                        <th style="">Código de Asistente</th>
+                                                        <th style="">Nombre de Asistente</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @{
+                                                        int numListaAsistentexMedico = 0;
+                                                    }
+                                                    @if (oListaAsistentexMedicoE.Count() > 0)
+                                                    {
+
+                                                        @foreach (var item in oListaAsistentexMedicoE)
+                                                        {
+                                                            numListaAsistentexMedico++;
+                                                            <tr>
+                                                                <td>
+                                                                    @numListaAsistentexMedico
+                                                                </td>
+                                                                <td>@item.CodMedicoAsistente</td>
+                                                                <td>@item.NombreAsistente</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </TabPage>
+
+                    <TabPage Text="Horario Médico" _ICons="fa-solid fa-notes-medical">
+                        <div class="row" style="margin-top:15px; align-content: center;">
+                            <div class="col-lg-12 col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div cclass="width: 70%; margin-left: 15px; margin-top: 17px; padding-bottom:0px;  margin-bottom: 0px; ">
+                                            <div class="table table-responsive row">
+                                                <table class="table  table-bordered" style="margin-top:10px;">
+                                                    <tbody>
+                                                        @if (olIstaHorarioSede.Count() > 0)
+                                                        {
+                                                            @foreach (var item in olIstaHorarioSede)
+                                                            {
+                                                                <tr>
+                                                                    <td style="padding-top: 15px;">
+                                                                        <CollapsePanelComponent Icons="fas fa-house-user" IdTab="@item.IdSede.ToString()" ButtonText="@item.Sede" Collapsed="false">
+                                                                            <ChildContent>
+                                                                                <table class="table table-hover   table-bordered">
+                                                                                    <thead>
+                                                                                        <tr>
+                                                                                            <th style="text-align:center">Día</th>
+                                                                                            <th style="text-align:center">Fecha Inicio</th>
+                                                                                            <th style="text-align:center">Fecha Fin</th>
+                                                                                            <th style="text-align:center">Hora Inicio</th>
+                                                                                            <th style="text-align:center">Hora Fin</th>
+                                                                                            <th style="text-align:center">Consultorio</th>
+                                                                                            <th style="text-align:center">Especialidad</th>
+                                                                                        </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                        @foreach (var item2 in oListaHorarioMedico.Where(w => w.IdSede == item.IdSede).ToList())
+                                                                                        {
+                                                                                            <tr>
+                                                                                                <td style="text-align:center">@item2.NombreDia</td>
+                                                                                                <td style="text-align:center">@item2.FechaInicio.ToShortDateString()</td>
+                                                                                                <td style="text-align:center">@item2.FechaFin.ToShortDateString()</td>
+                                                                                                <td style="text-align:center">@item2.HoraInicio</td>
+                                                                                                <td style="text-align:center">@item2.HoraFin</td>
+                                                                                                <td style="text-align:center">@item2.Consultorio</td>
+                                                                                                <td style="text-align:center">@item2.Especialidad</td>
+                                                                                            </tr>
+
+                                                                                        }
+                                                                                    </tbody>
+                                                                                </table>
+
+
+                                                                            </ChildContent>
+                                                                        </CollapsePanelComponent>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </TabPage>
+                </TabControl>
+            </div>
+        </div>
+    </div>
+</div>

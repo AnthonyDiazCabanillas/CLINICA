@@ -1,0 +1,1003 @@
+﻿@* **********************************************************************************************************************
+    Copyright Clinica San Felipe S.A.C 2024. Todos los derechos reservados.
+    Version     Fecha           Autor       Requerimiento
+    1.1         01/04/2024      AROMERO     REQ-2024-006637:  FINANCIAMIENTO LABORATORIO
+*********************************************************************************************************************** *@
+
+@page "/Clinica/Clinica/Mantenimientos/FinanciamientoLaboratorioCargaArchivo"
+@attribute [Authorize]
+@inject IJSRuntime js
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inject ListaSerializadaService ListaService
+@using Bus.Clinica.Clinica;
+@using Bus.Utilities
+@using Dat.Sql
+@using Ent.Sql.ClinicaE.FinanciamientoDetalleE;
+@using System.Xml.Serialization
+@using Json = System.Text.Json.JsonSerializer
+@using RestSharp
+@using System.Data;
+@using Web.Clinica.Data
+@using System.Text.RegularExpressions;
+@using Web.Clinica.Pages.Clinica.Comercial.Componentes
+@using Ent.Sql;
+@using Ent.Sql.ClinicaE;
+@using ClosedXML.Excel
+@using System.Collections.Generic;
+
+
+@inherits MainLayout
+
+@code {
+    List<FinanciamientoDetalleE> oListaFinanciamientoDet = new List<FinanciamientoDetalleE>();   
+    public string Mensaje { get; set; } = "";
+    [CascadingParameter]
+    PageIndexStateProvider State { get; set; }
+    Utilitario utilitario = new Utilitario(); 
+
+    string _hidden = "";
+    string _hidden2 = "hidden";
+    string _messajeBody = "";
+
+    InputFileChangeEventArgs fileExcelTemp = null;
+    DragEventArgs fileExcelEventTemp = null;
+
+    protected override void OnInitialized()
+    {
+        State = new PageIndexStateProvider();
+        base.OnInitialized();
+    }
+
+    async Task MostraMOdalFInanciamiento()
+    {
+        await js.InvokeVoidAsync("ShowModalPopupControl", "msjNuevoFinanciamientoShow");
+    }
+
+
+    async Task OnFileChange(InputFileChangeEventArgs e)
+    {
+        fileExcelTemp = e;
+        await js.InvokeVoidAsync("ShowModalPopupControl", "msjNuevoFinanciamientoShow");
+
+    }
+
+    private async Task ConfirmarCarga()
+    {
+        //Valida si se dio aceptar al boton para realizar la carga masiva
+        await cargaExcel(fileExcelTemp);        
+    }
+
+    async Task cargaExcel(InputFileChangeEventArgs e)
+    {
+        var exlcelName = e.File.ContentType;
+        var filename = e.File.Name;
+        var archivo = e.File;
+        Mensaje = "";
+        //Carga masiva del excel adjunto
+        try
+        {
+            if (exlcelName.Contains("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+            {
+                //Validar que el archivo tenga el nombre
+                // if (filename == "Plantilla-carga-masiva.xlsx")
+                // {
+                //Cargar la data a la BD - Validar estructura del excel
+                //Registrar usuario que hace la carga
+
+                js.InvokeVoidAsync("ShowModalSpinner", "components-modal-await");
+
+                // Tamaño máximo permitido en bytes (ejemplo: 5 MB)
+                long maxSize = 5 * 1024 * 1024; // 5 MB
+                if (archivo.Size < maxSize)
+                {
+                    using (var stream = new MemoryStream())
+                    {
+                        await e.File.OpenReadStream().CopyToAsync(stream);
+                        stream.Position = 0;
+
+                        using (var workbook = new XLWorkbook(stream))
+                        {
+                            var worksheet = workbook.Worksheet(1);
+                            var cantColumns = 0;
+                            var cantRows = 0;
+                            var txtRowNumber = 0;
+                            var validacion = true;
+                            var countIdTemp = 0;
+                            var Posicion_Aseguradoras = true;
+                            List<FinanciamientoDetalleE> oListar = new List<FinanciamientoDetalleE>();
+
+                            //Obtener cantidad de columnas de la fila 4
+                            foreach (var row in worksheet.Rows())
+                            {
+                                foreach (var cell in row.Cells())
+                                {
+                                    txtRowNumber = cell.Address.RowNumber;
+                                    var txtValueCab = cell.Value;
+                                    var txtLetterCab = cell.Address.ColumnLetter;
+
+                                    if (txtRowNumber == 4)
+                                    {
+                                        cantColumns = cantColumns + 1;
+                                    }
+
+                                    if (txtRowNumber == 5)
+                                    {
+                                        if (txtLetterCab == "H")
+                                        {
+                                            if (!txtValueCab.ToString().ToUpper().Equals("0121"))
+                                            {
+                                                Mensaje = " 0121 ";
+                                                Posicion_Aseguradoras = false;
+                                            }
+                                        }
+                                        else if (txtLetterCab == "I")
+                                        {
+                                            if (!txtValueCab.ToString().ToUpper().Equals("0257"))
+                                            {
+                                                Mensaje = Mensaje + " 0257 ";
+                                                Posicion_Aseguradoras = false;
+                                            }
+                                        }
+                                        else if (txtLetterCab == "J")
+                                        {
+                                            if (!txtValueCab.ToString().ToUpper().Equals("0111"))
+                                            {
+                                                Mensaje = Mensaje + " 0111 ";
+                                                Posicion_Aseguradoras = false;
+                                            }
+                                        }
+                                        else if (txtLetterCab == "K")
+                                        {
+                                            if (!txtValueCab.ToString().ToUpper().Equals("0013"))
+                                            {
+                                                Mensaje = Mensaje + " 0013 ";
+                                                Posicion_Aseguradoras = false;
+                                            }
+                                        }
+                                        else if (txtLetterCab == "L")
+                                        {
+                                            if (!txtValueCab.ToString().ToUpper().Equals("0207"))
+                                            {
+                                                Mensaje = Mensaje + " 0207 ";
+                                                Posicion_Aseguradoras = false;
+                                            }
+                                        }
+                                        else if (txtLetterCab == "M")
+                                        {
+                                            if (!txtValueCab.ToString().ToUpper().Equals("0259"))
+                                            {
+                                                Mensaje = Mensaje + " 0259 ";
+                                                Posicion_Aseguradoras = false;
+                                            }
+                                        }
+                                        else if (txtLetterCab == "N")
+                                        {
+                                            if (!txtValueCab.ToString().ToUpper().Equals("0019"))
+                                            {
+                                                Mensaje = Mensaje + " 0019 ";
+                                                Posicion_Aseguradoras = false;
+                                            }
+                                        }
+                                        else if (txtLetterCab == "O")
+                                        {
+                                            if (!txtValueCab.ToString().ToUpper().Equals("0235"))
+                                            {
+                                                Mensaje = Mensaje + " 0235 ";
+                                                Posicion_Aseguradoras = false;
+                                            }
+                                        }
+                                        else if (txtLetterCab == "P")
+                                        {
+                                            if (!txtValueCab.ToString().ToUpper().Equals("0001"))
+                                            {
+                                                Mensaje = Mensaje + " 0001 ";
+                                                Posicion_Aseguradoras = false;
+                                            }
+                                        }
+                                        else if (txtLetterCab == "Q")
+                                        {
+                                            if (!txtValueCab.ToString().ToUpper().Equals("0053"))
+                                            {
+                                                Mensaje = Mensaje + " 0053 ";
+                                                Posicion_Aseguradoras = false;
+                                            }
+                                        }
+                                        else if (txtLetterCab == "R")
+                                        {
+                                            if (!txtValueCab.ToString().ToUpper().Equals("0275"))
+                                            {
+                                                Mensaje = Mensaje + " 0275 ";
+                                                Posicion_Aseguradoras = false;
+                                            }
+                                        }
+                                        else if (txtLetterCab == "S")
+                                        {
+                                            if (!txtValueCab.ToString().ToUpper().Equals("0205"))
+                                            {
+                                                Mensaje = Mensaje + " 0205 ";
+                                                Posicion_Aseguradoras = false;
+                                            }
+                                        }
+                                    }
+                                }
+                                cantRows = cantRows + 1;
+                            }
+
+                            //Valida posicion de columnas vs codigo de aseguradora
+
+
+                            //Valida 19 columnas
+                            if (cantColumns != 19)
+                            {
+                                ModalMensaje("NoSelectColumnsExcel", "AdvertenciaSelect");
+                                js.InvokeVoidAsync("CloseSpinnerSearch", "components-modal-await");
+                                validacion = false;
+                            }else if (cantRows == 3)//Validar cantidad de filas
+                            {
+                                ModalMensaje("NoSelectDataExcel", "AdvertenciaSelect");
+                                js.InvokeVoidAsync("CloseSpinnerSearch", "components-modal-await");
+                                validacion = false;
+                            }
+                            else if (!Posicion_Aseguradoras)
+                            {
+                                ModalMensaje("NoPositionColumns", "AdvertenciaSelect");
+                                js.InvokeVoidAsync("CloseSpinnerSearch", "components-modal-await");
+                                validacion = false;
+                            }
+
+
+                            //Validaciones superadas
+                            if (validacion)
+                            {
+                                foreach (var row in worksheet.Rows())
+                                {
+                                    //var rowList = new List<FinanciamientoDetalleE>();
+                                    var listaNegativa = true;
+                                    var Cod_Diagnostico = string.Empty;
+                                    var Nombre_Diagnostico = string.Empty;
+                                    var Cod_Prestacion = string.Empty;
+                                    var Ide_Analisis = string.Empty;
+                                    var Cod_ROE = string.Empty;
+                                    var Prueba_ROE = string.Empty;
+
+                                    if (txtRowNumber >= 6)
+                                    {
+                                        countIdTemp = countIdTemp + 1;
+                                    }
+
+
+                                    foreach (var cell in row.Cells())
+                                    {
+                                        FinanciamientoDetalleE rowList = new FinanciamientoDetalleE();
+                                        var totalcolumn = worksheet.MergedRanges.Count();
+                                        var txtValue = cell.Value;
+                                        var txtLetter = cell.Address.ColumnLetter;
+                                        txtRowNumber = cell.Address.RowNumber;
+
+                                        //Eres A6 en adelante?
+                                        if (txtRowNumber >= 6)
+                                        {
+                                            if (txtLetter == "B")
+                                            {
+                                                Cod_Diagnostico = txtValue.ToString();
+                                            }
+                                            if (txtLetter == "C")
+                                            {
+                                                Nombre_Diagnostico = txtValue.ToString();
+                                            }
+                                            if (txtLetter == "D")
+                                            {
+                                                Cod_Prestacion = txtValue.ToString();
+                                            }
+                                            if (txtLetter == "E")
+                                            {
+                                                Ide_Analisis = txtValue.ToString();
+                                            }
+                                            if (txtLetter == "F")
+                                            {
+                                                Cod_ROE = txtValue.ToString();
+                                            }
+                                            if (txtLetter == "G")
+                                            {
+                                                Prueba_ROE = txtValue.ToString();
+                                            }
+                                            if (txtLetter == "H")
+                                            {
+                                                if (txtValue.ToString().ToUpper().Equals("SI"))
+                                                {
+                                                    listaNegativa = false;
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradora1 = "0121";
+                                                    oListar.Add(rowList);
+                                                }
+                                                else if (!txtValue.ToString().ToUpper().Equals("NO"))
+                                                {
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradoraMask = "0121";
+                                                    rowList.CodAseguradora = txtValue.ToString();
+                                                    oListar.Add(rowList);
+                                                }
+                                            }
+                                            else if (txtLetter == "I")
+                                            {
+                                                if (txtValue.ToString().ToUpper().Equals("SI"))
+                                                {
+                                                    listaNegativa = false;
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradora1 = "0257";
+                                                    oListar.Add(rowList);
+                                                }
+                                                else if (!txtValue.ToString().ToUpper().Equals("NO"))
+                                                {
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradoraMask = "0257";
+                                                    rowList.CodAseguradora2 = txtValue.ToString();
+                                                    oListar.Add(rowList);
+                                                }
+                                            }
+                                            else if (txtLetter == "J")
+                                            {
+                                                if (txtValue.ToString().ToUpper().Equals("SI"))
+                                                {
+                                                    listaNegativa = false;
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradora1 = "0111";
+                                                    oListar.Add(rowList);
+                                                }
+                                                else if (!txtValue.ToString().ToUpper().Equals("NO"))
+                                                {
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradoraMask = "0111";
+                                                    rowList.CodAseguradora3 = txtValue.ToString();
+                                                    oListar.Add(rowList);
+                                                }
+                                            }
+                                            else if (txtLetter == "K")
+                                            {
+                                                if (txtValue.ToString().ToUpper().Equals("SI"))
+                                                {
+                                                    listaNegativa = false;
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradora1 = "0013";
+                                                    oListar.Add(rowList);
+                                                }
+                                                else if (!txtValue.ToString().ToUpper().Equals("NO"))
+                                                {
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradoraMask = "0013";
+                                                    rowList.CodAseguradora4 = txtValue.ToString();
+                                                    oListar.Add(rowList);
+                                                }
+                                            }
+                                            else if (txtLetter == "L")
+                                            {
+                                                if (txtValue.ToString().ToUpper().Equals("SI"))
+                                                {
+                                                    listaNegativa = false;
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradora1 = "0207";
+                                                    oListar.Add(rowList);
+                                                }
+                                                else if (!txtValue.ToString().ToUpper().Equals("NO"))
+                                                {
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradoraMask = "0207";
+                                                    rowList.CodAseguradora5 = txtValue.ToString();
+                                                    oListar.Add(rowList);
+                                                }
+                                            }
+                                            else if (txtLetter == "M")
+                                            {
+                                                if (txtValue.ToString().ToUpper().Equals("SI"))
+                                                {
+                                                    listaNegativa = false;
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradora1 = "0259";
+                                                    oListar.Add(rowList);
+                                                }
+                                                else if (!txtValue.ToString().ToUpper().Equals("NO"))
+                                                {
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradoraMask = "0259";
+                                                    rowList.CodAseguradora6 = txtValue.ToString();
+                                                    oListar.Add(rowList);
+                                                }
+                                            }
+                                            else if (txtLetter == "N")
+                                            {
+                                                if (txtValue.ToString().ToUpper().Equals("SI"))
+                                                {
+                                                    listaNegativa = false;
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradora1 = "0019";
+                                                    oListar.Add(rowList);
+                                                }
+                                                else if (!txtValue.ToString().ToUpper().Equals("NO"))
+                                                {
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradoraMask = "0019";
+                                                    rowList.CodAseguradora7 = txtValue.ToString();
+                                                    oListar.Add(rowList);
+                                                }
+                                            }
+                                            else if (txtLetter == "O")
+                                            {
+                                                if (txtValue.ToString().ToUpper().Equals("SI"))
+                                                {
+                                                    listaNegativa = false;
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradora1 = "0235";
+                                                    oListar.Add(rowList);
+                                                }
+                                                else if (!txtValue.ToString().ToUpper().Equals("NO"))
+                                                {
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradoraMask = "0235";
+                                                    rowList.CodAseguradora8 = txtValue.ToString();
+                                                    oListar.Add(rowList);
+                                                }
+                                            }
+                                            else if (txtLetter == "P")
+                                            {
+                                                if (txtValue.ToString().ToUpper().Equals("SI"))
+                                                {
+                                                    listaNegativa = false;
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradora1 = "0001";
+                                                    oListar.Add(rowList);
+                                                }
+                                                else if (!txtValue.ToString().ToUpper().Equals("NO"))
+                                                {
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradoraMask = "0001";
+                                                    rowList.CodAseguradora9 = txtValue.ToString();
+                                                    oListar.Add(rowList);
+                                                }
+                                            }
+                                            else if (txtLetter == "Q")
+                                            {
+                                                if (txtValue.ToString().ToUpper().Equals("SI"))
+                                                {
+                                                    listaNegativa = false;
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradora1 = "0053";
+                                                    oListar.Add(rowList);
+                                                }
+                                                else if (!txtValue.ToString().ToUpper().Equals("NO"))
+                                                {
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradoraMask = "0053";
+                                                    rowList.CodAseguradora10 = txtValue.ToString();
+                                                    oListar.Add(rowList);
+                                                }
+                                            }
+                                            else if (txtLetter == "R")
+                                            {
+                                                if (txtValue.ToString().ToUpper().Equals("SI"))
+                                                {
+                                                    listaNegativa = false;
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradora1 = "0275";
+                                                    oListar.Add(rowList);
+                                                }
+                                                else if (!txtValue.ToString().ToUpper().Equals("NO"))
+                                                {
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradoraMask = "0275";
+                                                    rowList.CodAseguradora11 = txtValue.ToString();
+                                                    oListar.Add(rowList);
+                                                }
+                                            }
+                                            else if (txtLetter == "S")
+                                            {
+                                                if (txtValue.ToString().ToUpper().Equals("SI"))
+                                                {
+                                                    listaNegativa = false;
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradora1 = "0205";
+                                                    oListar.Add(rowList);
+                                                }
+                                                else if (!txtValue.ToString().ToUpper().Equals("NO"))
+                                                {
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradoraMask = "0205";
+                                                    rowList.CodAseguradora12 = txtValue.ToString();
+                                                    oListar.Add(rowList);
+                                                }
+                                                //Solo cuando llegue a la ultima columna validar
+                                                if (listaNegativa)
+                                                {
+                                                    //El registro no tiene ninguna aseguradora activa
+                                                    rowList.Ide_AnalisisTemp = Convert.ToString(countIdTemp);
+                                                    rowList.Cod_Diagnostico = Cod_Diagnostico;
+                                                    rowList.Nombre_Diagnostico = Nombre_Diagnostico;
+                                                    rowList.Cod_Prestacion = Cod_Prestacion;
+                                                    rowList.Ide_Analisis = Ide_Analisis;
+                                                    rowList.Cod_ROE = Cod_ROE;
+                                                    rowList.Prueba_ROE = Prueba_ROE;
+                                                    rowList.CodAseguradora1 = "";
+                                                    oListar.Add(rowList);
+                                                }
+                                            }                                           
+                                        }
+                                    }
+                                }
+
+                                if (oListar.Count > 0)
+                                {
+                                    var cantRowsData = cantRows - 3;
+                                    var usrModifica = Convert.ToInt32(SessionUser(TypeSession.CodUser).Result);
+                                    oListaFinanciamientoDet = new Bus.Clinica.FinanciamientoLaboratorio().insertarFinanciamientomasivo(oListar, usrModifica);
+                                    ListaService.ListaSerializada = Json.Serialize(oListaFinanciamientoDet);
+                                    js.InvokeVoidAsync("CloseSpinnerSearch", "components-modal-await");
+                                    var cantObservados = oListaFinanciamientoDet.Count();
+                                    if (cantObservados == 0)
+                                    {
+                                        //Si la lista no tiene observaciones enviar a CargaResumen con cantidades
+                                        var url = $"/Clinica/Clinica/Mantenimientos/FinanciamientoLaboratorioCargaResumen?/{filename}/{cantRowsData}/{cantObservados}";
+                                        NavigationManager.NavigateTo(url);
+                                    }
+                                    else
+                                    {
+                                        //Caso contrario enviar la lista a la otra pagina
+                                        var url = $"/Clinica/Clinica/Mantenimientos/FinanciamientoLaboratorioCargaResumenObservado?/{filename}/{cantRowsData}/{cantObservados}";
+                                        NavigationManager.NavigateTo(url);
+                                    }
+
+                                }
+                                else
+                                {
+                                    ModalMensaje("NoSelectDataActiva", "AdvertenciaSelect");
+                                    js.InvokeVoidAsync("CloseSpinnerSearch", "components-modal-await");
+
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    ModalMensaje("NoSelectSizeExcel", "AdvertenciaSelect");
+                    js.InvokeVoidAsync("CloseSpinnerSearch", "components-modal-await");
+                }
+                // }
+                // else
+                // {
+                //     ModalMensaje("NoSelectNameExcel", "AdvertenciaSelect");
+                // }
+            }
+            else
+            {
+                ModalMensaje("NoSelectTipoExcel", "AdvertenciaSelect");
+            }
+        }
+        catch (Exception ex)
+        {
+            Mensaje = ex.Message;
+            ModalMensaje("Catch", "Error");
+            js.InvokeVoidAsync("CloseSpinnerSearch", "components-modal-await");
+        }
+        
+    }    
+
+    [JSInvokable]
+    public void HandleFileContents(List<string> fileContents)
+    {
+        foreach (var content in fileContents)
+        {
+            // Aquí puedes trabajar con el contenido de los archivos, por ejemplo, mostrarlos en la consola
+            Console.WriteLine(content);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await JSRuntime.InvokeVoidAsync("eval", @"
+                $('#staticBackdrop').on('hidden.bs.modal', function () {
+                    breake;
+                    $('.modal-backdrop').hide();
+                });
+            ");
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        js.InvokeVoidAsync("fnActualizarTitulo", "Cargar Archivo");
+
+        if (firstRender)
+        {
+            js.InvokeVoidAsync("eval", @"
+		          window.downloadFile = function(url, fileName) {
+		              var link = document.createElement('a');
+		              link.href = url;
+		              link.download = fileName;
+		              document.body.appendChild(link);
+		              link.click();
+		              document.body.removeChild(link);
+		          }");
+        }
+    }
+
+    private async Task ModalMensaje(string Mensajes, string TipoModal)
+    {
+        if (TipoModal == "AdvertenciaSelect")
+        {
+            switch (Mensajes)
+            {
+                case "NoSelectTipoExcel":
+                    Mensaje = "Por favor, selecciona un archivo Excel válido (formato XLSX).";
+                    break;
+                case "NoSelectNameExcel":
+                    Mensaje = "El nombre del archivo no es correcto. Debe ser Plantilla-carga-masiva.xlsx";
+                    break;
+                case "NoSelectColumnsExcel":
+                    Mensaje = "El archivo seleccionado no tiene la estructura correcta. Por favor verique la cantidad de columnas.";
+                    break;
+                case "NoSelectDataExcel":
+                    Mensaje = "El archivo seleccionado esta vacio.";
+                    break;  
+                case "NoSelectSizeExcel":
+                    Mensaje = "El archivo seleccionado es demasiado grande. Seleccione un archivo más pequeño. Tamaño máximo 5 MB";
+                    break;
+                case "NoSelectDataActiva":
+                    Mensaje = "El archivo seleccionado no tiene nigun registro con cobertura. Debe haber por lo menos una aseguradora activa.";
+                    break;
+                case "NoPositionColumns":
+                    Mensaje = "Se ha modificado la posicion o alterado el codigo de la(s) aseguradora(s)" + Mensaje + "\n" + ", por favor revisar y volver a cargar.";
+                    break;
+            }            
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalAdvertencia");
+        }
+        if (TipoModal == "Error")
+        {
+            switch (Mensajes)
+            {
+                case "Catch":
+                    Mensaje = "Ocurrió un error al guardar, revise los datos de la plantilla en Cie-10, ID de análisis o contacte al administrador.";
+                    break;
+            }
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+    }
+}
+
+
+<style>
+    .modal-center {
+        margin: 35% auto; /* 15% desde la parte superior y centrado horizontalmente */
+        max-width: 600px; /* Ancho máximo del modal */
+    }
+
+    .upload-icon {
+        font-size:56px;
+        text-align: center;
+        display: block;
+        margin: auto;
+        color: gray; /* Establece el color de la imagen en gris */
+    }
+</style>
+
+
+<div id="pagina-contenido" class="bg-light">
+    <div id="components-modal-await">
+        <div class="components-modal-await-messages">
+            <div class="components-modal-await-messages-text">
+                <br />
+                <p>Estamos cargando, espere unos segundos... <i class="fa-thin fa-bell-on"></i> </p>
+                <br />
+                <br />
+                <div class="spinner-border"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-bg">
+        
+        <div class="container-fluid">
+            <!--PRESENTACION-->
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 buscar-menuNuevo" style="border-radius:25px !important;">
+                <div class="input-group">
+                </div>
+            </div>
+        </div>  
+
+        <div class="row align-items-center justify-content-between" style="display:flow; text-align:right; padding: 15px 10px 5px 10px; margin: 0px -20px 0px -20px">
+                                
+            <div class="row" style="display:flow; text-align:center; padding:0px 0px 0px 0px; margin:0px 0px 0px 0px; ">
+
+                <div class="form-floating mb-3">
+                    <div class="col-auto">
+                        <span class="span-color" style="font-size:medium; display:inline-block; text-align:left; width:33%; color: darkgray;">1. Descargar Plantilla</span>
+                        <span class="span-color" style="font-size:medium; display:inline-block; width:33%; color: #124498;">2. Cargar archivo</span>
+                        <span class="span-color" style="font-size:medium; display:inline-block; text-align:right; width:33%; color: darkgray;">3. Resumen</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+            <div class="row" style="display:flow; text-align:center; padding:0px 0px 0px 0px; margin:0px 0px 0px 0px; ">
+            <div class="form-floating mb-3" style="display: inline-block; padding-right:35px; padding-left: 35px">
+                    <div class="col-auto" style="display:flex; align-items:center">
+                    <button class="rounded-circle btn btn-primary" style="background-color:darkgray; border-color:darkgray" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="fa-solid fa-arrow-down"></span>
+                    </button>
+                    <div style="width: 50%;height: 5px;background-color: #124498; margin: 10px 5px;"></div>
+                    <button class="rounded-circle btn btn-primary" data-bs-toggle="dropdown" aria-expanded="false">
+                          <span class="fa-solid fa-arrow-up"></span>
+                    </button>
+                    <div style="width: 50%;height: 5px;background-color: #124498; margin: 10px 5px;"></div>
+                    <button class="rounded-circle btn btn-primary" style="background-color:darkgray; border-color:darkgray" data-bs-toggle="dropdown" aria-expanded="false">
+                         <span class="fa-solid fa-file-lines"></span>
+                    </button>                                                
+                     </div>
+            </div>
+            </div>            
+        </div>
+
+   
+
+        <div class="container" style="margin-top: 20px;">
+            <div class="col-12 col-lg-12 col-md-12 buscar-menuNuevo">
+                <div class="input-group">
+                    <div class="card w-100">
+                        <div style="padding-top: 20px;">
+                            <span class="span-color" style="font-size:medium; margin-left: 20px;">Carga de Archivo</span><br>
+                        </div>
+                        <div class="card-body">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive" style="display:grid">
+                            <div style="margin-top:15px; margin-bottom:15px; display:flex; justify-content:center">
+                                <form>
+                                    <div>
+                                        <i class="fa fa-cloud-arrow-up upload-icon" aria-hidden="true"></i>
+                                        <div style="display: block; padding:10px; margin: auto; text-align:center; font-size:medium; font-style:oblique; font-weight:bold;color:#124498">Seleccione un archivo o arrastre dentro del cuadro</div>
+                                        <InputFile OnChange="OnFileChange" accept=".xlsx" style="display: block; padding:35px; margin: auto; border:1px solid; border-color:#124498">
+                                        </InputFile>
+                                        
+                                    </div>
+                                </form>
+                            </div>
+
+                             <div class="row" style="display:flow; text-align:right; padding:0px 0px 0px 0px; margin:0px 0px 0px 0px; ">
+                                        <div class="form-floating mb-3">
+                                            <div class="col-auto">
+                                        <a href="/Clinica/Clinica/Mantenimientos/FinanciamientoLaboratorioCargaMasiva">
+                                            <span class="btn btn-primary"> Cancelar
+                                            </span>
+                                        </a>                                              
+                                            </div>
+                                        </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div>
+    
+    @*==========================================0*@
+    <MessageModal IdMessage="msgModalAdvertencia"
+                  TitleModal="Advertencia"
+                  IconMessage=MessageModal.iconMessage.Advertencia
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalError"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalConfirmacion"
+                  TitleModal="Descarga Exitosa"
+                  IconMessage=MessageModal.iconMessage.Check
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="false"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+    
+
+    <!-- F.MESSAGE NOT FOUND -->
+</div>
+
+
+
+<div>
+    <div class="modal" id="msjNuevoFinanciamientoShow" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dm">
+            <div class="modal-content modal-center">
+                
+                <div class="modal-body">
+                    <div style="background-color: #FFF; width: 100%; border:1px solid #b3d6ffff; border-radius:8px; padding:0px 0px; margin-bottom:0px;">
+                        <div class="row align-items-center" style="border-style: solid; border-color: #b3d6ffff; border-width: 0px; border-bottom-width: 0px; padding:0px 0px 0px 0px; background:#f6f6f645; ">
+                            <div style="display:flex; justify-content: center">
+                                <h5 style="margin-top: 15px; color: darkblue" id="staticBackdropLabel">
+                                    ¿Estás seguro de realizar la carga masiva?
+                                </h5>
+                            </div>
+                            <div style="display:flex; justify-content: center">
+                                <button class="btn btn-primary" style="margin:15px" @onclick="ConfirmarCarga" data-bs-dismiss="modal">
+                                    <span class="fa-solid fa-check"></span> <span id="TitleView"> Si</span>
+                                </button>
+
+                                <button class="btn btn-primary" style="margin:15px" data-bs-dismiss="modal">
+                                    <spam class="fa-solid fa-rotate-left"></spam> <span role="toolbar"> No</span>
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>               
+            </div>
+        </div>
+    </div>
+    <!-- I.MODAL MESSAGE -->
+    @*==========================================0*@
+    <MessageModal IdMessage="msgModalAdvertencia"
+                  TitleModal="Advertencia"
+                  IconMessage=MessageModal.iconMessage.Advertencia
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalError"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+</div>
+
+
