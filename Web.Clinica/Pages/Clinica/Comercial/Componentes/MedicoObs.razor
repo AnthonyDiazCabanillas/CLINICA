@@ -1,0 +1,50 @@
+﻿@using Ent.Sql.ClinicaE.MedicosE
+@using Ent.Sql.ClinicaE.EspecialidadesE
+
+
+@code {
+    [Parameter]
+    public MedicoE oMedicoE { get; set; }
+
+    [Parameter]
+    public bool FlagCambiaFoto { get; set; }
+
+    [Parameter]
+    public bool FlgNuevo { get; set; }
+
+    bool FlgVisible = false;
+}
+
+<div style="background-color: #FFF; width: 100%; min-height:300px; border:1px solid #b3d6ffff; border-radius:8px; padding:20px 10px; margin-bottom:0px; ">
+    <div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 0px 0px; ">
+        @{
+            bool ActNoa = false;
+            if (oMedicoE.FlagEstado == true)
+            {
+                ActNoa = false;
+            }
+            else
+            {
+                ActNoa = true;
+            }
+
+            ActNoa = FlgNuevo ? FlgNuevo : ActNoa;
+        }
+        <div class="col-sm-12 col-md-5  col-lg-5">
+            <div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 0px 0px;">
+                <span class="omrs-input-label">Observaciones</span>
+            </div>
+
+            <!--I.Observaciones-->
+            <div class="row" style="padding:0px 0px 0px 20px; margin:0px 0px 0px 0px;">
+                <div class="omrs-input-group">
+                    <textarea @bind="@oMedicoE.Observaciones" maxlength="255"
+                              @bind:event="oninput" disabled="@ActNoa" style="background-color: #FFF; width: 100%; height:250px;" />
+                </div>
+            </div>
+            <!--F.Observaciones-->
+        </div>
+    </div>
+
+</div>
+

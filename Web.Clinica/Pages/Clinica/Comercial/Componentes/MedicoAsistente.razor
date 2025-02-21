@@ -1,0 +1,323 @@
+﻿@using Ent.Sql.ClinicaE.MedicosE
+@using Ent.Sql.ClinicaE.EspecialidadesE
+@using Web.Clinica.Components
+@using Ent.Sql.ClinicaE.OtrosE
+
+@inject IJSRuntime js
+
+<div style="background-color: #FFF; width: 100%; min-height:300px; border:1px solid #b3d6ffff; border-radius:8px; padding:20px 10px; margin-bottom:20px;">
+     @{
+            bool ActNoa = false;
+            if (oMedicoE.FlagEstado==true)
+            {
+                ActNoa = false;
+            }
+            else
+            {
+                ActNoa = true;
+            }
+        ActNoa = FlgNuevo ? FlgNuevo : ActNoa;
+        }
+    <div class="row">
+
+        <!--I.TABLA-->
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive" style="min-height:300px;">
+            <table class="table table-hover table-bordered">
+                <thead class="table-primary">
+                    <tr class="fw-bolder">
+                        <th class="col-1 text-center">
+                            <div class="btn-group dropstart">
+                                <button class="btn btn-menu"  aria-expanded="false" @onclick="() => Crea()" disabled="@ActNoa">
+                                    <span class="fa-solid fa-plus" ></span>
+                                    @*<span class="fa-solid fa-ellipsis-vertical"></span>*@
+                                </button>
+                            </div>
+                        </th>
+                        <th class="col-2 text-center" style="">Código</th>
+                        <th class="col-9 text-center" style="">Asistente</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in oListaAsistentexMedicoE)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                <div class="btn-group dropstart">
+                                    <button class="btn btn-menu" disabled="@ActNoa"  aria-expanded="false" @onclick="@(()=>{oAsistentexMedicoE = item ; Elimina();})">
+                                        <span class="fa-solid fa-minus"></span>
+                                        @*<span class="fa-solid fa-ellipsis-vertical"></span>*@
+                                    </button>
+                                </div>
+                            </td>
+
+
+                            <td style="text-align:center;">@item.CodMedicoAsistente</td>
+                            <td style="text-align:left;">@item.NombreAsistente</td>
+
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+        <!--F.TABLA-->
+    </div>
+
+    <MessageModal IdMessage="msgModalPregunta"
+                  TitleModal="Confirmación"
+                  BodyMessage=@Mensaje
+                  IconMessage=MessageModal.iconMessage.Question
+                  TypeButton=MessageModal.typeButton.OkCancel
+                  OnClose="@ConfirmaElimina">
+    </MessageModal>
+
+</div>
+
+
+<TabModalHijo @ref="@TabModalHijo" Title="Agregar asistente">
+    <div style="min-height: 300px">
+
+        <!--I.Busca Prestación-->
+        <fieldset class="omrs-fieldset">
+            <legend>Médico asistente</legend>
+            <div class="row group align-items-center">
+                <div class="DivSearchInput">
+
+                    <div class="DivSearch" style="width:100%">
+                        <input id="txtPrestacion" type="search" list="lstPrestaciones" placeholder="Buscar por nombre de médico"
+                               @onkeydown="@EnterBuscar" @onchange="@((args) => {  Selecciona(args);})">
+                        <i id="idBuscarPrestacion" class="fa-solid fa-magnifying-glass" role="button"></i>
+                        <i id="idspinnerPrestacion" class="spinner-border text-success" tipo="spinner" role="spinbutton" style="display:none;">
+                            <span class="visually-hidden">Loading...</span>
+                        </i>
+                    </div>
+                </div>
+                <datalist id="lstPrestaciones" style="width:100%">
+                    @foreach (var lista in oListABuscarMedicos)
+                    {
+                        <option>@lista.CodMedico - @lista.NombresMedico</option>
+                    }
+                </datalist>
+
+            </div>
+        </fieldset>
+        <!--F.Busca Prestación-->
+
+
+
+
+        <div class="row">
+            <div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 0px 0px;">
+                <div class="col-sm-12 col-md-2  col-lg-2">
+                    <!--I.ImporteTarifa-->
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined">
+                            <input id="txtImporteTarifa" required="" @bind-value="@oAsistentexMedicoE.CodMedicoAsistente" disabled>
+                            <span class="omrs-input-label">Código</span>
+                            <span class="omrs-input-helper"></span>
+                        </label>
+                    </div>
+                    <!--F.ImporteTarifa-->
+                </div>
+                <div class="col-sm-12 col-md-10  col-lg-10">
+                    <!--I.Rne-->
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined">
+                            <input id="txtRne" required="" @bind-value="@oAsistentexMedicoE.NombreAsistente" disabled>
+                            <span class="omrs-input-label">Asistente</span>
+                            <span class="omrs-input-helper"></span>
+                        </label>
+                    </div>
+                    <!--F.Rne-->
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <button class="btn btn-outline-success col-lg-2 col-3" @onclick="() => Graba()"><span class="fa-regular fa-save"></span> <span id="TitleView"> Guardar</span></button>
+            <button class="btn btn-outline-primary col-lg-2 col-3" @onclick="() => Cancela()"><spam class="fa fa-arrow-rotate-left"></spam> <span id="TitleView"> Cancelar</span></button>
+
+        </div>
+    </div>
+
+    <MessageModal IdMessage="msgModalError"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+</TabModalHijo>
+
+@code {
+
+    [Parameter]
+    public MedicoE oMedicoE { get; set; }
+
+
+    [Parameter]
+    public List<AsistentexMedicoE> oListaAsistentexMedicoE { get; set; }
+
+    [Parameter]
+    public bool FlgNuevo { get; set; }
+
+
+    string Mensaje = "";
+    string TextoaBuscar = "";
+
+
+    AsistentexMedicoE oAsistentexMedicoE = new AsistentexMedicoE();
+
+    private TabModalHijo TabModalHijo { get; set; }
+
+
+    List<MedicosE> oListABuscarMedicos = new List<MedicosE>();
+
+
+    protected override void OnInitialized()
+    {
+    }
+
+
+    private void Crea()
+    {
+        oAsistentexMedicoE = new AsistentexMedicoE();
+        js.InvokeVoidAsync("ClearText", "txtPrestacion");
+        TabModalHijo.Open();
+    }
+
+    private void Edita()
+    {
+        TabModalHijo.Open();
+    }
+
+    private void Elimina()
+    {
+        Mensaje = " ¿Desea eliminar el registro del siguiente asistente: <br> <b>" + oAsistentexMedicoE.NombreAsistente + "</b>? ";
+        js.InvokeVoidAsync("ShowMessageModal", true, "msgModalPregunta");
+    }
+
+    private async Task ConfirmaElimina(bool acepted)
+    {
+        try
+        {
+            if (acepted)
+            {
+                oAsistentexMedicoE.CodMedicoTitular = oMedicoE.CodMedico;
+                new Bus.Clinica.Medicos().AsistentexMedico_Delete(oAsistentexMedicoE);
+
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacionAsistentexMedico");
+                //ModalMensaje("ConfirmacionEliminacion", "Informativo");
+                //TabModalHijo.Close();
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            //ModalMensaje("Catch", "Error");
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+    }
+
+
+
+    private async Task Graba()
+    {
+        try
+        {
+            oAsistentexMedicoE.CodMedicoTitular = oMedicoE.CodMedico;
+
+            if (ValidaGraba() != "") return;
+
+            new Bus.Clinica.Medicos().AsistentexMedico_Insert(oAsistentexMedicoE);
+
+            js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacionAsistentexMedico");
+            TabModalHijo.Close();
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+    }
+
+    private string ValidaGraba()
+    {
+        string resultado = "";
+        if (oAsistentexMedicoE.CodMedicoTitular == "") resultado = resultado + "Seleccione un médico <br>";
+        if (oAsistentexMedicoE.CodMedicoAsistente == "") resultado = resultado + "La especialida es obligatorio <br>";
+
+        int outPutCount = oListaAsistentexMedicoE.Where(x => x.CodMedicoTitular == oAsistentexMedicoE.CodMedicoTitular
+                                                             && x.CodMedicoAsistente == oAsistentexMedicoE.CodMedicoAsistente
+                                                            ).Count();
+        if (outPutCount > 0) resultado = resultado + "Ya existe un registro con la información ingresada <br>";
+
+        if (resultado != "")
+        {
+            Mensaje = "<b>Por favor verifique lo siguiente:</b> <br>" + resultado;
+            js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+
+        return resultado;
+    }
+
+
+    private void Cancela()
+    {
+        TabModalHijo.Close();
+    }
+
+    async Task EnterBuscar(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        { await Buscar(); }
+    }
+
+    private async Task Buscar()
+    {
+        await js.InvokeVoidAsync("ShowSpinnerSearch", "idspinnerPrestacion", "idBuscarPrestacion");
+        try
+        {
+            //if (prestacion.Dscprestacion != null && prestacion.Dscprestacion != "")
+            if (TextoaBuscar != "")
+            {
+                oListABuscarMedicos = new Bus.Clinica.Medicos().Asistentes_ConsultaPorNombreMedico(TextoaBuscar);
+                if (oListABuscarMedicos.Count == 0)
+                {
+                    oAsistentexMedicoE.CodMedicoAsistente = "";
+                    oAsistentexMedicoE.NombreAsistente = "";
+                    await js.InvokeVoidAsync("ShowMessageModal", true, "msgerrorPrestacion");
+
+                }
+                await js.InvokeVoidAsync("focusControl", "txtPrestacion");
+            }
+            else
+            { await js.InvokeVoidAsync("ShowMessageModal", true, "msgerrorPrestacion"); }
+        }
+        catch { }
+        await js.InvokeVoidAsync("CloseSpinnerSearch", "idspinnerPrestacion", "idBuscarPrestacion");
+    }
+
+    protected async Task Selecciona(ChangeEventArgs args)
+    {
+        TextoaBuscar = args.Value.ToString();
+        string[] words = TextoaBuscar.Split('-');
+
+        if (words.Length == 2)
+        {
+            List<MedicosE> oListMedicosE_Aux = new Bus.Clinica.Medicos().Asistentes_ConsultaPorCodigoMedico(words[0]);
+            if (oListMedicosE_Aux != null)
+            {
+                if (oListMedicosE_Aux.Count > 0)
+                {
+                    oAsistentexMedicoE.CodMedicoAsistente = oListMedicosE_Aux[0].CodMedico;
+                    oAsistentexMedicoE.NombreAsistente = oListMedicosE_Aux[0].NombresMedico;
+                }
+            }
+        }
+    }
+
+
+ }

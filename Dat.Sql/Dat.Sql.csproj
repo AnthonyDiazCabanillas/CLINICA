@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ClinicaAD\UsuariosAA\**" />
+    <Compile Remove="ClinicaAD\UsuariosAD\**" />
+    <EmbeddedResource Remove="ClinicaAD\UsuariosAA\**" />
+    <EmbeddedResource Remove="ClinicaAD\UsuariosAD\**" />
+    <None Remove="ClinicaAD\UsuariosAA\**" />
+    <None Remove="ClinicaAD\UsuariosAD\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="CitaAD\CitaAD\" />
+    <Folder Include="CitaAD\PacienteAD\" />
+    <Folder Include="ClinicaAD\LiquidacionesAD\" />
+    <Folder Include="ClinicaAD\MedisynAD\" />
+    <Folder Include="ClinicaAD\SitedsAD\" />
+    <Folder Include="ClinicaAD\PresotorAD\" />
+    <Folder Include="ClinicaAD\PagosCuentaAD\" />
+    <Folder Include="ClinicaAD\EspecialidadesAD\" />
+    <Folder Include="ClinicaAD\DiaganosticoAD\" />
+    <Folder Include="RisClinicaAD\PDFDocumentAD\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ent.Sql\Ent.Sql.csproj" />
+  </ItemGroup>
+
+</Project>

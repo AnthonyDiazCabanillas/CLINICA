@@ -1,0 +1,238 @@
+﻿@page "/"
+@page "/Clinica"
+@page "/Clinica/{CodOpcion}"
+@page "/Clinica/{CodOpcion}/{Modulo}"
+@using Ent.Sql.SeguridadE.SeguridadE;
+@using Bus.Clinica;
+@*Nos permite llamar a la llamar a CargarSessionLayout del MainLayout yllenarla en la variable *@
+@inherits MainLayout
+@inject IJSRuntime js
+
+
+@code {
+    [Parameter]
+    public string CodOpcion { get; set; } = "";
+
+    [Parameter]
+    public string Modulo { get; set; } = "";
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender == true)
+        {
+            js.InvokeVoidAsync("fnActualizarTitulo", "Home (" + Modulo + ")");
+        }
+    }
+}
+
+@{
+    MetaGlobal.PageTitle = "Home - " + Modulo;
+    string CargarPermisos()
+    {
+        js.InvokeVoidAsync("ShowModalSpinner", "components-modal-await");
+
+        string xResult = "";
+        List<SegOpcionE> segOpcions = new List<SegOpcionE>();
+        SegOpcionE segOpcionE = new SegOpcionE();
+        segOpcionE.Orden = 1;
+        segOpcionE.IdeModulo = 102;
+        segOpcionE.CodOpcion = (CodOpcion == null ? "01" : CodOpcion);
+        segOpcionE.IdeUsuario = Convert.ToInt32(SessionUser(TypeSession.IdeUsuario).Result);
+        segOpcions = new Bus.Clinica.Seguridad.Seguridad().CargarOpciones(segOpcionE);
+
+        xResult = getControlesPermiso(segOpcions);
+
+        js.InvokeVoidAsync("CloseSpinnerSearch", "components-modal-await");
+
+        return xResult;
+    }
+
+    string getControlesPermiso(List<SegOpcionE> segOpcions)
+    {
+        string xHtml = "";
+        int IdeOpcionAnterior = 0;
+
+        //xHtml = xHtml + "<div class='accordion-item'>";
+
+        if (segOpcions.Count == 0)
+        {
+            xHtml = "<p style='font-size:1.25rem'>" +
+                    "   <strong>Lo sentimos, no cuenta con permisos para acceder a las funciones de este módulo.</strong>" +
+                    "   <br/><br/> &#128532;" +
+                    "</p>";
+        }
+        else
+        {
+            for (var i = 0; i < segOpcions.Count; i++)
+            {
+                if (segOpcions[i].IdeOpcionSup == 0)
+                {
+                    IdeOpcionAnterior = segOpcions[i].IdeOpcion;
+
+                    xHtml = xHtml +
+                            "<div class='accordion-item'>";
+
+                    xHtml = xHtml +
+                    "<h2 class=\"accordion-header\" id=\"AcordeonClinica-heading_" + @IdeOpcionAnterior + "\">" +
+                    "    <button class=\"accordion-button\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#AcordenClinica-collapse_" + @IdeOpcionAnterior + "\" aria-expanded=\"true\" aria-controls=\"AcordenClinica-collapse_" + @IdeOpcionAnterior + "\"> " +
+                    "       " + @segOpcions[i].TxtOpcion +
+                    "    </button> " +
+                    "</h2>" +
+                    "<div id=\"AcordenClinica-collapse_" + @IdeOpcionAnterior + "\" class=\"accordion-collapse collapse show\" aria-labelledby=\"AcordeonClinica-heading_" + @IdeOpcionAnterior + "\">" +
+                    "   <div class=\"xx\">" +
+                    "        <div class=\"\">";
+                }
+                else if (segOpcions[i].IdeOpcionSup == 1)
+                {
+                    xHtml = xHtml +
+                    "           </div>" +
+                    "       </div>" +
+                    "   </div>" +
+                    "</div>" +
+                    "<br/>";
+                }
+                else
+                {
+                    xHtml = xHtml +
+                    "            <a href=\"" + @segOpcions[i].DscRuta + "\" target=\"\">" +
+                    "               <div class=\"Formulario\">" +
+                    "                   <div>" +
+                    "                       <i class=\"icon-button " + @segOpcions[i].DscIcono + "\"></i>" +
+                    "                       <span class=\"icon-button-title\">" + @segOpcions[i].TxtOpcion + "</span>" +
+                    "                       <div class=\"icon-button-title-div\">" +
+                    "                           <span class=\"icon-button-title-description\">" + @segOpcions[i].DscOpcion + "</span>" +
+                    "                       </div>" +
+                    "                   </div>" +
+                    "                </div>" +
+                    "            </a>";
+                }
+            }
+        }
+
+        return xHtml;
+    }
+}
+
+@*
+    <VideoBody
+    Title="Pantalla de calculo de prestaciones"
+    UrlVideo="http://localhost/Vidline - Videos (1).mp4"
+    Descripcion="Descripción del video"
+    Content=".Estimados Jesus/Alicia,
+    Por favor enviar la información en formato similar al que adjunto. Hace un tiempo se analizó este tipo de archivos con Fabiola y sí habían códigos no aparecían en SAP.<br/>
+    Para poder apoyarlos enviar la información como la estamos solicitando."></VideoBody>
+*@
+
+
+@*<head>
+    <title>@MetaGlobal.PageTitle</title>
+    </head>*@
+
+<!--Container Main start-->
+<div class="bg-light">
+    <div id="components-modal-await">
+        <div class="components-modal-await-messages">
+            <div class="components-modal-await-messages-text">
+                @*<h2>⚠ se perdió la conexión con el servidor</h2>*@
+                <br />
+                <p>Estamos cargando, espere unos segundos... <i class="fa-thin fa-bell-on"></i> </p>
+                <br />
+                <br />
+                <div class="spinner-border"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="BgSearch">
+        @*  <div style="display:block; height:100px; width:100%; ">
+        <div class="buscar-menu">
+        <input type="text" placeholder="Buscar pantalla" />
+        </div>
+        </div>
+        *@
+        @*Se accede directamente a la información almacenada en ClaimsIdentity, usando la varible @context*@
+        @*<AuthorizeView>
+        <Authorized>
+        <span class="ml-md-auto">
+        Usuario Conectado por variable directa: @context.User.Identity.Name
+        <br>
+        Context Nombre : @context.User.FindFirst(ClaimTypes.Name).Value
+        <br>
+        Context Login : @context.User.FindFirst(ClaimTypes.NameIdentifier).Value
+        <br>
+        Context Genero : @context.User.FindFirst(ClaimTypes.Gender).Value
+        <br>
+        Context URL : @context.User.FindFirst(ClaimTypes.Uri).Value
+        <br>
+        Context DNS : @context.User.FindFirst(ClaimTypes.Dns).Value
+        <br>
+        </span>
+        </Authorized>
+        </AuthorizeView>*@
+        @*Fin*@
+        @*Se muestar la informacion guardada el la seccion @code{} despues de un evento*@
+        @*<button @onclick="MostrarDataClaims">Mostrar data claims dentro de Code</button>
+        <p>@authMessage</p>
+        @if (claims.Count() > 0)
+        {
+        <ul>
+        @foreach (var claim in claims)
+        {
+        <li> @claim.Value</li>
+        }
+        </ul>
+        }
+        <p></p>*@
+        @*Fin*@
+        <div class="col-12 buscar-menu">
+            <div class="input-group ">
+                <input type="search" placeholder="Buscar Pantalla" class="form-control SearchOptions" aria-label="CodPantalla" aria-describedby="CodPantalla-addon">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        Categorias
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item">Mantenimientos</a></li>
+                        <li><a class="dropdown-item">Contabilidad</a></li>
+                        <li><a class="dropdown-item">Sistemas</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#">Otros</a></li>
+                    </ul>
+                </div>
+                <span class="input-group-text" id="CodPantalla-addon"><i class="fa-solid fa-magnifying-glass"></i></span>
+            </div>
+        </div>
+
+        <div style="display:block;">
+
+            <div style="margin: 20px;">
+                <div class="accordion" id="idAcordeonClinica">
+                    @MetaGlobal.StringToHtml(CargarPermisos())
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Container Main end-->
+@code {
+    //-----------------------------------------------------------------------------
+    //Autor: CMendez
+    //Fecha: 12/05/2022
+    //Objetivo:
+    //Acceder a la información almacenada en ClaimsIdentity al ejecutar el método
+    //CargarSessionLayout() que esta en MainLayout, se acceden a las variables
+    //publicas creadas en MainLayout: NombreClaimsLayout, LoginClaimsLayout,
+    //CodSexoClaimsLayout, UrlFotoClaimsLayout, DnsClaimsLayout
+    //-----------------------------------------------------------------------------
+    //El authMessage se crea para verificar que se esta trasladando la información
+    //private string authMessage;
+    private void MostrarDataClaims()
+    {
+        CargarSessionLayout();
+        //authMessage = NombreClaimsLayout + LoginClaimsLayout + CodSexoClaimsLayout + UrlFotoClaimsLayout + DnsClaimsLayout;
+    }
+    //-----------------------------------------------------------------------------
+    //Fin CMendez 12/05/2022
+    //-----------------------------------------------------------------------------
+}

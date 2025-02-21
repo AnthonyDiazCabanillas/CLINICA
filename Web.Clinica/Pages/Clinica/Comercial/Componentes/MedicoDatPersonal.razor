@@ -1,0 +1,346 @@
+﻿@using Ent.Sql.ClinicaE.MedicosE
+@using Ent.Sql.ClinicaE.EspecialidadesE
+@using Ent.Sql.ClinicaE.OtrosE
+
+@inject IJSRuntime js
+
+
+
+<div style="background-color: #FFF; width: 100%; height:100%; border:1px solid #b3d6ffff; border-radius:8px; padding:10px 10px 0px 10px; margin-bottom:20px;">
+    <div class="row">
+        @{
+            int ooo = 0;
+            bool ActNoa = false;
+            if (oMedicoE.FlagEstado == true )
+            {
+                ActNoa = false;
+            }
+            else
+            {
+                ActNoa = true;
+            }
+
+            FlagBloqueaCMP = ActNoa ? ActNoa : oMedicoE.FlgTieneHorario;
+
+        }
+
+        <div class="col-sm-12 col-md-6  col-lg-4">
+            <div class="row">
+                <div class="col-sm-12 col-md-12  col-lg-6">
+                    <!--I.Iniciales-->
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined">
+                            <input id="txtIniciales" disabled="@ActNoa" required="" @bind-value="@oMedicoE.Iniciales" oninput="this.value=this.value.toUpperCase()" maxlength="15">
+                            <span class="omrs-input-label">Iniciales ...</span>
+                            @*<span class="omrs-input-helper"></span>*@
+                        </label>
+                    </div>
+                </div>
+                <!--F.Iniciales-->
+                <div class="col-sm-12 col-md-12  col-lg-6">
+                    <!--I.FechaNacimiento-->
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined">
+                            <input id="dtFechaNacimiento" disabled="@ActNoa" class="form-control" type="date" required="" @bind-value="@oMedicoE.FechaNacimiento">
+                            <span class="omrs-input-label">Fecha de Nacimiento</span>
+                            @*<span class="omrs-input-helper"></span>*@
+                        </label>
+                    </div>
+                </div>
+                <!--F.FechaNacimiento-->
+            </div>
+            <!--I.Sexo-->
+            <div class="form-floating mb-3">
+                <select class="form-select" disabled="@ActNoa" id="lstSexo" aria-label="Sexo" @bind="@oMedicoE.Sexo">
+                    <option selected></option>
+                    @foreach (var item in oListaTablasSexo)
+                    {
+                        <option value="@item.Codigo">@item.Nombre</option>
+                    }
+                </select>
+                <label for="lstSexo">Sexo</label>
+            </div>
+            <!--F.Sexo-->
+            <!--I.CodCivil-->
+            <div class="form-floating mb-3">
+                <select class="form-select" disabled="@ActNoa" id="lstCodCivil" aria-label="Estado civil" @bind="@oMedicoE.CodCivil">
+                    <option selected></option>
+                    @foreach (var item in oListaTablasCodCivil)
+                    {
+                        <option value="@item.Codigo">@item.Nombre</option>
+                    }
+                </select>
+                <label for="lstCodCivil">Estado civil</label>
+            </div>
+            <!--F.CodCivil-->
+
+            <div class="row">
+                <div class="col-sm-12 col-md-12  col-lg-6">
+                    <!--I.FechaIngreso-->
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined">
+                            <input id="dtFechaIngreso" disabled="@ActNoa" class="form-control" type="date" required="" @bind-value="@oMedicoE.FechaIngreso">
+                            <span class="omrs-input-label">Fecha de Ingreso</span>
+                            <span class="omrs-input-helper"></span>
+                        </label>
+                    </div>
+                    <!--F.FechaIngreso-->
+                </div>
+                <div class="col-sm-12 col-md-12  col-lg-6">
+                    <!--I.FechaFin-->
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined">
+                            @{
+                                var infoFec = "";
+                                if (oMedicoE.FechaFin ==Convert.ToDateTime("01/01/1900 12:00:00 AM") || Convert.ToString(oMedicoE.FechaFin) == "")
+                                {
+                                    infoFec = "";
+                                }
+                                else
+                                {
+                                    infoFec =  Convert.ToString(oMedicoE.FechaFin).Substring(0,10);
+                                }
+                            }
+                            <input id="dtFechaFin" class="form-control" type="text" required="" value="@infoFec" disabled> @*@bind-value="@oMedicoE.FechaFin"*@
+                            <span class="omrs-input-label" disabled="@ActNoa">Fecha de Fin</span>
+                            <span class="omrs-input-helper"></span>
+                        </label>
+                    </div>
+                    <!--F.FechaFin-->
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="col-sm-12 col-md-6  col-lg-4">
+            <!--I.TipDocIdentidad-->
+            <div class="form-floating mb-3">
+                <select class="form-select" disabled="@ActNoa" id="lstTipDocIdentidad" aria-label="Tipo de documento" @bind="@oMedicoE.TipDocIdentidad">
+                    @foreach (var item in oListaTablasTipoIdentidad)
+                    {
+                        <option value="@item.Codigo">@item.Nombre</option>
+                    }
+                </select>
+                <label for="lstTipDocIdentidad">Tipo de documento</label>
+            </div>
+            <!--F.TipDocIdentidad-->
+            <!--I.DocIdentidad-->
+            <div class="omrs-input-group">
+                <label class="omrs-input-underlined">
+                    <input id="txtDocIdentidad" required="" @bind-value="@oMedicoE.DocIdentidad" maxlength="15" disabled="@ActNoa">
+                           @* onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" *@
+                    <span class="omrs-input-label">Número de documento</span>
+                    <span class="omrs-input-helper"></span>
+                </label>
+            </div>
+            <!--F.DocIdentidad-->
+            <!--I.TipColegio-->
+            <div class="form-floating mb-3">
+                <select class="form-select" id="lstTipColegio" aria-label="Tipo de documento" disabled="@FlagBloqueaCMP"
+                @bind="@oMedicoE.TipColegio">
+                    @foreach (var item in oListaTablasTipoColegio)
+                    {
+                        <option value="@item.Codigo">@item.Nombre</option>
+                    }
+                </select>
+                <label for="lstTipColegio">Tipo de colegio</label>
+            </div>
+            <!--F.TipColegio-->
+
+
+            <div class="row">
+                <div class="col-sm-6 col-md-6  col-lg-6">
+                    <!--I.ColMedico-->
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined">
+                            <input id="txtColMedico" required="" @bind-value="@oMedicoE.ColMedico" maxlength="6" disabled="@FlagBloqueaCMP"
+                                   onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
+                            <span class="omrs-input-label">Número de colegio</span>
+                            @*<span class="omrs-input-helper"></span>  type="number"  *@
+                        </label>
+                    </div>
+                    <!--F.ColMedico-->
+                </div>
+                <div class="col-sm-6 col-md-6  col-lg-6">
+                    <!--I.Ruc-->
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined">
+                            <input id="txtRuc" disabled="@ActNoa"@bind-value="@oMedicoE.Ruc" maxlength="11"
+                            onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
+                            <span class="omrs-input-label">RUC</span>
+                            @*<span class="omrs-input-helper"></span>*@
+                        </label>
+                    </div>
+                    <!--F.Ruc-->
+                </div>
+            </div>
+
+        </div>
+
+
+
+        <div class="col-sm-12 col-md-6  col-lg-4">
+
+            <div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 15px 0px; ">
+                <div class="col-sm-12 col-md-12  col-lg-6">
+
+                    <!--I.FlgCia-->
+                    <div class="form-check">
+                        <input class="form-check-input" disabled="@ActNoa" type="checkbox" value="" id="chkFlgCia" @bind="@oMedicoE.FlgCia" @oninput="CheckboxChanged_Cia">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Compañia
+                        </label>
+                    </div>
+                    <!--F.FlgCia-->
+                    <!--I.FlgAsistente-->
+                    <div class="form-check">
+                        <input class="form-check-input" disabled="@ActNoa" type="checkbox" value="" id="chkFlgAsistente" @bind="@oMedicoE.FlgAsistente">
+                        <label class="form-check-label" for="chkFlgAsistente">
+                            Asistente
+                        </label>
+                    </div>
+                    <!--F.FlgAsistente-->
+                    <!--I.FlagCortesia-->
+                    <div class="form-check">
+                        <input class="form-check-input" disabled="@ActNoa" type="checkbox" value="" id="chkFlagCortesia" @bind="@oMedicoE.FlagCortesia">
+                        <label class="form-check-label" for="chkFlagCortesia">
+                            Cortesia
+                        </label>
+                    </div>
+                    <!--F.FlagCortesia-->
+
+                </div>
+                <div class="col-sm-12 col-md-12  col-lg-6">
+
+                    <!--I.FlagAmbulatorio-->
+                    <div class="form-check">
+                        <input class="form-check-input" disabled="@ActNoa" type="checkbox" value="" id="chkFlagAmbulatorio" @bind="@oMedicoE.FlagAmbulatorio">
+                        <label class="form-check-label" for="chkFlagAmbulatorio">
+                            Staff
+                        </label>
+                    </div>
+                    <!--F.FlagAmbulatorio-->
+                    <!--I.FlagActivoInternet-->
+                    <div class="form-check">
+                        <input class="form-check-input" disabled="@ActNoa" type="checkbox" value="" id="chkFlagActivoInternet" @bind="@oMedicoE.FlagActivoInternet">
+                        <label class="form-check-label" for="chkFlagActivoInternet">
+                            Ver en web
+                        </label>
+                    </div>
+                    <!--F.FlagActivoInternet-->
+                    <!--I.FlagBaja-->
+                    <div class="form-check">
+                        <input class="form-check-input" disabled="true" type="checkbox" value="" id="chkBaja" @bind="@oMedicoE.FlagBaja" @oninput="CheckboxChanged_Baja">
+                        <label class="form-check-label" for="chkBaja">
+                            De baja
+                        </label>
+                    </div>
+                    <!--F.FlagBaja-->
+                </div>
+            </div>
+
+@*            <fieldset class="omrs-fieldset">
+                <legend>App de Citas</legend>
+
+                <!--I.FlgPresencialJm-->
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="chkFlgPresencialJm" @bind="@oMedicoE.FlgPresencialJm">
+                    <label class="form-check-label" for="flexCheckChecked"> Presencial JM</label>
+                </div>
+                <!--F.FlgPresencialJm-->
+                <!--I.FlgPresencialCm-->
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="chkFlgPresencialCm" @bind="@oMedicoE.FlgPresencialCm">
+                    <label class="form-check-label" for="flexCheckChecked">Presencial CM</label>
+                </div>
+                <!--F.FlgPresencialCm-->
+                <!--I.FlgPresencialLm-->
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="chkFlgPresencialLm" @bind="@oMedicoE.FlgPresencialLm">
+                    <label class="form-check-label" for="flexCheckChecked">Presencial LM</label>
+                </div>
+                <!--F.FlgPresencialLm-->
+                <!--I.FlgTeleConsulta-->
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="chkFlgTeleConsulta" @bind="@oMedicoE.FlgTeleConsulta">
+                    <label class="form-check-label" for="flexCheckChecked">C. Mèd Virtual</label>
+                </div>
+                <!--F.FlgTeleConsulta-->
+
+            </fieldset>*@
+
+            <!--I.DscObservacionSubEspecialidad-->
+            @*<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 col-12">*@
+                <div class="omrs-input-group">
+                    <label class="omrs-input-underlined">
+                    <input id="txtDscObservacionSubEspecialidad" disabled="@ActNoa" required="" @bind-value="oMedicoE.DscObservacionSubEspecialidad" maxlength="500" oninput="this.value=this.value.toUpperCase()">
+                        <span class="omrs-input-label">Sub Especialidad</span>
+                        <span class="omrs-input-helper"></span>
+                    </label>
+                </div>
+           @* </div>*@
+            <!--F.DscObservacionSubEspecialidad-->
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+@code {
+
+    [Parameter]
+    public MedicoE oMedicoE { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasSexo { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasCodCivil { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasTipoIdentidad { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasTipoColegio { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnClick { get; set; }
+
+
+    private bool FlagBloqueaCMP = false;
+
+
+    protected override void OnInitialized()
+    {
+    }
+
+    private void CheckboxChanged_Cia(ChangeEventArgs e)
+    {
+        // get the checkbox state
+        var value = e.Value;
+        //Console.WriteLine($"Checkbox changed" + value.ToString());
+        //js.InvokeVoidAsync("alert", value.ToString());
+        OnClick.InvokeAsync(@oMedicoE.FlgCia);
+    }
+
+    private void CheckboxChanged_Baja(ChangeEventArgs e)
+    {
+        bool value = (bool)e.Value;
+        oMedicoE.FechaFin = value == true ? DateTime.UtcNow.Date : new DateTime(1900, 1, 1, 00, 00, 00, DateTimeKind.Utc);
+    }
+}
+
+
+<style>
+    /*:disabled {
+        background-color: silver;
+        color: silver
+    }*/
+</style>
+
+

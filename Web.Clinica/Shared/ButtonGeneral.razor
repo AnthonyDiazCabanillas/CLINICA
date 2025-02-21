@@ -1,0 +1,71 @@
+﻿@*
+====================================================================================================
+ INFORMACION GENERAL (Tildes omitidas intencionalmente)
+====================================================================================================
+ Proyecto         : HIS
+ Clase            : Button
+ Desarrollado por : GLLUNCOR
+ Fecha            : 26.10.2023
+====================================================================================================
+ @Copyright  Clinica San Felipe S.A.C. 2023. Todos los derechos reservados.
+====================================================================================================
+ DESCRIPCION FUNCIONAL:
+  Crear web pagina como controlador general para los botones
+====================================================================================================
+ OBSERVACIONES:
+    - .Net 6.0
+====================================================================================================
+ MODIFICACIONES:
+ FECHA        USUARIO     REQUERIMIENTO	    DESCRIPCION
+ 26/10/2023   GLLUNCOR    REQ 2023-020050	Se creo la pagina
+====================================================================================================
+ *@
+
+@inherits Microsoft.AspNetCore.Components.ComponentBase
+@inject IJSRuntime js
+
+<button id=@IdButton class="@(Disabled ? "btn btn-secondary disabled":TipoButton) @(IsButtonDisabled ? "button-wait" : "")" data-bs-toggle="modal" data-bs-target="" @onclick="HandleButtonClick" disabled=@Disabled>
+    <div class="d-flex align-items-center justify-content-center">
+        <i id=@IdIcono class="@(IsButtonDisabled ? IconoButtonDisabled : IconoButtonEnabled)"></i>
+        <span class=@ClassSpan>
+            @if (IsButtonDisabled)
+            {
+                <text>&nbsp;&nbsp; @TxtButtonDisabled</text>
+            }
+            else
+            {
+                <text>&nbsp;&nbsp;@TxtButtonEnabled</text>
+            }
+        </span>
+    </div>
+</button>
+
+@code {
+
+    [Parameter] public bool IsButtonDisabled { get; set; } = false;
+    [Parameter] public string? IdButton { get; set; }
+    [Parameter] public string? IdIcono { get; set; }
+    [Parameter] public string? TipoButton { get; set; }
+    [Parameter] public string? IconoButtonEnabled { get; set; }
+    [Parameter] public string? TxtButtonEnabled { get; set; }
+    [Parameter] public string? IconoButtonDisabled { get; set; } = "spinner-border spinner-border-sm";
+    [Parameter] public string? TxtButtonDisabled { get; set; } = "Procesando...";
+    [Parameter] public string? ClassSpan { get; set; } = "ml-2";
+    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter] public bool Disabled { get; set; } = false;
+
+    private async Task HandleButtonClick()
+    {
+        if (!IsButtonDisabled)
+        {
+            IsButtonDisabled = true; // Cambia al estado "spinner"
+            await js.InvokeVoidAsync("ShowModalSpinner", IdIcono);
+
+
+            await OnClick.InvokeAsync(); // Ejecuta la acción deseada
+
+            IsButtonDisabled = false; // Restaura el botón al estado original
+            StateHasChanged(); // Actualiza el estado nuevamente
+        }
+    }
+}

@@ -1,0 +1,66 @@
+﻿<div class="modal @modalClass" tabindex="-1" role="dialog" style="display:@modalDisplay; overflow-y: auto;">
+    @*<div class="modal-dialog modal-lx" role="document">*@
+        <div class="modal-dialog modal-xl" style="max-width: 95%; height: 100vh;">
+        <div class="modal-content" height="100%" width="100%">
+            <div class="modal-header">
+                <h5 class="modal-title">@Title</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" @onclick="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div style="display:none">
+                    <button type="button" class="btn-close  btn-primary" data-dismiss="modal" aria-label="Close" @onclick="Close"></button>
+                    <button class="btn btn-primary" @onclick="() => Close()">Close desde Hijo</button>
+                    <button type="button" class="btn-close  btn-primary" @onclick="@(() => OnClick.InvokeAsync($"enviado desde el hijo"))">Lanzar evento padre</button>
+                </div>
+                <div>
+                    @ChildContent
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@if (showBackdrop)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+    [Parameter]
+    public string Resultado { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
+
+    private string modalDisplay = "none;";
+    private string modalClass = string.Empty;
+    private bool showBackdrop = false;
+
+    public string Retorno = "none;";
+
+    public void Open()
+    {
+        modalDisplay = "block";
+        modalClass = "show";
+        showBackdrop = true;
+
+        Resultado = "desde destino";
+    }
+
+    public void Close()
+    {
+        modalDisplay = "none";
+        modalClass = string.Empty;
+        showBackdrop = false;
+
+        OnClick.InvokeAsync($"enviado desde el hijo");
+    }
+}

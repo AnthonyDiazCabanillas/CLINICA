@@ -1,0 +1,295 @@
+﻿@using Bus.Utilities
+ @using Ent.Sql
+@using Bus.Clinica;
+@using RestSharp
+@using Web.Clinica.Data
+@using System.Net;
+@using Web.Clinica.Pages
+@inject IJSRuntime js
+
+@code {
+    [Parameter]
+    public bool acceder { get; set; }
+    [Parameter]
+    public PrestacionesClinicaE _PrestacionClinica { get; set; }
+    [Parameter]
+    public EventCallback<bool> oReloadPrestacion { get; set; }
+    [Parameter]
+    public bool flgNuevo { get; set; }
+    [Parameter]
+    public int IdUser { get; set; }
+
+    ApiRutaConexion _app = new ApiRutaConexion();
+
+    PrestacionesClinicaE objPrestacion = new PrestacionesClinicaE();
+    TarifaClinicaE objTarifa = new TarifaClinicaE();
+
+    bool accederBusquedaTarifa = false;
+    bool accederBusquedaPrestaciones = false;
+
+    string Mensaje = "";
+
+    protected override void OnParametersSet()
+    {
+        objPrestacion = new PrestacionesClinicaE();
+        objTarifa = new TarifaClinicaE();
+        if (acceder)
+        {            
+            accederBusquedaTarifa = false;
+            accederBusquedaPrestaciones = false;
+            if (!flgNuevo)
+            {
+                objPrestacion.codprestacion = _PrestacionClinica.codprestacion  ;
+                objPrestacion.prestacion    = _PrestacionClinica.prestacion     ;
+                objTarifa.codtarifa         = _PrestacionClinica.codtarifa      ;
+                objTarifa.tarifa            = _PrestacionClinica.tarifa         ;
+            }
+        }
+
+        base.OnParametersSet();
+    }
+
+    #region prestacion
+    void LimpiarFiltroPrestacion()
+    {
+        objPrestacion = new PrestacionesClinicaE();
+    }
+
+    async void MostrarModalPrestacion()
+    {
+        accederBusquedaPrestaciones = true;
+        await js.InvokeVoidAsync("NotFoundSpinner", "msgModalBusquedaPrestacionComponent");
+    }
+
+    void SetObtienePrestacionCurrent(PrestacionesClinicaE prestacionseleccionada)
+    {
+        LimpiarFiltroPrestacion();
+        objPrestacion.codprestacion = prestacionseleccionada.codprestacion;
+        objPrestacion.prestacion = prestacionseleccionada.prestacion;
+    }
+    #endregion
+    #region Tarifario
+    void LimpiarFiltroTarifario()
+    {
+        objTarifa = new TarifaClinicaE();
+    }
+
+    async void MostrarModalTarifario()
+    {
+        accederBusquedaTarifa = true;
+        await js.InvokeVoidAsync("NotFoundSpinner", "msgModalBusquedaTarifarioComponent");
+    }
+
+    void SetObtieneTarifarioCurrent(TarifaClinicaE tarifarioseleccionado)
+    {
+        LimpiarFiltroTarifario();
+        objTarifa.codtarifa = tarifarioseleccionado.codtarifa;
+        objTarifa.tarifa = tarifarioseleccionado.tarifa;
+    }
+    #endregion
+
+    async void ValidarRegistro()
+    {
+        if (string.IsNullOrWhiteSpace(objPrestacion.codprestacion))
+        {
+            Mensaje = "Seleccione una Prestación";
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorRegistrarNuevaPrestacion");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(objTarifa.codtarifa))
+        {
+            Mensaje = "Seleccione una Tarifa";
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorRegistrarNuevaPrestacion");
+            return;
+        }
+        if (_PrestacionClinica.valor < 1)
+        {
+            Mensaje = "Ingrese un monto mayor a cero ";
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorRegistrarNuevaPrestacion");
+            return;
+        }
+
+        if (flgNuevo)
+        {
+            _PrestacionClinica.codprestacion = objPrestacion.codprestacion;
+            _PrestacionClinica.prestacion   = objPrestacion.prestacion;
+            _PrestacionClinica.codtarifa    = objTarifa.codtarifa;
+            _PrestacionClinica.tarifa       = objTarifa.tarifa;
+        }
+
+        Mensaje = "Está seguro de realizar esta acción?";
+        await js.InvokeVoidAsync("NotFoundSpinner", "msgModalPreguntaRegistrarNuevaPrestacion");
+    }
+
+    async void ConfirmarRegistroPrestaciones(bool accep)
+    {
+        if (accep)
+        {
+            try
+            {
+                List<PrestacionesClinicaE> ListadoPrestacion = new List<PrestacionesClinicaE>();
+                ListadoPrestacion.Add(_PrestacionClinica);
+
+                var Json = JsonConvert.SerializeObject(ListadoPrestacion);
+                var rutaApi = MetaGlobal.RutaApiClinica + "PrestacionesClinica/API/Clinica/Registrar_TarifarioPrestacion";
+                var encriptado = Criptography.EncryptConectionString(_app.Key);
+                var _client = new RestClient(rutaApi);
+                var _request = new RestRequest();
+                _request.Method = Method.Post;
+                _request.AddHeader("Authorization", encriptado);
+                _request.AddHeader("AuthoKey", Criptography.EncryptConectionString(IdUser.ToString()));
+                _request.AddJsonBody(Json);
+                var _response = _client.Execute(_request);
+                if (_response.StatusCode == HttpStatusCode.OK)
+                {
+                    var resultado = JsonConvert.DeserializeObject<ResultadoTransactionE<ErrorDataInsercionE>>(_response.Content);
+                    Mensaje = resultado.Mensaje;
+
+                    if (resultado.IdRegistro == 0)
+                    {
+                        await js.InvokeVoidAsync("NotFoundSpinner", "msgModalInfoRegistrarNuevaCargaPrestacion");
+                    }
+                    else
+                    {
+
+                        Mensaje = "Error al momento de guardar el registro";
+                        await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorRegistrarNuevaPrestacion");
+                    }
+                }
+                else
+                {
+                    Mensaje = _response.Content.ToString() ?? "Error de Carga";
+                    await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorRegistrarNuevaPrestacion");
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Mensaje = ex.Message;
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorRegistrarNuevaPrestacion");
+            }
+        }
+    }
+
+    async void OnCloseModal()
+    {
+        await oReloadPrestacion.InvokeAsync(true);
+        await js.InvokeVoidAsync("CloseModalMessageName", "idCloseModalRegistrarPrestacion");
+    }
+
+}
+@if (acceder)
+{
+    <div class="row mt-2">
+        <div class="col-md-4 col-sm-4 col-lg-4 col-xs-12">
+            <label class="fw-bold fs-6">Prestación</label>
+            <div class="input-group mb-3">
+                @if (flgNuevo)
+                {
+                    <button class="btn-danger input-group-text" @onclick="LimpiarFiltroPrestacion"><i class="fas fa-trash-alt"></i></button>
+                    <input type="text" readonly class="form-control" @bind="objPrestacion.prestacion" disabled>
+                    <button class="btn-primary input-group-text" @onclick="MostrarModalPrestacion"><i class="fas fa-search-plus"></i></button>
+                }
+                else
+                {
+                    <button class="btn-danger input-group-text" disabled ><i class="fas fa-trash-alt"></i></button>
+                    <input type="text" readonly class="form-control" @bind="objPrestacion.prestacion" disabled>
+                    <button class="btn-primary input-group-text" disabled><i class="fas fa-search-plus"></i></button>
+                }
+                
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-4 col-lg-4 col-xs-12">
+            <label class="fw-bold fs-6">Tarifario</label>
+            <div class="input-group mb-3">
+                @if (flgNuevo)
+                {
+                    <button class="btn-danger input-group-text" @onclick="LimpiarFiltroTarifario"><i class="fas fa-trash-alt"></i></button>
+                    <input type="text" readonly class="form-control" @bind="objTarifa.tarifa" disabled>
+                    <button class="btn-primary input-group-text" @onclick="MostrarModalTarifario"><i class="fas fa-search-plus"></i></button>
+                }
+                else
+                {
+                    <button class="btn-danger input-group-text" disabled><i class="fas fa-trash-alt"></i></button>
+                    <input type="text" readonly class="form-control" @bind="objTarifa.tarifa" disabled>
+                    <button class="btn-primary input-group-text" disabled><i class="fas fa-search-plus"></i></button>
+                    
+                }
+                
+            </div>
+        </div>
+        <div class="col-md-2 col-lg-2 col-sm-2 col-xs-12">
+            <label class="fw-bold fs-6">Monto</label>
+            <input type="number" class="form-control text-end" @bind="_PrestacionClinica.valor"/>
+        </div>
+        <div class="col-md-2 col-lg-2 col-sm-2 col-xs-12">
+            <div class="mt-3">
+                <button class="btn btn-lg btn-primary form-control" @onclick="ValidarRegistro">
+                    <i class="fas fa-save me-3"></i>
+                    Guardar
+                </button>
+            </div>            
+        </div>
+    </div>
+
+
+
+    <div class="modal" id="msgModalBusquedaPrestacionComponent" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" style="max-width: 50%;  margin: 10px auto;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center text-black" id="staticBackdropLabel">Buscar Prestación</h5>
+                    <button type="button" class="btn-close" id="idCloseModalBusquedaPrestacion" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ModalPrestacionesComponent acceder="@accederBusquedaPrestaciones" oPrestacionSeleccionada="@SetObtienePrestacionCurrent">
+
+                    </ModalPrestacionesComponent>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="msgModalBusquedaTarifarioComponent" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" style="max-width: 50%;  margin: 10px auto;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center text-black" id="staticBackdropLabel">Buscar Tarifario</h5>
+                    <button type="button" class="btn-close" id="idCloseModalBusquedaTarifario" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ModalTarifarioComponent acceder="@accederBusquedaTarifa" oTarifarioSeleccionada="@SetObtieneTarifarioCurrent">
+
+                    </ModalTarifarioComponent>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <MessageModal IdMessage="msgModalErrorRegistrarNuevaPrestacion"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalPreguntaRegistrarNuevaPrestacion"
+                  TitleModal="Confirmación"
+                  BodyMessage=@Mensaje
+                  IconMessage=MessageModal.iconMessage.Question
+                  TypeButton=MessageModal.typeButton.OkCancel
+                  OnClose="@ConfirmarRegistroPrestaciones">
+    </MessageModal>
+    <MessageModal IdMessage="msgModalInfoRegistrarNuevaCargaPrestacion"
+                  TitleModal="Informacion"
+                  IconMessage=MessageModal.iconMessage.Informacion
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  OnClose="OnCloseModal"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+}

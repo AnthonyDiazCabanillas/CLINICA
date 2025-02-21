@@ -1,0 +1,712 @@
+﻿@*
+====================================================================================================
+ INFORMACION GENERAL (Tildes omitidas intencionalmente)
+====================================================================================================
+ Proyecto         : HIS
+ Clase            : PlanillaDashboard
+ Desarrollado por : GLLUNCOR
+ Fecha            : 26.10.2023
+====================================================================================================
+ @Copyright  Clinica San Felipe S.A.C. 2023. Todos los derechos reservados.
+====================================================================================================
+ DESCRIPCION FUNCIONAL:
+  Crear web pagina para mostrar Dashboard de Planillas de Honorarios Medicos
+====================================================================================================
+ OBSERVACIONES:
+    - .Net 6.0
+====================================================================================================
+ MODIFICACIONES:
+ FECHA        USUARIO     REQUERIMIENTO	    DESCRIPCION
+ 26/10/2023   GLLUNCOR    REQ 2023-020050	Se creo la pagina
+====================================================================================================
+ *@
+
+@page "/Clinica/Comercial/HonorariosMedicos/PlanillaDashboard"
+@using Ent.Sql.ClinicaE.DashboardE;
+@using Bus.Clinica;
+@using System.Collections.Generic;
+@using System.Linq;
+@using Ent.Sql.ClinicaE.GeneraE;
+@using Ent.Sql.ClinicaE.TerceroE;
+@using Web.Clinica.Shared
+@inject IJSRuntime js
+
+@code {
+    bool flgSheach = false, flgPlanCancelada = false;
+    string col = "";
+    string MensajeMdl = "";
+    decimal CntTtlPlanillas = 0, PrcPlnProcesadas, PrcPlnCanceladas, CntPlnProcesadas, CntPlnCanceladas, SaldoTotal = 0;
+    FiltroGeneralE FiltroGeneral = new FiltroGeneralE();
+    List<FiltroGeneralE> ListaRestFiltroGeneral = new List<FiltroGeneralE>();
+    DshPlanillaHME DshPlanillaHM = new DshPlanillaHME();
+    List<DshPlanillaHME> oListDshPlanillaHM = new List<DshPlanillaHME>();
+    List<DshPlanillaHME> oListDshPlanillaHMxMedico = new List<DshPlanillaHME>();
+    List<DshPlanillaHME> oListDshPlanillaHMEstado = new List<DshPlanillaHME>();
+    List<DshPlanillaHME> oListDshPlanillaHMTipPlanilla = new List<DshPlanillaHME>();
+    List<string?> oListaMeses = new List<string?>();
+    List<string> oListLiq = new List<string>();
+    List<string> oListEstado = new List<string>();
+    List<ChartDataset> datasets = new List<ChartDataset>();
+    List<LiqxtercerosE> oListaMedicos = new List<LiqxtercerosE>();
+    List<FiltroGeneralE> oListMedicosFiltrada;
+
+    protected override void OnInitialized()
+    {
+        js.InvokeVoidAsync("fnActualizarTitulo", "Planilla Dashboard");
+        FiltroGeneral.FechaInicio = FiltroGeneral.FechaInicio.AddMonths(-4);
+        FiltroGeneral.FechaFin = DateTime.Now;
+        BuscarPlanillas();
+        AutoCompletar();
+        flgSheach = true;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        flgSheach = false;
+        js.InvokeVoidAsync("knob");
+        js.InvokeVoidAsync("generateStackedBarChart", "stackedBarChart", oListaMeses, datasets);
+        if (!string.IsNullOrWhiteSpace(FiltroGeneral.Buscardor))
+        { flgSheach = true; }
+        else { BuscarMedicosPlanilla(1); }
+    }
+
+    private void AutoCompletar()
+    {
+        try
+        {
+            oListaMedicos = new Bus.Clinica.Clinica.Liqxterceros().Sp_Liqxterceros_Consulta(new LiqxtercerosE(FiltroGeneral.Buscardor, "", "", "", 9999, 2));
+            ListaRestFiltroGeneral = (from n in oListaMedicos select new FiltroGeneralE { Codigo = n.Codmedico, Nombres = n.NombreMedico }).ToList();
+        }
+        catch (Exception ex) { }
+    }
+
+    private async Task BuscarMedicosPlanilla(int x)
+    {
+        try
+        {
+            string nombrepaciente = FiltroGeneral.Buscardor;
+            if (!string.IsNullOrWhiteSpace(nombrepaciente))
+            {
+                oListMedicosFiltrada = new List<FiltroGeneralE>();
+                oListMedicosFiltrada = (from n in ListaRestFiltroGeneral
+                                        where n.Nombres.Contains(nombrepaciente, StringComparison.InvariantCultureIgnoreCase) ||
+                                                                n.Codigo.Contains(nombrepaciente, StringComparison.InvariantCultureIgnoreCase)
+                                        select n).ToList();
+
+                if (oListMedicosFiltrada.Count() > 0)
+                { BuscarPlanillas(); }
+                // else
+                // {
+                //     MensajeMdl = "El médico no tiene planillas registradas";
+                //     await js.InvokeVoidAsync("NotFoundSpinner", "msgModalAdvertencia");
+                // }
+            }
+        }
+        catch { }
+    }
+
+    private async Task EnterBuscarMedicosPlanillas(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        { BuscarMedicosPlanilla(1); }
+    }
+
+    private async Task EnterBuscarPlanillas(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        { BuscarPlanillas(); }
+    }
+
+    private async Task OnchangeFiltroFechaInicio(ChangeEventArgs e)
+    {
+        try
+        {
+            oListMedicosFiltrada = new List<FiltroGeneralE>();
+
+            var _fechaRecibida = Convert.ToDateTime(e.Value);
+            DshPlanillaHM.FechaInicio = _fechaRecibida.ToString("MM/dd/yyyy");
+            FiltroGeneral.FechaInicio = _fechaRecibida;
+
+            if (_fechaRecibida > FiltroGeneral.FechaFin)
+            { FiltroGeneral.FechaFin = _fechaRecibida; }
+
+            BuscarMedicosPlanilla(1);
+            BuscarPlanillas();
+            flgSheach = false;
+        }
+        catch (Exception ex)
+        {
+            FiltroGeneral.FechaInicio = FiltroGeneral.FechaInicio.AddMonths(-4);
+        }
+    }
+
+    private async Task OnchangeFiltroFechaFin(ChangeEventArgs e)
+    {
+        try
+        {
+            oListMedicosFiltrada = new List<FiltroGeneralE>();
+
+            var _fechaRecibida = Convert.ToDateTime(e.Value);
+            DshPlanillaHM.FechaFin = _fechaRecibida.ToString("MM/dd/yyyy");
+            FiltroGeneral.FechaFin = _fechaRecibida;
+
+            if (_fechaRecibida < FiltroGeneral.FechaInicio)
+            { FiltroGeneral.FechaInicio = _fechaRecibida; }
+
+            BuscarMedicosPlanilla(1);
+            BuscarPlanillas();
+            flgSheach = false;
+        }
+        catch (Exception ex)
+        {
+            FiltroGeneral.FechaFin = DateTime.Now;
+        }
+    }
+
+    private void BuscarPlanillas()
+    {
+        SaldoTotal = 0;
+        CntTtlPlanillas = 0;
+        PrcPlnCanceladas = 0;
+        PrcPlnProcesadas = 0;
+
+        oListaMeses = new List<string?>();
+        oListLiq = new List<string>();
+        oListDshPlanillaHM = new List<DshPlanillaHME>();
+        oListDshPlanillaHMTipPlanilla = new List<DshPlanillaHME>();
+        oListDshPlanillaHMEstado = new List<DshPlanillaHME>();
+        oListDshPlanillaHMxMedico = new List<DshPlanillaHME>();
+        datasets = new List<ChartDataset>();
+
+        try
+        {
+            DshPlanillaHM.FechaInicio = FiltroGeneral.FechaInicio.ToString("MM/dd/yyyy");
+            DshPlanillaHM.FechaFin = FiltroGeneral.FechaFin.ToString("MM/dd/yyyy");
+
+            DshPlanillaHM.Buscar = (oListMedicosFiltrada != null && oListMedicosFiltrada.Count != 0) ? oListMedicosFiltrada[0].Codigo : "";
+
+
+            if (string.IsNullOrWhiteSpace(FiltroGeneral.Buscardor))
+            { DshPlanillaHM.Orden = 1; }
+            else
+            {
+                DshPlanillaHM.Orden = 3;
+                oListDshPlanillaHMxMedico = new Dashboard.HonoraiosMedicosLiquidacion().Rp_Planilla_Consulta_Dashboard(DshPlanillaHM);
+                DshPlanillaHM.Orden = 2;
+            }
+            oListDshPlanillaHM = new Dashboard.HonoraiosMedicosLiquidacion().Rp_Planilla_Consulta_Dashboard(DshPlanillaHM);
+
+            if (oListDshPlanillaHM.Count != 0)
+            {
+                for (int i = 0; i < oListDshPlanillaHM.Count(); i++)
+                {
+                    oListaMeses.Add(oListDshPlanillaHM[i].Mes);
+                    oListLiq.Add(oListDshPlanillaHM[i].TipoLiquidacion);
+                    SaldoTotal += oListDshPlanillaHM[i].Total;
+                    CntTtlPlanillas += oListDshPlanillaHM[i].Cantidad;
+                }
+                oListaMeses = oListaMeses.Distinct().ToList();
+                oListLiq = oListLiq.Distinct().ToList();
+            }
+
+            var RslTipPlanilla = oListDshPlanillaHMTipPlanilla.Concat(oListDshPlanillaHM)
+            .GroupBy(item => item.TipoLiquidacion)
+            .Select(group => new DshPlanillaHME
+                {
+                    TipoLiquidacion = group.Key,
+                    Cantidad = group.Sum(item => item.Cantidad),
+                    Total = group.Sum(item => item.Total),
+                    CntPorcentaje = Math.Round(group.Sum(item => item.Cantidad) == 0 ? 0 : (group.Sum(item => item.Cantidad)) * 100 / CntTtlPlanillas, 0)
+                })
+             .ToList();
+
+            var RslEstado = oListDshPlanillaHMEstado.Concat(oListDshPlanillaHM)
+           .GroupBy(itm => itm.Estado)
+           .Select(group => new DshPlanillaHME
+               {
+                   Estado = group.Key,
+                   Cantidad = group.Sum(item => item.Cantidad),
+                   Total = group.Sum(item => item.Total),
+                   CntPorcentaje = Math.Round(group.Sum(item => item.Cantidad) == 0 ? 0 : (group.Sum(item => item.Cantidad)) * 100 / CntTtlPlanillas, 0)
+
+               })
+            .ToList();
+
+            oListDshPlanillaHMTipPlanilla.AddRange(RslTipPlanilla);
+            oListDshPlanillaHMEstado.AddRange(RslEstado);
+
+
+
+            for (int i = 0; i < oListDshPlanillaHMTipPlanilla.Count(); i++)
+            { oListDshPlanillaHMTipPlanilla[i].Porcentaje = oListDshPlanillaHMTipPlanilla[i].CntPorcentaje.ToString("0") + "%"; }
+
+            for (int i = 0; i < oListDshPlanillaHMEstado.Count(); i++)
+            {
+                oListDshPlanillaHMEstado[i].Porcentaje = oListDshPlanillaHMEstado[i].CntPorcentaje.ToString("0") + "%";
+                if (oListDshPlanillaHMEstado[i].Estado == "Planillas Procesadas")
+                { flgPlanCancelada = true; }
+            }
+
+            for (int i = 0; i < oListDshPlanillaHMxMedico.Count(); i++)
+            { oListDshPlanillaHMxMedico[i].Porcentaje = oListDshPlanillaHMxMedico[i].CntPorcentaje.ToString("0") + "%"; }
+
+            // Agrega productos a datasets usando un bucle for
+            for (int i = 0; i < oListLiq.Count; i++) // Cambia el 3 al número deseado de productos
+            {
+                var dataset = new ChartDataset
+                    {
+                        label = oListLiq[i].ToString(),//$"Producto {i + 1}",
+                        backgroundColor = GetRandomColorRGBA(), // Lógica para obtener colores aleatorios
+                        borderColor = GetRandomColorRGBA(),
+                        pointRadius = false,
+                        pointColor = GetRandomColorRGBA(),
+                        pointStrokeColor = GetRandomColorRGBA(),
+                        pointHighlightFill = GetRandomColorRGBA(),
+                        pointHighlightStroke = GetRandomColorRGBA(),
+                        data = GenerateData(oListLiq[i].ToString(), 0),
+                        tooltip = new ChartDataset.TooltipDt
+                        {
+                            enabled = true,
+                            mode = "single",
+                            callbacks = new ChartDataset.TooltipCallbacksDt
+                            {
+                                // label = "function(tooltipItem, data) { return 'Cantidad: ' + tooltipItem.yLabel + ', Solos: ' + tooltipItem.xLabel; }",
+                                label = oListLiq[i].ToString(),//$"Producto {i + 1}",
+                                Soles = GenerateData(oListLiq[i].ToString(), 1)
+                            }
+                        }
+                    };
+                datasets.Add(dataset);
+            }
+
+            int x = 6;
+            if (oListDshPlanillaHMEstado.Count != 0)
+            { x = 12 / oListDshPlanillaHMEstado.Count; }
+            col = $"col-xl-" + x + " col-lg-" + x + " col-md-" + x + " col-sm-6 col-xs-12 col-12";
+            // StateHasChanged();
+        }
+        catch { }
+
+
+        // js.InvokeVoidAsync("fnActualizarTitulo", "Planilla Dashboard");
+        // js.InvokeVoidAsync("knob");
+        // js.InvokeVoidAsync("generateStackedBarChart", "stackedBarChart", oListaMeses, datasets);
+        // StateHasChanged();
+    }
+
+    // Lógica para obtener colores aleatorios
+    private string GetRandomColorRGBA()
+    {
+
+        Random rand = new Random();
+        int red = rand.Next(50, 256);
+        int green = rand.Next(50, 256);
+        int blue = rand.Next(50, 256);
+        int alpha = rand.Next(50, 256); // Valor entre 0 y 255 para el componente alfa
+
+        return $"rgba({red}, {green}, {blue}, {alpha})";
+    }
+
+    private string GenerateRandomColorWithAlpha()
+    {
+        Random rand = new Random();
+        int red = rand.Next(50, 256); // Valor entre 0 y 255 para el componente rojo
+        int green = rand.Next(50, 256); // Valor entre 0 y 255 para el componente verde
+        int blue = rand.Next(50, 256); // Valor entre 0 y 255 para el componente azul
+        int alpha = rand.Next(50, 256); // Valor entre 0 y 255 para el componente alfa
+
+        return $"#{red:X2}{green:X2}{blue:X2}{alpha:X2}";
+    }
+
+    // Lógica para generar datos aleatorios
+    private List<decimal> GenerateData(string pDate, int TipResultado)
+    {
+        List<decimal> data = new List<decimal>();
+        decimal cantidad = 0, soles = 0;
+        for (int i = 0; i < oListaMeses.Count; i++)
+        {
+            for (int j = 0; j < oListDshPlanillaHM.Count; j++)
+            {
+                if (oListDshPlanillaHM[j].TipoLiquidacion == pDate && oListDshPlanillaHM[j].Mes == oListaMeses[i].ToString())
+                {
+                    if (TipResultado == 0)
+                    { data.Add(oListDshPlanillaHM[j].Cantidad); }
+                    if (TipResultado == 1)
+                    { data.Add(oListDshPlanillaHM[j].Total); }
+                }
+            }
+        }
+        return data;
+    }
+    private async Task HandleClear(ChangeEventArgs e)
+    {
+        var nuevoValor = e.Value?.ToString();
+        if (string.IsNullOrWhiteSpace(nuevoValor))
+        {
+            oListMedicosFiltrada = new List<FiltroGeneralE>();
+            BuscarPlanillas();
+        }
+    }
+}
+
+<div class="bg-light">
+    <div class="form-bg">
+        <!--I.BOTONES-->
+        <div class="row align-items-center form-toolbar">
+            <div class="row justify-content-between">
+            </div>
+        </div>
+        <!--F.BOTONES-->
+
+        <div class="container-fluid">
+            <!--PRESENTACION-->
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12" style="border-radius:25px !important;">
+                <div>
+                    <!--I.CUERPO-->
+                    <!--------------------------------------------------------------------->
+                    <!--I.BUSCAR-->
+                    <div class="row group align-items-center">
+                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 col-12" style="border-radius:25px !important;">
+                            <div class="DivSearchInput">
+                                <EditForm Model="@FiltroGeneral" @onkeydown="@EnterBuscarMedicosPlanillas" @onmousedown="(()=>BuscarMedicosPlanilla(1))" @oninput="@HandleClear">
+                                    <SearchListResult Placeholder="Buscar por nombre del médico"
+                                                      TypeResult=SearchListResult.typeResult.CodigoNombre
+                                                      Active=flgSheach
+                                                      Source="@ListaRestFiltroGeneral"
+                                                      @bind-Value="@FiltroGeneral.Buscardor"
+                                                      class="search-input" />
+
+                                </EditForm>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-1 col-lg-1 col-md-2 col-sm-12 col-xs-12 col-12">
+                            <label>Fecha Inicio:</label>
+                        </div>
+                        <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-xs-12 col-12">
+                            <input type="date" class="form-control" @bind="@FiltroGeneral.FechaInicio" @oninput="@OnchangeFiltroFechaInicio" max="@FiltroGeneral.FechaFin" onkeydown="return false" />
+                        </div>
+                        <div class="col-xl-1 col-lg-1 col-md-2 col-sm-12 col-xs-12 col-12">
+                            <label>Fecha Fin:</label>
+                        </div>
+                        <div class="col-xl-2 col-lg-2 col-md-4 col-sm-12 col-xs-12 col-12">
+                            <input type="date" class="form-control" @bind="@FiltroGeneral.FechaFin" @oninput="@OnchangeFiltroFechaFin" min="@FiltroGeneral.FechaInicio" max="@FiltroGeneral.FechaFin" onkeydown="return false" />
+                        </div>
+                    </div>
+                    @if (oListMedicosFiltrada != null && oListMedicosFiltrada.Any() && !string.IsNullOrEmpty(FiltroGeneral.Buscardor))
+                    {
+                        <div>
+                            <h5 style="text-align:center"><b>Médico: @oListMedicosFiltrada[0].Nombres</b></h5>
+                        </div>
+                    }
+                    else
+                    {
+                    <div>
+                        <h5 style="text-align:center"><b>Dashboard General</b></h5>
+                    </div>
+                    }
+                    <!--F.BUSCAR-->
+                    <div class="DivSearchNuevo" style="width:100%">
+                        <div class="container" style="margin-top: 20px;">
+
+                            <!--I.CUADRO 1-->
+                            <div class="row group align-items-center">
+
+
+                                @if (!string.IsNullOrEmpty(FiltroGeneral.Buscardor))
+                                {
+                                    <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 contornoDash">
+                                        <div class="contenedor contenedorDas">
+                                            <!--I.Titulo-->
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                                <h3 style="color:#124498"><b>Planillas Totales:</b></h3>
+                                            </div>
+                                            <!--F.Titulo-->
+                                            <!--I.Cuerpo-->
+                                            <br />
+                                            <div class="row align-items-stretch">
+                                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12 col-12">
+                                                    <div class="contenedor" style="border: 2px solid #9ACB48; background-color:#E5F1D1;border-radius:10px 10px 10px 10px">
+                                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                                            <h5 style="color:gray"><b>Saldo Total:</b></h5>
+                                                        </div>
+                                                        <div class="row align-items-stretch">
+                                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-1 col-2">
+                                                                <i class="fa-solid fa-sack-dollar fa-2xl" width="150" height="150" style="color: #124498;"></i>
+                                                            </div>
+                                                            <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 col-xs-11 col-10">
+                                                                @SaldoTotal.ToString("C")
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12 col-12">
+                                                    <div class="contenedor" style="border: 2px solid #9ACB48; background-color:#E5F1D1;border-radius:10px 10px 10px 10px">
+                                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                                            <h5 style="color:gray"><b>Cantidad Planilla:</b></h5>
+                                                        </div>
+                                                        <div class="row align-items-stretch">
+                                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-1 col-2">
+                                                                <i class="fa-solid fa-clipboard-list fa-2xl"></i>
+                                                            </div>
+                                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-10 col-xs-11 col-10">
+                                                                @CntTtlPlanillas
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--F.Cuerpo-->
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 contornoDash">
+                                        <div class="contenedor contenedorDas">
+                                            <!--I.Titulo-->
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12" align="center">
+                                                <h3 style="color:gray"><b>Informe de Pago por Porcentaje</b></h3>
+                                            </div>
+                                            <!--F.Titulo-->
+                                            <br />
+                                            <!--I.Cuerpo-->
+                                            <div class="row align-items-stretch">
+
+                                                @foreach (var item in oListDshPlanillaHMEstado)
+                                                {
+                                                    <div class="@col" @key=@item.Estado>
+                                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 text-center" @key=@item.CntPorcentaje>
+                                                            <input type="text" class="knob" @bind="@item.CntPorcentaje" data-width="100" data-height="100" data-fgColor=@GenerateRandomColorWithAlpha() data-readonly="true">
+                                                            <div class="knob-label">@item.Estado</div>
+                                                        </div>
+                                                        <div class="text-center MontoTotal">
+                                                            Cantidad: @item.Cantidad
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+
+                                            <!--F.Cuerpo-->
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 contornoDash">
+                                        <div class="contenedor contenedorDas">
+                                            <!--I.Cuerpo-->
+                                            <div class="col-md-12">
+                                                <p>
+                                                    <h3 style="color:gray;text-align:center"><b>Proceso Planilla por Médico</b></h3>
+                                                </p>
+                                                <br />
+                                                @foreach (var itm in oListDshPlanillaHMxMedico)
+                                                {
+                                                    <div class="progress-group">
+                                                        @itm.TipoLiquidacion
+                                                        <span class="float-right"><b>@itm.CntPorcentaje</b>/100%</span>
+                                                        <div class="progress progress-sm">
+                                                            <div class="progress-bar bg-primary" style="width:@itm.Porcentaje"></div>
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                }
+                                            </div>
+                                            <!--F.Cuerpo-->
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-xl-5 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 contornoDash">
+                                        <div class="contenedor contenedorDas">
+                                            <!--I.Titulo-->
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                                <h3 style="color:#124498"><b>Planillas Totales:</b></h3>
+                                            </div>
+                                            <!--F.Titulo-->
+                                            <!--I.Cuerpo-->
+                                            <br />
+                                            <div class="row align-items-stretch">
+                                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12 col-12">
+                                                    <div class="contenedor" style="border: 2px solid #9ACB48; background-color:#E5F1D1;border-radius:10px 10px 10px 10px">
+                                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                                            <h5 style="color:gray"><b>Saldo Total:</b></h5>
+                                                        </div>
+                                                        <div class="row align-items-stretch">
+                                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-1 col-2">
+                                                                <i class="fa-solid fa-sack-dollar fa-2xl" width="150" height="150" style="color: #124498;"></i>
+                                                            </div>
+                                                            <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 col-xs-11 col-10">
+                                                                @SaldoTotal.ToString("C")
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12 col-12">
+                                                    <div class="contenedor" style="border: 2px solid #9ACB48; background-color:#E5F1D1;border-radius:10px 10px 10px 10px">
+                                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                                            <h5 style="color:gray"><b>Cantidad Planilla:</b></h5>
+                                                        </div>
+                                                        <div class="row align-items-stretch">
+                                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-1 col-2">
+                                                                <i class="fa-solid fa-clipboard-list fa-2xl"></i>
+                                                            </div>
+                                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-10 col-xs-11 col-10">
+                                                                @CntTtlPlanillas
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--F.Cuerpo-->
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 contornoDash">
+                                        <div class="contenedor contenedorDas">
+                                            <!--I.Titulo-->
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12" align="center">
+                                                <h3 style="color:gray"><b>Informe de Pago por Porcentaje</b></h3>
+                                            </div>
+                                            <!--F.Titulo-->
+                                            <br />
+                                            <!--I.Cuerpo-->
+                                            <div class="row align-items-stretch">
+
+                                                @foreach (var item in oListDshPlanillaHMEstado)
+                                                {
+                                                    <div class="@col" @key=@item.Estado>
+                                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 text-center" @key=@item.CntPorcentaje>
+                                                            <input type="text" class="knob" @bind="@item.CntPorcentaje" data-width="100" data-height="100" data-fgColor=@GenerateRandomColorWithAlpha() data-readonly="true">
+                                                            <div class="knob-label">@item.Estado</div>
+                                                        </div>
+                                                        <div class="text-center MontoTotal">
+                                                            Cantidad: @item.Cantidad
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+
+                                            <!--F.Cuerpo-->
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <!--F.CUADRO 1-->
+                            <!--I.CUADRO 2-->
+                            <div class="row group align-items-center">
+                                <div class="col-xl-5 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 contornoDash">
+                                    <div class="contenedor">
+                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                            <h3 style="color:#124498"><b>Planilla:</b></h3>
+                                        </div>
+                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                            <div class="card">
+                                                <!-- /.card-body -->
+                                                <div class="card-body p-0">
+                                                    <table class="table" style="border-color:white">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="width: 25%;text-align:center"></th>
+                                                                <th style="width: 25%;"></th>
+                                                                <th style="width: 10%;"></th>
+                                                                <th style="width: 20%;text-align:center">Saldo</th>
+                                                                <th style="width: 20%;text-align:center">Cantidad</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var item in oListDshPlanillaHMTipPlanilla)
+                                                            {
+                                                                <tr>
+                                                                    <td>@item.TipoLiquidacion</td>
+                                                                    <td style="padding-top:8px;">
+                                                                        <div class="progress progress-xs">
+                                                                            <div class="progress-bar progress-bar-danger" style="width:@item.Porcentaje;background-color:#0043a5"></div>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td style="text-align:center;"><span class="badge" style="background-color: #ffb829;">@item.Porcentaje</span></td>
+                                                                    <td style="text-align:center"><span class="">@item.Total.ToString("C")</span></td>
+                                                                    <td style="text-align:center"><span class="">@item.Cantidad</span></td>
+
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                    <br />
+                                                    <br />
+                                                </div>
+                                                <!-- /.card-body -->
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 contornoDash">
+                                    <div class="contenedor">
+                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                            <h3 style="color:gray"><b>Historico Cantidades:</b></h3>
+                                        </div>
+                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                            <canvas id="stackedBarChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!--F.CUADRO 2-->
+                        </div>
+                    </div>
+                    <!--F.CUERPO-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .contornoDash {
+            height: auto;
+            border: 2px solid #7ebf2a;
+            border-radius: 30px 30px 30px 30px;
+            margin: 10px;
+        }
+
+        .contenedorDas {
+            height: 275px;
+            /* margin:5px; */
+        }
+    </style>
+
+    <script>
+        // Función para obtener el ancho máximo del borde y aplicarlo a todos los elementos contornoDash
+        function aplicarBordeMaximo() {
+            var elementos = document.querySelectorAll('.contornoDash');
+
+            // Inicializar la variable para el ancho máximo
+            var anchoMaximo = 0;
+
+            elementos.forEach(function (elemento) {
+                var borde = window.getComputedStyle(elemento.querySelector('.contenedor'), null).getPropertyValue('border-width');
+                var partes = borde.split(' ');
+                partes.forEach(function (parte) {
+                    var ancho = parseInt(parte, 10);
+                    if (!isNaN(ancho) && ancho > anchoMaximo) {
+                        anchoMaximo = ancho;
+                    }
+                });
+
+                // Aplicar el ancho máximo al elemento
+                elemento.style.borderWidth = anchoMaximo + 'px';
+            });
+        }
+
+        // Llama a la función para aplicar el borde máximo
+        document.addEventListener('DOMContentLoaded', aplicarBordeMaximo);
+
+    </script>
+
+
+    <MessageModal IdMessage="msgModalAdvertencia"
+                  TitleModal="Advertencia"
+                  IconMessage=MessageModal.iconMessage.Advertencia
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@MensajeMdl>
+    </MessageModal>
+</div>
+

@@ -1,0 +1,96 @@
+﻿@using Ent.Sql.ClinicaE.ContratosE;
+@using Ent.Sql.ClinicaE.GeneraE;
+
+@code {
+
+    [Parameter]
+    public List<HisContratoconsultoriocalendarioMaeE> ListaCalendario { get; set; }
+    [Parameter]
+    public List<HisContratoconsultoriocalendarioMaeE> ListaCanlendarioHoras { get; set; }
+    [Parameter]
+    public List<Dias> ListaCanlendarioDias { get; set; }
+    [Parameter]
+    public bool estBeneficio { get; set; }
+    [Parameter]
+    public EventCallback<HisContratoconsultoriocalendarioMaeE> OnClick { get; set; }
+    [Parameter]
+    public HisContratoconsultoriocalendarioMaeE Calendario { get; set; }
+
+
+
+    private async Task HandleButtonClick(string HoraInicio, string HoraFin, int Dia, string Estado)
+    {
+        Calendario = new HisContratoconsultoriocalendarioMaeE();
+        Calendario.HoraInicio = HoraInicio;
+        Calendario.HoraFin = HoraFin;
+        Calendario.Dia = Dia;
+        Calendario.EstCalendario = Estado;
+        Calendario.EstBeneficio = estBeneficio;
+        await OnClick.InvokeAsync(@Calendario); // Ejecuta la acción deseada
+    }
+    protected override async void OnInitialized()
+    { }
+}
+
+<table class="table-calendario">
+    <thead>
+        <tr>
+            <th class="th-calendario col-2"></th>
+            @foreach (var dia in ListaCanlendarioDias)
+            {
+                <th class="th-calendario">@dia.DscDias</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var hora in ListaCanlendarioHoras)
+        {
+            <tr class="th-calendario">
+                <td class="td-calendario">@hora.HoraInicio - @hora.HoraFin</td>
+                @foreach (var dia in ListaCanlendarioDias)
+                {
+                    @foreach (var calendario in ListaCalendario)
+                    {
+                        @if (calendario.HoraInicio == hora.HoraInicio && calendario.HoraFin == hora.HoraFin && calendario.Dia == dia.IDDias)
+                        {
+                            @switch (calendario.EstCalendario)
+                            {
+                                case "A": @* Nuevo Registro - Blanco *@
+                                    <td class="td-calendario">
+                                        <div class="celda " @onclick="()=> HandleButtonClick(hora.HoraInicio,hora.HoraFin,dia.IDDias,calendario.EstCalendario)" />
+                                    </td>
+                                    break;
+                                case "S" when !calendario.EstBeneficio: @* Nuevo Registro - Sin beneficio *@
+                                    <td class="td-calendario">
+                                        <div class="celda color-sin-beneficio" @onclick="()=> HandleButtonClick(hora.HoraInicio,hora.HoraFin,dia.IDDias,calendario.EstCalendario)" />
+                                    </td>
+                                    break;
+                                case "S" when calendario.EstBeneficio: @* Nuevo Registro - Con beneficio *@
+                                    <td class="td-calendario">
+                                        <div class="celda color-beneficio" @onclick="()=> HandleButtonClick(hora.HoraInicio,hora.HoraFin,dia.IDDias,calendario.EstCalendario)" />
+                                    </td>
+                                    break;
+                                case "B" when !calendario.EstBeneficio: @* Registro Guardado - Sin beneficio *@
+                                    <td class="td-calendario">
+                                        <div class="celda color-sin-beneficio" @onclick="()=> HandleButtonClick(hora.HoraInicio,hora.HoraFin,dia.IDDias,calendario.EstCalendario)" />
+                                    </td>
+                                    break;
+                                case "B" when calendario.EstBeneficio: @* Registro Guardado - Con beneficio *@
+                                    <td class="td-calendario">
+                                        <div class="celda color-beneficio" @onclick="()=> HandleButtonClick(hora.HoraInicio,hora.HoraFin,dia.IDDias,calendario.EstCalendario)" />
+                                    </td>
+                                    break;
+                                case "N": @* Registro bloqueado*@
+                                    <td class="disabled">
+                                        <div class="celda background-disabled" @onclick="()=> HandleButtonClick(hora.HoraInicio,hora.HoraFin,dia.IDDias,calendario.EstCalendario)" />
+                                    </td>
+                                    break;
+                            }
+                        }
+                    }
+
+                }
+            </tr>
+        }
+    </tbody>
+</table>

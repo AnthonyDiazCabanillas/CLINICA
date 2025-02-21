@@ -1,0 +1,901 @@
+﻿@page "/Clinica/Comercial/Mantenimientos/ReservaCita"
+@page "/Clinica/Comercial/Mantenimientos/ReservaCita/{ErrorMessage}"
+
+@inject IJSRuntime js
+@using Bus.Clinica
+@using Dat.Sql
+@using Ent.Sql.ClinicaE.MedicosE;
+@using Ent.Sql.ClinicaE.OtrosE
+@using Ent.Sql.ClinicaE.EspecialidadesE
+@using System.Xml.Serialization
+@using System.Text.Json
+@using Web.Clinica.Pages.Clinica.Comercial.Componentes
+@using Ent.Sql;
+@using Dat.Sql.ClinicaAD.EspecialidadesAD;
+@using Ent.Sql.ClinicaE.MedisynE;
+@using static Bus.AgendaClinica.Clinica.VariablesGlobales;
+@using Bus.AgendaClinica.Clinica;
+@using Web.Clinica.Components
+
+@inject NavigationManager NavManager
+
+@code {
+    [Parameter]
+    public string ErrorMessage { get; set; } = "";
+
+    List<TablasE> oListaTablasSedes = new List<TablasE>();
+    List<EspecialidadesE> oListEspecialidadesE = new List<EspecialidadesE>();
+
+    List<MdsynAmReservaE> oListaRegistros = new List<MdsynAmReservaE>();
+    FiltroE oFiltroE = new FiltroE();
+    MdsynAmReservaE oRegistroActual = new MdsynAmReservaE();
+
+    public List<string> oListStyleInfo = new List<string> { "text-decoration: line-through; color:darkred;", "", "font-family: 'Calibri'; color: blue !important;", "" };
+    List<int> oListItemsPerPage = new List<int>() { 5, 20, 50, 100 };
+
+
+    [CascadingParameter]
+    PageIndexStateProvider State { get; set; }
+
+
+    private int itemsPerPage = 5;
+    private int totalPages = 1;
+    string Resultadodebúsqueda = "";
+    public string DatoLogin { get; set; } = "";
+
+    private bool FlgIngresoAutomatico = false;
+    private long IdePagosBot = 0;
+    private string CodLiquidacion = "";
+    private string CodVenta = "";
+    private decimal MontoPago = 0;
+
+    Generales oGenerales = new Generales();
+    Utilitario util = new Utilitario();
+
+    private bool FlgDesactivaBotonPAgoBot = false;
+
+    private TabModalHijo TabModalPagoBot { get; set; }
+    private string Mensaje { get; set; }
+
+    protected override void OnInitialized()
+    {
+        State = new PageIndexStateProvider();
+        oListaTablasSedes = new Bus.Clinica.Clinica.Tablas().ListaConsulta(new TablasE("SEDES", "", 0, 0, 5));
+        oListEspecialidadesE = new EspecialidadesAD().Sp_Especialidades_Consulta(new EspecialidadesE("", 50, 500, 2));
+
+        DateTime dtpFecInicio = DateTime.Now.Date, dtpFecFin = DateTime.Now.Date;
+        oFiltroE.FechaIni = DateTime.UtcNow.Date.AddDays(-360);
+        oFiltroE.FechaFin = DateTime.UtcNow.Date.AddDays(360);
+
+        Load_Initial_Synapsis();
+        CargaData();
+
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        try
+        {
+            var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+            if (uri.Segments.Length == 6 && DatoLogin == "")
+            {
+                DatoLogin = uri.Segments[5];
+            }
+
+            if (DatoLogin != "")
+            {
+                js.InvokeVoidAsync("fnActualizarTitulo", DatoLogin);
+
+                string phrase = DatoLogin.Replace("%20", " "); ; // "The quick brown fox jumps over the lazy dog.";
+
+                string[] words = phrase.Split(" ");
+
+                if (words.Count() == 7)
+                {
+                    FlgIngresoAutomatico = true;
+                    oFiltroE.Buscar = words[6];
+                    IdePagosBot = 0;
+                    CodLiquidacion = words[2];
+                    CodVenta = "";
+                    MontoPago = decimal.Parse(words[5].Replace("_", "."));
+                    CargaData(1);
+                }
+            }
+        }
+
+        catch (Exception ex)
+        {
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender == true)
+        {
+            js.InvokeVoidAsync("fnActualizarTitulo", "Reserva de Cita");
+            if (FlgIngresoAutomatico == true)
+            {
+                if (oListaRegistros.Count > 0)
+                {
+                    oRegistroActual = oListaRegistros.FirstOrDefault();
+                    oRegistroActual.CntMontopago = MontoPago;
+                    //oRegistroActual.l
+                    //Show();
+                    //js.InvokeVoidAsync("ShowModal2", "msgModalOrdenPagoCitaBot");
+                    TabModalPagoBot.Open();
+                    StateHasChanged();
+                }
+            }
+        }
+    }
+
+    public async Task Show()
+    {
+        await js.InvokeVoidAsync("ShowModal2", "msgModalOrdenPagoCitaBot");
+        StateHasChanged();
+    }
+
+    async Task EnterBuscar(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            CargaData(1);
+        }
+    }
+
+    private void CargaData(int selectedPageIndex = 1)
+    {
+        // async Task
+        //await js.InvokeVoidAsync("ShowSpinnerSearch", "idspinnerMedico", "idSearchMedico");
+        try
+        {
+            string CodSede = "", Paciente = "", DocIdentidad = "";
+
+            oFiltroE.Orden = 20;
+            oFiltroE.Key = selectedPageIndex;
+            oFiltroE.NumeroLineas = itemsPerPage;
+
+
+            MdsynAmReservaE oMdsynAmReservaE = new MdsynAmReservaE();
+            oMdsynAmReservaE.IdeReserva = 0;
+            oMdsynAmReservaE.IdeCorrelReserva = 0;
+            oMdsynAmReservaE.FecInicio = oFiltroE.FechaIni.ToString("MM/dd/yyyy");
+            oMdsynAmReservaE.FecFin = oFiltroE.FechaFin.ToString("MM/dd/yyyy");
+            oMdsynAmReservaE.CodSede = CodSede;
+            oMdsynAmReservaE.NombresPaciente = Paciente;
+            oMdsynAmReservaE.RutPaciente = DocIdentidad;
+            oMdsynAmReservaE.CodPaciente = "";
+            oMdsynAmReservaE.Orden = "8";
+            oMdsynAmReservaE.ParXML = util.SerializetoXML(oFiltroE);
+
+
+            string TituloFiltro = "", DscSede = "", DscEspecilialidad = "";
+            if (oFiltroE.CodSede != "") DscSede = oListaTablasSedes.Where(x => x.Codigo == oFiltroE.CodSede).FirstOrDefault().Nombre;
+            if (oFiltroE.CodEspecialidad != "") DscEspecilialidad = oListEspecialidadesE.Where(x => x.Codespecialidad == oFiltroE.CodEspecialidad).FirstOrDefault().Nombre;
+
+            TituloFiltro = "Resultado Desde: " + oFiltroE.FechaIni.ToString("dd/MM/yyyy") + " Hasta: " + oFiltroE.FechaFin.ToString("dd/MM/yyyy");
+            TituloFiltro = TituloFiltro + (oFiltroE.Buscar == "" ? "" : " Nombre o Doc:" + oFiltroE.Buscar);
+            TituloFiltro = TituloFiltro + (DscSede == "" ? "" : " Sede:" + DscSede);
+            TituloFiltro = TituloFiltro + (DscEspecilialidad == "" ? "" : " Especialidad:" + DscEspecilialidad);
+
+            Resultadodebúsqueda = TituloFiltro;
+            oListaRegistros = oGenerales.Sp_Mdsyn_Cita_Consulta(oMdsynAmReservaE);
+            //oListaRegistros = await oGenerales.Sp_Mdsyn_Cita_Consulta_Async(oMdsynAmReservaE);
+
+            if (oListaRegistros.Count == 0)
+            {
+                //Mensaje = "Lo sentimos, no logramos encontrar registros .<br>Por favor intenta ser más especifico con la búsqueda.";
+                //js.InvokeVoidAsync("NotFoundSpinner", "msgModalInformacion");
+                totalPages = 0;
+                State.PageIndex = 0;
+
+            }
+            else
+            {
+                totalPages = oListaRegistros[0].TotalPages;
+                State.PageIndex = selectedPageIndex;
+
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+        //await js.InvokeVoidAsync("CloseSpinnerSearch", "idspinnerMedico", "idSearchMedico");
+        //await js.InvokeVoidAsync("CloseSearchFiltroAvazando", "idfiltroavanzado");
+    }
+
+
+
+    private void CargaDataBot(int selectedPageIndex = 1)
+    {
+        // async Task
+        //await js.InvokeVoidAsync("ShowSpinnerSearch", "idspinnerMedico", "idSearchMedico");
+        try
+        {
+            string CodSede = "", Paciente = "", DocIdentidad = "";
+
+            oFiltroE.Orden = 20;
+            oFiltroE.Key = selectedPageIndex;
+            oFiltroE.NumeroLineas = itemsPerPage;
+
+
+            MdsynAmReservaE oMdsynAmReservaE = new MdsynAmReservaE();
+            oMdsynAmReservaE.IdeReserva = 0;
+            oMdsynAmReservaE.IdeCorrelReserva = 0;
+            oMdsynAmReservaE.FecInicio = oFiltroE.FechaIni.ToString("MM/dd/yyyy");
+            oMdsynAmReservaE.FecFin = oFiltroE.FechaFin.ToString("MM/dd/yyyy");
+            oMdsynAmReservaE.CodSede = CodSede;
+            oMdsynAmReservaE.NombresPaciente = Paciente;
+            oMdsynAmReservaE.RutPaciente = DocIdentidad;
+            oMdsynAmReservaE.CodPaciente = "";
+            oMdsynAmReservaE.Orden = "12";
+            oMdsynAmReservaE.ParXML = util.SerializetoXML(oFiltroE);
+            oMdsynAmReservaE.CodAtencion = oFiltroE.Buscar;
+
+
+            string TituloFiltro = "", DscSede = "", DscEspecilialidad = "";
+            if (oFiltroE.CodSede != "") DscSede = oListaTablasSedes.Where(x => x.Codigo == oFiltroE.CodSede).FirstOrDefault().Nombre;
+            if (oFiltroE.CodEspecialidad != "") DscEspecilialidad = oListEspecialidadesE.Where(x => x.Codespecialidad == oFiltroE.CodEspecialidad).FirstOrDefault().Nombre;
+
+            TituloFiltro = "Resultado Desde: " + oFiltroE.FechaIni.ToString("dd/MM/yyyy") + " Hasta: " + oFiltroE.FechaFin.ToString("dd/MM/yyyy");
+            TituloFiltro = TituloFiltro + (oFiltroE.Buscar == "" ? "" : " Nombre o Doc:" + oFiltroE.Buscar);
+            TituloFiltro = TituloFiltro + (DscSede == "" ? "" : " Sede:" + DscSede);
+            TituloFiltro = TituloFiltro + (DscEspecilialidad == "" ? "" : " Especialidad:" + DscEspecilialidad);
+
+            Resultadodebúsqueda = TituloFiltro;
+            oListaRegistros = oGenerales.Sp_Mdsyn_Cita_Consulta(oMdsynAmReservaE);
+            //oListaRegistros = await oGenerales.Sp_Mdsyn_Cita_Consulta_Async(oMdsynAmReservaE);
+
+            if (oListaRegistros.Count == 0)
+            {
+                //Mensaje = "Lo sentimos, no logramos encontrar registros .<br>Por favor intenta ser más especifico con la búsqueda.";
+                //js.InvokeVoidAsync("NotFoundSpinner", "msgModalInformacion");
+                totalPages = 0;
+                State.PageIndex = 0;
+
+            }
+            else
+            {
+                totalPages = oListaRegistros[0].TotalPages;
+                State.PageIndex = selectedPageIndex;
+
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+        //await js.InvokeVoidAsync("CloseSpinnerSearch", "idspinnerMedico", "idSearchMedico");
+        //await js.InvokeVoidAsync("CloseSearchFiltroAvazando", "idfiltroavanzado");
+    }
+
+
+
+    private async Task ChangueIitemsPerPage(ChangeEventArgs e)
+    {
+        itemsPerPage = Convert.ToInt32(e.Value.ToString());
+        CargaData(1);
+    }
+
+    private void SelectedPage(int selectedPageIndex)
+    {
+        CargaData(selectedPageIndex);
+    }
+
+
+    private void OpenPagoBot()
+    {
+        TabModalPagoBot.Open();
+    }
+
+    private void CierraPagoBot()
+    {
+        TabModalPagoBot.Close();
+    }
+
+    private void MensajeDelHijo()
+    {
+        Mensaje = "Mensaje Del Hijo";
+        js.InvokeVoidAsync("NotFoundSpinner", "msgModalInformacion");
+    }
+
+    private void EjecutaHijo()
+    {
+        Mensaje = "Ejecuta Hijo";
+        js.InvokeVoidAsync("NotFoundSpinner", "msgModalInformacion");
+    }
+
+    // async Task
+    private void BtnGenerarOrdenPagoApi()
+    {
+        string MensajeError = "";
+
+        if (oRegistroActual.DscPago == "PAGADO" && MensajeError == "") MensajeError = "La orden de solicitud de pago ya se envio.";
+        if (CodLiquidacion == "" && MensajeError == "") MensajeError = "Para los pagos de tipo reserva, debe existir una liquidación.";
+        if (oRegistroActual.Email == "" && MensajeError == "") MensajeError = "El paciente no tiene correo, actualice los datos en la pantalla datos del paciente.";
+        if (oRegistroActual.Telefono == "" && MensajeError == "") MensajeError = "El paciente no tiene número de telefono, actualice los datos en la pantalla datos del paciente.";
+        if (MontoPago == 0 && MensajeError == "") MensajeError = "Debe existir monto de pago.";
+
+        if (MensajeError != "")
+        {
+            Mensaje = MensajeError;
+            js.InvokeVoidAsync("NotFoundSpinner", "msgModalInformacion");
+            return;
+        }
+        else
+        {
+            FlgDesactivaBotonPAgoBot = true;
+            Mensaje = " ¿Desea generar la orden del pago? ";
+            js.InvokeVoidAsync("ShowMessageModal", true, "msgModalPregunta");
+            int a = 0;
+        }
+    }
+
+
+    private void ConfirmaGenerarOrdenPagoApi(bool acepted)
+    {
+        try
+        {
+            if (acepted)
+            {
+
+                SynapsisWS.ResponseOrderApiResult oResult = new SynapsisWS.ResponseOrderApiResult();
+                MdsynPagosE objPagosE = new MdsynPagosE();
+                //objPagosE = new MdsynPagosE(IdePagosBot, cboTipoPago.SelectedValue.ToString(), IdeMdsynReserva, IdeCorrelReservaMedisyn, VarGlobal.CodLiquidacion, VarGlobal.CodVenta, Convert.ToDecimal(TxtMontoPagar.Text));
+                objPagosE.IdePagosBot = IdePagosBot;
+                objPagosE.CodTipo = "R"; // R=Reserva, F=Farmacio // cboTipoPago.SelectedValue.ToString();
+                objPagosE.IdCita = oRegistroActual.IDCita;
+                //objPagosE.IdeMdsynReserva = IdeMdsynReserva;
+                //objPagosE.IdeCorrelReserva = IdeCorrelReservaMedisyn;
+                objPagosE.CodLiquidacion = CodLiquidacion; // VarGlobal.CodLiquidacion;
+                objPagosE.CodVenta = CodVenta; //VarGlobal.CodVenta;
+                objPagosE.CntMontoPago = MontoPago; // Convert.ToDecimal(TxtMontoPagar.Text);
+
+                ListTipoPagoOrdenBot TipoPago = ListTipoPagoOrdenBot.Reserva;
+                int UsrSistema = 0;
+
+                oResult = oGenerales.fnGenerarOrdenPagoBot(objPagosE, TipoPago, UsrSistema);
+                if (oResult.responseOrderApi.success == true)
+                {
+                    CargaData();
+                    oRegistroActual = oListaRegistros.FirstOrDefault();
+                    //CierraPagoBot();
+                    FlgDesactivaBotonPAgoBot = false;
+                    Mensaje = " Se generó la orden del pago.";
+                    js.InvokeVoidAsync("NotFoundSpinner", "msgModalOK");
+                }
+                else
+                {
+                    FlgDesactivaBotonPAgoBot = false;
+                    Mensaje = " No se generó la orden del pago. ";
+                    js.InvokeVoidAsync("NotFoundSpinner", "msgModalInformacion");
+
+                }
+            }
+            else
+            {
+                FlgDesactivaBotonPAgoBot = false;
+            }
+        }
+        catch (Exception e)
+        {
+            FlgDesactivaBotonPAgoBot = false;
+            Mensaje = e.Message;
+            js.InvokeVoidAsync("NotFoundSpinner", "msgModalInformacion");
+        }
+    }
+
+
+    private void ConfirmaGenerarOrdenPagoApi_(bool acepted)
+    {
+        try
+        {
+            if (acepted)
+            {
+
+
+                SynapsisWS.ResponseOrderApiResult oResult = new SynapsisWS.ResponseOrderApiResult();
+                MdsynPagosE objPagosE = new MdsynPagosE();
+                //objPagosE = new MdsynPagosE(IdePagosBot, cboTipoPago.SelectedValue.ToString(), IdeMdsynReserva, IdeCorrelReservaMedisyn, VarGlobal.CodLiquidacion, VarGlobal.CodVenta, Convert.ToDecimal(TxtMontoPagar.Text));
+                objPagosE.IdePagosBot = IdePagosBot;
+                objPagosE.CodTipo = "R"; // R=Reserva, F=Farmacio // cboTipoPago.SelectedValue.ToString();
+                objPagosE.IdCita = oRegistroActual.IDCita;
+                //objPagosE.IdeMdsynReserva = IdeMdsynReserva;
+                //objPagosE.IdeCorrelReserva = IdeCorrelReservaMedisyn;
+                objPagosE.CodLiquidacion = CodLiquidacion; // VarGlobal.CodLiquidacion;
+                objPagosE.CodVenta = CodVenta; //VarGlobal.CodVenta;
+                objPagosE.CntMontoPago = MontoPago; // Convert.ToDecimal(TxtMontoPagar.Text);
+
+                ListTipoPagoOrdenBot TipoPago = ListTipoPagoOrdenBot.Reserva;
+                int UsrSistema = 0;
+
+                //oResult = oGenerales.fnGenerarOrdenPagoBot(objPagosE, TipoPago, UsrSistema);
+                //if (oResult.responseOrderApi.success == true)
+
+                if (true)
+                {
+                    Mensaje = " Se generó la orden del pago.";
+                    js.InvokeVoidAsync("NotFoundSpinner", "msgModalOK");
+                    FlgDesactivaBotonPAgoBot = false;
+                    CargaData();
+                    CierraPagoBot();
+                }
+                else
+                {
+                    Mensaje = " No se generó la orden del pago. ";
+                    js.InvokeVoidAsync("NotFoundSpinner", "msgModalInformacion");
+                    FlgDesactivaBotonPAgoBot = false;
+                }
+            }
+            else
+            {
+                FlgDesactivaBotonPAgoBot = false;
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            js.InvokeVoidAsync("NotFoundSpinner", "msgModalInformacion");
+            FlgDesactivaBotonPAgoBot = false;
+        }
+    }
+
+
+}
+
+<div class="bg-light">
+    <div class="form-bg">
+
+
+
+        <div class="row" style="padding:20px 0px 0px 0px; margin:0px 0px 0px 0px;">
+
+
+
+            <div class="col-sm-12 col-md-12  col-lg-10">
+                <div class="DivSearchInput">
+                    <div class="DivSearch" style="width:100%">
+                        <input id="txtMedico" type="search" placeholder="Buscar por el Nombre del Paciente, Doc. Identidad o Nro de atención." @bind-value="@oFiltroE.Buscar" @onkeyup="@EnterBuscar" autocomplete="off">
+                        <i id="idfiltroavanzado" class="fa-solid fa-sliders" role="button" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false"></i>
+                        <i id="idSearchMedico" class="fa-solid fa-magnifying-glass" role="button" typeof="AdvancedSearch" @onclick="@(()=>CargaData(1))"></i>
+                        <i id="idspinnerMedico" class="spinner-border text-success" tipo="spinner" role="spinbutton" style="display:none;">
+                            <span class="visually-hidden">Loading...</span>
+                        </i>
+
+                        <div class="dropdown-menu col-12 dropdown-menu-search" aria-labelledby="idfiltroavanzado">
+                            <div class="form-group card card-menu-search" style="margin:20px">
+                                <div class="col-12">
+                                    <div class="contenedor">
+                                        <h5 class="card-title" style="color:#000000; font-weight: bold; ">Búsqueda avanzada</h5>
+                                        <div class="card-body">
+                                            <div class="row">
+
+                                                <div class="col-sm-12 col-md-6  col-lg-2">
+                                                    <!--I.FechaIngreso-->
+                                                    <div class="omrs-input-group">
+                                                        <label class="omrs-input-underlined">
+                                                            <input id="dtFechaIngreso" class="form-control" type="date" required="" @bind-value="@oFiltroE.FechaIni">
+                                                            <span class="omrs-input-label">Fecha de Cita Desde</span>
+                                                            <span class="omrs-input-helper"></span>
+                                                        </label>
+                                                    </div>
+                                                    <!--F.FechaIngreso-->
+                                                </div>
+                                                <div class="col-sm-12 col-md-6  col-lg-2">
+                                                    <!--I.FechaFin-->
+                                                    <div class="omrs-input-group">
+                                                        <label class="omrs-input-underlined">
+                                                            <input id="dtFechaFin" class="form-control" type="date" required="" @bind-value="@oFiltroE.FechaFin">
+                                                            <span class="omrs-input-label">Fecha de Cita Hasta</span>
+                                                            <span class="omrs-input-helper"></span>
+                                                        </label>
+                                                    </div>
+                                                    <!--F.FechaFin-->
+
+                                                </div>
+
+
+
+                                                <div class="col-sm-12 col-md-3  col-lg-3">
+                                                    <!--I.CodSede-->
+                                                    <div class="form-floating mb-3">
+                                                        <select class="form-select" id="lstCodSede" aria-label="Sede" @bind="@oFiltroE.CodSede">
+                                                            <option selected></option>
+                                                            @foreach (var item in oListaTablasSedes)
+                                                            {
+                                                                <option value="@item.Codigo">@item.Nombre</option>
+                                                            }
+                                                        </select>
+                                                        <label for="floatingSelect">Sede</label>
+                                                    </div>
+                                                    <!--F.CodSede-->
+                                                </div>
+                                                <div class="col-sm-12 col-md-3  col-lg-3">
+                                                    <!--I.CodEspecialidad-->
+                                                    <div class="form-floating mb-3">
+                                                        <select class="form-select" id="lstCodEspecialidad" aria-label="Tipo de documento" @bind="@oFiltroE.CodEspecialidad">
+                                                            <option selected></option>
+                                                            @foreach (var item in oListEspecialidadesE)
+                                                            {
+                                                                <option value="@item.Codespecialidad">@item.Nombre</option>
+                                                            }
+                                                        </select>
+                                                        <label for="floatingSelect">Especialidad</label>
+                                                    </div>
+                                                    <!--F.CodEspecialidad-->
+                                                </div>
+
+                                                <div class="col-sm-12 col-md-2  col-lg-2  form-group">
+                                                    <button class="btn btn-primary" @onclick="@(()=>CargaData())">
+                                                        <span class="fa fa-search"></span> <span role="toolbar"> Buscar</span>
+                                                        @*<label class=" card-title title-paddin text-hide" style="color:white;">'</label>
+                                                        <input id="btnBusquedaAvanzada" type="button" class="btn btn-primary form-control font-weight-bold" @onclick="@BuscarAvanzadoMedico" value="Buscar" />*@
+
+                                                    </button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+            <!--F.Medico-->
+
+
+        </div>
+
+
+
+
+        <div class="container" style="margin-top: 20px;">
+            <div class="col-12 col-lg-12 col-md-12 buscar-menuNuevo">
+                <div class="input-group">
+                    <div class="card w-100">
+                        <div class="card-header text-white fs-5" style="background:#124498;padding: 1rem 2rem; ">
+                            @Resultadodebúsqueda
+                        </div>
+                        <div class="card-body">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive">
+                                <table class="table table-hover   table-bordered">
+                                    <thead class="table-primary">
+                                        <tr class="fw-bolder">
+                                            <th class="col-0 text-center"></th>
+                                            <th class="col-1 text-center">N°</th>
+                                            <th class="col-3 text-center">Cita</th>
+                                            <th class="col-3 text-center">Paciente</th>
+                                            <th class="col-3 text-center">Atenciòn</th>
+                                            <th class="col-3 text-center">Pago</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (oListaRegistros != null)
+                                        {
+                                            @foreach (var item in oListaRegistros)
+                                            {
+                                                <tr>
+
+                                                    <td class="text-center">
+                                                        <div class="btn-group dropstart">
+                                                            <button class="btn btn-menu" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <span class="fa-solid fa-ellipsis-vertical"></span>
+                                                            </button>
+                                                            <ul class="dropdown-menu">
+                                                                <li class="dropdown-header">Seleccione la opción</li>
+                                                                @*<li class="dropdown-item btn" data-bs-toggle="modal" data-bs-target="#msgModalAsignaAtencion" @onclick="@(()=> oRegistroActual = item)"><span class="fa-solid fa-address-book"></span> Opcion de Asignar Atención a Cita</li>*@
+                                                                <li class="dropdown-item btn" @onclick="@(()=> {FlgIngresoAutomatico = false;oRegistroActual = item;OpenPagoBot();})"><span class="fa-solid fa-layer-group"></span> Generar Orden Pago Bot</li>
+                                                                @*<li class="dropdown-item btn" data-bs-toggle="modal" data-bs-target="#msgModalOrdenPagoCitaBot" @onclick="@(()=> {FlgIngresoAutomatico = false;oRegistroActual = item;})"><span class="fa-solid fa-layer-group"></span> Generar Orden Pago Bot</li>*@
+
+
+
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span class="span-color">@item.Sec</span><br>
+                                                    </td>
+                                                    <td style="@oListStyleInfo[@item.Estado]">
+                                                        <span class="span-color">Nro de Atención: </span>
+                                                        <span style="color:#013ADF; font-weight: bold;"> @item.CodAtencion</span>
+                                                        <br>
+                                                        <span class="span-color">Fecha cita: </span>@item.FecCita.ToString("dd/MM/yyyy")  <br>
+                                                        <span class="span-color">Fecha registro: </span>@item.FecRegistro.ToString("dd/MM/yyyy") <br>
+                                                        <span class="span-color">Estado de cita: </span>@item.DscEstado <br>
+                                                        <span class="span-color">Identificador Cita: </span> @item.IDCita<br>
+                                                    </td>
+                                                    <td style="@oListStyleInfo[@item.Estado]">
+                                                        <span class="span-color">@item.NombresPaciente</span><br>
+                                                        <span class="span-color">DNI: </span>@item.RutPaciente<br>
+                                                        <span class="span-color">Edad: </span>@item.Edad<br>
+                                                        <span class="span-color">Teléfono: </span>@item.Telefono<br>
+                                                        <span class="span-color">Email: </span>@item.Email<br>
+
+                                                    </td>
+                                                    <td style="@oListStyleInfo[@item.Estado]">
+                                                        <span class="span-color">Médico: @item.NombresMedico</span><br>
+                                                        <span class="span-color">Sede: </span>@item.DscSede<br>
+                                                        <span class="span-color">Especialidad: </span>@item.DscEspecialidad<br>
+                                                        <span class="span-color">Cód medico: </span>@item.CodMedico<br>
+                                                        <span class="span-color">Tipo de Consulta: </span>@item.DscTipoConsultaMedica<br>
+                                                    </td>
+                                                    <td style="@oListStyleInfo[@item.Estado]">
+                                                        <span class="span-color">Importe: </span>@item.CntMontopago<br>
+                                                        @*<span class="span-color">Nro operaciòn: </span>@item.Telefono<br>*@
+                                                        <span class="span-color">Tipo de pago: </span>@item.CodTipoPago<br>
+                                                        @*<span class="span-color">Fecha Anulada: </span>@item.FecAnulacion<br>*@
+                                                        <span class="span-color">Estado de pago: </span> @item.DscPago<br>
+                                                    </td>
+                                                </tr>
+                                            }
+
+
+
+
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="2">
+                                            </td>
+                                            <td colspan="5">
+                                            </td>
+                                        </tr>
+
+
+
+
+                                    </tfoot>
+
+                                </table>
+                                <div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 0px 0px; ">
+                                    <div class="col-sm-12 col-md-2  col-lg-2">
+                                        <div class="form-floating mb-3">
+                                            <select class="form-select" id="lstTipDocIdentidad" aria-label="Tipo de documento" value="@itemsPerPage" @onchange="ChangueIitemsPerPage">
+                                                @foreach (var item in oListItemsPerPage)
+                                                {
+                                                    <option value=@item>@item</option>
+                                                }
+                                            </select>
+                                            <label for="floatingSelect">Items por página:</label>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="col-sm-12 col-md-10  col-lg-10">
+                                        <Pagination TotalPages="@(totalPages != 0 ? totalPages : 1)"
+                                                    PageIndex="@State.PageIndex"
+                                                    Radius="3"
+                                                    OnSelectedPage="@SelectedPage">
+                                        </Pagination>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+<TabModalHijo @ref="@TabModalPagoBot" Title="">
+    <div style="min-height: 400px">
+
+        <div class="gradient-custom row mt-3 mx-3" style="margin-top:25px ;">
+            <div class="col-md-3">
+                <div style="margin-top: 50px; margin-left: 10px;" class="text-center">
+                    <i id="animationDemo" data-mdb-animation="slide-right" data-mdb-toggle="animation"
+                       data-mdb-animation-reset="true" data-mdb-animation-start="onScroll"
+                       data-mdb-animation-on-scroll="repeat" class="fas fa-3x fa-credit-card text-white"></i>
+                    <h3 class="mt-3 text-white">Orden de pago</h3>
+                    <p class="white-text">Usted esta a punto de generar una Orden de Pago bot!</p>
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-outline-light " @onclick="@CierraPagoBot"><spam class="fa fa-arrow-rotate-left"></spam> <span id="TitleView"> Retornar </span></button>
+                </div>
+
+
+            </div>
+
+
+            <div class="col-md-9 justify-content-center">
+                <div class="card card-custom pb-4">
+                    <div class="card-body mt-0 mx-5">
+                        <div class="text-center mb-3 pb-2 mt-3">
+                            <h4 style="color: #495057 ;">@oRegistroActual.NombresPaciente</h4>
+                        </div>
+
+                        <div>
+
+                            DNI:<span class="span-color"> @oRegistroActual.RutPaciente</span>&nbsp;
+
+                            Edad:<span class="span-color"> @oRegistroActual.Edad</span>&nbsp;
+
+                            Teléfono:<span class="span-color">@oRegistroActual.Telefono </span>&nbsp;
+
+                            Email:<span class="span-color">@oRegistroActual.Email </span>&nbsp;
+                            <br>
+                        </div>
+
+                        <form class="mb-0">
+                            <div class="row" style="padding:20px 0px 0px 0px; margin:0px 0px 0px 0px;">
+                                <div class="col-sm-12 col-md-6  col-lg-4">
+                                    <fieldset>
+                                        <legend>CITA</legend>
+
+                                        <br>
+
+                                        <span class="span-color">Nro de Atención: </span>
+                                        <span style="color:#013ADF; font-weight: bold;"> @oRegistroActual.CodAtencion</span>
+                                        <br>
+                                        <span class="span-color">Fecha cita: </span>@oRegistroActual.FecCita.ToString("dd/MM/yyyy")
+                                        <br>
+                                        <span class="span-color">Fecha registro: </span>@oRegistroActual.FecRegistro.ToString("dd/MM/yyyy")
+                                        <br>
+                                        <span class="span-color">Estado de cita: </span>@oRegistroActual.DscEstado
+                                        <br>
+                                        <span class="span-color">Identificador Cita: </span> @oRegistroActual.IDCita
+                                        <br>
+
+
+                                    </fieldset>
+                                </div>
+
+
+                                <div class="col-sm-12 col-md-6  col-lg-4">
+
+                                    <fieldset>
+                                        <legend>ATENCIÓN</legend>
+                                        <br>
+                                        <span class="span-color">Médico:</span> @oRegistroActual.NombresMedico
+                                        <br>
+                                        <span class="span-color">Sede: </span>@oRegistroActual.DscSede
+                                        <br>
+                                        <span class="span-color">Especialidad: </span>@oRegistroActual.DscEspecialidad
+                                        <br>
+                                        <span class="span-color">Cód medico: </span>@oRegistroActual.CodMedico
+                                        <br>
+                                        <span class="span-color">Tipo de Consulta: </span>@oRegistroActual.DscTipoConsultaMedica
+                                        <br>
+                                    </fieldset>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6  col-lg-4">
+
+                                    <fieldset>
+                                        <legend>PAGO</legend>
+                                        <br>
+                                        <span class="span-color">Importe: </span>@oRegistroActual.CntMontopago
+                                        <br>
+                                        @*  <span class="span-color">Nro operaciòn: </span>@oRegistroActual.Telefono
+                                        <br>*@
+                                        <span class="span-color">Tipo de pago: </span>@oRegistroActual.CodTipoPago
+                                        <br>
+                                        @* <span class="span-color">Fecha Anulada: </span>@oRegistroActual.FecAnulacion
+                                        <br>*@
+                                        <span class="span-color">Estado de pago: </span> @oRegistroActual.DscPago
+                                        <br>
+                                    </fieldset>
+                                </div>
+                            </div>
+
+
+
+                        </form>
+
+
+                        <div class="float-end ">
+                            <br>
+                            <button class="btn btn-outline-success" @onclick="@BtnGenerarOrdenPagoApi" disabled="@FlgDesactivaBotonPAgoBot">
+                                <span class="fa-regular fa-save"></span> <span id="TitleView"> Generar Orden de Pago(bot)</span>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+        <MessageModal IdMessage="msgModalOK"
+                      TitleModal="Información"
+                      IconMessage=MessageModal.iconMessage.Check
+                      TypeButton=MessageModal.typeButton.Ok
+                      EscapeKey="true"
+                      BodyMessage=@Mensaje>
+        </MessageModal>
+
+        <MessageModal IdMessage="msgModalInformacion"
+                      TitleModal="Atención"
+                      IconMessage=MessageModal.iconMessage.Informacion
+                      TypeButton=MessageModal.typeButton.Ok
+                      EscapeKey="true"
+                      BodyMessage=@Mensaje>
+        </MessageModal>
+
+        <MessageModal IdMessage="msgModalPregunta"
+                      TitleModal="Confirmación"
+                      BodyMessage=@Mensaje
+                      IconMessage=MessageModal.iconMessage.Question
+                      TypeButton=MessageModal.typeButton.OkCancel
+                      OnClose="@ConfirmaGenerarOrdenPagoApi">
+        </MessageModal>
+
+    </div>
+</TabModalHijo>
+
+<style>
+    .gradient-custom {
+        background: -webkit-linear-gradient(left, #3931af, #00c6ff);
+    }
+
+    .gradient-custom2 {
+        background: -webkit-linear-gradient(left, #0066cc, #ff6666);
+    }
+
+    .card-custom {
+        border-bottom-left-radius: 10% 50%;
+        border-top-left-radius: 10% 50%;
+        background-color: #f8f9fa;
+        margin: 20px;
+    }
+
+
+    .input-custom {
+        background-color: white;
+    }
+
+    .white-text {
+        color: hsl(52, 0%, 98%);
+        font-weight: 100;
+        font-size: 14px;
+    }
+
+    .back-button {
+        background-color: hsl(52, 0%, 98%);
+        font-weight: 700;
+        color: black;
+        margin-top: 50px;
+    }
+
+    .table-fijo {
+        width: 100%;
+    }
+
+    /*thead, tbody tr */
+    .thead-fijo {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    .tbody-fijo {
+        display: block;
+        overflow-y: auto;
+        table-layout: fixed;
+        max-height: 310px;
+    }
+
+</style>
+
+

@@ -1,0 +1,150 @@
+﻿@inject IJSRuntime js
+
+@code {
+    [Parameter]
+    public string? IdMessage { get; set; }
+    [Parameter]
+    public string? BodyMessage { get; set; }
+
+    //[Parameter]
+    //public string? IdMessageCampo { get; set; }
+    //[Parameter]
+    //public string? IdMessageError { get; set; }
+    //[Parameter]
+    //public string? IdMessagePresonalizado { get; set; }
+    //[Parameter]
+    //public string? IdMessageSelect { get; set; }
+        
+    //[Parameter]
+    //public string? BodyMessageCampo { get; set; }
+    //[Parameter]
+    //public string? Campo { get; set; }
+
+}
+<!-- I.MESSAGE NOT FOUND -->
+<div class="modal fade" id="@IdMessage" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <br />
+                    @MetaGlobal.StringToHtml(BodyMessage)
+                    <br />
+                </div>
+            </div>
+            <!--<div class="modal-footer text-center">
+                <div class="text-center">
+                </div>
+            </div>-->
+        </div>
+    </div>
+</div>
+<!-- F.MESSAGE NOT FOUND -->
+@*
+<!-- I.MESSAGE NOT FOUND -->
+<div class="modal fade" id="@IdMessageCampo" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <br />
+                    Lo sentimos, no logramos encontrar @Campo. <br />
+                    Por favor intenta ser más especifico con la búsqueda.
+                    <br />
+                    <br />
+                    <br />
+                    <h1 class="text-center">&#128532;</h1>
+                    <br />
+                </div>
+            </div>
+            <!--<div class="modal-footer text-center">
+                <div class="text-center">
+                </div>
+            </div>-->
+        </div>
+    </div>
+</div>
+<!-- F.MESSAGE NOT FOUND -->
+<!-- I.MESSAGE NOT FOUND -->
+<div class="modal fade" id="@IdMessageError" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <br />
+                    Error: @Campo
+                    <br />
+                    <br />
+                    <br />
+                    <h1 class="text-center">&#128532;</h1>
+                    <br />
+                </div>
+            </div>
+            <!--<div class="modal-footer text-center">
+                <div class="text-center">
+                </div>
+            </div>-->
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="@IdMessagePresonalizado" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <br />
+                    @Campo
+                    <br />
+                    <br />
+                    <br />
+                    <h1 class="text-center">&#128532;</h1>
+                    <br />
+                </div>
+            </div>
+            <!--<div class="modal-footer text-center">
+                <div class="text-center">
+                </div>
+            </div>-->
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="@IdMessageSelect" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <br />
+                    Por favor seleccione @Campo
+                    <br />
+                    <br />
+                    <br />
+                    <h1 class="text-center">&#128532;</h1>
+                    <br />
+                </div>
+            </div>
+            <!--<div class="modal-footer text-center">
+                <div class="text-center">
+                </div>
+            </div>-->
+        </div>
+    </div>
+</div>
+*@
+<!-- F.MESSAGE NOT FOUND -->

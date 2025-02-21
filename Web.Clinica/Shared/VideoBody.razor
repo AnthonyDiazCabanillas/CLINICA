@@ -1,0 +1,35 @@
+﻿<h3>Video</h3>
+
+@code {
+    [Parameter]
+    public string? Title { get; set; }
+    [Parameter]
+    public string? Descripcion { get; set; }
+    [Parameter]
+    public string? Content { get; set; }
+    [Parameter]
+    public string? UrlVideo { get; set; }
+}
+
+<div class="alert alert-secondary mt-4">
+
+    <span class="oi oi-pencil me-2" aria-hidden="true"></span>
+    <div>
+        <h4>@Title</h4>
+    </div>
+    <br />
+    <div>
+        <span class="text-nowrap">
+            @Descripcion
+        </span>
+    </div>
+    <br />
+    <div>
+        <video controls="controls" width="600px" height="500px">
+            <source src=@UrlVideo />
+        </video>
+    </div>
+    <div>
+        @Content
+    </div>
+</div>

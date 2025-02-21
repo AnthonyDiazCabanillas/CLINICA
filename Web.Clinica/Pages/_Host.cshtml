@@ -1,0 +1,73 @@
+﻿@page "/"
+@namespace Web.Clinica.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using System.Security.Claims
+
+<div id="components-reconnect-modal">
+    <div class="components-messages">
+        <div class="components-reconnecting">
+            <h2>⚠ se perdió la conexión con el servidor</h2>
+            <br />
+            <p>Estamos intentando reconectar la conexión.</p>
+            <p>Por favor, espere unos segundos...</p>
+            <br />
+            <div class="spinner-border"></div>
+        </div>
+        <div class="components-failed">
+            <h2><i class="fa-solid fa-xmark"></i> no ha sido posible reconectar el portal CSF</h2>
+            <br />
+            <p>
+                No es posible conectar con el servidor, probablemente debido a un problema en la red.<br />
+            </p>
+            <p>
+                Puede probar <a href="javascript:location.href='';">recargando la página <i class="fa-solid fa-cloud-arrow-up"></i></a> en unos minutos.
+            </p>
+        </div>
+        <div class="components-rejected">
+            <h2><i class="fa-solid fa-xmark"></i> no ha sido posible reconectar el portal CSF</h2>
+            <br />
+            <p>
+                Se ha perdido la conexión con el servidor, probablemente debido a algún error en la red.<br />
+            </p>
+            <p>
+                Debe <a href="javascript:location.href='';">recargar la página</a> para conectar de nuevo.
+            </p>
+        </div>
+    </div>
+</div>
+
+
+@{
+    ViewBag.Name = "";
+    ViewBag.Login = "";
+    ViewBag.CodSexo = "";
+    ViewBag.UrlFoto = "";
+    ViewBag.Dns = "";
+    //Se obtiene la informacion del nombre almacenado en ClaimsIdentity
+    //y se guarda en la variable "userconn"
+    var userconn = ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.Name);
+    //validamos que el usuario se encuentre autenticado
+    if (userconn != null)
+    {
+        //Se accede a todas las variables mediante el método: FindFirst y se les
+        //asigna a las variables ViewBag
+        ViewBag.Name = ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.Name).Value;
+        ViewBag.Login = ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.NameIdentifier).Value;
+        ViewBag.CodSexo = ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.Gender).Value;
+        ViewBag.UrlFoto = ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.Uri).Value;
+        ViewBag.Dns = ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.Dns).Value;
+
+        Layout = "_Layout";
+    }
+    else
+    {
+        Layout = "_LayoutLogin";
+    }
+
+
+
+}
+@*<script src="~/js/aspnetcore-browser-refresh.js"></script>*@
+<script src="/js/aspnetcore-browser-refresh.js"></script>
+@*<script src="_framework/blazor.server.js"></script>*@
+<component type="typeof(App)" render-mode="ServerPrerendered" />

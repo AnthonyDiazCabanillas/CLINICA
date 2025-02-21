@@ -1,0 +1,133 @@
+﻿<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 buscar-menuNuevo">
+    <div class="input-group">
+        <div class="form-group">
+            <div class="col-12">
+                <div class="contenedor">
+                    <div class="card-title">
+                        <label class="h5" style="color:#124498; font-weight: bold; ">
+                            <span style="margin-right:10px;">
+                                <i class="@Icons" aria-hidden="true"></i>
+                                @ButtonText &ensp; @Separador
+                            </span>
+                        </label><label class="fw-bold">@Title</label>
+                        <button style="position: absolute;right: 3%; z-index:auto;" role="button" class="rounded-circle btn btn-sm @colorbutton @_collpased" @onclick="@Toggle" data-bs-toggle="collapse" data-bs-target="@datatoggle" aria-controls="@_ID" aria-expanded="@Collapsed">
+                            @if (!Collapsed  )
+                            {
+                                <i class="fa fa-chevron-down" style="color:white;" aria-hidden="true">
+                                </i>
+                            }
+                            else if(Collapsed && _collpased == "collapsed")
+                            {
+                                <i class="fa fa-chevron-down" style="color:white;" aria-hidden="true">
+                                </i>
+                            }
+                            else
+                            {
+                                <i class="fa fa-chevron-up" style="color:white;" aria-hidden="true"> </i>
+                            }
+
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="@_collapse CollapseAnimate" id="@_ID">
+    @ChildContent
+</div>
+
+
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    [Parameter]
+    public bool Collapsed { get; set; }
+
+    
+
+    //input params coming from from page
+    [Parameter]
+    public string Title { get; set; }
+    [Parameter]
+    public string Icons { get; set; }
+    [Parameter]
+    public string ButtonText { get; set; }
+    [Parameter]
+    public string Separador { get; set; }
+
+    [Parameter]
+    public string IdTab { get; set; }
+
+    string datatoggle;
+
+    string _collpased;
+    string _collapse;
+    string colorbutton;
+
+    /**/
+    string _ID;
+ 
+    protected override void OnInitialized()
+    {
+        _ID = "";
+        datatoggle = "";
+    
+        _ID = "Collapse" + IdTab.Replace("/", "_").Replace("-", "_");
+        datatoggle = "#" + _ID.Replace("/", "_").Replace("-", "_");
+    
+        if (Collapsed == false)
+        {
+            _collpased = "collapsed";
+            _collapse = "collapse";
+            colorbutton = "btn-primary";
+        }
+        else
+        {
+            _collpased = "";
+            _collapse = "collapse show";
+            colorbutton = "btn-success";
+        }
+    }
+
+    void Toggle()
+    {
+        Collapsed = !Collapsed;
+        if (Collapsed == false)
+        {
+            _collpased = "collapsed";
+            _collapse = "collapse";
+            colorbutton = "btn-primary";
+        }
+        else
+        {
+            _collpased = "";
+            _collapse = "collapse show";
+            colorbutton = "btn-success";
+        }
+    }
+
+    //protected override void OnAfterRender(bool firstRender)
+    //{
+    //    _ID = "";
+    //    datatoggle = "";
+    //
+    //    _ID = "Collapse" + IdTab.Replace("/", "_").Replace("-", "_");
+    //    datatoggle = "#" + _ID.Replace("/", "_").Replace("-", "_");
+    //
+    //    if (Collapsed == false)
+    //    {
+    //        _collpased = "collapsed";
+    //        _collapse = "collapse";
+    //        colorbutton = "btn-primary";
+    //    }
+    //    else
+    //    {
+    //        _collpased = "";
+    //        _collapse = "collapse show";
+    //        colorbutton = "btn-success";
+    //    }
+    //}
+}

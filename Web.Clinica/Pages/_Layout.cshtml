@@ -1,0 +1,244 @@
+﻿@namespace Web.Clinica.Pages
+@*Libreria necesaria para poder acceder a ClaimsIdentity en una pagina .cshtml*@
+@using System.Security.Claims
+@using System
+@using System.IO
+@using Bus.Clinica.Clinica
+@using Microsoft.AspNetCore.Components.Forms
+@using Ent.Sql.ClinicaE.UsuariosE
+@using System.Data
+
+@{
+    //-----------------------------------------------------------------------------
+    //Autor: CMendez
+    //Fecha: 12/05/2022
+    //Objetivo:
+    //Guardar en variables ViewBag la información almacenada en ClaimsIdentity
+    //para ello se tiene que acceder a traves de User.Identity, las paginas .cshtml
+    //pueden acceder a ClaimsIdentity, siempre que se agregue la cabecera:
+    //@using System.Security.Claims.
+    //-----------------------------------------------------------------------------
+    //Se crean las variables ViewBag a las cuales se accedera de manera local
+    bool  FlagCambiaFoto = false;
+    string imageBase64;
+    ViewBag.Name = "";
+    ViewBag.Login = "";
+    ViewBag.CodSexo = "";
+    ViewBag.UrlFoto = "";
+    ViewBag.Dns = "";
+    ViewBag.IdeUsuario = 0;
+
+    Seguridad seguridadBL = new Seguridad();
+    string rutalocal = "images/";
+    string rutaString64 = "data:image/jpg;base64,";
+    string rutafinal="";
+    /*trae imagenes*/
+    string _uri = "";
+    string _imagen64  = "";
+
+    //Se obtiene la informacion del nombre almacenado en ClaimsIdentity
+    //y se guarda en la variable "userconn"
+    var userconn = ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.Name);
+    //validamos que el usuario se encuentre autenticado
+    if (userconn != null)
+    {
+        //Se accede a todas las variables mediante el método: FindFirst y se les
+        //asigna a las variables ViewBag
+        ViewBag.Name = ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.Name).Value;
+        ViewBag.Login = ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.NameIdentifier).Value;
+        ViewBag.CodSexo = ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.Gender).Value;
+        ViewBag.UrlFoto = ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.Uri).Value;
+        ViewBag.Dns = ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.Dns).Value;
+        
+        _uri = ViewBag.UrlFoto;
+
+        DataTable _perfilnuevo = new DataTable();
+        SeguridadE _objSeguridad = new SeguridadE();
+        _objSeguridad.Login = ViewBag.Login;
+        _perfilnuevo = seguridadBL.MostrarFotoPerfil(_objSeguridad);
+        if (_perfilnuevo.Rows.Count > 0)
+        {
+            foreach (DataRow item in _perfilnuevo.Rows)
+            {
+                Byte[] _pb = (Byte[])item["img_perfil"];
+                _imagen64 = Convert.ToBase64String(_pb);
+
+            }
+            rutafinal = rutaString64 + _imagen64;
+        }
+        else
+        {
+            rutafinal = rutalocal + _uri;
+        }
+    }
+    else
+    {
+        //En caso no este autenticado se limpian las variables ViewBag
+        ViewBag.Name = "";
+        ViewBag.Login = "";
+        ViewBag.CodSexo = "";
+        ViewBag.UrlFoto = "";
+        ViewBag.Dns = "";
+        //El acceso a las variables ViewBag en una pagina .cshtml es directo
+    }
+    //-----------------------------------------------------------------------------
+    //Fin Agregado Cmendez 12/05/2022
+    //-----------------------------------------------------------------------------
+    
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="~/" />
+
+    <title>@MetaGlobal.PageTitle: CSF</title>
+
+    <link rel="stylesheet" href="~/css/bootstrap.min.css"> 
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="~/css/index/page.css" />
+    <script src="~/js/index.js"></script>
+    <link rel="stylesheet" href="~/css/all.css" />
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="~/js/controles.js?v=1.0.0.0"></script>
+    <link rel="stylesheet" href="~/css/textbox.css">
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/standard-base.css">
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.css">
+    <script src="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.js"></script>
+    @*LIBRERIAS DE SELECT2*@
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    @*LIBRERIAS DE SELECT2*@
+    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+</head>
+<body id="body-pd">
+
+    <header class="header" id="header">
+        <div class="header_toggle">
+            <i class='fa-solid fa-bars' id="header-toggle"></i>
+            <h5 id="TitleView" class="fw-bolder">@MetaGlobal.PageTitle</h5>
+        </div>
+
+        <div><img id="imgLogo" alt="csf" src="~/images/csf.png" width="90px" /></div>
+        <i class='fa fa-bell nav_icon'></i>
+    </header>
+
+    <div class="l-navbar" id="nav-bar">
+        <nav class="nav" style="overflow-y:auto;">
+            <div>
+                <div id="dvDataUserProfile" style=" width: 40px;  transition: all 0.5s ease 0s;  margin-left: 7px; text-align: center;">
+                    <div id="dvDataUser">
+                        <div>
+                            <img src="@rutafinal" alt="" width="160" height="160" style="border-radius:160px;  border:3px solid #FFF; text-align:center; vertical-align:middle;">
+                            <a id="btncambiarfoto" href="/Profile/ProfileUser" class="btn rounded-circle color-ui-interfaz-verde-claro" data-toggle="tooltip" title="Perfil" data-toggle="Perfil" style="position: relative; left: 50px; top: -48px; width: 50px;  height: 50px;">
+                                <span class="fa fa-edit" style="margin-top: 10px;  margin-left: 2px;">
+                                </span>
+                            </a>
+                            <div style="color:#FFF; text-transform:capitalize;position: relative;top: -38px;">
+                                @ViewBag.Name
+                            </div>
+                        </div>
+                        <hr style="background:#FFF; margin-top:0px;margin-left: 10px;" />
+                    </div>
+                    <div id="dvDataUserInitial">
+                        <img src="@rutafinal" alt="" width="40" height="40" style="border-radius:160px; margin-left: 4px; border:2px solid #FFF; text-align:center; vertical-align:middle;">
+                        <div style="color:#FFF;text-align: center;font-size: 10px;margin-top: 5px; margin-left:13px;"> @((ViewBag.Login + "  ").Substring(0, 2))</div>
+                        <hr style="background:#FFF; margin-top:5px;margin-left: 10px;" />
+                    </div>
+                </div>
+
+                <div class="nav_list">
+                    @*<a href="/Clinica" class="nav_link active">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span class="nav_name">Inicio</span>
+                    </a>*@
+                    <a href="/Clinica/01/Clínica" class="nav_link active">
+                        <i class='fa-solid fa-laptop-medical nav_icon'></i><span class="nav_name">Clínica</span>
+                    </a>
+                    <a href="/Clinica/02/Comercial" class="nav_link">
+                        <i class="fa-solid fa-briefcase-medical"></i> <span class="nav_name">Comercial</span>
+                    </a>
+
+                    <a href="/Clinica/03/Sistemas" class="nav_link">
+                        <i class="fa-solid fa-computer"></i> <span class="nav_name">Sistemas</span>
+                    </a>
+
+                </div>
+                <a href="/account/logout" class="nav_link">
+                    <i class='fa-solid fa-right-from-bracket nav_icon'></i> <span class="nav_name">Cerrar Sesión</span>
+                </a>
+                <div style="position:absolute; bottom:10px;">
+                    <div id="dvDataUserProfileclose" style=" width: 40px;  transition: all 0.5s ease 0s;  margin-left: 7px; text-align: center;">
+                        <div id="dvDataUserclose">
+                            @*<a href="/account/logout" class="nav_link">
+                                <i class='fa-solid fa-right-from-bracket nav_icon'></i> <span class="nav_name">Cerrar Sesión</span>
+                            </a>*@
+                        </div>
+                        <div id="dvDataUserInitialclose">
+                            @*<a href="/account/logout" class="nav_link">
+                                <i class='fa-solid fa-right-from-bracket nav_icon'></i> <span class="nav_name"></span>
+                            </a>*@
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </nav>
+    </div>
+
+     <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+        <br />
+        <br />
+    </div>
+
+    <footer id="footerPortal" class="footer-form" style="z-index:999999;">
+        <div style="display:inline">
+            <div style="display:inline-grid; width:50%;">
+                <span class="footer-form-csf-complete">Todo los derechos reservados © @DateTime.Today.Year - Clinica San Felipe</span>
+                <span class="footer-form-csf-light">© @DateTime.Today.Year - CSF</span>
+            </div>
+
+            <div style="display:inline-grid; width:47%; text-align:right; " class="footer-form-ambiente-complete">
+                <span class="footer-form-ambiente-complete"> Ambiente: <label style="font-weight:bold; display:contents;">@ViewBag.Dns</label> </span>
+                <span class="footer-form-ambiente-light"> <label style="font-weight:bold; display:contents;">@ViewBag.Dns</label></span>
+            </div>
+        </div>
+    </footer>
+
+    <script type="text/javascript">
+        var dataUser = false;
+        document.getElementById("dvDataUser").style.display = "none";
+        document.getElementById("dvDataUserInitial").style.display = "";
+        document.getElementById("dvDataUserProfile").style.width = "40px";
+        document.getElementById("dvDataUserclose").style.display = "none";
+        document.getElementById("dvDataUserInitialclose").style.display = "";
+        document.getElementById("dvDataUserProfileclose").style.width = "40px";
+    </script>
+
+</body>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+@*LIBRERIAS DE SELECT2*@
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+@*LIBRERIAS DE SELECT2*@
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script src="~/_framework/blazor.server.js"></script>
+
+<!-- ChartJS -->
+<script src="~/Dashboard/plugins/chart.js/Chart.min.js"></script>
+<!-- jQuery -->
+<script src="~/Dashboard/plugins/jquery/jquery/jquery.min.js"></script>
+<!-- jQuery Knob -->
+<script src="~/Dashboard/plugins/jquery-knob/jquery.knob.min.js"></script>
+<!-- Page specific script -->
+<script src="~/Dashboard/JsController/controller.js"></script>
+</html>

@@ -1,0 +1,195 @@
+﻿@using ClosedXML.Excel
+@using Ent.Sql.ClinicaE.GeneraE
+@inherits Microsoft.AspNetCore.Components.ComponentBase
+@inject IJSRuntime js
+
+@code {
+    [Parameter] public tipButtonExport TipButtonExport { get; set; }
+    [Parameter] public bool IsButtonDisabled { get; set; } = false;
+    [Parameter] public bool Descargar { get; set; } = false;
+    [Parameter] public string NombreDescargar { get; set; } = "";
+    [Parameter] public string RutaDescarga { get; set; } = "";
+    [Parameter] public ExcelE Excel { get; set; }
+
+
+    [Parameter] public string IdButton { get; set; } = "";
+    [Parameter] public string IdIcono { get; set; } = "";
+    [Parameter] public string TipoButton { get; set; } = "";
+    [Parameter] public string IconoButtonEnabled { get; set; } = "";
+    [Parameter] public string TxtButtonEnabled { get; set; } = "";
+    [Parameter] public string IconoButtonDisabled { get; set; } = "";
+    [Parameter] public string TxtButtonDisabled { get; set; } = "";
+
+    protected override void OnInitialized()
+    {
+        @switch (TipButtonExport)
+        {
+            case (tipButtonExport.Excel):
+                if (string.IsNullOrEmpty(IdButton)) { IdButton = "IdButtonExportar"; }
+                if (string.IsNullOrEmpty(IdIcono)) { IdIcono = "idIcnExportar"; }
+                if (string.IsNullOrEmpty(TipoButton)) { TipoButton = "btn btn-outline-success"; }
+                if (string.IsNullOrEmpty(IconoButtonEnabled)) { IconoButtonEnabled = "fa-solid fa-file-excel"; }
+                if (string.IsNullOrEmpty(TxtButtonEnabled)) { TxtButtonEnabled = "Excel"; }
+                if (string.IsNullOrEmpty(IconoButtonDisabled)) { IconoButtonDisabled = "spinner-border spinner-border-sm"; }
+
+                if (string.IsNullOrEmpty(NombreDescargar)) { NombreDescargar = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss").Replace("/", "").Replace(":", "").Replace(" ", "") + ".xlsx"; }
+                if (string.IsNullOrEmpty(RutaDescarga)) { RutaDescarga = "C:\temp"; }
+                break;
+            case (tipButtonExport.PDF):
+                if (string.IsNullOrEmpty(IdButton)) { IdButton = "IdButtonPDF"; }
+                if (string.IsNullOrEmpty(IdIcono)) { IdIcono = "idIcnExportar"; }
+                if (string.IsNullOrEmpty(TipoButton)) { TipoButton = "btn btn-outline-danger"; }
+                if (string.IsNullOrEmpty(IconoButtonEnabled)) { IconoButtonEnabled = "fa-solid fa-file-pdf"; }
+                if (string.IsNullOrEmpty(TxtButtonEnabled)) { TxtButtonEnabled = "PDF"; }
+                if (string.IsNullOrEmpty(IconoButtonDisabled)) { IconoButtonDisabled = "spinner-border spinner-border-sm"; }
+
+                if (string.IsNullOrEmpty(NombreDescargar)) { NombreDescargar = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss").Replace("/", "").Replace(":", "").Replace(" ", "") + ".pdf"; }
+                if (string.IsNullOrEmpty(RutaDescarga)) { RutaDescarga = "C:\temp"; }
+                break;
+        }
+    }
+
+    public enum tipButtonExport
+    {
+        PDF = 1,
+        Excel = 2,
+        Descargar = 3,
+    }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await js.InvokeVoidAsync("eval", @"
+                window.downloadFile = function(url, fileName) {
+                    var link = document.createElement('a');
+                    link.href = url;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);}"
+            );
+        }
+    }
+
+    private async Task ExportarPDF()
+    { await js.InvokeVoidAsync("btnImprimir"); }
+
+    private async Task ExportarExcel()
+    {
+        try
+        {
+            Imagen oImagen = Excel?.Config?.Cabecera?.Imagen ?? new Imagen();
+            List<DataCabeceraExcel> oListaDataCabeceraExcel = Excel?.Data?.ListaDataCabeceraExcel ?? new List<DataCabeceraExcel>();
+
+            int FilaInicioDataCab = Excel?.Config?.Cabecera?.NFilaCab ?? 1;
+            int ColumnaInicioDataCab = Excel?.Config?.Cabecera?.NColumanaCab ?? 1;
+            int CntFilasDataCab = oListaDataCabeceraExcel.Count();
+            DataTable oDataTable = Excel?.Data?.DataTable ?? new DataTable();
+            int CntTituloTable = oDataTable.TituloColumnaTabla?.Count() ?? 0;
+            int ColumnaCabTable = Excel?.Config?.Tabla?.NColumanaTabla ?? 0;
+            int FilaCabTable = Excel?.Config?.Tabla?.NFilaTabla ?? 0;
+            int ColumnaFinTable = CntTituloTable + ColumnaCabTable;
+            int FilaCuerpoTable = FilaCabTable + 1;
+            int ColumnaCuerpoTable = ColumnaCabTable;
+            string NombreHoja = Excel?.Config?.NombreHoja ?? "Hoja1";
+
+            MemoryStream excelStream;
+            MemoryStream pdfStream;
+
+            string fileUrl = "";
+
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add(NombreHoja); //Nombre de la Hoja
+
+                #region CabeceraExcel
+                // Datos
+                for (int i = 0; i < CntFilasDataCab; i++)
+                {
+                    worksheet.Cell(FilaInicioDataCab, ColumnaInicioDataCab).Value = oListaDataCabeceraExcel[i].Titulo;
+                    worksheet.Cell(FilaInicioDataCab, ColumnaInicioDataCab + 1).Value = oListaDataCabeceraExcel[i].Descripcion;
+                }
+                // Estilo para los datos de la cab
+                var RangoCab_Hoja = worksheet.Range(ColumnaInicioDataCab, ColumnaInicioDataCab, CntFilasDataCab, FilaInicioDataCab); //Selecciona Rango
+                RangoCab_Hoja.Style.Border.BottomBorder = XLBorderStyleValues.Medium;
+                RangoCab_Hoja.Style.Border.BottomBorderColor = XLColor.White;
+                RangoCab_Hoja.Style.Border.RightBorder = XLBorderStyleValues.Medium;
+                RangoCab_Hoja.Style.Border.RightBorderColor = XLColor.White;
+
+                RangoCab_Hoja.Style.Fill.BackgroundColor = XLColor.FromHtml("#7ebf2a"); //Indicamos el color de background
+                RangoCab_Hoja.Style.Font.FontSize = 12; //Indicamos el tamaño de la fuente
+                RangoCab_Hoja.Style.Font.Bold = true;
+                RangoCab_Hoja.Style.Font.FontColor = XLColor.FromHtml("#ffffff");
+                RangoCab_Hoja.Style.Font.SetFontName("Calibri"); //Fuente
+
+                if (!string.IsNullOrEmpty(oImagen.RutaImagen))
+                { worksheet.AddPicture(oImagen.RutaImagen).MoveTo(worksheet.Cell(oImagen.FilaUbicacionImagen, oImagen.FilaUbicacionImagen)).Scale(oImagen.Tamaño); }//Imagen
+                #endregion
+
+                #region Cabecera_Tabla
+                for (int i = 0; CntTituloTable > i; i++)
+                { worksheet.Cell(FilaCabTable, ColumnaCabTable + i).Value = oDataTable.TituloColumnaTabla[i].ToString(); }
+                #endregion
+
+                #region Cuerpo_Tabla
+                int filaIndex = 0;
+                if (oDataTable.DataCuerpo != null)
+                {
+                    foreach (dynamic fila in oDataTable.DataCuerpo)
+                    {
+                        int columnaIndex = 0;
+                        foreach (var propiedad in fila.GetType().GetProperties())
+                        {
+                            worksheet.Cell(FilaCuerpoTable + filaIndex, ColumnaCuerpoTable + columnaIndex).Value = propiedad.GetValue(fila);
+                            columnaIndex++;
+                        }
+                        filaIndex++;
+                    }
+                }
+                #endregion
+
+                if (FilaCabTable > 0 && CntTituloTable > 0)
+                {//I-Estilo Cabecera_Tabla
+                    var RangoCab = worksheet.Range(FilaCabTable, ColumnaCabTable, FilaCabTable, CntTituloTable); //Selecciona Rango
+                    RangoCab.Style.Border.RightBorder = XLBorderStyleValues.Medium;
+                    RangoCab.Style.Border.RightBorderColor = XLColor.White;
+                    RangoCab.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; //Alineamos horizontalmente
+                    RangoCab.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;  //Alineamos verticalmente
+                    RangoCab.Style.Fill.BackgroundColor = XLColor.FromHtml("#124498"); //Indicamos el color de background
+                    RangoCab.Style.Font.FontSize = 13; //Indicamos el tamaño de la fuente
+                    RangoCab.Style.Font.Bold = true;
+                    RangoCab.Style.Font.FontColor = XLColor.FromHtml("#ffffff");
+                    RangoCab.Style.Font.SetFontName("Sitka Display Semibold"); //Fuente
+                                                                               //F-Estilo Cabecera_Tabla
+
+                    worksheet.Columns(FilaCabTable, CntTituloTable).AdjustToContents(); //Ajustamos el ancho de las columnas para que se muestren todos los contenidos
+                }
+
+                excelStream = new MemoryStream();
+                pdfStream = new MemoryStream();
+                workbook.SaveAs(excelStream);
+
+                if (Descargar)
+                {
+                    fileUrl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{Convert.ToBase64String(excelStream.ToArray())}";
+                    OnAfterRenderAsync(true);//crea la funcion
+                    await js.InvokeVoidAsync("downloadFile", fileUrl, NombreDescargar);
+                }
+            }
+        }
+        catch (Exception ex) { }
+    }
+}
+
+
+@switch (TipButtonExport)
+{
+    case tipButtonExport.Excel:
+        <ButtonGeneral IdButton=@IdButton IdIcono=@IdIcono IsButtonDisabled=@IsButtonDisabled TipoButton=@TipoButton IconoButtonEnabled=@IconoButtonEnabled TxtButtonEnabled=@TxtButtonEnabled IconoButtonDisabled=@IconoButtonDisabled TxtButtonDisabled=@TxtButtonDisabled OnClick="ExportarExcel" />
+        break;
+    case tipButtonExport.PDF:
+        <ButtonGeneral IdButton=@IdButton IdIcono=@IdIcono IsButtonDisabled=@IsButtonDisabled TipoButton=@TipoButton IconoButtonEnabled=@IconoButtonEnabled TxtButtonEnabled=@TxtButtonEnabled IconoButtonDisabled=@IconoButtonDisabled TxtButtonDisabled=@TxtButtonDisabled OnClick="ExportarPDF" />
+        break;
+}

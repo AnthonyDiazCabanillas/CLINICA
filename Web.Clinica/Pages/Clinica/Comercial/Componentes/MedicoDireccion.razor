@@ -1,0 +1,269 @@
+﻿@using Ent.Sql.ClinicaE.MedicosE
+@using Ent.Sql.ClinicaE.EspecialidadesE
+@using Web.Clinica.Components
+@using Ent.Sql.ClinicaE.OtrosE
+
+
+@inject IJSRuntime js
+
+
+
+<div style="background-color: #FFF; width: 100%; height:100%; border:1px solid #b3d6ffff; border-radius:8px; padding:10px 10px 20px 10px; margin-bottom:10px 10px 10px 10px;">
+    <div class="row">
+        @{
+            bool ActNoa = false;
+            if (oMedicoE.FlagEstado == true)
+            {
+                ActNoa = false;
+            }
+            else
+            {
+                ActNoa = true;
+            }
+        }
+        <div class="col-sm-12 col-md-7  col-lg-7">
+
+            <fieldset class="omrs-fieldset">
+                <legend>UBIGEO</legend>
+
+                <div class="row">
+
+
+                    <div class="col-sm-12 col-md-12  col-lg-6">
+                        <!--I.NombrePais-->
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined">
+                                <input id="txtNombrePais" required="" @bind-value="@oMedicoE.NombrePais" disabled>
+                                <span class="omrs-input-label">País</span>
+                                @*<span class="omrs-input-helper"></span>*@
+                            </label>
+                        </div>
+                    </div>
+                    <!--F.NombrePais-->
+                    <div class="col-sm-12 col-md-12  col-lg-6">
+                        <!--I.NombreDepartamento-->
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined">
+                                <input id="txtNombreDepartamento" required="" @bind-value="@oMedicoE.NombreDepartamento" disabled>
+                                <span class="omrs-input-label">Departamento</span>
+                                @*<span class="omrs-input-helper"></span>*@
+                            </label>
+                        </div>
+                    </div>
+                    <!--F.NombreDepartamento-->
+
+                    <div class="col-sm-12 col-md-12  col-lg-6">
+                        <!--I.NombreProvincia-->
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined">
+                                <input id="txtNombreProvincia" required="" @bind-value="@oMedicoE.NombreProvincia" disabled>
+                                <span class="omrs-input-label">Provincia</span>
+                                <span class="omrs-input-helper"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <!--F.NombreProvincia-->
+                    <div class="col-sm-12 col-md-12  col-lg-6">
+                        <!--I.NombreDistrito-->
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined">
+                                <input id="txtNombreDistrito" required="" @bind-value="@oMedicoE.NombreDistrito" disabled>
+                                <span class="omrs-input-label">Distrito</span>
+                                <span class="omrs-input-helper"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <!--F.NombreDistrito-->
+
+
+                </div>
+
+
+                <div class="row">
+
+                    <div class="col-sm-12 col-md-12  col-lg-5">
+                        <!--I.CodUbigeo-->
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined">
+                                <input id="txtCodUbigeo" required="" @bind-value="@oMedicoE.CodUbigeo" disabled>
+                                <span class="omrs-input-label">Código Ubigeo</span>
+                                <span class="omrs-input-helper"></span>
+                            </label>
+                        </div>
+                        <!--F.CodUbigeo-->
+                    </div>
+
+                    <div class="col-sm-12 col-md-12  col-lg-5">
+                        <!--I.CodUbigeoId-->
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined">
+                                <input id="txtCodUbigeoId" required="" @bind-value="@oMedicoE.CodUbigeoId" disabled>
+                                <span class="omrs-input-label">Identificador</span>
+                                <span class="omrs-input-helper"></span>
+                            </label>
+                        </div>
+                        <!--F.CodUbigeoId-->
+                    </div>
+
+                    <div class="col-sm-12 col-md-12  col-lg-2">
+                        <button disabled="@ActNoa" class="btn btn-primary" @onclick="() => UbigeoBusqueda.Open()">Ubigeo</button>
+                    </div>
+                </div>
+
+            </fieldset>
+
+
+            <!--I.Direccion-->
+            <div class="omrs-input-group">
+                <label class="omrs-input-underlined">
+                    <input id="txtDireccion" disabled="@ActNoa" required="" @bind-value="@oMedicoE.Direccion" maxlength="60">
+                    <span class="omrs-input-label">Dirección </span>
+                    <span class="omrs-input-helper"></span>
+                </label>
+            </div>
+            <!--F.Direccion-->
+
+
+
+        </div>
+
+
+
+
+        <div class="col-sm-12 col-md-5  col-lg-5">
+
+
+            <div class="row">
+                <div class="col-sm-12 col-md-12  col-lg-4">
+                    <!--I.Telefono-->
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined">
+                            <input id="txtTelefono" disabled="@ActNoa"  required="" @bind-value="@oMedicoE.Telefono" maxlength="7"
+                                   onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
+                            <span class="omrs-input-label">Teléfono</span>
+                            <span class="omrs-input-helper"></span>
+                        </label>
+                    </div>
+                    <!--F.Telefono-->
+                </div>
+
+                <div class="col-sm-12 col-md-12  col-lg-8">
+                    <!--I.Email-->
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined">
+                            <input id="txtEmail" disabled="@ActNoa" required="" @bind-value="@oMedicoE.Beeper" maxlength="9"
+                                   onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
+                            <span class="omrs-input-label">Celular</span>
+                            <span class="omrs-input-helper"></span>
+                        </label>
+                    </div>
+                    <!--F.Email-->
+                </div>
+
+            </div>
+            <div class="row">
+                <!--I.Email-->
+                <div class="omrs-input-group">
+                    <label class="omrs-input-underlined">
+                        <input id="txtEmail" disabled="@ActNoa"  required="" @bind-value="@oMedicoE.Email" maxlength="100">
+                        <span class="omrs-input-label">E-mail</span>
+                        <span class="omrs-input-helper"></span>
+                    </label>
+                </div>
+                <!--F.Email-->
+            </div>
+            <fieldset class="omrs-fieldset">
+                <legend>Clinica San Felipe</legend>
+
+                <!--I.Area-->
+                <div class="form-floating mb-3">
+                    <select class="form-select" disabled="@ActNoa" id="lstArea" aria-label="Area" @bind="@oMedicoE.Area" data-deselect-all-text="Deseleccionar">
+                        <option selected></option>
+                        @foreach (var item in oListaTablasAreas)
+                        {
+                            <option value="@item.Codigo">@item.Nombre</option>
+                        }
+                    </select>
+                    <label for="lstArea">Área</label>
+                </div>
+                <!--F.Area-->
+                <div class="row">
+                    <div class="col-sm-12 col-md-12  col-lg-6">
+                        <!--I.Consultorio-->
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined">
+                                <input id="txtConsultorio" disabled="@ActNoa"  required="" @bind-value="@oMedicoE.Consultorio" maxlength="3">
+                                <span class="omrs-input-label">Consultorio</span>
+                                <span class="omrs-input-helper"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <!--F.Consultorio-->
+
+                    <div class="col-sm-12 col-md-12  col-lg-6">
+                        <!--I.Anexo-->
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined">
+                                <input id="txtAnexo" disabled="@ActNoa"  required="" @bind-value="@oMedicoE.Anexo" maxlength="5"
+                                       onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
+                                <span class="omrs-input-label">Anexo</span>
+                                <span class="omrs-input-helper"></span>
+                            </label>
+                        </div>
+                        <!--F.Anexo-->
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+</div>
+
+
+<UbigeoBusqueda @ref="@UbigeoBusqueda" OnClick="UbigeoCallBack" oUbigeoE="oUbigeoE">
+    <div style="height: 40vh; background-color:palevioletred">
+    </div>>
+
+</UbigeoBusqueda>
+
+
+@code {
+    [Parameter]
+    public MedicoE oMedicoE { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasAreas { get; set; }
+
+    private string pattern   = "/^[a-z0-9._%+-]+@@[a-z0-9.-]+.[a-z]{2,4}$/";
+
+    protected override void OnInitialized()
+    {
+    }
+
+    //public string ResultadoUbigeo = "";
+    String Mensaje = "";
+
+
+
+
+    #region Ubigeo
+    private UbigeoBusqueda UbigeoBusqueda { get; set; }
+    public UbigeoE oUbigeoE;
+
+    void UbigeoCallBack(UbigeoE oUbigeoE)
+    {
+        if (oUbigeoE != null)
+        {
+            oMedicoE.CodUbigeo = oUbigeoE.CodUbigeoPeru;
+            oMedicoE.CodUbigeoId = oUbigeoE.CodUbigeo;
+            oMedicoE.NombrePais = oUbigeoE.NombrePais;
+            oMedicoE.NombreDepartamento = oUbigeoE.NombreDpto;
+            oMedicoE.NombreProvincia = oUbigeoE.NombreProv;
+            oMedicoE.NombreDistrito = oUbigeoE.NombreDist;
+            oMedicoE.CodProvincia = oUbigeoE.CodProv;
+            oMedicoE.CodDistrito = oUbigeoE.CodDist;
+        }
+    }
+    #endregion
+
+}
