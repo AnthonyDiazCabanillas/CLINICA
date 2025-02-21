@@ -1,0 +1,77 @@
+﻿@inherits InputText;
+@using Ent.Sql.ClinicaE.GeneraE;
+
+@code {
+    [Parameter] public string? Label { get; set; } = "";
+    [Parameter] public string? Helper { get; set; } = "";
+    [Parameter] public string? IDInput { get; set; } = "";
+    [Parameter] public string? InputValue { get; set; } = "";
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public tipBox TipBox { get; set; }
+
+    public enum tipBox
+    {
+        TxtBox = 1,
+        TxtBoxView = 2,
+    }
+
+    string NameSpiner = "";
+    string NameIconoSearch = "";
+
+
+    private object text = "";
+
+    private object Text
+    {
+        get => text;
+        set
+        {
+            text = value;
+            CurrentValueAsString = text?.ToString();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        NameSpiner = "idSpinner" + IDInput.Replace("txt", "");
+        NameIconoSearch = "idSearch" + IDInput.Replace("txt", "");
+        // await js.InvokeVoidAsync("ShowSpinnerSearch", "idspinnerMedico", "idSearchMedico");
+        // await js.InvokeVoidAsync("CloseSpinnerSearch", "idspinnerMedico", "idSearchMedico");
+    }
+
+}
+
+@switch (TipBox)
+{
+    case tipBox.TxtBox:
+
+        <div class="omrs-input-group">
+            <label class="omrs-input-underlined">
+                <input @attributes="AdditionalAttributes"
+                @bind="Text"
+                       disabled=@Disabled />
+                <span class="omrs-input-label">@Label</span>
+                <span class="omrs-input-helper">@Helper</span>
+            </label>
+        </div>
+        break;
+    case tipBox.TxtBoxView:
+
+        <div class="omrs-input-group">
+            <label class="omrs-input-underlined dato-label-view">
+                <input id="idTipDocIdentidad" style="" disabled />
+                <span id="IdTitel" style="" class="omrs-input-label">@Label</span>
+            </label>
+        </div>
+
+        <style>
+            .dato-label-view input {
+                background-color: white !important;
+            }
+
+            .dato-label-view span {
+                color: #0043A5 !important;
+            }
+        </style>
+        break;
+}

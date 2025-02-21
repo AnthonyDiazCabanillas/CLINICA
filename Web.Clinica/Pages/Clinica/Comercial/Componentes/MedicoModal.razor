@@ -1,0 +1,413 @@
+﻿@using Ent.Sql.ClinicaE.MedicosE
+@using Ent.Sql.ClinicaE.EspecialidadesE
+@using Web.Clinica.Components
+@using Web.Clinica.Pages.Clinica.Comercial.Componentes
+@using Ent.Sql.ClinicaE.OtrosE
+@using Ent.Sql.SeguridadE.SeguridadE;
+
+<div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 0px 0px; ">
+    @{
+        bool ActNoa = false;
+        if (oMedicoE.FlagEstado == true)
+        {
+            ActNoa = false;
+        }
+        else
+        {
+            ActNoa = true;
+        }
+    }
+    <!--I.Cod. Médico-->
+    <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12 col-xs-12 col-12">
+        <div class="omrs-input-group">
+            <label class="omrs-input-underlined">
+                <input id="txtCodMedico" required="" @bind-value="@oMedicoE.CodMedico" disabled>
+                <span class="omrs-input-label">Cod. Médico</span>
+                @*<span class="omrs-input-helper"></span>*@
+            </label>
+        </div>
+        <!--I.FechaRegistro-->
+        <div class="omrs-input-group">
+            <label class="omrs-input-underlined">
+                <input id="startDate" class="form-control" type="date" required="" @bind-value="@oMedicoE.FechaRegistro" disabled>
+                <span class="omrs-input-label">Fecha de Registro</span>
+                @*<span class="omrs-input-helper"></span>*@
+            </label>
+        </div>
+        <!--F.FechaRegistro-->
+    </div>
+
+    <div class="col-xl-10 col-lg-10 col-md-12 col-sm-12 col-xs-12 col-12">
+        <div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 0px 0px; ">
+            <!--I.ApPaterno-->
+            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 col-12">
+                <div class="omrs-input-group">
+                    <label class="omrs-input-underlined">
+                        <input id="txtApPaterno" required="" @bind-value="oMedicoE.ApPaterno" disabled="@ActNoa" maxlength="30" oninput="this.value=this.value.toUpperCase()">
+                        <span class="omrs-input-label">Apellido paterno</span>
+                        <span class="omrs-input-helper"></span>
+                    </label>
+                </div>
+            </div>
+            <!--F.ApPaterno-->
+            <!--I.ApMaterno-->
+            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 col-12">
+                <div class="omrs-input-group">
+                    <label class="omrs-input-underlined">
+                        <input id="txtApMaterno" required="" @bind-value="oMedicoE.ApMaterno" disabled="@ActNoa" oninput="this.value=this.value.toUpperCase()" maxlength="30"> @*disabled="@IsNotDisabledCIA"*@
+                        <span class="omrs-input-label">Apellido materno</span>
+                        <span class="omrs-input-helper"></span>
+                    </label>
+                </div>
+            </div>
+            <!--F.ApMaterno-->
+            <!--I.Nombre-->
+            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 col-12">
+                <div class="omrs-input-group">
+                    <label class="omrs-input-underlined">
+                        <input id="txtNombre" required="" @bind-value="oMedicoE.Nombre" disabled="@ActNoa" oninput="this.value=this.value.toUpperCase()" maxlength="30">
+                        <span class="omrs-input-label">Nombres</span>
+                        @*<span class="omrs-input-helper"></span>*@
+                    </label>
+                </div>
+            </div>
+            <!--F.Nombre-->
+            <!--I.Nombre-->
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                <div class="omrs-input-group">
+                    <label class="omrs-input-underlined">
+                        <input id="txtNombres" required="" @bind-value="oMedicoE.Nombres" disabled="@IsDisabledCIA" oninput="this.value=this.value.toUpperCase()" maxlength="60">
+                        <span class="omrs-input-label">Descripción</span>
+                        @*<span class="omrs-input-helper"></span>*@
+                    </label>
+                </div>
+            </div>
+            <!--F.Nombre-->
+        </div>
+    </div>
+
+</div>
+
+<div> 
+    <TabControl>
+                 
+        @if (oListSegOpcions.Any(d => d.CodOpcion == "02/02/01/04"))
+        {
+            <TabPage Text="Personal" _ICons="fa-solid fa-user" Permiso="02/02/01/04">
+                <MedicoDatPersonal @ref="medicoDatPersonalRef"
+                               oMedicoE="oMedicoE"
+                               oListaTablasSexo="oListaTablasSexo"
+                               oListaTablasCodCivil="oListaTablasCodCivil"
+                               oListaTablasTipoIdentidad="oListaTablasTipoIdentidad"
+                               oListaTablasTipoColegio="oListaTablasTipoColegio"
+                               OnClick="ClickCallback">
+                </MedicoDatPersonal>
+            </TabPage>
+        }
+        @if (oListSegOpcions.Any(d => d.CodOpcion == "02/02/01/05"))
+        {
+            <TabPage Text="Dirección" _ICons="fa-solid fa-location-dot" Permiso="02/02/01/05">
+                <MedicoDireccion @ref="medicoDireccionRef"
+                             oMedicoE="oMedicoE"
+                             oListaTablasAreas="oListaTablasAreas">
+                </MedicoDireccion>
+            </TabPage>
+        }
+        @if (oListSegOpcions.Any(d => d.CodOpcion == "02/02/01/06"))
+        {
+            <TabPage Text="Cobranza" _ICons="fa-solid fa-dollar-sign" Permiso="02/02/01/06">
+                <MedicoCobranza @ref="medicoCobranzaRef"
+                            oMedicoE="oMedicoE"
+                            oListaTablasAFP="oListaTablasAFP"
+                            oListaTablasTipDocEmitira="oListaTablasTipDocEmitira">
+
+                </MedicoCobranza>
+            </TabPage>
+        }
+        @if (oListSegOpcions.Any(d => d.CodOpcion == "02/02/01/07"))
+        {
+            <TabPage Text="Observación" _ICons="fa-solid fa-user-tie" Permiso="02/02/01/07">
+                <MedicoObs @ref="medicoObsRef"
+                       oMedicoE="oMedicoE"
+                       FlgNuevo="FlgNuevo">
+                </MedicoObs>
+            </TabPage>
+        }
+        @if (oListSegOpcions.Any(d => d.CodOpcion == "02/02/01/08"))
+        {
+            <TabPage Text="Alquiler" _ICons="fa-solid fa-house" Permiso="02/02/01/08">
+                <MedicoAlquiler @ref="medicoAlquilerRef"
+                            oMedicoE="oMedicoE"
+                            oListaPrestacionxMedicoE="oListaPrestacionxMedicoE"
+                            FlgNuevo="FlgNuevo">
+                </MedicoAlquiler>
+            </TabPage>
+        }
+        @if (oListSegOpcions.Any(d => d.CodOpcion == "02/02/01/09"))
+        {
+            <TabPage Text="Especialidad" _ICons="fa-solid fa-star" Permiso="02/02/01/09">
+                <MedicoEspecialidad @ref="medicoEspecialidadRef"
+                                oMedicoE="oMedicoE"
+                                oListaMedicosEspecialidadE="oListaMedicosEspecialidadE"
+                                oListaTablasSedes="oListaTablasSedes"
+                                oListEspecialidadesE="oListEspecialidadesE"
+                                oListTablasTipoAtencion="oListTablasTipoAtencion"
+                                oListTablasTipoPaciente="oListTablasTipoPaciente"
+                                oListaTablasMoneda="oListaTablasMoneda"
+                                oListaTablasTipoColegio="oListaTablasTipoColegio"
+                                Mensaje="Mensaje"
+                                FlgNuevo="FlgNuevo">
+                </MedicoEspecialidad>
+            </TabPage>
+        }
+        @if (oListSegOpcions.Any(d => d.CodOpcion == "02/02/01/10"))
+        {
+            <TabPage Text="Agenda" _ICons="fa-solid fa-calendar" Permiso="02/02/01/10">
+                <MedicoEspecialidadDetalle @ref="medicoEspecialidadDetalleRef"
+                                       oMedicoE="oMedicoE"
+                                       oListaMedicosEspecialidadE="oListaMedicosEspecialidadE"
+                                       oListaTablasSedes="oListaTablasSedes"
+                                       oListEspecialidadesE="oListEspecialidadesE"
+                                       oListTablasTipoAtencion="oListTablasTipoAtencion"
+                                       oListTablasTipoPaciente="oListTablasTipoPaciente"
+                                       oListaTablasMoneda="oListaTablasMoneda"
+                                       oListaTablasTipoColegio="oListaTablasTipoColegio"
+                                       Mensaje="Mensaje"
+                                       FlgNuevo="FlgNuevo">
+                </MedicoEspecialidadDetalle>
+            </TabPage>
+        }
+        @if (oListSegOpcions.Any(d => d.CodOpcion == "02/02/01/11"))
+        {
+            <TabPage Text="Asistente" _ICons="fa-solid fa-people-arrows" Permiso="02/02/01/11">
+                <MedicoAsistente @ref="medicoAsistenteRef"
+                             oMedicoE="oMedicoE"
+                             oListaAsistentexMedicoE="oListaAsistentexMedicoE"
+                             FlgNuevo="FlgNuevo">
+                </MedicoAsistente>
+            </TabPage>
+        }
+        @if (oListSegOpcions.Any(d => d.CodOpcion == "02/02/01/12"))
+        {
+            <TabPage Text="Empresa" _ICons="fa-solid fa-city" Permiso="02/02/01/12">
+                <MedicoEmpresa @ref="medicoEmpresaRef"
+                           oMedicoE="oMedicoE"
+                           oListaMedicoxEmpresaE="oListaMedicoxEmpresaE"
+                           FlgNuevo="FlgNuevo">
+                </MedicoEmpresa>
+            </TabPage>
+        }
+        @if (oListSegOpcions.Any(d => d.CodOpcion == "02/02/01/13"))
+        {
+            <TabPage Text="Estudios" _ICons="fa-solid fa-book" Permiso="02/02/01/13">
+                <MedicoEstudio @ref="medicoEstudioRef"
+                           oMedicoE="oMedicoE"
+                           oListaTablasDatoMedico="oListaTablasDatoMedico"
+                           oListaMedicosDatosE="oListaMedicosDatosE">
+                </MedicoEstudio>
+            </TabPage>
+        }
+        @if (oListSegOpcions.Any(d => d.CodOpcion == "02/02/01/14"))
+        {
+            <TabPage Text="Cta Banco" _ICons="fa-solid fa-credit-card" Permiso="02/02/01/14">
+                <MedicoCtaBanco @ref="medicoCtaBancoRef"
+                            oMedicoE="oMedicoE"
+                            oListaMedicosCtaBancoE="oListaMedicosCtaBancoE"
+                            oListaTablasBancos="oListaTablasBancos"
+                            oListaTablasMoneda="oListaTablasMoneda"
+                            Mensaje="Mensaje"
+                            FlgNuevo="FlgNuevo">
+                </MedicoCtaBanco>
+            </TabPage>
+        }
+        @if (oListSegOpcions.Any(d => d.CodOpcion.Trim() == "02/02/01/19"))
+        {
+            <TabPage Text="Info Comercial Extra" _ICons="fa-solid fa-address-card" Permiso="02/02/01/19">
+                <MedicoExtra @ref="medicoExtraRef"
+                           oMedicoE="oMedicoE"
+                           oMedicoObsAux="oMedicoObsAux"
+                           FlgNuevo="FlgNuevo">
+                </MedicoExtra>
+            </TabPage>
+        }
+
+        @*<TabPage Text="Desbloquear Médico" _ICons="fa-solid fa-user-tie">
+            <MedicoObs @ref="medicoObsRef"
+                       oMedicoE="oMedicoE"
+                       oMedicoObsAux="oMedicoObsAux"
+                       FlgNuevo="FlgNuevo">
+            </MedicoObs>
+        </TabPage>*@
+        @* <TabPage Text="XXX">
+        <MedicoPrueba @ref="medicoPruebaRef"
+        oMedicoE="oMedicoE"
+        oListaEspecialidades="oListaEspecialidades"
+        oListaTablasAFP="oListaTablasAFP"
+        oListaTablasTipDocEmitira="oListaTablasTipDocEmitira">
+        </MedicoPrueba>
+        </TabPage>*@
+    </TabControl>
+</div>
+
+
+@*<h1><code>DynamicComponent</code> Component Example 1</h1>
+    <p>
+    <label>
+    Select your transport:
+    <select @onchange="OnDropdownChange">
+    <option value="@nameof(MedicoDatPersonal)">MedicoDatPersonal</option>
+    <option value="@nameof(MedicoCobranza)">MedicoCobranza</option>
+    </select>
+    </label>
+    </p>
+    <DynamicComponent Type="tipo" Parameters="diccionario" />*@
+
+
+
+
+@code {
+
+    [Parameter]
+    public MedicoE oMedicoE { get; set; }
+
+
+    [Parameter]
+    public List<TablasE> oListaTablasSexo { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasCodCivil { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasTipoIdentidad { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasTipoColegio { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasAreas { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasAFP { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasTipDocEmitira { get; set; }
+
+    [Parameter]
+    public List<EspecialidadxMedicoE> oListaEspecialidades { get; set; }
+
+    [Parameter]
+    public List<MedicosEspecialidadE> oListaMedicosEspecialidadE { get; set; }
+
+    [Parameter]
+    public List<PrestacionxMedicoE> oListaPrestacionxMedicoE { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasSedes { get; set; }
+
+    [Parameter]
+    public List<EspecialidadesE> oListEspecialidadesE { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListTablasTipoAtencion { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListTablasTipoPaciente { get; set; }
+
+    [Parameter]
+    public bool FlagCambiaFoto { get; set; }
+
+    [Parameter]
+    public MedicoObsAuxE oMedicoObsAux { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasMoneda { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasDatoMedico { get; set; }
+
+    [Parameter]
+    public List<AsistentexMedicoE> oListaAsistentexMedicoE { get; set; }
+
+    [Parameter]
+    public List<MedicoxEmpresaE> oListaMedicoxEmpresaE { get; set; }
+
+    [Parameter]
+    public List<MedicosDatosE> oListaMedicosDatosE { get; set; }
+
+    [Parameter]
+    public List<MedicosCtaBancoE> oListaMedicosCtaBancoE { get; set; }
+
+
+    [Parameter]
+    public bool FlgNuevo { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasBancos { get; set; }
+
+    [Parameter]
+    public List<SegOpcionE> oListSegOpcions { get; set; }
+
+
+    private string? imageBase64;
+    MedicoDatPersonal medicoDatPersonalRef;
+    MedicoDireccion medicoDireccionRef;
+    MedicoCobranza medicoCobranzaRef;
+    MedicoEspecialidad medicoEspecialidadRef;
+    MedicoEspecialidadDetalle medicoEspecialidadDetalleRef;
+    MedicoAsistente medicoAsistenteRef;
+    MedicoEmpresa medicoEmpresaRef;
+    MedicoEstudio medicoEstudioRef;
+    MedicoAlquiler medicoAlquilerRef;
+    MedicoCtaBanco medicoCtaBancoRef;
+    MedicoObs medicoObsRef;
+    MedicoPrueba medicoPruebaRef;
+    MedicoExtra medicoExtraRef;
+
+    Type tipo = typeof(MedicoCobranza);
+    IDictionary<string, object> diccionario = new Dictionary<string, object>();// { { "oMedicoE", "oMedicoE" }, { "oListaEspecialidades", "oListaEspecialidades" } };
+
+
+    protected bool IsDisabledCIA { get; set; } = true;
+    protected bool IsNotDisabledCIA { get; set; } = true;
+
+
+    protected override void OnInitialized()
+    {
+        diccionario = new Dictionary<string, object>() { { "oMedicoE", oMedicoE }, { "oListaEspecialidades", oListaEspecialidades } };
+
+
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        diccionario = new Dictionary<string, object>() { { "oMedicoE", oMedicoE }, { "oListaEspecialidades", oListaEspecialidades } };
+        ClickCallback(!oMedicoE.FlgCia);
+        base.OnParametersSet();
+
+    }
+
+    private void OnDropdownChange(ChangeEventArgs e)
+    {
+        //tipo = e.Value?.ToString()?.Length > 0 ?
+        //    Type.GetType($"Web.Clinica.Pages.Clinica.Comercial.Componentes.{e.Value}") : null;
+
+
+    }
+
+    void Show()
+    {
+
+
+
+    }
+
+    void ClickCallback(bool lsw)
+    {
+        IsDisabledCIA = lsw;
+        IsNotDisabledCIA = !lsw;
+    }
+
+
+
+}

@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bus.Clinica\Bus.Clinica.csproj" />
+    <ProjectReference Include="..\Bus.Utilities\Bus.Utilities.csproj" />
+    <ProjectReference Include="..\Dat.Sql\Dat.Sql.csproj" />
+    <ProjectReference Include="..\Ent.Sql\Ent.Sql.csproj" />
+  </ItemGroup>
+
+</Project>

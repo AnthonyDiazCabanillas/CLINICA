@@ -1,0 +1,1336 @@
+﻿@* **********************************************************************************************************************
+    Copyright Clinica San Felipe S.A.C 2024. Todos los derechos reservados.
+    Version     Fecha           Autor       Requerimiento
+    1.1         01/04/2024      AROMERO     REQ-2024-006637:  FINANCIAMIENTO LABORATORIO
+*********************************************************************************************************************** *@
+
+@page "/Clinica/Clinica/Mantenimientos/FinanciamientoLaboratorioRegistro"
+@inject IJSRuntime js
+@inject NavigationManager NavigationManager
+@inject ListaSerializadaService ListaService
+@using Bus.Clinica.Clinica;
+@using Bus.Utilities
+@using Dat.Sql
+@using Ent.Sql.ClinicaE.FinanciamientoDetalleE;
+@using System.Xml.Serialization
+@using Json = System.Text.Json.JsonSerializer
+@using RestSharp
+@using System.Data;
+@using Web.Clinica.Data
+@using System.Text.RegularExpressions;
+@using Web.Clinica.Pages.Clinica.Comercial.Componentes
+@using Ent.Sql;
+@using Ent.Sql.ClinicaE;
+@using ClosedXML.Excel
+@inherits MainLayout
+
+@code {
+    FinanciamientoDetalleE ofinanciamientoDetE = new FinanciamientoDetalleE("", 0, 25, 19);
+    List<FinanciamientoDetalleE> oListaCIE10 = new List<FinanciamientoDetalleE>();
+    List<FinanciamientoDetalleE> oListaAnalisis = new List<FinanciamientoDetalleE>();
+    List<FinanciamientoDetalleE> oListaAseguradora = new List<FinanciamientoDetalleE>();
+    public string Mensaje { get; set; } = "";
+
+    [CascadingParameter]
+    PageIndexStateProvider State { get; set; }
+
+    private int itemsPerPage = 5;
+    private int totalPages = 1;
+    bool ordencodigo = true;
+    int IdeSeleccionado = 0;
+
+    int TipoBusquedaGlobal = 0;
+
+    string placeholderCIE10 = "Consulta de CIE-10";
+    string placeholderAnalisis = "Consulta de Análisis";
+    string placeholderAseguradora = "Consulta de Aseguradora";
+    string cod_cie10_row1 { get; set; }
+    string cie10_row1 { get; set; }
+    string cie10_row1Temp { get; set; }
+
+    string cod_cie10_row2 { get; set; }
+    string cie10_row2 { get; set; }
+    string cie10_row2Temp { get; set; }
+
+    string cod_cie10_row3 { get; set; }
+    string cie10_row3 { get; set; }
+    string cie10_row3Temp { get; set; }
+
+    string cod_cie10_row4 { get; set; }
+    string cie10_row4 { get; set; }
+    string cie10_row4Temp { get; set; }
+
+    string cod_cie10_row5 { get; set; }
+    string cie10_row5 { get; set; }
+    string cie10_row5Temp { get; set; }
+
+    string ide_analisis_row1 { get; set; }
+    string cod_analisis_row1 { get; set; }
+    string analisis_row1 { get; set; }
+    string analisis_row1Temp { get; set; }
+
+    string ide_analisis_row2 { get; set; }
+    string cod_analisis_row2 { get; set; }
+    string analisis_row2 { get; set; }
+    string analisis_row2Temp { get; set; }
+
+    string ide_analisis_row3 { get; set; }
+    string cod_analisis_row3 { get; set; }
+    string analisis_row3 { get; set; }
+    string analisis_row3Temp { get; set; }
+
+    string ide_analisis_row4 { get; set; }
+    string cod_analisis_row4 { get; set; }
+    string analisis_row4 { get; set; }
+    string analisis_row4Temp { get; set; }
+
+    string ide_analisis_row5 { get; set; }
+    string cod_analisis_row5 { get; set; }
+    string analisis_row5 { get; set; }
+    string analisis_row5Temp { get; set; }
+
+    string cod_aseguradora_row1 { get; set; }
+    string aseguradora_row1 { get; set; }
+    string aseguradora_row1Temp { get; set; }
+
+    string cod_aseguradora_row2 { get; set; }
+    string aseguradora_row2 { get; set; }
+    string aseguradora_row2Temp { get; set; }
+
+    string cod_aseguradora_row3 { get; set; }
+    string aseguradora_row3 { get; set; }
+    string aseguradora_row3Temp { get; set; }
+
+    string cod_aseguradora_row4 { get; set; }
+    string aseguradora_row4 { get; set; }
+    string aseguradora_row4Temp { get; set; }
+
+    string cod_aseguradora_row5 { get; set; }
+    string aseguradora_row5 { get; set; }
+    string aseguradora_row5Temp { get; set; }
+
+    List<FinanciamientoDetalleE> oListarFinanciamiento = new List<FinanciamientoDetalleE>();
+    FinanciamientoBuscaE oFinanciamientoBuscaE = new FinanciamientoBuscaE();
+    List<FinanciamientoDetalleE> oListaFinanciamientoDet = new List<FinanciamientoDetalleE>();
+
+    protected override void OnInitialized()
+    {
+        State = new PageIndexStateProvider();   
+        base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        BuscarFinanciamientoCIE10(1);
+        BuscarFinanciamientoAnalisis(1);
+        BuscarFinanciamientoAseguradora(1);
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {        
+        js.InvokeVoidAsync("fnActualizarTitulo", "Registro de Financiamiento");
+    }
+
+    private async Task ModalMensaje(string Mensajes, string TipoModal)
+    {
+
+        if (TipoModal == "Advertencia")
+        {
+            switch (Mensajes)
+            {
+                case "FinanciamientoNull":
+                    Mensaje = "Una de las filas no tienen los campos completos, por favor revisar.";
+                    break;
+                case "FinanciamientoNull2":
+                    Mensaje = "No hay registros para guardar. Por favor completar los campos.";
+                    break;
+            }
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalAdvertencia");
+        }   
+        if (TipoModal == "Error")
+        {
+            switch (Mensajes)
+            {
+                case "Catch":
+                    Mensaje = "Error: " + Mensaje;
+                    break;
+            }
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+    }
+
+
+    private async Task BuscarFinanciamientoAnalisis(int selectedPageIndex)
+    {
+        //Consulta para la ventana de busqueda de Analisis
+        try
+        {
+            var serializer = new XmlSerializer(typeof(FinanciamientoDetalleE));
+            ofinanciamientoDetE.NumeroLineas = itemsPerPage;
+            StringWriter writer = new StringWriter();
+            serializer.Serialize(writer, ofinanciamientoDetE);
+            ofinanciamientoDetE.Buscar = oFinanciamientoBuscaE.Buscar.ToUpper();
+            if (ofinanciamientoDetE.Buscar.Trim().Equals(""))
+            {
+                if (ordencodigo)
+                {
+                    ofinanciamientoDetE.Orden = 7;
+                }
+                else
+                {
+                    ofinanciamientoDetE.Orden = 9;
+                }
+            }
+            else
+            {
+                if (ordencodigo)
+                {
+                    ofinanciamientoDetE.Orden = 8;
+                }
+                else
+                {
+                    ofinanciamientoDetE.Orden = 10;
+                }
+            }
+
+            oListaAnalisis = new Bus.Clinica.FinanciamientoLaboratorio().Financiamiento_ConsultaAnalisis(ofinanciamientoDetE);
+
+            if (oListaAnalisis.Count == 0)
+            {
+                ModalMensaje("FinanciamientoNull", "Advertencia");
+            }
+            else
+            {
+                State.PageIndex = selectedPageIndex;
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }    
+
+    private async Task BuscarFinanciamientoCIE10(int selectedPageIndex)
+    {
+        //Consulta para la ventana de busqueda de CIE-10
+        try
+        {
+            var serializer = new XmlSerializer(typeof(FinanciamientoDetalleE));
+            ofinanciamientoDetE.NumeroLineas = itemsPerPage;
+            StringWriter writer = new StringWriter();
+            serializer.Serialize(writer, ofinanciamientoDetE);
+            ofinanciamientoDetE.Buscar = oFinanciamientoBuscaE.Buscar.ToUpper();
+            if (ofinanciamientoDetE.Buscar.Trim().Equals(""))
+            {
+                if (ordencodigo)
+                {
+                    ofinanciamientoDetE.Orden = 3;
+                }
+                else
+                {
+                    ofinanciamientoDetE.Orden = 5;
+                }
+            }
+            else
+            {
+                if (ordencodigo)
+                {
+                    ofinanciamientoDetE.Orden = 4;
+                }
+                else
+                {
+                    ofinanciamientoDetE.Orden = 6;
+                }                
+            }
+
+            oListaCIE10 = new Bus.Clinica.FinanciamientoLaboratorio().Financiamiento_ConsultaCIE10(ofinanciamientoDetE);
+
+            if (oListaCIE10.Count == 0)
+            {
+                ModalMensaje("FinanciamientoNull", "Advertencia");
+            }
+            else
+            {
+                State.PageIndex = selectedPageIndex;
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+
+    private async Task BuscarFinanciamientoAseguradora(int selectedPageIndex)
+    {
+        //Consulta para la ventana de busqueda de Aseguradora
+        try
+        {
+            var serializer = new XmlSerializer(typeof(FinanciamientoDetalleE));
+            ofinanciamientoDetE.NumeroLineas = itemsPerPage;
+            StringWriter writer = new StringWriter();
+            serializer.Serialize(writer, ofinanciamientoDetE);
+            ofinanciamientoDetE.Buscar = oFinanciamientoBuscaE.Buscar.ToUpper();
+            if (ofinanciamientoDetE.Buscar.Trim().Equals(""))
+            {
+                if (ordencodigo)
+                {
+                    ofinanciamientoDetE.Orden = 11;
+                }
+                else
+                {
+                    ofinanciamientoDetE.Orden = 13;
+                }
+            }
+            else
+            {
+                if (ordencodigo)
+                {
+                    ofinanciamientoDetE.Orden = 12;
+                }
+                else
+                {
+                    ofinanciamientoDetE.Orden = 14;
+                }
+            }
+
+            oListaAseguradora = new Bus.Clinica.FinanciamientoLaboratorio().Financiamiento_ConsultaAseguradora(ofinanciamientoDetE);
+
+            if (oListaAseguradora.Count == 0)
+            {
+                ModalMensaje("FinanciamientoNull", "Advertencia");
+            }
+            else
+            {
+                State.PageIndex = selectedPageIndex;
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+
+    async Task EnterBuscarFinanciamiento(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await BuscarFinanciamientoCIE10(1);
+        }
+    }
+
+    async Task EnterBuscarAnalisis(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await BuscarFinanciamientoAnalisis(1);
+        }
+    }
+
+    async Task EnterBuscarAseguradora(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await BuscarFinanciamientoAseguradora(1);
+        }
+    }
+
+
+    async Task OnchangeCodigo(int tipobusqueda)
+    {
+        //consultar diagnosticos orden 3 y 4 segun la busqueda
+        ordencodigo = true; 
+
+        if (tipobusqueda == 1)
+        {
+            BuscarFinanciamientoCIE10(1);
+        }
+        if (tipobusqueda == 2)
+        {
+            BuscarFinanciamientoAnalisis(1);
+        }
+        if (tipobusqueda == 3)
+        {
+            BuscarFinanciamientoAseguradora(1);
+        }
+
+    }
+
+    async Task OnchangeDescripcion(int tipobusqueda)
+    {
+        //consultar diagnosticos orden 5 y 6 segun la busqueda
+        ordencodigo = false;
+        if (tipobusqueda == 1)
+        {
+            BuscarFinanciamientoCIE10(1);
+        }
+        if (tipobusqueda == 2)
+        {
+            BuscarFinanciamientoAnalisis(1);
+        }
+        if (tipobusqueda == 3)
+        {
+            BuscarFinanciamientoAseguradora(1);
+        }
+    }
+
+    //FUSIONAR LAS 3 LISTAS
+    async Task FusionarListas()
+    {
+        cie10_row1 = cie10_row1Temp;
+        cie10_row2 = cie10_row2Temp;
+        cie10_row3 = cie10_row3Temp;
+        cie10_row4 = cie10_row4Temp;
+        cie10_row5 = cie10_row5Temp;
+
+        analisis_row1 = analisis_row1Temp;
+        analisis_row2 = analisis_row2Temp;
+        analisis_row3 = analisis_row3Temp;
+        analisis_row4 = analisis_row4Temp;
+        analisis_row5 = analisis_row5Temp;
+
+        aseguradora_row1 = aseguradora_row1Temp;
+        aseguradora_row2 = aseguradora_row2Temp;
+        aseguradora_row3 = aseguradora_row3Temp;
+        aseguradora_row4 = aseguradora_row4Temp;
+        aseguradora_row5 = aseguradora_row5Temp;
+
+        oFinanciamientoBuscaE.Buscar = "";
+        await OnchangeCodigo(TipoBusquedaGlobal);
+        await js.InvokeVoidAsync("cleanRadios");
+    }
+
+    async Task ObtenerDatosId(int idSeleccionado)
+    {
+        IdeSeleccionado = idSeleccionado;
+    }
+
+    async Task ObtenerDatosCIE10(int tipBusqueda, int itemcie10, string codCie10, string descCie10)
+    {
+        //Obtiene los valores del CIE10 al seleccionar el radio de la ventana de busqueda del CIE-10
+        TipoBusquedaGlobal = tipBusqueda;
+
+        if (IdeSeleccionado == 1)
+        {
+            cod_cie10_row1 = codCie10;
+            cie10_row1Temp = descCie10;
+        }
+
+        if (IdeSeleccionado == 2)
+        {
+            cod_cie10_row2 = codCie10;
+            cie10_row2Temp = descCie10;
+        }
+
+        if (IdeSeleccionado == 3)
+        {
+            cod_cie10_row3 = codCie10;
+            cie10_row3Temp = descCie10;
+        }
+
+        if (IdeSeleccionado == 4)
+        {
+            cod_cie10_row4 = codCie10;
+            cie10_row4Temp = descCie10;
+        }
+
+        if (IdeSeleccionado == 5)
+        {
+            cod_cie10_row5 = codCie10;
+            cie10_row5Temp = descCie10;
+        }
+    }
+
+    async Task ObtenerDatosAnalisis(int tipBusqueda, int itemAnalisis, string ideAnalisis, string codAnalisis, string descAnalisis)
+    {
+        //Obtiene los valores del Analisis al seleccionar el radio de la ventana de busqueda del Analisis
+        TipoBusquedaGlobal = tipBusqueda;
+
+        if (IdeSeleccionado == 1)
+        {
+            ide_analisis_row1 = ideAnalisis;
+            cod_analisis_row1 = codAnalisis;
+            analisis_row1Temp = descAnalisis;
+        }
+
+        if (IdeSeleccionado == 2)
+        {
+            ide_analisis_row2 = ideAnalisis;
+            cod_analisis_row2 = codAnalisis;
+            analisis_row2Temp = descAnalisis;
+        }
+
+        if (IdeSeleccionado == 3)
+        {
+            ide_analisis_row3 = ideAnalisis;
+            cod_analisis_row3 = codAnalisis;
+            analisis_row3Temp = descAnalisis;
+        }
+
+        if (IdeSeleccionado == 4)
+        {
+            ide_analisis_row4 = ideAnalisis;
+            cod_analisis_row4 = codAnalisis;
+            analisis_row4Temp = descAnalisis;
+        }
+
+        if (IdeSeleccionado == 5)
+        {
+            ide_analisis_row5 = ideAnalisis;
+            cod_analisis_row5 = codAnalisis;
+            analisis_row5Temp = descAnalisis;
+        }       
+    }
+
+    async Task ObtenerDatosAseguradora(int tipBusqueda, int itemAseguradora, string codAseguradora, string descAseguradora)
+    {
+        //Obtiene los valores del Aseguradora al seleccionar el radio de la ventana de busqueda del Aseguradora
+        TipoBusquedaGlobal = tipBusqueda;
+
+        if (IdeSeleccionado == 1)
+        {
+            cod_aseguradora_row1 = codAseguradora;
+            aseguradora_row1Temp = descAseguradora;
+        }
+
+        if (IdeSeleccionado == 2)
+        {
+            cod_aseguradora_row2 = codAseguradora;
+            aseguradora_row2Temp = descAseguradora;
+        }
+
+        if (IdeSeleccionado == 3)
+        {
+            cod_aseguradora_row3 = codAseguradora;
+            aseguradora_row3Temp = descAseguradora;
+        }
+
+        if (IdeSeleccionado == 4)
+        {
+            cod_aseguradora_row4 = codAseguradora;
+            aseguradora_row4Temp = descAseguradora;
+        }
+
+        if (IdeSeleccionado == 5)
+        {
+            cod_aseguradora_row5 = codAseguradora;
+            aseguradora_row5Temp = descAseguradora;
+        }        
+    }
+
+    bool validateNullEmpty(string cie10, string analisis, string aseguradora)
+    {
+        //Valida si los tres valores estan vacios o nullos
+        bool resultado = false;
+        if (string.IsNullOrEmpty(cie10) && string.IsNullOrEmpty(analisis) && string.IsNullOrEmpty(aseguradora))
+        {
+            resultado = true;
+        }
+        return resultado;
+    }
+
+    bool ValidateFilas(string cie10, string analisis, string aseguradora)
+    {
+        //Valida si al menos uno de los tres valores estan vacios o nullos
+        bool resultado =  true;
+
+        if (string.IsNullOrEmpty(cie10))
+        {
+            resultado = false;
+        }
+
+        if (string.IsNullOrEmpty(analisis))
+        {
+            resultado = false;
+        }
+
+        if (string.IsNullOrEmpty(aseguradora))
+        {
+            resultado = false;
+        }
+
+        return resultado;
+    }
+
+    public void completarLista(string idetemp, string cod_cie10, string cie10, string ide_analisis, string cod_analisis, string analisis, string cod_aseguradora, string aseguradora)
+    {
+        //Completa la lista que luego se usara para guardar la data seleccionada.
+        FinanciamientoDetalleE oFinanciamientoItems = new FinanciamientoDetalleE();
+        oFinanciamientoItems.Ide_AnalisisTemp = idetemp;
+        oFinanciamientoItems.Cod_Diagnostico = cod_cie10;
+        oFinanciamientoItems.Nombre_Diagnostico = cie10;
+        oFinanciamientoItems.Ide_Analisis = ide_analisis;
+        oFinanciamientoItems.Cod_ROE = cod_analisis;
+        oFinanciamientoItems.Prueba_ROE = analisis;
+        oFinanciamientoItems.CodAseguradora1 = cod_aseguradora;
+        oFinanciamientoItems.Nombre_Aseguradora = aseguradora;
+        oListarFinanciamiento.Add(oFinanciamientoItems);
+    }
+    private async Task GuardarFinanciamiento()
+    {
+        var mostrarMensaje = false;
+        //Validar por fila y parametro
+        if (!validateNullEmpty(cie10_row1, analisis_row1, aseguradora_row1))
+        {            
+            if (ValidateFilas(cie10_row1, analisis_row1, aseguradora_row1))
+            {
+                //Add fila
+                completarLista("1", cod_cie10_row1, cie10_row1, ide_analisis_row1, cod_analisis_row1, analisis_row1, cod_aseguradora_row1, aseguradora_row1);
+            }
+            else
+            {
+                //Mensaje, Debe completar todos los campos de la fila
+                mostrarMensaje = true;
+            }
+        }
+
+        if (!validateNullEmpty(cie10_row2, analisis_row2, aseguradora_row2))
+        {            
+            if (ValidateFilas(cie10_row2, analisis_row2, aseguradora_row2))
+            {
+                //Add fila
+                completarLista("2", cod_cie10_row2, cie10_row2, ide_analisis_row2, cod_analisis_row2, analisis_row2, cod_aseguradora_row2, aseguradora_row2);
+            }
+            else
+            {
+                //Mensaje, Debe completar todos los campos de la fila  
+                mostrarMensaje = true;
+            }
+        }
+
+        if (!validateNullEmpty(cie10_row3, analisis_row3, aseguradora_row3))
+        {            
+            if (ValidateFilas(cie10_row3, analisis_row3, aseguradora_row3))
+            {
+                //Add fila
+                completarLista("3", cod_cie10_row3, cie10_row3, ide_analisis_row3, cod_analisis_row3, analisis_row3, cod_aseguradora_row3, aseguradora_row3);
+            }
+            else
+            {
+                //Mensaje, Debe completar todos los campos de la fila  
+                mostrarMensaje = true;
+            }
+        }
+
+        if (!validateNullEmpty(cie10_row4, analisis_row4, aseguradora_row4))
+        {
+            if (ValidateFilas(cie10_row4, analisis_row4, aseguradora_row4))
+            {
+                //Add fila
+                completarLista("4", cod_cie10_row4, cie10_row4, ide_analisis_row4, cod_analisis_row4, analisis_row4, cod_aseguradora_row4, aseguradora_row4);
+            }
+            else
+            {
+                //Mensaje, Debe completar todos los campos de la fila
+                mostrarMensaje = true;
+            }
+        }
+
+        if (!validateNullEmpty(cie10_row5, analisis_row5, aseguradora_row5))
+        {
+            if (ValidateFilas(cie10_row5, analisis_row5, aseguradora_row5))
+            {
+                //Add fila
+                completarLista("5", cod_cie10_row5, cie10_row5, ide_analisis_row5, cod_analisis_row5, analisis_row5, cod_aseguradora_row5, aseguradora_row5);
+            }
+            else
+            {
+                //Mensaje, Debe completar todos los campos de la fila
+                mostrarMensaje = true;
+            }
+        }
+
+        if (mostrarMensaje)
+        {
+            ModalMensaje("FinanciamientoNull", "Advertencia");
+        }
+        else
+        {
+            //Guardar la lista
+            if (oListarFinanciamiento.Count() > 0)
+            {
+                var cantRowsData = oListarFinanciamiento.Count();
+                var usrModifica = Convert.ToInt32(SessionUser(TypeSession.CodUser).Result);
+                oListaFinanciamientoDet = new Bus.Clinica.FinanciamientoLaboratorio().insertarFinanciamientomasivo(oListarFinanciamiento, usrModifica);
+                ListaService.ListaSerializada = Json.Serialize(oListaFinanciamientoDet);
+
+                var cantObservados = oListaFinanciamientoDet.Count();
+                if (cantObservados == 0)
+                {
+                    //Si la lista no tiene observaciones enviar a CargaResumen con cantidades
+                    var url = $"/Clinica/Clinica/Mantenimientos/FinanciamientoLaboratorioCargaResumen?/{"Empty"}/{cantRowsData}/{cantObservados}";
+                    NavigationManager.NavigateTo(url);
+                }
+                else
+                {
+                    //Caso contrario enviar la lista a la otra pagina
+                    var url = $"/Clinica/Clinica/Mantenimientos/FinanciamientoLaboratorioCargaResumenObservado?/{"Empty"}/{cantRowsData}/{cantObservados}";
+                    NavigationManager.NavigateTo(url);
+                }
+            }
+            else
+            {
+                ModalMensaje("FinanciamientoNull2", "Advertencia");
+            }
+        }
+    }
+
+    async Task LimpiarParametroBuscarCIE10()
+    {
+        oFinanciamientoBuscaE.Buscar = "";
+        await js.InvokeVoidAsync("closeModal");    
+        await js.InvokeVoidAsync("cleanRadios");
+        await BuscarFinanciamientoCIE10(1);
+    }
+
+    async Task LimpiarParametroBuscarAnalisis()
+    {
+        oFinanciamientoBuscaE.Buscar = "";
+        await js.InvokeVoidAsync("closeModal");  
+        await js.InvokeVoidAsync("cleanRadios");
+        await BuscarFinanciamientoAnalisis(1);
+    }
+
+    async Task LimpiarParametroBuscarAseguradora()
+    {
+        oFinanciamientoBuscaE.Buscar = "";
+        await js.InvokeVoidAsync("closeModal");
+        await js.InvokeVoidAsync("cleanRadios");
+        await BuscarFinanciamientoAseguradora(1);
+    }
+}
+@{
+
+    async Task MostraMOdalFInanciamiento()
+    {        
+        await js.InvokeVoidAsync("ShowModalPopupControl", "msjNuevoFinanciamientoShow");
+    }  
+}
+
+<script>
+    function closeModal() {
+        var tamaño = document.getElementsByClassName("modal-backdrop").length;
+
+        for (var i = 0; i < tamaño; i++) {
+            var backdrop = document.getElementsByClassName("modal-backdrop")[i];
+            backdrop.style.display = "none";
+        }
+        document.body.style.overflow = 'auto';
+    }
+
+    function cleanRadios() {
+        var radios = document.querySelectorAll('input[name="options"]');
+        radios.forEach(radio => {
+            radio.checked = false;
+        });
+    }
+</script>
+
+<style>
+    .form-group {
+        border: 1px solid #ced4da; /* Agregar borde a los form-group */
+        padding: 10px; /* Añadir espacio interior */
+        margin-bottom: 0px; /* Espacio entre grupos de formulario */
+    }
+
+    .DivSearchInput {
+        position: relative; /* Posicionamiento relativo para el ícono */
+    }
+
+    .DivSearch {
+        display: flex; /* Para alinear ícono y input */
+        align-items: center; /* Centrar verticalmente */
+        justify-content: space-between; /* Espacio entre ícono y input */
+    }
+
+    .form-group label {
+        display: block;
+        text-align: center; /* Centrar el texto del label */
+        margin-bottom: 5px; /* Espacio entre label y input */
+        color: #13489e;
+    }
+
+    /* Estilos adicionales para el ícono de búsqueda */
+    .DivSearch i {
+        cursor: pointer; /* Cambiar cursor al pasar por encima */
+        margin-left: 5px; /* Espacio entre input y ícono */
+        right:5px !important;
+    }
+
+    .Divmedio {
+        padding: 0px !important; /* Cambiar cursor al pasar por encima */
+    }
+    
+
+    .Divizquierdo {
+        padding-right: 0px !important; /* Cambiar cursor al pasar por encima */
+    }
+
+    .Divderecho {
+        padding-left: 0px !important; /* Cambiar cursor al pasar por encima */
+    }
+
+    .InputCenter {
+        text-align: center !important; /* Cambiar cursor al pasar por encima */
+    }
+</style>
+
+
+
+<div class="bg-light">
+    <div class="form-bg">
+        <div class="container" style="margin-top: 20px;">
+            <div class="col-12 col-lg-12 col-md-12 buscar-menuNuevo">
+                <div class="input-group">
+                    <div class="card w-100">
+                        <div class="card-header text-white fs-5" style="background:#124498;padding: 1rem 2rem; ">
+                            Plantilla de registro
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3 Divizquierdo">
+                                    <div class="form-group">
+                                        <label>CIE-10</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="DivSearchInput">
+                                            <div class="DivSearch">
+                                                <input id="txtCIE10_1" @bind="@cie10_row1" type="search" class="form-control" placeholder="@placeholderCIE10" readonly>
+                                                <i id="idSearchCIE10_1" class="fa-solid fa-magnifying-glass" role="button" data-bs-toggle="modal" data-bs-target="#msgModalConsultaCIE10" @onclick="@(()=> ObtenerDatosId(1))" typeof="AdvancedSearch"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="DivSearchInput">
+                                            <div class="DivSearch">
+                                                <input id="txtCIE10_2" @bind="@cie10_row2" type="search" class="form-control" placeholder="@placeholderCIE10" readonly>
+                                                <i id="idSearchCIE10_2" class="fa-solid fa-magnifying-glass" role="button" data-bs-toggle="modal" data-bs-target="#msgModalConsultaCIE10" @onclick="@(()=> ObtenerDatosId(2))" typeof="AdvancedSearch"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="DivSearchInput">
+                                            <div class="DivSearch">
+                                                <input id="txtCIE10_3" @bind="@cie10_row3" type="search" class="form-control" placeholder="@placeholderCIE10" readonly>
+                                                <i id="idSearchCIE10_3" class="fa-solid fa-magnifying-glass" role="button" data-bs-toggle="modal" data-bs-target="#msgModalConsultaCIE10" @onclick="@(()=> ObtenerDatosId(3))" typeof="AdvancedSearch"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="DivSearchInput">
+                                            <div class="DivSearch">
+                                                <input id="txtCIE10_4" @bind="@cie10_row4" type="search" class="form-control" placeholder="@placeholderCIE10" readonly>
+                                                <i id="idSearchCIE10_4" class="fa-solid fa-magnifying-glass" role="button" data-bs-toggle="modal" data-bs-target="#msgModalConsultaCIE10" @onclick="@(()=> ObtenerDatosId(4))" typeof="AdvancedSearch"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="DivSearchInput">
+                                            <div class="DivSearch">
+                                                <input id="txtCIE10_5" @bind="@cie10_row5" type="search" class="form-control" placeholder="@placeholderCIE10" readonly>
+                                                <i id="idSearchCIE10_5" class="fa-solid fa-magnifying-glass" role="button" data-bs-toggle="modal" data-bs-target="#msgModalConsultaCIE10" @onclick="@(()=> ObtenerDatosId(5))" typeof="AdvancedSearch"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 Divmedio">
+                                    <div class="form-group">
+                                        <label>Análisis</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="DivSearchInput">
+                                            <div class="DivSearch">
+                                                <input id="txtAnalisis_1" @bind="@analisis_row1" type="search" class="form-control" placeholder="@placeholderAnalisis" readonly>
+                                                <i id="idSearchAnalisis" class="fa-solid fa-magnifying-glass" role="button" data-bs-toggle="modal" data-bs-target="#msgModalConsultaAnalisis" @onclick="@(()=> ObtenerDatosId(1))" typeof="AdvancedSearch"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="DivSearchInput">
+                                            <div class="DivSearch">
+                                                <input id="txtAnalisis_2" @bind="@analisis_row2" type="search" class="form-control" placeholder="@placeholderAnalisis" readonly>
+                                                <i id="idSearchAnalisis" class="fa-solid fa-magnifying-glass" role="button" data-bs-toggle="modal" data-bs-target="#msgModalConsultaAnalisis" @onclick="@(()=> ObtenerDatosId(2))" typeof="AdvancedSearch"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="DivSearchInput">
+                                            <div class="DivSearch">
+                                                <input id="txtAnalisis_3" @bind="@analisis_row3" type="search" class="form-control" placeholder="@placeholderAnalisis" readonly>
+                                                <i id="idSearchAnalisis" class="fa-solid fa-magnifying-glass" role="button" data-bs-toggle="modal" data-bs-target="#msgModalConsultaAnalisis" @onclick="@(()=> ObtenerDatosId(3))" typeof="AdvancedSearch"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="DivSearchInput">
+                                            <div class="DivSearch">
+                                                <input id="txtAnalisis_4" @bind="@analisis_row4" type="search" class="form-control" placeholder="@placeholderAnalisis" readonly>
+                                                <i id="idSearchAnalisis" class="fa-solid fa-magnifying-glass" role="button" data-bs-toggle="modal" data-bs-target="#msgModalConsultaAnalisis" @onclick="@(()=> ObtenerDatosId(4))" typeof="AdvancedSearch"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="DivSearchInput">
+                                            <div class="DivSearch">
+                                                <input id="txtAnalisis_5" @bind="@analisis_row5" type="search" class="form-control" placeholder="@placeholderAnalisis" readonly>
+                                                <i id="idSearchAnalisis" class="fa-solid fa-magnifying-glass" role="button" data-bs-toggle="modal" data-bs-target="#msgModalConsultaAnalisis" @onclick="@(()=> ObtenerDatosId(5))" typeof="AdvancedSearch"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 Divmedio">
+                                    <div class="form-group">
+                                        <label>Aseguradora</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="DivSearchInput">
+                                            <div class="DivSearch">
+                                                <input id="txtAseguradoras_1" @bind="@aseguradora_row1" type="search" class="form-control" placeholder="@placeholderAseguradora" readonly>
+                                                <i id="idSearchAseguradoras" class="fa-solid fa-magnifying-glass" role="button" data-bs-toggle="modal" data-bs-target="#msgModalConsultaAseguradora" @onclick="@(()=> ObtenerDatosId(1))" typeof="AdvancedSearch"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="DivSearchInput">
+                                            <div class="DivSearch">
+                                                <input id="txtAseguradoras_2" @bind="@aseguradora_row2" type="search" class="form-control" placeholder="@placeholderAseguradora" readonly>
+                                                <i id="idSearchAseguradoras" class="fa-solid fa-magnifying-glass" role="button" data-bs-toggle="modal" data-bs-target="#msgModalConsultaAseguradora" @onclick="@(()=> ObtenerDatosId(2))" typeof="AdvancedSearch"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="DivSearchInput">
+                                            <div class="DivSearch">
+                                                <input id="txtAseguradoras_3" @bind="@aseguradora_row3" type="search" class="form-control" placeholder="@placeholderAseguradora" readonly>
+                                                <i id="idSearchAseguradoras" class="fa-solid fa-magnifying-glass" role="button" data-bs-toggle="modal" data-bs-target="#msgModalConsultaAseguradora" @onclick="@(()=> ObtenerDatosId(3))" typeof="AdvancedSearch"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="DivSearchInput">
+                                            <div class="DivSearch">
+                                                <input id="txtAseguradoras_4" @bind="@aseguradora_row4" type="search" class="form-control" placeholder="@placeholderAseguradora" readonly>
+                                                <i id="idSearchAseguradoras" class="fa-solid fa-magnifying-glass" role="button" data-bs-toggle="modal" data-bs-target="#msgModalConsultaAseguradora" @onclick="@(()=> ObtenerDatosId(4))" typeof="AdvancedSearch"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="DivSearchInput">
+                                            <div class="DivSearch">
+                                                <input id="txtAseguradoras_5" @bind="@aseguradora_row5" type="search" class="form-control" placeholder="@placeholderAseguradora" readonly>
+                                                <i id="idSearchAseguradoras" class="fa-solid fa-magnifying-glass" role="button" data-bs-toggle="modal" data-bs-target="#msgModalConsultaAseguradora" @onclick="@(()=> ObtenerDatosId(5))" typeof="AdvancedSearch"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 Divderecho">
+                                    <div class="form-group">
+                                        <label>Financiamiento</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="DivSearchInput">
+                                            <div class="DivSearch">
+                                                <input id="txtFinanciamiento_1" value="SI" type="search" class="InputCenter form-control" placeholder="@placeholderAseguradora" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="DivSearchInput">
+                                            <div class="DivSearch">
+                                                <input id="txtFinanciamiento_2" value="SI" type="search" class="InputCenter form-control" placeholder="@placeholderAseguradora" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="DivSearchInput">
+                                            <div class="DivSearch">
+                                                <input id="txtFinanciamiento_3" value="SI" type="search" class="InputCenter form-control" placeholder="@placeholderAseguradora" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="DivSearchInput">
+                                            <div class="DivSearch">
+                                                <input id="txtFinanciamiento_4" value="SI" type="search" class="InputCenter form-control" placeholder="@placeholderAseguradora" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="DivSearchInput">
+                                            <div class="DivSearch">
+                                                <input id="txtFinanciamiento_5" value="SI" type="search" class="InputCenter form-control" placeholder="@placeholderAseguradora" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" style="display:flow; text-align:right; padding:7px 0px 0px 0px; margin:0px 0px 0px 0px; ">
+                                    <div class="form-floating mb-3">
+                                        <div class="col-auto">
+                                            <a class="btn btn-outline-success" @onclick="GuardarFinanciamiento">
+                                                <span class="fa-regular fa-save"></span>
+                                                <span role="toolbar"> Guardar</span>
+                                            </a>
+                                            <a class="btn btn-outline-primary" href="/Clinica/Clinica/Mantenimientos/FinanciamientoLaboratorio">
+                                                <span class="fa fa-arrow-rotate-left"></span>
+                                                <span role="toolbar"> Regresar</span>
+                                            </a>                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<div>
+    <!--I.Modal CIE - 10 -->
+    <div class="modal fade" id="msgModalConsultaCIE10" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dm" style="max-width: 50%;  margin: 10 auto;">
+            <div class="modal-content">
+                <div class="card-header text-white fs-5" style="background:#124498;padding: 1rem 2rem; ">
+                    Plantilla de registro
+                </div>                
+                <div class="modal-body">
+                    <div class="DivSearchInput">
+                                    <div class="DivSearch" style="width:100%">
+                                        <input id="txtBusquedaCIE10" type="search" placeholder="Buscar por CIE-10,  Descripción CIE-10"
+                                        @bind-value="@oFinanciamientoBuscaE.Buscar" @onkeyup="@EnterBuscarFinanciamiento">
+                                        <i id="idSearchCIE10" class="fa-solid fa-magnifying-glass" role="button" @onclick="@(()=>BuscarFinanciamientoCIE10(1))" typeof="AdvancedSearch"></i>                                        
+                                    </div>
+                                </div>
+
+                    <div style="background-color: #FFF; width: 100%; height:100%; border:1px solid #b3d6ffff; border-radius:8px; padding:5px 10px; margin-bottom:5px;">
+                        <div class="row align-items-center" style="border-style: solid; border-color: #b3d6ffff; border-width: 0px; border-bottom-width: 2px; padding:0px 0px 5px 0px; background:#f6f6f645; ">
+                            <div>
+                                <span style="font-size:medium; font-weight: bold; padding-bottom:10px">Ordenar por:</span>
+                            </div>
+                            <div>
+                                <label for="opcion1" style="padding-right:15px"><input type="radio" id="opcion1" name="opciones" value="opcion1" @onchange="@(e => OnchangeCodigo(1))"> Código</label>
+                                <label for="opcion2"><input type="radio" id="opcion2" name="opciones" value="opcion2" @onchange="@(e => OnchangeDescripcion(1))"> Descripción</label>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div style="max-height:300px; overflow-y:auto; border-bottom:inset; border-top:inset; border-block-color:#b3d6ffff; border-width: 1px;" class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive">
+                                <table class="table table-hover   table-bordered" >
+                                    <thead class="table-primary">
+                                        <tr class="fw-bolder">
+                                            <th class="col-1 text-center" style="align-content:center; font-size:smaller">Marcar</th>
+                                            <th class="col-1 text-center" style="align-content:center; font-size:smaller; display:none"></th>
+                                            <th class="col-1 text-center" style="align-content:center; font-size:smaller">CIE-10</th>
+                                            <th class="col-1 text-center" style="align-content:center; font-size:smaller">Descripción</th>                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (oListaCIE10 != null)
+                                        {
+                                            @foreach (var item in oListaCIE10)
+                                            {
+                                                <tr>
+
+                                                    <td class="text-center">
+                                                        <div class="col-12 col-lg-12 col-md-12 col-sm-12 col-xl-12" style="text-align: center;">
+                                                            <label for="@("option"+item.Item)"> <input id="@("option"+item.Item)" name="options" value="@("option"+item.Item)" type="radio" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;" @onclick="@(()=> ObtenerDatosCIE10(1, item.Item, item.Cod_Diagnostico, @item.Nombre_Diagnostico))" checked="false" /></label>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center" style="align-content:center; display:none">
+                                                        <span class="span-color" style="font-size:smaller">@item.Ide_AnalisisTemp</span><br>
+                                                    </td>
+                                                    <td class="text-center" style="align-content:center;">
+                                                        <span class="span-color" style="font-size:smaller">@item.Cod_Diagnostico</span><br>
+                                                    </td>
+                                                    <td class="text-center" style="align-content:center;">
+                                                        <span class="span-color" style="font-size:smaller">@item.Nombre_Diagnostico</span><br>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="2">
+                                            </td>
+                                            <td colspan="5">
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                
+                            </div>
+                            <div class="row" style="display:flow; text-align:right; padding:0px 0px 0px 0px; margin:15px 0px 0px 0px; ">
+                                <div class="form-floating">
+                                    <div class="col-auto">
+                                        <a @onclick="FusionarListas" data-bs-dismiss="modal">
+                                            <span class="btn btn-primary">
+                                                Aceptar
+                                            </span>
+                                        </a>
+                                        <button class="btn btn-primary" style="margin:15px" data-bs-dismiss="modal" @onclick="LimpiarParametroBuscarCIE10">
+                                            <span role="toolbar"> Cancelar</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--I.Modal Analisis -->
+    <div class="modal fade" id="msgModalConsultaAnalisis" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dm" style="max-width: 50%;  margin: 10 auto;">
+            <div class="modal-content">
+                <div class="card-header text-white fs-5" style="background:#124498;padding: 1rem 2rem; ">
+                    Plantilla de registro
+                </div>
+                <div class="modal-body">
+                    <div class="DivSearchInput">
+                        <div class="DivSearch" style="width:100%">
+                            <input id="txtBusquedaAnalisis" type="search" placeholder="Buscar por código,  Descripción análisis"
+                            @bind-value="@oFinanciamientoBuscaE.Buscar" @onkeyup="@EnterBuscarAnalisis">
+                            <i id="idSearchAnalisis" class="fa-solid fa-magnifying-glass" role="button" @onclick="@(()=>BuscarFinanciamientoAnalisis(1))" typeof="AdvancedSearch"></i>
+                        </div>
+                    </div>
+
+                    <div style="background-color: #FFF; width: 100%; height:100%; border:1px solid #b3d6ffff; border-radius:8px; padding:5px 10px; margin-bottom:5px;">
+                        <div class="row align-items-center" style="border-style: solid; border-color: #b3d6ffff; border-width: 0px; border-bottom-width: 2px; padding:0px 0px 5px 0px; background:#f6f6f645; ">
+                            <div>
+                                <span style="font-size:medium; font-weight: bold; padding-bottom:10px">Ordenar por:</span>
+                            </div>
+                            <div>
+                                <label for="opcion1" style="padding-right:15px"><input type="radio" id="opcion1" name="opciones" value="opcion1" @onchange="@(e => OnchangeCodigo(2))"> Código</label>
+                                <label for="opcion2"><input type="radio" id="opcion2" name="opciones" value="opcion2" @onchange="@(e => OnchangeDescripcion(2))"> Descripción</label>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <div style="max-height:300px; overflow-y:auto; border-bottom:inset; border-top:inset; border-block-color:#b3d6ffff; border-width: 1px;" class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive">
+                                <table class="table table-hover   table-bordered">
+                                    <thead class="table-primary">
+                                        <tr class="fw-bolder">
+                                            <th class="col-1 text-center" style="align-content:center; font-size:smaller">Marcar</th>
+                                            <th class="col-1 text-center" style="align-content:center; font-size:smaller; display:none"></th>
+                                            <th class="col-1 text-center" style="align-content:center; font-size:smaller">Ide Análisis</th>
+                                            <th class="col-1 text-center" style="align-content:center; font-size:smaller">Código</th>
+                                            <th class="col-1 text-center" style="align-content:center; font-size:smaller">Análisis</th>
+                                            <th class="col-1 text-center" style="align-content:center; font-size:smaller; display:none">Tipo Atención</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (oListaAnalisis != null)
+                                        {
+                                            @foreach (var item in oListaAnalisis)
+                                            {
+                                                <tr>
+
+                                                    <td class="text-center">
+                                                        <div class="col-12 col-lg-12 col-md-12 col-sm-12 col-xl-12" style="text-align: center;">
+                                                            <label for="@("option"+item.Item)"> <input id="@("option"+item.Item)" name="options" value="@("option"+item.Item)" type="radio" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;" @onclick="@(()=> ObtenerDatosAnalisis(2, item.Item, item.Ide_Analisis, item.Cod_ROE, @item.Prueba_ROE))" /></label>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center" style="align-content:center; display:none">
+                                                        <span class="span-color" style="font-size:smaller">@item.Item</span><br>
+                                                    </td>
+                                                    <td class="text-center" style="align-content:center">
+                                                        <span class="span-color" style="font-size:smaller">@item.Ide_Analisis</span><br>
+                                                    </td>
+                                                    <td class="text-center" style="align-content:center;">
+                                                        <span class="span-color" style="font-size:smaller">@item.Cod_ROE</span><br>
+                                                    </td>
+                                                    <td class="text-center" style="align-content:center;">
+                                                        <span class="span-color" style="font-size:smaller">@item.Prueba_ROE</span><br>
+                                                    </td>
+                                                    <td class="text-center" style="align-content:center; display:none">
+                                                        <span class="span-color" style="font-size:smaller">@item.Tipo_Atencion</span><br>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="2">
+                                            </td>
+                                            <td colspan="5">
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+
+                            </div>
+                            <div class="row" style="display:flow; text-align:right; padding:0px 0px 0px 0px; margin:15px 0px 0px 0px; ">
+                                <div class="form-floating">
+                                    <div class="col-auto">
+                                        <a @onclick="FusionarListas" data-bs-dismiss="modal">
+                                            <span class="btn btn-primary">
+                                                Aceptar
+                                            </span>
+                                        </a>
+                                        <button class="btn btn-primary" style="margin:15px" data-bs-dismiss="modal" @onclick="LimpiarParametroBuscarAnalisis">
+                                            <span role="toolbar"> Cancelar</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!--I.Modal Aseguradoras -->
+    <div class="modal fade" id="msgModalConsultaAseguradora" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dm" style="max-width: 50%;  margin: 10 auto;">
+            <div class="modal-content">
+                <div class="card-header text-white fs-5" style="background:#124498;padding: 1rem 2rem; ">
+                    Plantilla de registro
+                </div>
+                <div class="modal-body">
+                    <div class="DivSearchInput">
+                        <div class="DivSearch" style="width:100%">
+                            <input id="txtBusquedaAseguradora" type="search" placeholder="Buscar por código,  Descripción aseguradora"
+                            @bind-value="@oFinanciamientoBuscaE.Buscar" @onkeyup="@EnterBuscarAseguradora">
+                            <i id="idSearchAseguradora" class="fa-solid fa-magnifying-glass" role="button" @onclick="@(()=>BuscarFinanciamientoAseguradora(1))" typeof="AdvancedSearch"></i>
+                        </div>
+                    </div>
+
+                    <div style="background-color: #FFF; width: 100%; height:100%; border:1px solid #b3d6ffff; border-radius:8px; padding:5px 10px; margin-bottom:5px;">
+                        <div class="row align-items-center" style="border-style: solid; border-color: #b3d6ffff; border-width: 0px; border-bottom-width: 2px; padding:0px 0px 5px 0px; background:#f6f6f645; ">
+                            <div>
+                                <span style="font-size:medium; font-weight: bold; padding-bottom:10px">Ordenar por:</span>
+                            </div>
+                            <div>
+                                <label for="opcion1" style="padding-right:15px"><input type="radio" id="opcion1" name="opciones" value="opcion1" @onchange="@(e => OnchangeCodigo(3))"> Código</label>
+                                <label for="opcion2"><input type="radio" id="opcion2" name="opciones" value="opcion2" @onchange="@(e => OnchangeDescripcion(3))"> Descripción</label>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <div style="max-height:300px; overflow-y:auto; border-bottom:inset; border-top:inset; border-block-color:#b3d6ffff; border-width: 1px;" class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive">
+                                <table class="table table-hover   table-bordered">
+                                    <thead class="table-primary">
+                                        <tr class="fw-bolder">
+                                            <th class="col-1 text-center" style="align-content:center; font-size:smaller">Marcar</th>
+                                            <th class="col-1 text-center" style="align-content:center; font-size:smaller; display:none"></th>
+                                            <th class="col-1 text-center" style="align-content:center; font-size:smaller">Código</th>
+                                            <th class="col-1 text-center" style="align-content:center; font-size:smaller">Aseguradora</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (oListaAseguradora != null)
+                                        {
+                                            @foreach (var item in oListaAseguradora)
+                                            {
+                                                <tr>
+
+                                                    <td class="text-center">
+                                                        <div class="col-12 col-lg-12 col-md-12 col-sm-12 col-xl-12" style="text-align: center;">
+                                                            <label for="@("option"+item.Item)"> <input id="@("option"+item.Item)" name="options" value="@("option"+item.Item)" type="radio" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;" @onclick="@(()=> ObtenerDatosAseguradora(3, item.Item, item.CodAseguradora1, item.Nombre_Aseguradora))" /></label>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center" style="align-content:center; display:none">
+                                                        <span class="span-color" style="font-size:smaller">@item.Item</span><br>
+                                                    </td>
+                                                    <td class="text-center" style="align-content:center;">
+                                                        <span class="span-color" style="font-size:smaller">@item.CodAseguradora1</span><br>
+                                                    </td>
+                                                    <td class="text-center" style="align-content:center;">
+                                                        <span class="span-color" style="font-size:smaller">@item.Nombre_Aseguradora</span><br>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="2">
+                                            </td>
+                                            <td colspan="5">
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+
+                            </div>
+                            <div class="row" style="display:flow; text-align:right; padding:0px 0px 0px 0px; margin:15px 0px 0px 0px; ">
+                                <div class="form-floating">
+                                    <div class="col-auto">
+                                        <a @onclick="FusionarListas" data-bs-dismiss="modal">
+                                            <span class="btn btn-primary">
+                                                Aceptar
+                                            </span>
+                                        </a>
+                                        <button class="btn btn-primary" style="margin:15px" data-bs-dismiss="modal" @onclick="LimpiarParametroBuscarAseguradora">
+                                            <span role="toolbar"> Cancelar</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- I.MODAL MESSAGE -->
+    @*==========================================0*@
+    <MessageModal IdMessage="msgModalAdvertencia"
+                  TitleModal="Advertencia"
+                  IconMessage=MessageModal.iconMessage.Advertencia
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalError"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+   
+    
+    @*==========================================0*@
+    <!-- F.MESSAGE NOT FOUND -->
+</div>
+
+
+
+<div>  
+    <!-- I.MODAL MESSAGE -->
+    @*==========================================0*@
+    <MessageModal IdMessage="msgModalAdvertencia"
+                  TitleModal="Advertencia"
+                  IconMessage=MessageModal.iconMessage.Advertencia
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalError"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>    
+</div>
+
+

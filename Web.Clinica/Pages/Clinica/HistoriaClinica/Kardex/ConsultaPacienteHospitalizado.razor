@@ -1,0 +1,500 @@
+﻿@page "/Clinica/HistoriaClinica/Kardex/ConsultaPacienteHospitalizado"
+@inject IJSRuntime js
+@using Ent.Sql.ClinicaE.HospitalE;
+@using Ent.Sql.ClinicaE;
+@using RestSharp
+@using Web.Clinica.Data
+@using Bus.Utilities;
+@using Ent.Sql;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<AuthorizeView>
+	<Authorized Context="AuthenticationState">
+		@code
+		{
+			[CascadingParameter]
+		PageIndexStateProvider State { get; set; }
+
+		private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
+		private Claim _ObjClaim;
+
+		IEnumerable<HospitalE> oListHospital;
+		IEnumerable<HospitalE> oListHospitalFiltrada;
+		IEnumerable<HospitalE> oHospital;
+		HospitalE _ObjHospital = new HospitalE();
+		List<AutocompleteItem> oListAutoComplete = new List<AutocompleteItem>();
+		AutocompleteItem _objAutoComplete = new AutocompleteItem();
+		List<PisoE> oListPisoE = new List<PisoE>();
+		PisoE _objpisoE = new PisoE();
+		string _PisoAnterior;
+
+		ParametrosE _ObjParametro;
+		ApiRutaConexion _app = new ApiRutaConexion();
+		FilterSearh _objFilter = new FilterSearh();	
+
+		private int itemsPerPage = 20;
+		private int totalPages = 1;
+		private bool _Check { get; set; } = false;
+		bool _Readonly = true;
+		string _fechaInciofiltro;
+		string _fechaFinFiltro;
+
+		bool list_filtrada = false;
+
+		protected override void OnInitialized()
+		{
+			js.InvokeVoidAsync("fnActualizarTitulo", "Control de pacientes hospitalizados - enfermería");
+			State = new PageIndexStateProvider();
+			obtenerIdUser();
+
+			_objFilter.FechaInicio = DateTime.Now.AddDays(-30);
+			_objFilter.FechaFin = DateTime.Now;
+			_objFilter.Ide_Historia = "";
+			_objFilter.Cod_Atencion = "";
+			_objFilter.NombrePaciente = "";
+			ObtenerPiso();
+			/*Trae los Pisos*/
+			MostrarListadoGeneral();
+			AutoCompletar();
+			_fechaInciofiltro = _objFilter.FechaInicio.ToString("yyyy-MM-dd");
+			_fechaFinFiltro = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd");
+			list_filtrada = false;
+			base.OnInitialized();
+		}
+
+		private async Task obtenerIdUser()
+		{
+			try
+			{
+				var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+				var user = authState.User;
+				if (user.Identity.IsAuthenticated)
+				{
+					claims = user.Claims;
+				}
+				_ObjClaim = (from n in claims where n.Type == ClaimTypes.NameIdentifier select n).FirstOrDefault();
+			}
+			catch (Exception ex)
+			{
+
+			}
+		}
+
+		public async Task ObtenerPiso()
+		{
+			try
+			{				 
+				string V_Busqueda = _ObjClaim.Value;
+				string _key = Criptography.EncryptConectionString(V_Busqueda);
+				string aa = MetaGlobal.RutaApiClinica;
+				var _cliente = new RestClient(MetaGlobal.RutaApiClinica + "KardexHospitalizacion/API/Clinica/ConsultaPisoPaciente?_Key=" + _key);
+				var _request = new RestRequest();
+				_request.AddHeader("Authorization", Criptography.EncryptConectionString(_app.Key));
+				_request.Method = Method.Get;
+				RestResponse _response = _cliente.Execute(_request);
+				oListPisoE = JsonConvert.DeserializeObject<List<PisoE>>(_response.Content).ToList();
+				if (oListPisoE.Count > 0)
+				{
+					var _PisoSeleccionado = oListPisoE.GroupBy(g => g.PisoSeleccionado).Select(s => new PisoE { PisoSeleccionado = s.FirstOrDefault().PisoSeleccionado }).FirstOrDefault();
+					_objpisoE.PisoSeleccionado = _PisoSeleccionado.PisoSeleccionado;
+					_PisoAnterior = _PisoSeleccionado.PisoSeleccionado;
+				}
+				else
+				{ 
+					oListPisoE = new List<PisoE>();
+					_objpisoE.PisoSeleccionado = "";
+					_PisoAnterior = "";
+				}
+			}
+			catch (Exception ex) 
+			{
+				oListPisoE = new List<PisoE>();
+				_objpisoE.PisoSeleccionado = "";
+				_PisoAnterior = "";
+			}
+		}
+
+		private async Task  MostrarListadoGeneral()
+		{
+			try
+			{
+				oHospital = new List<HospitalE>();
+				string Order = Criptography.EncryptConectionString("1");
+				string N_Filas = Criptography.EncryptConectionString("0");
+				string Cod_Atencion = Criptography.EncryptConectionString("");
+				string V_Busqueda = Criptography.EncryptConectionString(_objpisoE.PisoSeleccionado.Trim());
+				var _cliente = new RestClient(MetaGlobal.RutaApiClinica + "KardexHospitalizacion/API/Clinica/ConsultaPacientesHospitalarios?Order=" + Order + "&Fila=" + N_Filas + "&Atencion=" + Cod_Atencion + "&Busqueda=" + V_Busqueda);
+				var _request = new RestRequest();
+				_request.AddHeader("Authorization", Criptography.EncryptConectionString(_app.Key));
+				_request.Method = Method.Get;
+				RestResponse _response = _cliente.Execute(_request);
+				oListHospital = JsonConvert.DeserializeObject<List<HospitalE>>(_response.Content).ToList();
+
+				if (oListHospital.Count() > 0)
+				{
+
+					totalPages = (int)(oListHospital.Count() / itemsPerPage);
+					State.PageIndex = 1;
+					var skipCount = itemsPerPage * (State.PageIndex - 1);
+					oHospital = oListHospital.Skip(skipCount).Take(itemsPerPage);
+
+				}
+
+			}
+			catch(Exception ex)
+			{ 
+				oHospital = new List<HospitalE>();
+			}
+		}
+
+		private async Task BuscarPersonaFilter()
+		{
+			try
+			{
+				list_filtrada = true;
+				if (_Check == true)
+				{
+					oListHospitalFiltrada = (from n in oListHospital
+												where (n.Fechainicio >= _objFilter.FechaInicio && n.Fechainicio <= _objFilter.FechaFin)
+												select n).ToList();
+				}
+				else
+				{
+
+					Registrar_PisoUsuario();
+					oListHospitalFiltrada = (from n in oListHospital
+												select n).ToList();
+				}
+
+
+				if (oListHospitalFiltrada.Count() > 0 || oListHospitalFiltrada != null)
+				{
+					State = new PageIndexStateProvider();
+					totalPages = (int)(oListHospitalFiltrada.Count() / itemsPerPage);
+					State.PageIndex = 1;
+					var skipCount = itemsPerPage * (State.PageIndex - 1);
+					oHospital = new List<HospitalE>();
+					oHospital = oListHospitalFiltrada.Skip(skipCount).Take(itemsPerPage);
+				}
+			}
+			catch (Exception ex) { oHospital = new List<HospitalE>(); }
+
+			await js.InvokeVoidAsync("CloseSearchFiltroAvazando", "idfiltroavanzado");
+		}
+
+		private void SelectedPage(int selectedPageIndex)
+			{
+			State.PageIndex = selectedPageIndex;
+			var skipCount = itemsPerPage * (State.PageIndex - 1);
+			if (list_filtrada == true)
+			{
+				oHospital = oListHospitalFiltrada.Skip(skipCount).Take(itemsPerPage);
+			}
+			else {
+				oHospital = oListHospital.Skip(skipCount).Take(itemsPerPage);
+			}
+			
+			}
+
+		private void AutoCompletar() 
+			{
+			try 
+			{
+				oListAutoComplete = (from n in oListHospital select new AutocompleteItem { NombresPaciente = n.NombresPaciente , CodAtencion = n.CodAtencion, Ide_Historia = n.Ide_Historia, DocumentoIdentidad = n.DocumentoIdentidad, Ncama = n.Cama }).ToList();
+			} 
+			catch (Exception ex) { }
+			}				
+
+		private async Task BuscarPaciente()
+			{		
+			await BuscarpacienteLista();		
+			}
+
+		private async Task BuscarPacienteEnter(KeyboardEventArgs e)
+			{
+			if (e.Code == "Enter" || e.Code == "NumpadEnter"){
+				await BuscarpacienteLista();
+			}		
+			}
+
+		private async Task BuscarpacienteLista() 
+			{
+			try 
+			{
+				string nombrepaciente = _objAutoComplete.NombresPaciente;
+
+				oListHospitalFiltrada = (from n in oListHospital
+											where n.NombresPaciente.Contains(nombrepaciente, StringComparison.InvariantCultureIgnoreCase) ||
+																	n.DocumentoIdentidad.Contains(nombrepaciente, StringComparison.InvariantCultureIgnoreCase) ||
+																					n.Ide_Historia.Contains(nombrepaciente, StringComparison.InvariantCultureIgnoreCase) ||
+																					n.CodAtencion.Contains(nombrepaciente, StringComparison.InvariantCultureIgnoreCase)
+											select n).ToList();
+
+				if (oListHospitalFiltrada.Count() > 0 || oListHospitalFiltrada != null)
+				{
+					State = new PageIndexStateProvider();
+					totalPages = (int)(oListHospitalFiltrada.Count() / itemsPerPage);
+					State.PageIndex = 1;
+					var skipCount = itemsPerPage * (State.PageIndex - 1);
+					oHospital = oListHospitalFiltrada.Skip(skipCount).Take(itemsPerPage);
+				}
+			}
+			catch (Exception ex) { oHospital = new List<HospitalE>(); }
+			//await js.InvokeVoidAsync("CloseSearchFiltroAvazando", "idfiltroavanzado");
+			}		
+
+		private async Task Actualizarpagina()
+			{
+			await js.InvokeVoidAsync("locationreload");
+			}
+
+		private async Task Registrar_PisoUsuario()
+		{
+			try 
+			{
+				if (_objpisoE.PisoSeleccionado.Trim() != _PisoAnterior.Trim())
+				{
+					PisoE _objindicacionMedicaJson = new PisoE();
+					_objindicacionMedicaJson.NPiso = _ObjClaim.Value.ToString();
+					_objindicacionMedicaJson.PisoSeleccionado = _objpisoE.PisoSeleccionado.Trim();
+
+
+					var _Json = JsonConvert.SerializeObject(_objindicacionMedicaJson);
+					var client = new RestClient(MetaGlobal.RutaApiClinica + "KardexHospitalizacion/API/Clinica/RegistrarusuariosPisoAtencion");
+					var request = new RestRequest();
+					request.AddHeader("Authorization", Criptography.EncryptConectionString(_app.Key));
+					request.Method = Method.Post;
+					request.AddHeader("Accept", "application/json");
+					request.AddJsonBody(_Json);
+					RestResponse response = client.Execute(request);
+					var JsonGet = JsonConvert.DeserializeObject<RespuestaJsonE>(response.Content);
+					bool _exito = JsonGet.exito;
+					string Mensaje = JsonGet.message;
+					if (_exito == true)
+					{
+						await Actualizarpagina();
+					}				
+				}			
+			}
+			catch (Exception ex)
+			{
+				await Actualizarpagina();
+			}
+
+		}
+
+		async Task OnchangeFilterCheckBox(ChangeEventArgs e)
+		{
+			try
+			{
+				var _boleano = Convert.ToBoolean(e.Value);
+				_Check = _boleano;
+				if (_Check == true)
+				{
+					_Readonly = false;
+				}
+				else{
+					_Readonly = true;
+				}
+			}
+			catch (Exception ex) { }
+		}
+
+		async Task onchangefiltrofechaInicio(ChangeEventArgs e) 
+		{
+			try
+			{
+				var _fechaRecibida = Convert.ToDateTime(e.Value);
+				_fechaInciofiltro   =  _fechaRecibida.ToString("yyyy-MM-dd");
+				_objFilter.FechaInicio = _fechaRecibida;
+				if (_fechaRecibida > _objFilter.FechaFin)
+				{
+					_objFilter.FechaFin = _fechaRecibida;
+				}
+			}
+			catch (Exception ex) 
+			{ 
+			
+			}
+		}
+	}
+		
+		<div class="bg-light">
+			<div class="form-bg">
+				<div class="container-fluid">
+					<!--PRESENTACION-->
+					<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 buscar-menuNuevo" style="border-radius:25px !important;">
+						<div class="input-group">
+							<div class="DivSearchNuevo" style="width:100%">
+								<EditForm Model="@_objAutoComplete" @onkeydown="@BuscarPacienteEnter" @onmousedown="@BuscarPaciente">
+									<SearchAutocomplete  Placeholder="Buscar por nombre, apellido, documento de identidad , historia clínica, código de atención, N° cama" 
+									Source="@oListAutoComplete" 
+									@bind-Value="@_objAutoComplete.NombresPaciente"  							
+									class="search-input" />
+								</EditForm>
+		 						<i id="idfiltroavanzado" class="fa fa-sliders i-search-filter" role="button" data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="false"></i>
+								<i id="idBuscarPaciente" class="fa-solid fa-magnifying-glass i-search-button" @onclick="@BuscarpacienteLista" role="button"></i>
+								
+								<div class="dropdown-menu col-12 dropdown-menu-search" aria-labelledby="idfiltroavanzado" style="transition: transform 0.7s ease 0s; z-index:1;  ">
+									<div class="form-group card card-menu-search" style="margin-top: 15px;    margin-left: 8px;">
+										<div class="col-12">
+											<div class="contenedor">
+												<h5 class="card-title" style="color:#000000; font-weight: bold; ">
+													Búsqueda avanzada</h5>
+												<label class="fw-bold">Filtro de búsqueda:&nbsp;Presione el check para filtrar por fecha</label>
+												<input type="checkbox" @onchange="@OnchangeFilterCheckBox" style="width: 20px; height: 20px; margin-top: 10px; margin-left: 20px;" />
+																						
+												<div class="card-body">
+													<div class="row">
+														
+														@if (_Readonly == true) 
+														{
+														<div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 form-group">
+															<label class=" card-title title-paddin">Fecha Inicio</label>
+																<input type="date" readonly @bind="@_objFilter.FechaInicio" class="form-control" onkeydown="return false" max="@_fechaFinFiltro" />
+														</div>
+														<div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 form-group">
+															<label class=" card-title title-paddin">Fecha Fin</label>
+																<input type="date" readonly class="form-control" @bind="@_objFilter.FechaFin" min="@_fechaInciofiltro" onkeydown="return false" max="@_fechaFinFiltro" />
+														</div>
+														}
+														else{
+														<div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 form-group">
+															<label class=" card-title title-paddin">Fecha Inicio</label>
+																<input type="date" @bind="@_objFilter.FechaInicio" class="form-control" @oninput="@onchangefiltrofechaInicio" onkeydown="return false" max="@_fechaFinFiltro" />
+														</div>
+														<div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 form-group">
+															<label class=" card-title title-paddin">Fecha Fin</label>
+																<input type="date" class="form-control" @bind="@_objFilter.FechaFin" min="@_fechaInciofiltro" onkeydown="return false" max="@_fechaFinFiltro" />
+														</div>
+														}														
+
+														<div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 form-group">
+															<label class=" card-title title-paddin">Piso N°</label>
+															<EditForm Model="@_objpisoE">
+																<InputSelect class="form-select form-select-lg" id="SelectedPisopaciente" @bind-Value="_objpisoE.PisoSeleccionado" style="padding-top: 6px;padding-bottom: 6px;">
+
+																	@foreach (var item in oListPisoE)
+																	{
+
+																		@if (item.NPiso == item.PisoSeleccionado)
+																		{
+																			<option value="@item.NPiso" selected="selected">@item.NPiso</option>
+																		}
+																		else
+																		{
+																			<option value="@item.NPiso">@item.NPiso</option>
+																		}
+
+																	}
+																</InputSelect>
+															</EditForm>
+														</div>
+														 
+														 
+														<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 form-group">
+															<label class=" card-title title-paddin text-hide" style="color:white;">'</label>
+															<input id="btnBusquedaAvanzada" type="button" class="btn btn-primary form-control font-weight-bold" style="z-index:auto;" @onclick="@BuscarPersonaFilter" value="Buscar" />
+														</div>
+		
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="container" style="margin-top: 20px;">
+					<div class="col-12 col-lg-12 col-md-12 buscar-menuNuevo">
+						<div class="input-group">
+							<div class="card w-100">
+								<div class="card-header text-white fs-5" style="background:#124498;padding: 1rem 2rem; ">
+									<div class="col-12 row">
+										<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col-xl-12">
+											<label>Resultado de búsqueda</label>
+										</div>										
+									</div>										
+								</div>
+								<div class="card-body">
+									<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive">
+										<table class="table table-hover   table-bordered">
+											<thead class="table-primary">
+												<tr class="fw-bolder">
+													<th class="col-1 text-center">N°</th>
+													<th class="col-5 text-center">Paciente</th>
+													<th class="col-2 text-center">Historia Clínica</th>
+													<th class="col-2 text-center">Atención Médica</th>
+													<th class="col-1 text-center">Ver</th>
+												</tr>
+											</thead>
+											<tbody>
+												@if(oHospital.Count() > 0)
+												{
+													@foreach (var item in oHospital)
+													{
+														<tr>
+															<th class="text-center"><span>@item.Item</span></th>
+															<td>
+																<span class="span-color">@item.NombresPaciente.</span><br>
+																<span class="span-color">N° Documento: </span>@item.DocumentoIdentidad<br>
+																<span class="span-color">Edad: </span>@item.Edad<br>
+															</td>
+															<td>
+																<span class="span-color">N° Historia Clínica: </span>@item.Ide_Historia<br>
+																<span class="span-color">Fecha Ingreso: </span>@item.Fechainicio.ToShortDateString()<br>
+																<span class="span-color">N° Cama: </span>@item.Cama
+																<span class="span-color">Servicio: </span>@item.Piso
+															</td>
+															<td>
+																<span class="span-color">N° Atención: </span>@item.CodAtencion<br>
+																<span class="span-color">Médico tratante: </span>@item.NombreMedico<br>
+															</td>
+															<td class="text-center">
+																<a href="/Clinica/HistoriaClinica/Kardex/DatosPacientesHospitalizados?Key=@Criptography.EncryptConectionString(@item.CodAtencion)" style="z-index:auto;" class="btn color-ui-interfaz-verde-claro " data-toggle="Ver ficha">
+																	<span class="fa fa-pencil-square">															 
+																	</span>
+																</a>
+															</td>
+														</tr>
+													}
+												}
+												else{
+												<tr>
+													<td></td>
+													<td><label class="fw-bold">Sin resultados, seleccionar un piso!...</label></td>
+													<td></td>
+													<td></td>
+													<td></td>
+												</tr>
+												}
+											</tbody>
+											<tfoot>
+												<tr>
+													<td colspan="5">  
+														<Pagination TotalPages="@(totalPages != 0 ? totalPages : 1)"
+																	PageIndex="@State.PageIndex"
+																	Radius="3"
+																	OnSelectedPage="@SelectedPage">
+														</Pagination>
+													</td>
+												</tr>
+											</tfoot>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>		
+			</div>
+		</div>
+
+	</Authorized>
+	<NotAuthorized>
+		<h2>Debe identificarse para poder acceder a la aplicación</h2>
+	</NotAuthorized>
+</AuthorizeView>
+

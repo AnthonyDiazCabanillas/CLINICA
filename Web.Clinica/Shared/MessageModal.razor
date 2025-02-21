@@ -1,0 +1,291 @@
+﻿@code {
+    [Parameter]
+    public string? IdMessage { get; set; }
+
+    [Parameter]
+    public string? TitleModal { get; set; } = "";
+
+    [Parameter]
+    public string? BodyMessage { get; set; } = "";
+
+    [Parameter]
+    public bool? EscapeKey { get; set; } = false;
+
+    [Parameter]
+    public iconMessage? IconMessage { get; set; }
+
+    [Parameter]
+    public typeButton? TypeButton { get; set; } = typeButton.Ok;
+
+    [Parameter]
+    public respuestaConfirmacion RespuestaConfirmacion { get; set; } = respuestaConfirmacion.Ok;
+
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+
+    private Task ModalCancel()
+    {
+        return OnClose.InvokeAsync(false);
+    }
+
+    private Task ModalOk()
+    {
+        return OnClose.InvokeAsync(true);
+    }
+            
+    public enum iconMessage
+    {
+        #region Información
+        /// <summary>
+        /// Icono de Información que se usa básicamente para mostrar cualquier mensaje.
+        /// </summary>
+        Informacion = 1,
+        #endregion
+
+        #region Question
+        /// <summary>
+        /// Icono para preguntar al usuario alguna acción.
+        /// </summary>
+        Question = 2,
+        #endregion
+
+        #region Error
+        /// <summary>
+        /// Icono de error, usado usualmente cuando suceda algún error dentro del aplicativo.
+        /// </summary>
+        Error = 3,
+        #endregion
+
+        #region Advertencia
+        /// <summary>
+        /// Mensaje de advertencia, básicamente para alertar al usuario si desea.
+        /// </summary>
+        Advertencia = 4,
+        #endregion
+
+        #region Check
+        /// <summary>
+        /// Sirve para mostrar el icono del check o la palomita, puedes usar cuando se registra o actualiza.
+        /// </summary>
+        Check = 5,
+        #endregion
+
+        #region Custom
+        /// <summary>
+        /// Icono para personalizar por si se desea usar otro.
+        /// </summary>
+        Custom = 6,
+        #endregion
+    }
+    
+    public enum typeButton
+    {
+        Ok = 1,
+        OkCancel = 2,
+        RegistrarCancelar = 3,
+        AgregarCancelar = 4,
+        EliminarCancelar = 5,
+        ActualizarCancelar = 6,
+    }
+
+    public enum respuestaConfirmacion
+    {
+        Ok = 1,
+        Cancelar = 2,
+        Registrar = 3,
+        Agregar = 4,
+        Eliminar = 5,
+        Actualizar = 6,
+    }
+}
+
+<style>
+    .btn-modal {
+        margin: 0.2rem 0.8rem;
+    }
+
+    .btn-normal {
+        color: #124498;
+        background-color: #fdfdfd;
+        border-color: #124498;
+        opacity: 0.99;        
+    }
+
+    .btn-normal:hover {
+        color: #FFF;
+        background-color: #124498;
+        border-color: #124498;        
+    }
+
+    .modal-content-message {
+        opacity: 0.98;
+        background: #f9f9f9;
+    }
+
+    .modal-header-message {
+        border-bottom: 1px solid #e3e8ed;
+        text-align: center;
+        display: flow-root;
+        background: #ffffff;
+        padding: 1.0rem;
+    }
+
+    .modal-title {
+        font-weight: 400 !important;
+        color: #9acb48;
+        font-weight: 100;
+        display: contents;
+        font-size: 1.15rem;
+    }
+
+    .modal-icon {
+        font-size: 54px;
+        color: #2f90cfe6;
+    }
+
+    .modal-close {
+        right: 1rem;
+        display: inline-flex;
+        width: 20px;
+        position: absolute;
+    }
+
+    .modal-footer-message {
+        background: #8096a421;
+        display: block;
+    }
+
+    .modal-icon-info {
+    }
+
+    .modal-icon-error {
+        color: #cd1e1ed6;
+    }
+
+    .modal-icon-warning {
+        color: #f2df0f;
+    }
+
+    .modal-icon-question {
+        color: #63a85a;
+    }
+
+    .modal-icon-check {
+        color: #40aa32;
+    }
+
+</style>
+
+<div class="modal fade" id="@IdMessage" data-bs-backdrop="static"  tabindex="-1" aria-labelledby="staticBackdropLabel" data-bs-keyboard="@EscapeKey.ToString()" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-content-message">
+            <div class="modal-header modal-header-message">
+                @if (TitleModal != "")
+                {
+                    <span class="modal-title">@TitleModal</span>
+                    <button type="button" class="btn-close modal-close" @onclick="ModalCancel" data-bs-dismiss="modal" aria-label="Close"></button>
+                }                
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    @switch (IconMessage)
+                    {
+                        case iconMessage.Advertencia:
+                            <i class="fa-solid fa-triangle-exclamation modal-icon modal-icon-warning"></i>
+                            break;
+                        case iconMessage.Error:
+                            <i class="fa-regular fa-circle-xmark modal-icon modal-icon-error"></i>
+                            break;
+                        case iconMessage.Question:
+                            <i class="fa-regular fa-circle-question modal-icon modal-icon-question"></i>
+                            break;
+                        case iconMessage.Informacion:
+                            <i class="fa-solid fa-circle-info modal-icon"></i>
+                            break;
+                        case iconMessage.Check:
+                            <i class="fa-solid fa-check modal-icon modal-icon-check"></i>
+                            break;
+
+                        <br>
+                    }
+                    <br/>
+                    <br/>
+                    @MetaGlobal.StringToHtml(BodyMessage)
+                </div>
+            </div>
+            <div class="modal-footer text-center modal-footer-message" style="">
+                <div class="text-center">
+                    @switch (TypeButton)
+                    {
+                        case typeButton.Ok:
+                            <button type="button" class="btn btn-normal btn-modal" data-bs-dismiss="modal" @onclick="ModalOk">
+                                <i class="fa-solid fa-check"></i>
+                                <span> Aceptar</span>
+                            </button>
+                            break;
+
+                        case typeButton.Ok or typeButton.OkCancel:
+                            <button type="button" class="btn btn-normal btn-modal" data-bs-dismiss="modal" @onclick="ModalOk">
+                                <i class="fa-solid fa-check"></i>
+                                <span> Aceptar</span>
+                            </button>
+
+                            <button type="button" class="btn btn-normal btn-modal" data-bs-dismiss="modal" @onclick="ModalCancel">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span> Cancelar</span>
+                            </button>
+                            break;
+
+                        case typeButton.AgregarCancelar:
+                            <button type="button" class="btn btn-success btn-modal" @onclick="ModalOk">
+                                <i class="fa-solid fa-plus"></i>
+                                <span> Agregar</span>
+                            </button>
+
+                            <button type="button" class="btn btn-normal btn-modal" data-bs-dismiss="modal" @onclick="ModalCancel">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span> Cancelar</span>
+                            </button>
+                            break;
+
+                        case typeButton.ActualizarCancelar:
+                            <button type="button" class="btn btn-outline-success btn-modal" data-bs-dismiss="modal" @onclick="ModalOk">
+                                <i class="fa-solid fa-pencil"></i>
+                                <span> Actualizar</span>
+                            </button>
+
+                            <button type="button" class="btn btn-normal btn-modal" data-bs-dismiss="modal" @onclick="ModalCancel">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span> Cancelar</span>
+                            </button>
+                            break;
+
+                        case typeButton.EliminarCancelar:
+                            <button type="button" class="btn btn-success btn-modal" @onclick="ModalOk">
+                                <i class="fa-regular fa-trash-can"></i>
+                                <span> Eliminar</span>
+                            </button>
+
+                            <button type="button" class="btn btn-normal btn-modal" data-bs-dismiss="modal" @onclick="ModalCancel">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span> Cancelar</span>
+                            </button>
+                            break;
+
+                        case typeButton.RegistrarCancelar:
+                            <button type="button" class="btn btn-success btn-modal" @onclick="ModalOk">
+                                <i class="fa-regular fa-floppy-disk"></i>
+                                <span> Registrar</span>
+                            </button>
+
+                            <button type="button" class="btn btn-normal btn-modal" data-bs-dismiss="modal" @onclick="ModalCancel">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span> Cancelar</span>
+                            </button>
+                            break;
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

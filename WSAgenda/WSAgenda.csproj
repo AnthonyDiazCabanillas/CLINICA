@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+	<PublishSingleFile>true</PublishSingleFile>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-WSAgenda-552c1387-5ed3-4993-9a14-e717c253d187</UserSecretsId>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="6.0.13" />
+	<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bus.AgendaClinica\Bus.AgendaClinica.csproj" />
+    <ProjectReference Include="..\Bus.Utilities\Bus.Utilities.csproj" />
+    <ProjectReference Include="..\Dat.Sql\Dat.Sql.csproj" />
+    <ProjectReference Include="..\Ent.Sql\Ent.Sql.csproj" />
+  </ItemGroup>
+</Project>

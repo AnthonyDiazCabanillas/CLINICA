@@ -1,0 +1,181 @@
+﻿@page "/Clinica/DireccionMedica/DatosPaciente/ValidarPaciente"
+@using Bus.AgendaClinica.Clinica
+@using Bus.Clinica.Clinica
+@using Ent.Sql.ClinicaE.HospitalE
+@using Ent.Sql.ClinicaE.OtrosE
+@using RestSharp
+@inject IJSRuntime js
+
+<AuthorizeView>
+	<Authorized Context="AuthenticationState">
+		
+	@code
+		{
+
+			string DNipaciente { get; set; }
+		string Paciente = "";
+ 		List<TablasE> _Sp_Tablas_Consulta;
+		string _MensajeBody = "";
+		string ruta = "";
+		string apikey = "";
+		Tablas LN = new Tablas();
+		TablasE objDNiPaciente = new TablasE();
+
+
+		protected override void OnInitialized() 
+		{ 				
+			js.InvokeVoidAsync("fnActualizarTitulo", "validar paciente por DNI");
+
+			obtenerdatospi();
+
+		}
+
+
+		private void obtenerdatospi() 
+		{
+			try {
+				_Sp_Tablas_Consulta = new List<TablasE>();
+
+				TablasE pTablasE = new TablasE();
+				pTablasE.Codtabla = "ApiConsultaPaciente";
+				pTablasE.Buscar = "";
+				pTablasE.Key = 0;
+				pTablasE.NumeroLineas = 100;
+				pTablasE.Orden = 26;
+				_Sp_Tablas_Consulta = LN.Sp_Tablas_Consulta(pTablasE);
+
+				foreach (var item in _Sp_Tablas_Consulta)
+
+				{
+					string cod = item.Codigo.ToString();
+					if (cod == "01")
+					{
+						ruta = item.Nombre.ToString();
+					}
+					if (cod == "02")
+					{
+						apikey = item.Nombre.ToString();
+					}
+				}
+			}
+			catch (Exception ex) { }
+		}
+
+		async Task BuscarPacienteEnter(KeyboardEventArgs e)
+		{
+			try
+			{	
+				Paciente = "";
+  				if (e.Code == "Enter" || e.Code == "NumpadEnter")
+				{
+					
+					//buscarnombres();
+				}
+			}
+			catch (Exception ex) {
+				_MensajeBody = ex.Message;
+				await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+			}
+
+		}
+
+		async Task buscarnombres() 
+		{ 
+			Paciente = "";
+			if (DNipaciente.Length == 8)
+			{
+				try
+				{
+
+					ApiJSONConsultaDniE obj = new ApiJSONConsultaDniE();
+					obj.token = apikey;
+					obj.dni = DNipaciente;
+
+					var _Json = JsonConvert.SerializeObject(obj);
+					var _cliente = new RestClient(ruta);
+					var request = new RestRequest();
+					request.Method = Method.Post;
+					request.AddHeader("Accept", "application/json");
+					request.AddJsonBody(_Json);
+					RestResponse response = _cliente.Execute(request);
+					var JsonGet = JsonConvert.DeserializeObject<ApiJsonResultadoDNiE>(response.Content);
+					bool exito = JsonGet.success;
+					if (exito == true)
+					{
+						Paciente = JsonGet.nombre;
+					}
+					else
+					{
+						Paciente = "No se encontraron resultados!..";
+					}
+				}
+				catch (Exception ex)
+				{
+					Paciente = "Error de consulta!..";
+				}
+			}
+			else
+			{
+				_MensajeBody = "Ingrese número de DNI válido!.  recuerde que este debe contar con 8 dígitos.";
+				await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+			}
+		}
+	}
+
+		 
+
+
+		<div class="bg-light" >
+			<div class="form-bg" style="min-height: 80vh;">
+				<div class="container-fluid">
+					<!--PRESENTACION-->
+					<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 buscar-menuNuevo" style="border-radius:25px !important;">
+						<div class="row" style="margin:50px;">
+							<div class="input-group">
+								<div class="col-4">
+									<p style="margin-bottom: 0px;">
+										<label style="margin-bottom:5px; font-weight:bold;">
+										DNI Paciente:
+									</label>
+									</p>
+									
+									<input type="text" maxlength="8" style="padding-left: 20px; width: 500px;" @onkeydown="@BuscarPacienteEnter" placeholder="Ingrese el número de Dni del paciente" @bind="@DNipaciente" onkeypress='return event.charCode >= 48 && event.charCode <= 57' class="search-input" />
+
+ 									<i id="idBuscarPaciente" @onclick="@buscarnombres" class="fa-solid fa-magnifying-glass i-search-button " style="position: absolute;  left: 463px; top: 37px;"  role="button"></i>
+
+								</div>
+								<div class="col-1"  >
+									 
+								</div>
+								
+								<div>
+
+								</div>								 
+							</div>
+							<div class="input-group" style="margin-top:20px;">
+								<div class="col-12">
+									<label style="margin-bottom:5px; font-weight:bold;">
+										Nombre del Paciente
+									</label>
+									<input type="text" id="buttondnibuscar" placeholder="Nombre del Paciente" @bind="@Paciente" class="form-group-lg form-control" disabled="disabled" readonly="readonly" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+ 			</div>
+		</div>
+		 
+		<MessageModal IdMessage="msgModalError"
+					  TitleModal="Error"
+					  IconMessage=MessageModal.iconMessage.Error
+					  TypeButton=MessageModal.typeButton.Ok
+					  EscapeKey="true"					   
+					  BodyMessage=@_MensajeBody>
+		</MessageModal>
+
+	</Authorized>
+	<NotAuthorized>
+		<h2>Debe identificarse para poder acceder a la aplicación</h2>
+	</NotAuthorized>
+</AuthorizeView>

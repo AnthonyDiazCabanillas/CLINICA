@@ -1,0 +1,191 @@
+﻿ @inherits InputText;
+ @using Ent.Sql;
+
+<input @attributes="AdditionalAttributes"
+   type="search"           
+   @bind="Text"
+   @bind:event="oninput"
+   @onkeydown="OnKeyDown"
+   @onfocusout="OnLostFocus"
+   placeholder="@Placeholder"
+   aria-autocomplete="list" aria-haspopup="true" autocomplete="off" role="combobox"
+   aria-expanded="true" />
+   <ErrorBoundary>
+       <ChildContent>
+       @if (autocomplete.Count > 0)
+       {
+           <div style="width:98%;">
+               <div class="autocomplete-panel card" style="margin-top:15px;margin-left:5px; padding:10px;">
+               <ul role="listbox" class="autocomplete-items">
+                   @foreach (var item in autocomplete)
+                   {
+                   var className = item.IsSelected ? "autocomplete-item-hover" : "";
+                   <li role="option" style="border-bottom:1px solid" class="autocomplete-item @className"
+                   @onmousedown="(() => AutocompleteItemClick(item.NombresPaciente))"
+                   @onmouseover="(() => AutocompleteMouseOver(item.NombresPaciente))">
+                        <div class="card autocomplete-item @className" style="border:0px; padding-bottom:10px;">
+                            <div class="card-body" style="padding:10px; ">
+                                <div class="card-title">
+                                    <label class="fw-normal">@item.NombresPaciente</label>
+                                </div>
+                                <div class="card-text">
+                                     <label>N° Doc: @item.DocumentoIdentidad </label>
+                                     @if (!string.IsNullOrEmpty(@item.Ide_Historia)) 
+                                     {
+                                         <label>&nbsp; &nbsp; N° Historia clínica: @item.Ide_Historia</label>
+                                     }
+                                     @if (!string.IsNullOrWhiteSpace(@item.CodAtencion)) 
+                                     {
+                                            <label> &nbsp; &nbsp; N° Atención: @item.CodAtencion</label>
+                                     }
+                                     @if (!string.IsNullOrWhiteSpace(@item.Ncama)) {
+                                         <label>&nbsp; &nbsp; N° Cama: @item.Ncama </label>
+                                     }
+
+                                </div>   
+                            </div>
+                        </div>                                
+                    </li>
+                   }
+               </ul>
+           </div>
+           </div>
+       }
+       </ChildContent>
+       <ErrorContent >                 
+       </ErrorContent>
+   </ErrorBoundary>
+@code {
+    [Parameter]
+    public List<AutocompleteItem> Source { get; set; } = new List<AutocompleteItem>();
+
+    [Parameter]
+    public string? Placeholder { get; set; }
+
+    [Parameter]
+    public int MinTextLength { get; set; } = 1;
+
+    private List<AutocompleteItem>? autocomplete = new List<AutocompleteItem>();
+
+    private string text = "";
+    
+    private string Text
+    {
+        get => text;
+        set
+        {
+            text = value;
+            CurrentValueAsString = value;
+            SetAutocomplete();
+        }
+    }
+
+    private void OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "ArrowDown")
+        {
+            SelectNextItem();
+        }
+        else if (e.Key == "ArrowUp")
+        {
+            SelectPreviousItem();
+        }
+        else if (e.Key == "Enter" && autocomplete?.Any(d => d.IsSelected) == true)
+        {
+            AutocompleteItemClick(autocomplete.First(d => d.IsSelected).NombresPaciente);
+        }
+        else if (e.Key == "Escape")
+        {
+            autocomplete = new List<AutocompleteItem>();
+        }
+    }
+
+    private void OnLostFocus() => autocomplete = new List<AutocompleteItem>();
+
+    private void SetAutocomplete()
+    {
+        if (!string.IsNullOrWhiteSpace(text))
+        {
+            autocomplete = (from n in Source
+                            where
+                            n.NombresPaciente.Contains(text, StringComparison.InvariantCultureIgnoreCase) ||
+                            n.DocumentoIdentidad.Contains(text, StringComparison.InvariantCultureIgnoreCase) ||
+                            n.Ide_Historia.Contains(text, StringComparison.InvariantCultureIgnoreCase) ||
+                            n.CodAtencion.Contains(text, StringComparison.InvariantCultureIgnoreCase) ||
+                            n.Ncama.Contains(text, StringComparison.InvariantCultureIgnoreCase)
+                            select new AutocompleteItem
+                                {
+                                    NombresPaciente = n.NombresPaciente,
+                                    DocumentoIdentidad = n.DocumentoIdentidad,
+                                    Ide_Historia = n.Ide_Historia,
+                                    CodAtencion = n.CodAtencion,
+                                    Ncama = n.Ncama
+                                }
+                 ).Take(4).ToList();
+        }
+        else {
+            autocomplete = new List<AutocompleteItem>();
+        }
+
+   
+    }
+
+    private void AutocompleteItemClick(string item)
+    {
+        Text = item;
+        autocomplete = new List<AutocompleteItem>();
+    }
+
+    private void AutocompleteMouseOver(string item) => autocomplete?.ForEach(d => d.IsSelected = false);
+
+    private void SelectNextItem()
+    {
+        if (autocomplete?.Any() == true)
+        {
+            var prevItem = autocomplete.FirstOrDefault(d => d.IsSelected);
+            if (prevItem is null)
+            {
+                autocomplete.First().IsSelected = true;
+            }
+            else
+            {
+                var index = autocomplete.IndexOf(prevItem);
+                if (index < autocomplete.Count - 1)
+                {
+                    prevItem.IsSelected = false;
+                    autocomplete.ElementAt(index + 1).IsSelected = true;
+                }
+            }
+        }
+    }
+
+    private void SelectPreviousItem()
+    {
+        if (autocomplete?.Any() == true)
+        {
+            var currentItem = autocomplete.FirstOrDefault(d => d.IsSelected);
+            if (currentItem is null)
+            {
+                autocomplete.Last().IsSelected = true;
+            }
+            else
+            {
+                var index = autocomplete.IndexOf(currentItem);
+                if (index > 0)
+                {
+                    currentItem.IsSelected = false;
+                    autocomplete.ElementAt(index - 1).IsSelected = true;
+                }
+            }
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (string.IsNullOrEmpty(Text) && base.Value is not null)
+        {
+            Text = Value;
+        }
+    }
+}

@@ -1,0 +1,1533 @@
+﻿@page "/Clinica/Facturacion/Tramas/CorrecionTramas"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime js
+@using Bus.Utilities
+@using Ent.Sql
+@using Ent.Sql.ClinicaE
+@using Ent.Sql.SeguridadE.SeguridadE
+@using RestSharp
+@using Web.Clinica.Data
+@using System.Net
+@inherits MainLayout
+
+<AuthorizeView>
+    <Authorized Context="AuthenticationState">
+        @code
+        {
+        /********************************************************************************************************************
+        Copyright Clinica San Felipe S.A.C. 2024. Todos los derechos reservados.
+
+        Version  Fecha        Autor           Requerimiento
+        1.0      07/07/2024   FCHUJE       REQ 2024-005448 Creación Módulo de corrección de Tramas
+        1.1      23/01/2025   FCHUJE       REQ 2025-002354 Opción de modificar en HIS la cabecera de tramas
+        ********************************************************************************************************************/
+
+        string NroComprobante = "";
+        List<TabsTituloDataE> ListadoTabs = new List<TabsTituloDataE>();
+        List<TabsTituloDataE> ListadoValidacion = new List<TabsTituloDataE>();
+        TramasE objTramas = new TramasE();
+        TramasE objTramaUpdate = new TramasE();
+        PepsCopVarE pbjpeps = new PepsCopVarE();
+        FacturaNoCuadrE noCuadrE = new FacturaNoCuadrE();
+        FacturaMontoNocuadrE montoNocuadrE = new FacturaMontoNocuadrE();
+        List<DiferenciaFarmaciaE> diferenciaFarmaciaE = new List<DiferenciaFarmaciaE>();
+        BCRE _bcrE = new BCRE();
+        DiferenciaCopagoE _copagoDif = new DiferenciaCopagoE();
+        DiferenciaCopagoVariableE _copagovariableDif = new DiferenciaCopagoVariableE();
+        DiferenciaMontoDocAtenE _montoDif = new DiferenciaMontoDocAtenE();
+
+        ApiRutaConexion _app = new ApiRutaConexion();
+        string _MensajeBody = "";
+        private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
+        private Claim _ObjClaim;
+
+        List<SegOpcionE> segOpcions = new List<SegOpcionE>();
+
+        int IdUser = 0;
+        bool acceso = false;
+
+        protected override void OnInitialized()
+        {
+            js.InvokeVoidAsync("fnActualizarTitulo", "Facturación - Correciones de Tramas");
+            IdUser = Convert.ToInt32(SessionUser(TypeSession.IdeUsuario).Result);
+
+            segOpcions = new Bus.Clinica.Seguridad.Seguridad().CargarPermisos(new SegOpcionE(4, 102, "03/01/03", IdUser));
+
+            if (segOpcions.Count() == 0)
+            {
+                acceso = false;
+            }
+            else
+            {
+                acceso = true;
+                LimpiarObjetos();
+                ListarTabsValidar();
+                ListarTabs();
+            }
+
+
+            base.OnInitialized();
+        }
+
+
+
+        void ListarTabsValidar()
+        {
+            ListadoValidacion.Add(new TabsTituloDataE("1", "Factura", "far fa-eye"));
+            ListadoValidacion.Add(new TabsTituloDataE("2", "PEPS", "far fa-eye"));
+            ListadoValidacion.Add(new TabsTituloDataE("3", "Monto Neto", "far fa-eye"));
+            ListadoValidacion.Add(new TabsTituloDataE("4", "BCR", "far fa-eye"));
+            ListadoValidacion.Add(new TabsTituloDataE("5", "Diferencia Farmacia", "far fa-eye"));
+        }
+
+        async void ListarTabs()
+        {
+            try
+            {
+                var rutaApi = MetaGlobal.RutaApiClinica + "Tramas/API/Clinica/ListadoTabsTrama";
+                var encriptado = Criptography.EncryptConectionString(_app.Key);
+                var _client = new RestClient(rutaApi);
+                var _request = new RestRequest();
+                _request.Method = Method.Get;
+                _request.AddHeader("Authorization", encriptado);
+                var _response = _client.Execute(_request);
+                if (_response.StatusCode == HttpStatusCode.OK)
+                {
+                    var Resultado = JsonConvert.DeserializeObject<ResultadoTransactionE<TabsTituloDataE>>(_response.Content);
+                    ListadoTabs = Resultado.DataList;
+                }
+                else
+                {
+                    _MensajeBody = _response.Content.ToString();
+                    await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _MensajeBody = ex.Message;
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+            }
+        }
+
+        async void BuscarDatosComprobante()
+        {
+            if (string.IsNullOrWhiteSpace(NroComprobante))
+            {
+                _MensajeBody = "Ingrese número de comprobante";
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+                return;
+            }
+
+            LimpiarObjetos();
+
+            try
+            {
+                var rutaApi = MetaGlobal.RutaApiClinica + "Tramas/API/Clinica/ListadoDetalleTramas?NroComprobante=" + NroComprobante;
+                var encriptado = Criptography.EncryptConectionString(_app.Key);
+                var _client = new RestClient(rutaApi);
+                var _request = new RestRequest();
+                _request.Method = Method.Get;
+                _request.AddHeader("Authorization", encriptado);
+                var _response = _client.Execute(_request);
+                if (_response.StatusCode == HttpStatusCode.OK)
+                {
+                    var Resultado = JsonConvert.DeserializeObject<ResultadoTransactionE<TramasE>>(_response.Content);
+                    objTramas = Resultado.Data;
+                    CalcularDiferencias();
+
+                    if (!string.IsNullOrWhiteSpace(objTramas.Mec_MensajeTrama.Mensaje))
+                    {
+                        _MensajeBody = objTramas.Mec_MensajeTrama.Mensaje;
+                        await js.InvokeVoidAsync("NotFoundSpinner", "msgModalInformacionTrama");
+                    }
+                }
+                else
+                {
+                    _MensajeBody = _response.Content.ToString();
+                    await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _MensajeBody = ex.Message;
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+            }
+        }
+
+        void CalcularDiferencias()
+        {
+            CalculoCuadreFactura();
+            CalculoPepsCopVar();
+            CalculoMontoCuadreFactura();
+            CalculaDiferenciaFarmacia();
+            CalcularDiferenciaBCR();
+            CalcularDiferenciaCopagos();
+            CalcularDiferenciaCopagoVariable();
+            CalcularDiferenciaMonto();
+        }
+
+        void CalculoPepsCopVar()
+        {
+            try
+            {
+                pbjpeps.DocCopagoFijoIGV = Math.Round(objTramas.Mec_CabeceraDocumento.Sum(s => Convert.ToDouble(s.montocopagofijo)), 2);
+                pbjpeps.DocCopagoVarIGV = Math.Round(objTramas.Mec_CabeceraDocumento.Sum(s => Convert.ToDouble(s.montocopagovariable)), 2);
+                pbjpeps.DocCopagoFijoEXOIGV = Math.Round(objTramas.Mec_CabeceraDocumento.Sum(s => Convert.ToDouble(s.montocopagofijo_exoneradoigv)), 2);
+                pbjpeps.DocCopagoFijoVarEXOIGV = Math.Round(objTramas.Mec_CabeceraDocumento.Sum(s => Convert.ToDouble(s.montocopagovariable_exoneradoigv)), 2);
+
+
+                pbjpeps.ServSumCopagoFijo = Math.Round(objTramas.Mec_DetalleServicios.Sum(s => Convert.ToDouble(s.copagofijo)), 2);
+                pbjpeps.ServSumCopagoVariable = Math.Round(objTramas.Mec_DetalleServicios.Sum(s => Convert.ToDouble(s.copagovariable)), 2);
+                pbjpeps.FarmCopagoProducto = Math.Round(objTramas.Mec_DetalleProductosFarmacia.Sum(s => Convert.ToDouble(s.copagoproducto)), 2);
+            }
+            catch (Exception ex)
+            {
+                pbjpeps.DocCopagoFijoIGV = 0;
+                pbjpeps.DocCopagoVarIGV = 0;
+                pbjpeps.DocCopagoFijoEXOIGV = 0;
+                pbjpeps.DocCopagoFijoVarEXOIGV = 0;
+                pbjpeps.ServSumCopagoFijo = 0;
+                pbjpeps.ServSumCopagoVariable = 0;
+                pbjpeps.FarmCopagoProducto = 0;
+            }
+
+        }
+
+        void CalculoCuadreFactura()
+        {
+            try
+            {
+                noCuadrE.MontoTotalAtencion = Math.Round(objTramas.Mec_CabeceraAtencion.Sum(s => Convert.ToDouble(s.montoatencion)), 2);
+                noCuadrE.SumMontoServicio = Math.Round(objTramas.Mec_DetalleServicios.Sum(s => Convert.ToDouble(s.montoservicio)), 2);
+                noCuadrE.SumMontoNoCubiertoServicio = Math.Round(objTramas.Mec_DetalleServicios.Sum(s => Convert.ToDouble(s.montonocubiertoservicio)), 2);
+                noCuadrE.SumMontoPorProducto = Math.Round(objTramas.Mec_DetalleProductosFarmacia.Sum(s => Convert.ToDouble(s.montoporproducto)), 2);
+                noCuadrE.SumMontoNoCubiertoProducto = Math.Round(objTramas.Mec_DetalleProductosFarmacia.Sum(s => Convert.ToDouble(s.montonocubiertoproducto)), 2);
+            }
+            catch (Exception ex)
+            {
+                noCuadrE.MontoTotalAtencion = 0;
+                noCuadrE.SumMontoServicio = 0;
+                noCuadrE.SumMontoNoCubiertoServicio = 0;
+                noCuadrE.SumMontoPorProducto = 0;
+                noCuadrE.SumMontoNoCubiertoProducto = 0;
+            }
+        }
+
+        void CalculoMontoCuadreFactura()
+        {
+            try
+            {
+                montoNocuadrE.MontoNeto = Math.Round((objTramas.Mec_CabeceraDocumento.Sum(s => Convert.ToDouble(s.montoneto))), 2);
+                montoNocuadrE.MontoAtencion = Math.Round((objTramas.Mec_CabeceraAtencion.Sum(s => Convert.ToDouble(s.montoatencion))), 2);
+                montoNocuadrE.CopagoFijo_SINIGV = Math.Round((objTramas.Mec_CabeceraAtencion.Sum(s => Convert.ToDouble(s.copagofijo_sinigv))), 2);
+                montoNocuadrE.CopagoFijo_EXOIGV = Math.Round((objTramas.Mec_CabeceraAtencion.Sum(s => Convert.ToDouble(s.copagofijo_exoneradoigv))), 2);
+                montoNocuadrE.CopagoVariable_SINIGV = Math.Round((objTramas.Mec_CabeceraAtencion.Sum(s => Convert.ToDouble(s.copagovariable_sinigv))), 2);
+                montoNocuadrE.CopagoVariable_EXOIGV = Math.Round((objTramas.Mec_CabeceraAtencion.Sum(s => Convert.ToDouble(s.copagovariable_exoneradoigv))), 2);
+            }
+            catch (Exception ex)
+            {
+                montoNocuadrE.MontoNeto = 0;
+                montoNocuadrE.MontoAtencion = 0;
+                montoNocuadrE.CopagoFijo_SINIGV = 0;
+                montoNocuadrE.CopagoFijo_EXOIGV = 0;
+                montoNocuadrE.CopagoVariable_SINIGV = 0;
+                montoNocuadrE.CopagoVariable_EXOIGV = 0;
+            }
+        }
+
+        void CalculaDiferenciaFarmacia()
+        {
+            diferenciaFarmaciaE = new List<DiferenciaFarmaciaE>();
+            try
+            {
+                double montoservicio = Math.Round(objTramas.Mec_DetalleServicios.Sum(s => Convert.ToDouble(s.montoservicio)), 2);
+                double CantidadXmontoServicio = Math.Round(objTramas.Mec_DetalleServicios.Sum(s => Convert.ToDouble(s.CantidadXMonto())), 2);
+                diferenciaFarmaciaE.Add(new DiferenciaFarmaciaE("Monto Servicio", montoservicio, CantidadXmontoServicio));
+
+                double montofarmacia = Math.Round(objTramas.Mec_DetalleProductosFarmacia.Sum(s => Convert.ToDouble(s.montoporproducto)), 2);
+                double CantidadXmontoFarmacia = Math.Round(objTramas.Mec_DetalleProductosFarmacia.Sum(s => Convert.ToDouble(s.CantXPrecioFarmacia())), 2);
+                diferenciaFarmaciaE.Add(new DiferenciaFarmaciaE("Monto Farmacia", montofarmacia, CantidadXmontoFarmacia));
+
+            }
+            catch (Exception ex)
+            {
+                diferenciaFarmaciaE.Add(new DiferenciaFarmaciaE("Monto Servicio", 0, 0));
+                diferenciaFarmaciaE.Add(new DiferenciaFarmaciaE("Monto Farmacia", 0, 0));
+            }
+        }
+
+        void CalcularDiferenciaBCR()
+        {
+            try
+            {
+                _bcrE.MontoServicio = Math.Round(objTramas.Mec_CabeceraAtencion.Sum(s => Convert.ToDouble(s.copagovariable_sinigv)) + objTramas.Mec_CabeceraAtencion.Sum(s => Convert.ToDouble(s.copagovariable_exoneradoigv)), 2);
+                _bcrE.MontoCopagos = Math.Round(objTramas.Mec_DetalleServicios.Sum(s => Convert.ToDouble(s.copagovariable)) + Math.Round(objTramas.Mec_DetalleProductosFarmacia.Sum(s => Convert.ToDouble(s.copagoproducto)), 2), 2);
+
+            }
+            catch (Exception ex)
+            {
+                _bcrE.MontoServicio = 0;
+                _bcrE.MontoCopagos = 0;
+
+            }
+        }
+
+        void CalcularDiferenciaCopagoVariable()
+        {
+            try
+            {
+                _copagovariableDif.SumCopagoVarServicio = Math.Round(objTramas.Mec_DetalleServicios.Sum(s => Convert.ToDouble(s.copagovariable)), 2);
+                _copagovariableDif.SumCopagoVarFarmacia = Math.Round(objTramas.Mec_DetalleProductosFarmacia.Sum(s => Convert.ToDouble(s.copagoproducto)), 2);
+                _copagovariableDif.SumCopagoVarAtencion = Math.Round(objTramas.Mec_CabeceraAtencion.Sum(s => Convert.ToDouble(s.copagovariable_sinigv)), 2);
+            }
+            catch (Exception ex)
+            {
+                _copagovariableDif.SumCopagoVarServicio = 0;
+                _copagovariableDif.SumCopagoVarFarmacia = 0;
+                _copagovariableDif.SumCopagoVarAtencion = 0;
+            }
+        }
+
+        void CalcularDiferenciaMonto()
+        {
+            try
+            {
+                _montoDif.MontoDocumento = Math.Round(objTramas.Mec_CabeceraDocumento.Sum(s => Convert.ToDouble(s.montoneto)), 2);
+                _montoDif.MontoAtencion = Math.Round(objTramas.Mec_CabeceraAtencion.Sum(s => (Convert.ToDouble(s.montoatencion) - (Convert.ToDouble(s.copagofijo_sinigv) + Convert.ToDouble(s.copagofijo_exoneradoigv) + Convert.ToDouble(s.copagovariable_sinigv) + Convert.ToDouble(s.copagovariable_exoneradoigv)))), 2);
+
+            }
+            catch (Exception ex)
+            {
+                _montoDif.MontoDocumento = 0;
+                _montoDif.MontoAtencion = 0;
+            }
+        }
+
+        void CalcularDiferenciaCopagos()
+        {
+            try
+            {
+                _copagoDif.SumCopagoDocumento = Math.Round(objTramas.Mec_CabeceraDocumento.Sum(s => (Convert.ToDouble(s.montocopagofijo) + Convert.ToDouble(s.montocopagofijo_exoneradoigv) + Convert.ToDouble(s.montocopagovariable) + Convert.ToDouble(s.montocopagovariable_exoneradoigv))), 2);
+                _copagoDif.SumCopagoAtencion = Math.Round(objTramas.Mec_CabeceraAtencion.Sum(s => (Convert.ToDouble(s.copagofijo_sinigv) + Convert.ToDouble(s.copagofijo_exoneradoigv) + Convert.ToDouble(s.copagovariable_sinigv) + Convert.ToDouble(s.copagovariable_exoneradoigv))), 2);
+            }
+            catch (Exception ex)
+            {
+                _copagoDif.SumCopagoDocumento = 0;
+                _copagoDif.SumCopagoAtencion = 0;
+            }
+        }
+
+        void LimpiarData()
+        {
+            NroComprobante = "";
+            objTramas = new TramasE();
+            objTramas.Mec_CabeceraDocumento = new List<MecCabeceraDocumentoE>();
+            objTramas.Mec_CabeceraAtencion = new List<MEcCabeceraAtencionE>();
+            objTramas.Mec_DetalleServicios = new List<MecDetalleServiciosE>();
+            objTramas.Mec_DetalleProductosFarmacia = new List<MecDetalleProductosFarmacia>();
+            objTramas.Mec_MensajeTrama = new MecMensajeE();
+            objTramas.Mec_Coaseguros = new List<MecCoaSegurosE>();
+            pbjpeps = new PepsCopVarE();
+            noCuadrE = new FacturaNoCuadrE();
+            montoNocuadrE = new FacturaMontoNocuadrE();
+            diferenciaFarmaciaE = new List<DiferenciaFarmaciaE>();
+            _bcrE = new BCRE();
+            _copagoDif = new DiferenciaCopagoE();
+            _copagovariableDif = new DiferenciaCopagoVariableE();
+            _montoDif = new DiferenciaMontoDocAtenE();
+            objTramaUpdate = new TramasE();
+        }
+
+        void LimpiarObjetos()
+        {
+            objTramas = new TramasE();
+            objTramas.Mec_CabeceraDocumento = new List<MecCabeceraDocumentoE>();
+            objTramas.Mec_CabeceraAtencion = new List<MEcCabeceraAtencionE>();
+            objTramas.Mec_DetalleServicios = new List<MecDetalleServiciosE>();
+            objTramas.Mec_DetalleProductosFarmacia = new List<MecDetalleProductosFarmacia>();
+            objTramas.Mec_MensajeTrama = new MecMensajeE();
+            objTramas.Mec_Coaseguros = new List<MecCoaSegurosE>();
+            pbjpeps = new PepsCopVarE();
+            noCuadrE = new FacturaNoCuadrE();
+            montoNocuadrE = new FacturaMontoNocuadrE();
+            diferenciaFarmaciaE = new List<DiferenciaFarmaciaE>();
+            _bcrE = new BCRE();
+            _copagoDif = new DiferenciaCopagoE();
+            _copagovariableDif = new DiferenciaCopagoVariableE();
+            _montoDif = new DiferenciaMontoDocAtenE();
+            objTramaUpdate = new TramasE();
+        }
+
+        async void InfoPeps()
+        {
+            _MensajeBody = "PEPS = Solo hasta 0.05";
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalInformacionTrama");
+        }
+
+
+        /*Modificación tab Farmacia*/
+        async void OninputFarmaPrecioUnit(ChangeEventArgs e, MecDetalleProductosFarmacia item)
+        {
+            try
+            {
+                var value = Convert.ToDouble(e.Value);
+                var Modificar = objTramas.Mec_DetalleProductosFarmacia.Where(w => w.correlativoproducto == item.correlativoproducto).FirstOrDefault();
+                Modificar.preciounitario = value.ToString();
+                Modificar.montoporproducto = (Math.Round(Convert.ToDouble(Modificar.cantidadventa) * value, 2)).ToString();
+                Modificar.update = true;
+                CalcularDiferencias();
+            }
+            catch (Exception ex)
+            {
+                _MensajeBody = ex.Message;
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+                //
+
+            }
+        }
+
+        async void OninputFarmaCopago(ChangeEventArgs e, MecDetalleProductosFarmacia item)
+        {
+            try
+            {
+                var value = Convert.ToDouble(e.Value);
+                var Modificar = objTramas.Mec_DetalleProductosFarmacia.Where(w => w.correlativoproducto == item.correlativoproducto).FirstOrDefault();
+                Modificar.copagoproducto = value.ToString();
+                Modificar.update = true;
+                CalcularDiferencias();
+            }
+            catch (Exception ex)
+            {
+                _MensajeBody = ex.Message;
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+                //
+
+            }
+        }
+
+        async void OninputFarmaMontoTot(ChangeEventArgs e, MecDetalleProductosFarmacia item)
+        {
+            try
+            {
+                var value = Convert.ToDouble(e.Value);
+                var Modificar = objTramas.Mec_DetalleProductosFarmacia.Where(w => w.correlativoproducto == item.correlativoproducto).FirstOrDefault();
+                Modificar.montoporproducto = value.ToString();
+                if (Convert.ToDouble(Modificar.cantidadventa) == 1)
+                {
+                    Modificar.preciounitario = value.ToString();
+                }
+                Modificar.update = true;
+                CalcularDiferencias();
+            }
+            catch (Exception ex)
+            {
+                _MensajeBody = ex.Message;
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+                //
+
+            }
+        }
+
+        async void OnReclacularMontoDiferentes()
+        {
+            try
+            {
+                if (objTramas.Mec_DetalleProductosFarmacia.Count() > 0)
+                {
+                    var _Montodife = objTramas.Mec_DetalleProductosFarmacia.Where(w => Convert.ToDouble(w.montoporproducto) != w.CantXPrecioFarmacia()).ToList();
+                    if (_Montodife.Count() > 0)
+                    {
+                        foreach (var item in _Montodife)
+                        {
+                            var montonuevo = Math.Round(Convert.ToDouble(item.cantidadventa) * Convert.ToDouble(item.preciounitario), 2);
+                            item.montoporproducto = montonuevo.ToString();
+                            item.update = true;
+                        }
+                        CalcularDiferencias();
+                        //msgModalInformacionTrama
+
+                        _MensajeBody = "Se ha recalculado los montos, Total de registros: " + _Montodife.Count().ToString();
+                        await js.InvokeVoidAsync("NotFoundSpinner", "msgModalInformacionTrama");
+
+                    }
+                    else
+                    {
+                        _MensajeBody = "No hay registros a recalcular";
+                        await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+                    }
+                }
+                else
+                {
+                    _MensajeBody = "No hay registros a recalcular";
+                    await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _MensajeBody = ex.Message;
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+            }
+        }
+        /****************************************************************************************/
+
+        /*Modificación tabs servicios*/
+        async void OnInputServiPrecioUnit(ChangeEventArgs e, MecDetalleServiciosE item)
+        {
+            try
+            {
+                var value = Convert.ToDouble(e.Value);
+                var Modificar = objTramas.Mec_DetalleServicios.Where(w => w.correlativo == item.correlativo).FirstOrDefault();
+                Modificar.preciounitario = value.ToString();
+                Modificar.montoservicio = (Math.Round(Convert.ToDouble(Modificar.cantidadrepservicios) * value, 2)).ToString();
+                Modificar.Update = true;
+                CalcularDiferencias();
+            }
+            catch (Exception ex)
+            {
+                _MensajeBody = ex.Message;
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+            }
+        }
+
+        async void OnInputServiMontoTot(ChangeEventArgs e, MecDetalleServiciosE item)
+        {
+            try
+            {
+                var value = Convert.ToDouble(e.Value);
+                var Modificar = objTramas.Mec_DetalleServicios.Where(w => w.correlativo == item.correlativo).FirstOrDefault();
+                Modificar.montoservicio = value.ToString();
+                if (Convert.ToDouble(item.cantidadrepservicios) == 1)
+                {
+                    Modificar.preciounitario = e.Value.ToString();
+                }
+                Modificar.Update = true;
+                CalcularDiferencias();
+
+            }
+            catch (Exception ex)
+            {
+                _MensajeBody = ex.Message;
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+            }
+        }
+
+        async void OnInputServiCopagoFijo(ChangeEventArgs e, MecDetalleServiciosE item)
+        {
+            try
+            {
+                var value = Convert.ToDouble(e.Value);
+                var Modificar = objTramas.Mec_DetalleServicios.Where(w => w.correlativo == item.correlativo).FirstOrDefault();
+                Modificar.copagofijo = value.ToString();
+                Modificar.Update = true;
+                CalcularDiferencias();
+            }
+            catch (Exception ex)
+            {
+                _MensajeBody = ex.Message;
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+            }
+        }
+
+        async void OnInputServiCopagoVariable(ChangeEventArgs e, MecDetalleServiciosE item)
+        {
+            try
+            {
+                var value = Convert.ToDouble(e.Value);
+                var Modificar = objTramas.Mec_DetalleServicios.Where(w => w.correlativo == item.correlativo).FirstOrDefault();
+                Modificar.copagovariable = value.ToString();
+                Modificar.Update = true;
+                CalcularDiferencias();
+            }
+            catch (Exception ex)
+            {
+                _MensajeBody = ex.Message;
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+            }
+        }
+
+        /****************************************************************************************/
+        async void VerCoaseguro()
+        {
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalCoaseguro");
+
+        }
+
+        async void OnUpdateTrama()
+        {
+            try
+            {
+                var servicio = objTramas.Mec_DetalleServicios.Where(w => w.Update == true).ToList();
+                var farmacia = objTramas.Mec_DetalleProductosFarmacia.Where(w => w.update == true).ToList();
+                var AtencionMec = objTramas.Mec_CabeceraAtencion.Where(w => w.update == true).ToList();//[1.1]
+
+                if (servicio.Count() == 0 && farmacia.Count() == 0 && AtencionMec.Count() == 0)//[1.1]
+                {
+                    _MensajeBody = "Aún no se han realizado modificaciones a los servicio y/o farmacia";
+                    await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+                    return;
+                }
+                else
+                {
+                    objTramaUpdate = new TramasE();
+                    objTramaUpdate.Iduser = IdUser;
+                    objTramaUpdate.Mec_CabeceraDocumento = objTramas.Mec_CabeceraDocumento;
+                    objTramaUpdate.Mec_CabeceraAtencion = AtencionMec;//[1.1]
+                    objTramaUpdate.Mec_MensajeTrama = objTramas.Mec_MensajeTrama;
+                    objTramaUpdate.Mec_DetalleServicios = servicio;
+                    objTramaUpdate.Mec_DetalleProductosFarmacia = farmacia;
+                    objTramaUpdate.Mec_Coaseguros = new List<MecCoaSegurosE>();
+
+                    var Json = JsonConvert.SerializeObject(objTramaUpdate);
+
+                    var encriptado = Criptography.EncryptConectionString(_app.Key);
+                    var _client = new RestClient(MetaGlobal.RutaApiClinica + "Tramas/API/Clinica/ActualizarDetalleTrama");
+                    var _request = new RestRequest();
+                    _request.Method = Method.Post;
+                    _request.AddJsonBody(Json);
+                    _request.AddHeader("Authorization", encriptado);
+                    var _response = _client.Execute(_request);
+                    if (_response.StatusCode == HttpStatusCode.OK)
+                    {
+                        var Resultado = JsonConvert.DeserializeObject<ResultadoTransactionE<bool>>(_response.Content);
+                        if (Resultado.Data == true)
+                        {
+                            _MensajeBody = Resultado.Mensaje;
+                            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalInformacionTrama");
+                        }
+                        else
+                        {
+                            _MensajeBody = Resultado.Mensaje;
+                            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+                        }
+                    }
+                    else
+                    {
+                        _MensajeBody = _response.Content.ToString();
+                        await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _MensajeBody = ex.Message;
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+
+            }
+        }
+
+        /*MODIFICACION MEC CABECERA ATENCION*/
+        /*[1.1] INI*/
+        async void OnInputCabeceraAtencion(ChangeEventArgs e, MEcCabeceraAtencionE item, string dato)
+        {
+            try
+            {
+                var value = Convert.ToDouble(e.Value);
+                var Modificar = objTramas.Mec_CabeceraAtencion.Where(w => w.numerodocumentopago == item.numerodocumentopago).First();
+                switch (dato)
+                {
+                    case "gastohonorario_sinigv":
+                        Modificar.gastohonorario_sinigv = value.ToString();
+                        break;
+                    case "gastoodontologo_sinigv":
+                        Modificar.gastoodontologo_sinigv = value.ToString();
+                        break;
+                    case "gastohoteleria_sinigv":
+                        Modificar.gastohoteleria_sinigv = value.ToString();
+                        break;
+                    case "gastolaboratorio_sinigv":
+                        Modificar.gastolaboratorio_sinigv = value.ToString();
+                        break;
+                    case "gastoimagenes_sinigv":
+                        Modificar.gastoimagenes_sinigv = value.ToString();
+                        break;
+                    case "gastofarmacia_sinigv":
+                        Modificar.gastofarmacia_sinigv = value.ToString();
+                        break;
+                    case "gastoprotesis_sinigv":
+                        Modificar.gastoprotesis_sinigv = value.ToString();
+                        break;
+                    case "gastofarmacia_exoneradoigv":
+                        Modificar.gastofarmacia_exoneradoigv = value.ToString();
+                        break;
+                    case "gastootros_sinigv":
+                        Modificar.gastootros_sinigv = value.ToString();
+                        break;
+
+
+                    case "copagofijo_sinigv":
+                        Modificar.copagofijo_sinigv = value.ToString();
+                        break;
+                    case "copagofijo_exoneradoigv":
+                        Modificar.copagofijo_exoneradoigv = value.ToString();
+                        break;
+                    case "copagovariable_sinigv":
+                        Modificar.copagovariable_sinigv = value.ToString();
+                        break;
+
+                    case "copagovariable_exoneradoigv":
+                        Modificar.copagovariable_exoneradoigv = value.ToString();
+                        break;
+                }
+                Modificar.update = true;
+                CalcularDiferencias();
+            }
+            catch (Exception ex)
+            {
+                _MensajeBody = ex.Message;
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalErrorTrama");
+            }
+        }
+        /*[1.1] FIN*/
+        }
+
+        @if (acceso)
+        {
+            <div class="row mt-2">
+                <div class="bg-light mt-4">
+                    <div class="form-bg">
+                        <div class="container-fluid">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 buscar-menuNuevo" style="border-radius:25px !important;">
+                                <div class="mt-3">
+                                    <!--[1.1] Ini-->
+                                    <div class="row text-center">
+                                        @if (objTramas.Mec_CabeceraDocumento.Count() > 0)
+                                        {
+                                            @if (objTramas.Mec_CabeceraDocumento.First().codigomecanismopago == "03")
+                                            {
+                                                <label class="fs-2 text-danger fw-bold">PAQUETE</label>
+                                            }
+                                        }
+                                    </div>
+                                    <!--[1.1] Fin-->
+                                </div>
+                                <div class="mt-3">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <span class="text-danger fw-bold ">(*)</span><label class="text-black fw-bold">Ingrese N° Comprobante</label>
+                                            <input type="text" class="form-control" @bind="NroComprobante" />
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="mt-3 form-control btn btn-primary btn-lg" @onclick="BuscarDatosComprobante">Buscar comprobante</button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="mt-3 form-control btn btn-success btn-lg" @onclick="LimpiarData">Limpiar</button>
+                                        </div>
+                                        <div class="col-md-3">
+                                            @if (objTramas.Mec_Coaseguros.Count() > 0)
+                                            {
+                                                @if (objTramas.Mec_Coaseguros.Where(w => w.Alerta == true).ToList().Count() > 0)
+                                                {
+                                                    <button class="mt-3 form-control btn btn-danger btn-lg" @onclick="VerCoaseguro">Advertencia Coaseguro</button>
+                                                }
+                                                else
+                                                {
+                                                    <button class="mt-3 form-control btn btn-primary btn-lg" @onclick="VerCoaseguro">Ver Coaseguro</button>
+                                                }
+                                            }
+                                        </div>
+                                        <div class="col-md-2">
+                                            <!--[1.1] Ini-->
+                                            @if (objTramas.Mec_Coaseguros.Count() > 0)
+                                            {
+                                                <button class="mt-3 form-control btn btn-success btn-lg" @onclick="OnUpdateTrama">Actualizar comprobante</button>
+                                            }
+                                            <!--[1.1] Fin-->
+                                        </div>
+                                    </div>
+                                    <p class="fw-bold">Valores a Validar</p>
+                                    <hr />
+                                    <TabControlComponent>
+                                        @foreach (var item in ListadoValidacion)
+                                        {
+                                            <TabPageComponent Text="@item.Titulo" _ICons="@item.Icono">
+                                                @if (item.IdTabs.Trim() == "1")//FACTURA NO CUADRA
+                                                {
+                                                    <div class="row mt-4">
+                                                        <p class="text-black fw-bold">case: FACTURA NO CUADRA(1) : (T2.montoatencion) -[ Sum(t3.montoservicio) + Sum(t3.montonocubiertoservicio) + Sum(t4..montoporproducto)]</p>
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td class="text-center fw-bold">Monto Total Atención</td>
+                                                                    <td class="text-center fw-bold">Suma Monto Servicio</td>
+                                                                    <td class="text-center fw-bold">Suma Monto No Cubierto Servicio</td>
+                                                                    <td class="text-center fw-bold">Suma Monto Por Producto</td>
+                                                                    <td class="text-center fw-bold">Suma Monto no Cubierto Por Producto</td>
+                                                                    <td class="text-center fw-bold">Total</td>
+                                                                    <td class="text-center fw-bold"></td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @if (noCuadrE != null)
+                                                                {
+                                                                    <tr>
+                                                                        <td class="text-end">@noCuadrE.MontoTotalAtencion</td>
+                                                                        <td class="text-end">@noCuadrE.SumMontoServicio</td>
+                                                                        <td class="text-end">@noCuadrE.SumMontoNoCubiertoServicio</td>
+                                                                        <td class="text-end">@noCuadrE.SumMontoPorProducto</td>
+                                                                        <td class="text-end">@noCuadrE.SumMontoNoCubiertoProducto</td>
+                                                                        <td class="text-end bg-warning">@noCuadrE.DiferenciaTotalServicio()</td>
+                                                                        <td class="text-end">Dif = Atención - Monto Serv - No Cubierto Serv </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td></td>
+                                                                        <td colspan="2" class="text-end">@noCuadrE.DiferenciaSumaServicio()</td>
+                                                                        <td colspan="2" class="text-end">@noCuadrE.DiferenciaMontoProducto()</td>
+                                                                        <td class="text-end bg-warning">@noCuadrE.DiferenciaTotalServicio2()</td>
+                                                                        <td class="text-end">Dif = Atención - Dif(Servicio) - Dif(Producto)</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                }
+
+                                                @if (item.IdTabs.Trim() == "2")//Pacifico Seguro
+                                                {
+                                                    <div class="row mt-4">
+                                                        <p class="text-black fw-bold">Pacifico EPS - COPVAR</p>
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="text-center fw-bold"> Doc. Copago Fijo</th>
+                                                                    <th class="text-center fw-bold"> Doc. Copago Varible</th>
+                                                                    <th class="text-center fw-bold"> Doc. Copago Fijo EXOIGV</th>
+                                                                    <th class="text-center fw-bold"> Doc. Copago Varible EXOIGV</th>
+                                                                    <th class="text-center fw-bold"> Suma Copago Fijo Servicio</th>
+                                                                    <th class="text-center fw-bold"> Suma Copago Variable Servicio</th>
+                                                                    <th class="text-center fw-bold"> Suma copago Farmacia</th>
+                                                                    <th class="text-center fw-bold"> Total</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @if (pbjpeps != null)
+                                                                {
+                                                                    <tr>
+                                                                        <td class="text-end">@pbjpeps.DocCopagoFijoIGV</td>
+                                                                        <td class="text-end">@pbjpeps.DocCopagoVarIGV</td>
+                                                                        <td class="text-end">@pbjpeps.DocCopagoFijoEXOIGV</td>
+                                                                        <td class="text-end">@pbjpeps.DocCopagoFijoVarEXOIGV</td>
+                                                                        <td class="text-end">@pbjpeps.ServSumCopagoFijo</td>
+                                                                        <td class="text-end">@pbjpeps.ServSumCopagoVariable</td>
+                                                                        <td class="text-end">@pbjpeps.FarmCopagoProducto</td>
+                                                                        <td class="text-center">
+                                                                            <button class="btn btn-info text-white" @onclick="InfoPeps">
+                                                                                <i class="far fa-eye"></i>
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-end" colspan="4"><span class="me-5">Sum(Copago Fijo + Copago Variable) =</span>   @pbjpeps.DocSumTotalCopago()</td>
+                                                                        <td class="text-end" colspan="3"><span class="me-5">Sum(Copago Fijo Serv + Copago Variable Serv + Copago Farma) =</span>@pbjpeps.ServSumTotalCopago()</td>
+                                                                        <td class="text-end bg-warning" colspan="1">@pbjpeps.DiferenciaCopagos()</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-end" colspan="4">@pbjpeps.DivDocSumTotalCopago()</td>
+                                                                        <td class="text-end" colspan="4"><span class="me-4">Copago Variable - copago variable serv - copago Farma = </span>@pbjpeps.DiferenciaCopagoVariable()</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                }
+
+                                                @if (item.IdTabs.Trim() == "3")
+                                                {
+                                                    <div class="row mt-4">
+                                                        <p class="text-black fw-bold">case: FACTURA NO CUADRA(1) : (T2.montoatencion) -[ Sum(t3.montoservicio) + Sum(t3.montonocubiertoservicio) + Sum(t4..montoporproducto)]</p>
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td class="text-center fw-bold">Monto Neto DOC</td>
+                                                                    <td class="text-center fw-bold">Monto Atención</td>
+                                                                    <td class="text-center fw-bold">Copago Fijo SINIGV</td>
+                                                                    <td class="text-center fw-bold">Copago Fijo EXOIGV</td>
+                                                                    <td class="text-center fw-bold">Copago Variable SINIGV</td>
+                                                                    <td class="text-center fw-bold">Copago Variable EXOIGV</td>
+                                                                    <td class="text-center fw-bold">Total</td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @if (montoNocuadrE != null)
+                                                                {
+                                                                    <tr>
+                                                                        <td class="text-end">@montoNocuadrE.MontoNeto</td>
+                                                                        <td class="text-end">@montoNocuadrE.MontoAtencion</td>
+                                                                        <td class="text-end">@montoNocuadrE.CopagoFijo_SINIGV</td>
+                                                                        <td class="text-end">@montoNocuadrE.CopagoFijo_EXOIGV</td>
+                                                                        <td class="text-end">@montoNocuadrE.CopagoVariable_SINIGV</td>
+                                                                        <td class="text-end">@montoNocuadrE.CopagoVariable_EXOIGV</td>
+                                                                        <td class="text-end"></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-end">@montoNocuadrE.MontoNeto</td>
+                                                                        <td class="text-end" colspan="5">@montoNocuadrE.DiferenciaMontoCopagos()</td>
+                                                                        <td class="text-end bg-warning">@montoNocuadrE.DiferenciaMontoTotal()</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                }
+
+                                                @if (item.IdTabs.Trim() == "4")
+                                                {
+                                                    <div class="row mt-4">
+                                                        <p class="fw-bold">BCR= Copago Var(DATE) = Copago DSER + Copago DFAR</p>
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td>Atención Copago Variable SINIGV  +Atención Copago Variable EXOIGV</td>
+                                                                    <td>Servicio Sum(copago Variable) + sum(copago Producto Farma)</td>
+                                                                    <td>Diferencia</td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @if (_bcrE != null)
+                                                                {
+                                                                    <tr>
+                                                                        <td class="text-end">@_bcrE.MontoServicio</td>
+                                                                        <td class="text-end">@_bcrE.MontoCopagos</td>
+                                                                        <td class="text-end bg-warning">@_bcrE.diferencia()</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                }
+
+                                                @if (item.IdTabs.Trim() == "5")
+                                                {
+                                                    <div class="row mt-4">
+                                                        <p class="text-black fw-bold">El margen de tolerancia para la validez del dato es de +/- 0.25</p>
+                                                        <p class="text-black fw-bold">Monto Neto = (Monto servicio) - (Monto Farmacia)</p>
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td class="text-center fw-bold">Suma Monto (Servicio / Farma)</td>
+                                                                    <td class="text-center fw-bold">Suma Cant X Precio (Servicio / Farma)</td>
+                                                                    <td class="text-center fw-bold">Diferencia = Sum(Monto) - Sum(Cant X Precio)</td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @if (diferenciaFarmaciaE.Count() > 0)
+                                                                {
+                                                                    @foreach (var item in diferenciaFarmaciaE)
+                                                                    {
+                                                                        <tr>
+                                                                            <td class="fw-bold">@item.Titulo</td>
+                                                                            <td class="text-end">@item.SumMontoServicio</td>
+                                                                            <td class="text-end">@item.SumCantidadXMonto</td>
+                                                                            <td class="text-end bg-warning">@item.DiferenciaFarmacia()</td>
+                                                                        </tr>
+
+                                                                    }
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                }
+                                            </TabPageComponent>
+                                        }
+                                    </TabControlComponent>
+
+                                    <p class="fw-bold">Detalle Comprobante</p>
+                                    <hr />
+                                    <div class="row mt-4">
+                                        <div class="col-md-12">
+                                            @if (ListadoTabs.Count() > 0)
+                                            {
+                                                <TabControlComponent>
+                                                    @foreach (var item in ListadoTabs)
+                                                    {
+                                                        <TabPageComponent Text="@item.Titulo" _ICons="@item.Icono">
+                                                            @if (item.IdTabs.Trim() == "1")//MEC Cabecera Documento
+                                                            {
+                                                                <div class="row mt-3 table-responsive">
+                                                                    <table class="table table-bordered">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th class="text-center">Nro Comprobante</th>
+                                                                                <th class="text-center">F. Emisión</th>
+                                                                                <th class="text-center">M. ServFar EXOIGV</th>
+                                                                                <th class="bg-warning text-center">M. Copago Fijo</th>
+                                                                                <th class="bg-warning text-center">M. Copago Fijo EXOIGV</th>
+                                                                                <th class="bg-warning text-center">M. Copago Variable</th>
+                                                                                <th class="bg-warning text-center">M. Copago Variable EXOIGV</th>
+                                                                                <th class="bg-warning text-center">Monto Neto</th>
+                                                                                <th class="text-center">Igv Monto Neto</th>
+                                                                                <th class="text-center">Monto Neto Facturar</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @if (objTramas.Mec_CabeceraDocumento.Count() > 0)
+                                                                            {
+                                                                                @foreach (var item in objTramas.Mec_CabeceraDocumento)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td>@item.numerodocumentopago</td>
+                                                                                        <td>@item.fechaemision</td>
+                                                                                        <td class="text-end">@item.montoservfar_exoneradoigv</td>
+                                                                                        <td class="text-end">@item.montocopagofijo</td>
+                                                                                        <td class="text-end">@item.montocopagofijo_exoneradoigv</td>
+                                                                                        <td class="text-end">@item.montocopagovariable</td>
+                                                                                        <td class="text-end">@item.montocopagovariable_exoneradoigv</td>
+                                                                                        <td class="bg-warning text-end">@item.montoneto</td>
+                                                                                        <td class="bg-warning text-end">@item.igvmontoneto</td>
+                                                                                        <td class="bg-warning text-end">@item.montonetofacturar</td>
+                                                                                    </tr>
+                                                                                }
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <hr />
+                                                                <div class="row mt-3">
+                                                                    <p class="fw-bold">Diferencia de Copagos</p>
+                                                                    <div class="col-md-12">
+                                                                        <table class="table table-bordered">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th class="text-center">Suma Copago Documento</th>
+                                                                                    <th class="text-center">Suma Copago Atención</th>
+                                                                                    <th class="text-center">Diferencia</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                @if (_copagoDif != null)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td class="text-end"> @_copagoDif.SumCopagoDocumento</td>
+                                                                                        <td class="text-end">@_copagoDif.SumCopagoAtencion</td>
+                                                                                        <td class="text-end bg-warning">@_copagoDif.DiferenciaMonto()</td>
+                                                                                    </tr>
+                                                                                }
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                    <p class="fw-bold">Diferencia Copagos Variables</p>
+                                                                    <div class="col-md-12">
+                                                                        <table class="table table-bordered">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th class="text-center">Suma Copago Variable Servicio</th>
+                                                                                    <th class="text-center">Suma Copago Variable Farmacia</th>
+                                                                                    <th class="text-center">Copago Varible SINIGV Atencion</th>
+                                                                                    <th class="text-center">Difrencia = Atención - (Serv + Farma)</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                @if (_copagovariableDif != null)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td class="text-end">@_copagovariableDif.SumCopagoVarServicio</td>
+                                                                                        <td class="text-end">@_copagovariableDif.SumCopagoVarFarmacia</td>
+                                                                                        <td class="text-end">@_copagovariableDif.SumCopagoVarAtencion</td>
+                                                                                        <td class="text-end  bg-warning">@_copagovariableDif.DifCopagoAtencionSerFar()</td>
+                                                                                    </tr>
+                                                                                }
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                    <p class="fw-bold">Diferencia de Montos Netos</p>
+                                                                    <table class="table table-bordered">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th class="text-center">Monto Documento</th>
+                                                                                <th class="text-center">Monto Atención (Atención - Copagos Fijos y variables)</th>
+                                                                                <th class="text-center ">Diferencia</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @if (_montoDif != null)
+                                                                            {
+                                                                                <tr>
+                                                                                    <td class="text-end">@_montoDif.MontoDocumento</td>
+                                                                                    <td class="text-end">@_montoDif.MontoAtencion</td>
+                                                                                    <td class="text-end bg-warning">@_montoDif.Diferencia()</td>
+                                                                                </tr>
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            }
+                                                            @if (item.IdTabs.Trim() == "2")//MEC Cabecera Atención
+                                                            {
+                                                                <div class="row table-responsive">
+                                                                    <!--[1.1] INI-->
+                                                                    <table class="table table-bordered">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th class="text-center">Nro Comprobante</th>
+                                                                                <th class="text-center">Gasto Honorario SINIGV</th>
+                                                                                <th class="text-center">Gasto Odontologo SINIGV</th>
+                                                                                <th class="text-center">Gasto Hoteleria SINIGV</th>
+                                                                                <th class="text-center">Gasto Laboratorio SINIGV</th>
+                                                                                <th class="text-center">Gasto Imagenes SINIGV</th>
+                                                                                <th class="text-center">Gasto Farmacia SINIGV</th>
+                                                                                <th class="text-center">Gasto Protesis SINIGV</th>
+                                                                                <th class="text-center">Gasto Farmacia EXOIGV</th>
+                                                                                <th class="text-center">Gasto Otros SINIGV</th>
+                                                                                <th class="text-center">Suma Servicios</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @if (objTramas.Mec_CabeceraAtencion.Count() > 0)
+                                                                            {
+                                                                                @foreach (var item in objTramas.Mec_CabeceraAtencion)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td>@item.numerodocumentopago</td>
+                                                                                        <td>
+                                                                                            <input class="form-control text-end" type="number" @bind="item.gastohonorario_sinigv" @oninput='((e)=>OnInputCabeceraAtencion(e, item, "gastohonorario_sinigv"))' step="any" pattern="[0-9,.]+" />
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <input class="form-control text-end" type="number" @bind="item.gastoodontologo_sinigv" @oninput='((e)=>OnInputCabeceraAtencion(e, item, "gastoodontologo_sinigv"))' step="any" pattern="[0-9,.]+" />
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <input class="form-control text-end" type="number" @bind="item.gastohoteleria_sinigv" @oninput='((e)=>OnInputCabeceraAtencion(e, item, "gastohoteleria_sinigv"))' step="any" pattern="[0-9,.]+" />
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <input class="form-control text-end" type="number" @bind="item.gastolaboratorio_sinigv" @oninput='((e)=>OnInputCabeceraAtencion(e, item, "gastolaboratorio_sinigv"))' step="any" pattern="[0-9,.]+" />
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <input class="form-control text-end" type="number" @bind="item.gastoimagenes_sinigv" @oninput='((e)=>OnInputCabeceraAtencion(e, item, "gastoimagenes_sinigv"))' step="any" pattern="[0-9,.]+" />
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <input class="form-control text-end" type="number" @bind="item.gastofarmacia_sinigv" @oninput='((e)=>OnInputCabeceraAtencion(e, item, "gastofarmacia_sinigv"))' step="any" pattern="[0-9,.]+" />
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <input class="form-control text-end" type="number" @bind="item.gastoprotesis_sinigv" @oninput='((e)=>OnInputCabeceraAtencion(e, item, "gastoprotesis_sinigv"))' step="any" pattern="[0-9,.]+" />
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <input class="form-control text-end" type="number" @bind="item.gastofarmacia_exoneradoigv" @oninput='((e)=>OnInputCabeceraAtencion(e, item, "gastofarmacia_exoneradoigv"))' step="any" pattern="[0-9,.]+" />
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <input class="form-control text-end" type="number" @bind="item.gastootros_sinigv" @oninput='((e)=>OnInputCabeceraAtencion(e, item, "gastootros_sinigv"))' step="any" pattern="[0-9,.]+" />
+                                                                                        </td>
+                                                                                        <td class="text-end">
+                                                                                            @item.Monto_suma_servicio()
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                }
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+
+                                                                    <table class="table table-bordered mt-2">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th class="bg-warning text-center">Copago Fijo SINIGV</th>
+                                                                                <th class="bg-warning text-center">Copago Fijo EXOIGV</th>
+                                                                                <th class="bg-warning text-center">Copago Variable SINIGV</th>
+                                                                                <th class="bg-warning text-center">Copago Variable EXOIGV</th>
+                                                                                <th class="bg-warning text-center">Suma Copagos</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @if (objTramas.Mec_CabeceraAtencion.Count() > 0)
+                                                                            {
+                                                                                @foreach (var item in objTramas.Mec_CabeceraAtencion)
+                                                                                {
+                                                                                    <tr>
+
+                                                                                        <td>
+                                                                                            <input class="form-control text-end" type="number" @bind="item.copagofijo_sinigv" @oninput='((e)=>OnInputCabeceraAtencion(e, item, "copagofijo_sinigv"))' step="any" pattern="[0-9,.]+" />
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <input class="form-control text-end" type="number" @bind="item.copagofijo_exoneradoigv" @oninput='((e)=>OnInputCabeceraAtencion(e, item, "copagofijo_exoneradoigv"))' step="any" pattern="[0-9,.]+" />
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <input class="form-control text-end" type="number" @bind="item.copagovariable_sinigv" @oninput='((e)=>OnInputCabeceraAtencion(e, item, "copagovariable_sinigv"))' step="any" pattern="[0-9,.]+" />
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <input class="form-control text-end" type="number" @bind="item.copagovariable_exoneradoigv" @oninput='((e)=>OnInputCabeceraAtencion(e, item, "copagovariable_exoneradoigv"))' step="any" pattern="[0-9,.]+" />
+                                                                                        </td>
+                                                                                        <td class="text-end">
+                                                                                            @item.Monto_suma_copagos()
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                }
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+
+                                                                    <table class="table table-bordered mt-2">
+                                                                        <thead>
+                                                                            <tr>
+
+                                                                                <th class="bg-warning text-center">Monto Atención</th>
+                                                                                <th class="bg-warning text-center">Dif Monto Suma Servicio - Copago</th>
+                                                                                <th class="bg-warning text-center">Dif Monto Atención - Copago</th>
+                                                                                <th class="bg-warning text-center">Sum Monto Neto Documento Copago</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @if (objTramas.Mec_CabeceraAtencion.Count() > 0)
+                                                                            {
+                                                                                @foreach (var item in objTramas.Mec_CabeceraAtencion)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td class="text-center">@item.montoatencion</td>
+                                                                                        <td class="text-center">@item.MontoDif_Servicio_Copago()</td>
+                                                                                        <td class="text-center">@item.MontoDif_MontoServicio_Copago()</td>
+                                                                                        <td class="text-center">@item.SumMonto_Documento_Copago(objTramas.Mec_CabeceraDocumento.Sum(s => Convert.ToDouble(s.montoneto)))</td>
+                                                                                    </tr>
+                                                                                }
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+                                                                    <!--[1.1] FIN-->
+                                                                </div>
+                                                            }
+                                                            @if (item.IdTabs.Trim() == "3")//MEC Detalle Servicio
+                                                            {
+                                                                <!--[1.1] INI-->
+                                                                <div class="row table-responsive">
+                                                                    <table class="table table-bordered">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>Grupo Sunasa </th>
+                                                                                <th class="text-center">Nro Documento</th>
+                                                                                <th class="text-center">Correlativo</th>
+                                                                                <th class="text-center">Nombre Prestación</th>
+                                                                                <th class="text-center">Cant.</th>
+                                                                                <th class="text-center">P. Unit</th>
+                                                                                <th class="text-center">Copago Variable</th>
+                                                                                <th class="text-center">Copago Fijo</th>
+                                                                                <th class="text-center bg-warning">Monto Servicio</th>
+                                                                                <th class="text-center bg-warning">Monto no Cubierto</th>
+                                                                                <th class="text-center bg-warning">Cant X Monto</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        @if (objTramas.Mec_DetalleServicios.Count() > 0)
+                                                                        {
+                                                                            <tbody>
+                                                                                @{
+                                                                                    var detalleserviciomec = objTramas.Mec_DetalleServicios
+                                                                                    .GroupBy(g => new { g.grup_suna, g.grup_sunasa })
+                                                                                    .Select(s => new MecDetalleServiciosE { grup_suna = s.First().grup_suna, grup_sunasa = s.First().grup_sunasa }).OrderBy(o => o.grup_suna).ToList();
+
+                                                                                }
+
+                                                                                @foreach (var data in detalleserviciomec)
+                                                                                {
+                                                                                    <tr>
+                                                                                        @{
+                                                                                            int contar = 0;
+                                                                                        }
+                                                                                    </tr>
+                                                                                    @foreach (var item in objTramas.Mec_DetalleServicios.Where(w => w.grup_suna == data.grup_suna).ToList())
+                                                                                    {
+                                                                                        contar++;
+                                                                                        @if (contar == 1)
+                                                                                        {
+                                                                                            <tr>
+                                                                                                <td rowspan="@objTramas.Mec_DetalleServicios.Where(w=>w.grup_suna == data.grup_suna).Count()">
+                                                                                                    @item.grup_suna - @item.grup_sunasa
+                                                                                                </td>
+                                                                                                <td>@item.numerodocumentopago</td>
+                                                                                                <td>@item.correlativo</td>
+                                                                                                <td>@item.nombreprestacion</td>
+                                                                                                <td>@item.cantidadrepservicios</td>
+                                                                                                <td class="text-end">
+                                                                                                    @if (Convert.ToDouble(item.cantidadrepservicios) == 1)
+                                                                                                    {
+                                                                                                        <input class="form-control text-end" type="number" @bind="item.preciounitario" step="any" pattern="[0-9,.]+" @oninput="((e)=>OnInputServiPrecioUnit(e, item))" />
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        @item.preciounitario
+                                                                                                    }
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <input class="form-control text-end" type="number" @bind="item.copagovariable" step="any" pattern="[0-9,.]+" @oninput="((e)=>OnInputServiCopagoVariable(e, item))" />
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <input class="form-control text-end" type="number" @bind="item.copagofijo" step="any" pattern="[0-9,.]+" @oninput="((e)=>OnInputServiCopagoFijo(e, item))" />
+                                                                                                </td>
+                                                                                                <td class="text-end">
+                                                                                                    @if (Convert.ToDouble(item.cantidadrepservicios) == 1)
+                                                                                                    {
+                                                                                                        <input type="number" class="form-control text-end" @bind="item.montoservicio" step="any" pattern="[0-9,.]+" @oninput="((e)=>OnInputServiMontoTot(e, item))" />
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        @item.montoservicio
+                                                                                                    }
+                                                                                                </td>
+                                                                                                <td class="text-end">@item.montonocubiertoservicio</td>
+                                                                                                <td class="text-end">
+                                                                                                    @if (Convert.ToDouble(item.montoservicio) != item.CantidadXMonto())
+                                                                                                    {
+                                                                                                        <span class="text-danger fw-bold">@item.CantidadXMonto()</span>
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        <span class=" fw-bold">@item.CantidadXMonto()</span>
+                                                                                                    }
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            <tr>
+                                                                                                <td>@item.numerodocumentopago</td>
+                                                                                                <td>@item.correlativo</td>
+                                                                                                <td>@item.nombreprestacion</td>
+                                                                                                <td>@item.cantidadrepservicios</td>
+                                                                                                <td class="text-end">
+                                                                                                    @if (Convert.ToDouble(item.cantidadrepservicios) == 1)
+                                                                                                    {
+                                                                                                        <input class="form-control text-end" type="number" @bind="item.preciounitario" step="any" pattern="[0-9,.]+" @oninput="((e)=>OnInputServiPrecioUnit(e, item))" />
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        @item.preciounitario
+                                                                                                    }
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <input class="form-control text-end" type="number" @bind="item.copagovariable" step="any" pattern="[0-9,.]+" @oninput="((e)=>OnInputServiCopagoVariable(e, item))" />
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <input class="form-control text-end" type="number" @bind="item.copagofijo" step="any" pattern="[0-9,.]+" @oninput="((e)=>OnInputServiCopagoFijo(e, item))" />
+                                                                                                </td>
+                                                                                                <td class="text-end">
+                                                                                                    @if (Convert.ToDouble(item.cantidadrepservicios) == 1)
+                                                                                                    {
+                                                                                                        <input type="number" class="form-control text-end" @bind="item.montoservicio" step="any" pattern="[0-9,.]+" @oninput="((e)=>OnInputServiMontoTot(e, item))" />
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        @item.montoservicio
+                                                                                                    }
+                                                                                                </td>
+                                                                                                <td class="text-end">@item.montonocubiertoservicio</td>
+                                                                                                <td class="text-end">
+                                                                                                    @if (Convert.ToDouble(item.montoservicio) != item.CantidadXMonto())
+                                                                                                    {
+                                                                                                        <span class="text-danger fw-bold">@item.CantidadXMonto()</span>
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        <span class=" fw-bold">@item.CantidadXMonto()</span>
+                                                                                                    }
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        }
+
+                                                                                        @if (contar == objTramas.Mec_DetalleServicios.Where(w => w.grup_suna == data.grup_suna).Count())
+                                                                                        {
+                                                                                            <tr class="table-active fw-bold">
+                                                                                                <td class="text-end" colspan="8">
+                                                                                                    Total
+                                                                                                </td>
+                                                                                                <td class="text-end">
+                                                                                                    @Math.Round(objTramas.Mec_DetalleServicios.Where(w => w.grup_suna == data.grup_suna).Sum(s => Convert.ToDouble(s.montoservicio.ToString())), 2)
+                                                                                                </td>
+                                                                                                <td class="text-end" colspan="2">
+                                                                                                    @Math.Round(objTramas.Mec_DetalleServicios.Where(w => w.grup_suna == data.grup_suna).Sum(s => s.CantidadXMonto()), 2)
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        }
+                                                                                    }
+                                                                                }
+
+                                                                            </tbody>
+                                                                            <tfoot>
+                                                                                <tr class="table-active fw-bold">
+                                                                                    <td class="text-end" colspan="8">
+                                                                                        Suma total de servicios:
+                                                                                    </td>
+                                                                                    <td class="text-end">
+                                                                                        @Math.Round(objTramas.Mec_DetalleServicios.Sum(s => Convert.ToDouble(s.montoservicio.ToString())), 2)
+                                                                                    </td>
+                                                                                    <td class="text-end" colspan="2">
+                                                                                        @Math.Round(objTramas.Mec_DetalleServicios.Sum(s => s.CantidadXMonto()), 2)
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tfoot>
+                                                                        }
+
+                                                                    </table>
+                                                                </div>
+                                                                <!--[1.1] FIN-->
+                                                            }
+                                                            @if (item.IdTabs.Trim() == "4")//MEC Producto Farmacia
+                                                            {
+                                                                <div class="mt-3">
+                                                                    <div class="row">
+                                                                        <div class="col-md-8"></div>
+                                                                        <div class="col-md-4">
+                                                                            <button class="form-control btn-success" @onclick="OnReclacularMontoDiferentes"><i class="fas fa-sync-alt me-3"></i><span>Recalcular Monto Diferente</span></button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row table-responsive">
+                                                                    <table class="table table-bordered">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th class="text-center">Nro Documento</th>
+                                                                                <th class="text-center">Correlativo</th>
+                                                                                <th class="text-center">Cod. producto</th>
+                                                                                <th class="text-center bg-warning">Cant.</th>
+                                                                                <th class="text-center bg-warning">P. Unit.</th>
+                                                                                <th class="text-center bg-warning">Copago</th>
+                                                                                <th class="text-center bg-warning">Monto</th>
+                                                                                <th class="text-center bg-warning">Monto no Cubierto</th>
+                                                                                <th class="text-center bg-warning">Cant X Precio</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        @if (objTramas.Mec_DetalleProductosFarmacia.Count() > 0)
+                                                                        {
+                                                                            <tbody>
+                                                                                @foreach (var item in objTramas.Mec_DetalleProductosFarmacia)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td>@item.numerodocumentopago</td>
+                                                                                        <td>@item.correlativoproducto</td>
+                                                                                        <td>@item.codigoproducto</td>
+                                                                                        <td>@item.cantidadventa</td>
+                                                                                        <td class="text-end">
+                                                                                            <input class="form-control text-end" type="number" @bind="item.preciounitario" step="any" pattern="[0-9,.]+" @oninput="((e)=> OninputFarmaPrecioUnit(e, item))" />
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <input class="form-control text-end" type="number" @bind="item.copagoproducto" step="any" pattern="[0-9,.]+" @oninput="((e)=> OninputFarmaCopago(e, item))" />
+                                                                                        </td>
+                                                                                        <td class="text-end">
+                                                                                            <input class="form-control text-end" type="number" @bind="item.montoporproducto" step="any" pattern="[0-9,.]+" @oninput="((e)=> OninputFarmaMontoTot(e, item))" />
+                                                                                        </td>
+                                                                                        <td class="text-end">@item.montonocubiertoproducto</td>
+                                                                                        <td class="text-end">
+                                                                                            @if (Convert.ToDouble(item.montoporproducto) != item.CantXPrecioFarmacia())
+                                                                                            {
+                                                                                                <span class="text-danger fw-bold">@item.CantXPrecioFarmacia()</span>
+                                                                                            }
+                                                                                            else
+                                                                                            {
+                                                                                                <span class="fw-bold  ">@item.CantXPrecioFarmacia()</span>
+                                                                                            }
+
+                                                                                        </td>
+                                                                                    </tr>
+
+                                                                                }
+                                                                            </tbody>
+                                                                            <tfoot>
+                                                                                <tr>
+                                                                                    <td colspan="6" class="text-end">
+                                                                                        Total:
+                                                                                    </td>
+
+                                                                                    <td class="text-end">
+                                                                                        @Math.Round((objTramas.Mec_DetalleProductosFarmacia.Sum(s => Convert.ToDouble(s.montoporproducto))), 2)
+                                                                                    </td>
+                                                                                    <td></td>
+                                                                                    <td class="text-end">
+                                                                                        @Math.Round((objTramas.Mec_DetalleProductosFarmacia.Sum(s => s.CantXPrecioFarmacia())), 2)
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tfoot>
+                                                                        }
+
+                                                                    </table>
+                                                                </div>
+
+                                                            }
+                                                        </TabPageComponent>
+                                                    }
+                                                </TabControlComponent>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal" id="msgModalCoaseguro" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl" style="max-width: 75%;  margin: 10px auto; margin-bottom:50px;"><!--[1.1] INI-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-center text-black" id="staticBackdropLabel">Información de Coaseguros - Comprobante N°: @NroComprobante</h5>
+                            <button type="button" class="btn-close" id="idCloseModal" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @if (objTramas.Mec_Coaseguros.Count() > 0)
+                            {
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr class="text-center fw-bold">
+                                            <th>N° Presotor</th>
+                                            <th>% Coaseguro Cobertura Poliza</th>
+                                            <th>% Coaseguro Comprobante</th>
+                                            <th>% Coaseguro Presotor</th>
+                                            <th>% Coaseguro Venta</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in objTramas.Mec_Coaseguros)
+                                        {
+                                            @if (item.Alerta)
+                                            {
+                                                <tr class="text-center text-danger">
+                                                    <td>@item.CodPresotor</td>
+                                                    <td>@item.CoaseguroPoliza</td>
+                                                    <td>@item.CoaseguroDetalleComprobante</td>
+                                                    <td>@item.CoaseguroPresotor</td>
+                                                    <td>@item.CoaseguroVenta</td>
+                                                </tr>
+                                            }
+                                            else
+                                            {
+                                                <tr class="text-center">
+                                                    <td>@item.CodPresotor</td>
+                                                    <td>@item.CoaseguroPoliza</td>
+                                                    <td>@item.CoaseguroDetalleComprobante</td>
+                                                    <td>@item.CoaseguroPresotor</td>
+                                                    <td>@item.CoaseguroVenta</td>
+                                                </tr>
+
+                                            }
+
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <MessageModal IdMessage="msgModalErrorTrama"
+                          TitleModal="Error"
+                          IconMessage=MessageModal.iconMessage.Error
+                          TypeButton=MessageModal.typeButton.Ok
+                          EscapeKey="true"
+                          BodyMessage=@_MensajeBody>
+            </MessageModal>
+
+            <MessageModal IdMessage="msgModalInformacionTrama"
+                          TitleModal="Informacion"
+                          IconMessage=MessageModal.iconMessage.Informacion
+                          TypeButton=MessageModal.typeButton.Ok
+                          EscapeKey="true"
+                          BodyMessage=@_MensajeBody>
+            </MessageModal>
+        }
+        else
+        {
+            <Web.Clinica.Components.Utils.PaginaAccesoRestringido></Web.Clinica.Components.Utils.PaginaAccesoRestringido>
+        }
+
+    </Authorized>
+    <NotAuthorized>
+        <h2>Debe identificarse para poder acceder a la aplicación</h2>
+    </NotAuthorized>
+</AuthorizeView>

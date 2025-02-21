@@ -1,0 +1,397 @@
+﻿@using Ent.Sql.ClinicaE.MedicosE
+@using Ent.Sql.ClinicaE.EspecialidadesE
+@using Web.Clinica.Components
+@using Ent.Sql.ClinicaE.OtrosE
+@using Ent.Sql.ClinicaE.HospitalE
+@using System.Text.Json
+@using System.Globalization
+
+@inject IJSRuntime js
+
+<div style="background-color: #FFF; width: 100%; min-height:300px; border:1px solid #b3d6ffff; border-radius:8px; padding:20px 10px; margin-bottom:20px;">
+    @{
+        bool ActNoa = false;
+        if (oMedicoE.FlagEstado == true)
+        {
+            ActNoa = false;
+        }
+        else
+        {
+            ActNoa = true;
+        }
+        ActNoa = FlgNuevo ? FlgNuevo : ActNoa;
+    }
+    <div class="row">
+
+        <!--I.TABLA-->
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive"
+             style="background-color: #FFF; width: 99%; min-height:200px; margin:0px 5px 0px 5px; ">
+            <table class="table table-hover table-bordered">
+                <thead class="table-primary">
+                    <tr class="fw-bolder">
+                        <th class="col-1 text-center">
+                            <div class="btn-group dropstart">
+                                <button class="btn btn-menu" aria-expanded="false" @onclick="() => CreaPrestacionxMedicoE()" disabled="@ActNoa">
+                                    <span class="fa-solid fa-plus"></span>
+                                    @*<span class="fa-solid fa-ellipsis-vertical"></span>*@
+                                </button>
+                            </div>
+                        </th>
+                        <th class="col-2 text-center" style="">Código</th>
+                        <th class="col-6 text-center" style="">Nombre de prestación</th>
+                        <th class="col-1 text-center" style="">% Ret CSF</th>
+                        <th class="col-1 text-center" style="">% Pronto Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in oListaPrestacionxMedicoE)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                <div class="btn-group dropstart">
+                                    <button class="btn" data-bs-toggle="dropdown" disabled="@ActNoa" aria-expanded="false">
+                                        <span class="fa-solid fa-grip-vertical"></span> <span id="TitleView"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li class="dropdown-item btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" @onclick="@(()=> {oPrestacionxMedicoE = item; EditaPrestacionxMedicoE();})"><span class="fa-regular fa-edit "></span> Editar</li>
+                                        <li class="dropdown-item btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#msgModalEliminarContratoConsultorios" @onclick="@(()=>{oPrestacionxMedicoE = item; EliminaPrestacionxMedicoE();})"><span class="fa-regular fa-trash-can "></span> Eliminar</li>
+                                    </ul>
+                                </div>
+                            </td>
+                            <td style="text-align:center;">@item.CodPrestacion</td>
+                            <td style="text-align:left;">@item.NomPrestacion</td>
+                            <td style="text-align:center;">@item.PorcentajeRetencion1</td>
+                            <td style="text-align:center;">@item.PorcentajeRetencion2</td>
+
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+        <!--F.TABLA-->
+
+    </div>
+
+    <MessageModal IdMessage="msgModalPregunta"
+                  TitleModal="Confirmación"
+                  BodyMessage=@Mensaje
+                  IconMessage=MessageModal.iconMessage.Question
+                  TypeButton=MessageModal.typeButton.OkCancel
+                  OnClose="@ConfirmaEliminaPrestacionxMedicoE">
+    </MessageModal>
+
+</div>
+
+<TabModalHijo @ref="@TabModalHijo" Title="Alquiler">
+    @* OnClick="HijoCallBack">*@
+    <div class="row" style="min-height: 200px">
+
+
+        <!--I.Busca Prestación-->
+        <fieldset class="omrs-fieldset">
+            <legend>Prestaciòn</legend>
+            <div class="row group align-items-center">
+                <div class="DivSearchInput">
+
+                    <div class="DivSearch" style="width:100%">
+                        <input id="txtPrestacion" type="search" list="lstPrestaciones" placeholder="Buscar por nombre de la prestación" autocomplete="off"
+                               @onkeydown="@EnterBuscarPrestacion" @onchange="@((args) => SeleccionaPrestacion(args))" disabled="@ModoEditaExistente">
+                        <i id="idBuscarPrestacion" class="fa-solid fa-magnifying-glass" role="button"></i>
+                        <i id="idspinnerPrestacion" class="spinner-border text-success" tipo="spinner" role="spinbutton" style="display:none;">
+                            <span class="visually-hidden">Loading...</span>
+                        </i>
+                    </div>
+                </div>
+                <datalist id="lstPrestaciones" style="width:100%">
+                    @foreach (var lista in oListPrestaciones)
+                    {
+                        <option>
+                            @lista.Codprestacion - @lista.Nomprestacion
+                        </option>
+                    }
+                </datalist>
+
+            </div>
+        </fieldset>
+        <!--F.Busca Prestación-->
+
+
+      @* <style>
+            div.autocomplete{
+                width:250px;
+            }
+            div section{
+                height:25px;
+                width:100%;
+            }
+            div section:hover{
+                background-color:lightgreen;
+            }
+        </style>
+
+         <input @bind="SearchWord" @bind:event="oninput" />
+        <div class="autocomplete">
+            @foreach (var item in options)
+            {
+                <section @onclick="() => SearchWord = item">@item</section>
+            }
+        </div>
+*@
+
+
+        <!--I.CodPrestacion-->
+        <div class="omrs-input-group">
+            <label class="omrs-input-underlined">
+                <input id="txtCodPrestacion" required="" @bind-value="@oPrestacionxMedicoE.CodPrestacion" disabled>
+                <span class="omrs-input-label">Código prestación</span>
+                <span class="omrs-input-helper"></span>
+            </label>
+        </div>
+        <!--F.CodPrestacion-->
+        <!--I.NomPrestacion-->
+        <div class="omrs-input-group">
+            <label class="omrs-input-underlined">
+                <input id="txtNomPrestacion" required="" @bind-value="@oPrestacionxMedicoE.NomPrestacion" disabled>
+                <span class="omrs-input-label">Nombre prestación</span>
+                <span class="omrs-input-helper"></span>
+            </label>
+        </div>
+        <!--F.NomPrestacion-->
+
+        <div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 0px 0px;">
+            <!--I.PorcentajeRetencion1-->
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-12 col-12">
+                <div class="omrs-input-group">
+                    <label class="omrs-input-underlined">
+                        <input required class="form-control" @bind-value="@(oPrestacionxMedicoE.PorcentajeRetencion1)" type="number" min="0" step="0.001" pattern="\d*"
+                                       onkeyup="if(this.value<0){this.value= this.value * -1}">
+                        <span class="omrs-input-label">Retención CSF(%)</span>
+                        <span class="omrs-input-helper"></span>
+                    </label>
+                </div>
+            </div>
+            <!--F.PorcentajeRetencion1-->
+            <!--I.PorcentajeRetencion2-->
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-12 col-12">
+                <div class="omrs-input-group">
+                    <label class="omrs-input-underlined">
+                        <input required class="form-control" @bind-value="@(oPrestacionxMedicoE.PorcentajeRetencion2)" type="number" min="0" step="0.001" pattern="\d*"
+                                       onkeyup="if(this.value<0){this.value= this.value * -1}">
+                        <span class="omrs-input-label">Pronto pago(%)</span>
+                        <span class="omrs-input-helper"></span>
+                    </label>
+                </div>
+            </div>
+            <!--F.PorcentajeRetencion2-->
+        </div>
+
+        <div>
+            <button class="btn btn-outline-success col-lg-2 col-3" @onclick="() => GrabarItem()"><span class="fa-regular fa-save"></span> <span id="TitleView"> Guardar</span></button>
+            <button class="btn btn-outline-primary col-lg-2 col-3" @onclick="() => Cancelar()"><spam class="fa fa-arrow-rotate-left"></spam> <span id="TitleView"> Cancelar</span></button>
+
+        </div>
+    </div>
+
+        <MessageModal IdMessage="msgModalError"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+
+</TabModalHijo>
+
+
+
+@code {
+    [Parameter]
+    public MedicoE oMedicoE { get; set; }
+
+    [Parameter]
+    public List<PrestacionxMedicoE> oListaPrestacionxMedicoE { get; set; }
+
+    [Parameter]
+    public bool FlgNuevo { get; set; }
+
+
+
+    PrestacionxMedicoE oPrestacionxMedicoE = new PrestacionxMedicoE();
+
+    PrestacionesE prestacion = new PrestacionesE(0, "", "", "", "", 25);
+    List<PrestacionesE> oListPrestaciones = new List<PrestacionesE>();
+
+    string Mensaje = "";
+    string DscprestacionBuscador = "";
+
+    private TabModalHijo TabModalHijo { get; set; }
+
+    private bool ModoEditaExistente { get; set; }
+
+
+    public string SearchWord { get; set; } = string.Empty;
+    List<string> options = new List<string>(new string[] {"uno","dos","tres","cuatro","cinco","seis","siete","ocho","nueve","diez"});
+
+
+
+    protected override void OnInitialized()
+    {
+
+    }
+
+    private void CreaPrestacionxMedicoE()
+    {
+        ModoEditaExistente = false;
+        oPrestacionxMedicoE = new PrestacionxMedicoE();
+        js.InvokeVoidAsync("ClearText", "txtPrestacion");
+        TabModalHijo.Open();
+    }
+
+    private void EditaPrestacionxMedicoE()
+    {
+
+        var options = new JsonSerializerOptions { };
+        string jsonString = System.Text.Json.JsonSerializer.Serialize<PrestacionxMedicoE>(oPrestacionxMedicoE, options);
+        oPrestacionxMedicoE = System.Text.Json.JsonSerializer.Deserialize<PrestacionxMedicoE>(jsonString);
+
+        ModoEditaExistente = true;
+        js.InvokeVoidAsync("ClearText", "txtPrestacion");
+        TabModalHijo.Open();
+    }
+
+    private void EliminaPrestacionxMedicoE()
+    {
+        Mensaje = " ¿Desea eliminar la siguiente prestación: <br> <b>" + oPrestacionxMedicoE.NomPrestacion + "</b>? ";
+        js.InvokeVoidAsync("ShowMessageModal", true, "msgModalPregunta");
+    }
+
+    private async Task ConfirmaEliminaPrestacionxMedicoE(bool acepted)
+    {
+        try
+        {
+            if (acepted)
+            {
+                oPrestacionxMedicoE.CodMedico = oMedicoE.CodMedico;
+                new Bus.Clinica.Medicos().PrestacionxMedico_Delete(oPrestacionxMedicoE);
+
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacionMedicoAlquila");
+                //ModalMensaje("ConfirmacionEliminacion", "Informativo");
+                //TabModalHijo.Close();
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            //ModalMensaje("Catch", "Error");
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+    }
+
+
+
+    private async Task GrabarItem()
+    {
+        try
+        {
+            oPrestacionxMedicoE.CodMedico = oMedicoE.CodMedico;
+
+            if (ValidaGraba() != "") return;
+
+            if (ModoEditaExistente == true)
+                new Bus.Clinica.Medicos().PrestacionxMedico_Update(oPrestacionxMedicoE);
+            else
+                new Bus.Clinica.Medicos().PrestacionxMedico_Insert(oPrestacionxMedicoE);
+
+            js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacionMedicoAlquila");
+            TabModalHijo.Close();
+
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+
+    }
+
+    private string ValidaGraba()
+    {
+        string resultado = "";
+        if (oPrestacionxMedicoE.CodMedico == "") resultado = resultado + "Seleccione un médico <br>";
+        if (oPrestacionxMedicoE.CodPrestacion == "") resultado = resultado + "La prestación es obligatorio <br>";
+
+        if (ModoEditaExistente == false)
+        {
+            int outPutCount = oListaPrestacionxMedicoE.Where(x => x.CodMedico == oPrestacionxMedicoE.CodMedico
+                                                                 && x.CodPrestacion == oPrestacionxMedicoE.CodPrestacion
+                                                                ).Count();
+            if (outPutCount > 0) resultado = resultado + "Ya existe un registro con la información ingresada <br>";
+        }
+
+        if (resultado != "")
+        {
+            Mensaje = "<b>Por favor verifique lo siguiente:</b> <br>" + resultado;
+            js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+
+        return resultado;
+    }
+
+
+    private void Cancelar()
+    {
+        TabModalHijo.Close();
+    }
+
+    private async Task BuscarPrestacion()
+    {
+        await js.InvokeVoidAsync("ShowSpinnerSearch", "idspinnerPrestacion", "idBuscarPrestacion");
+        try
+        {
+            //if (prestacion.Dscprestacion != null && prestacion.Dscprestacion != "")
+            if (DscprestacionBuscador != "")
+            {
+                oListPrestaciones = new Bus.Clinica.Prestaciones().Prestaciones_ConsultaPorNombre(DscprestacionBuscador);
+                if (oListPrestaciones.Count == 0)
+                {
+                    prestacion.Dscprestacion = "";
+                    await js.InvokeVoidAsync("ShowMessageModal", true, "msgerrorPrestacion");
+
+                }
+                await js.InvokeVoidAsync("focusControl", "txtPrestacion");
+            }
+            else
+            { await js.InvokeVoidAsync("ShowMessageModal", true, "msgerrorPrestacion"); }
+        }
+        catch { }
+        await js.InvokeVoidAsync("CloseSpinnerSearch", "idspinnerPrestacion", "idBuscarPrestacion");
+    }
+
+    async Task EnterBuscarPrestacion(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        { await BuscarPrestacion(); }
+    }
+
+
+    protected async Task SeleccionaPrestacion(ChangeEventArgs args)
+    {
+        DscprestacionBuscador = args.Value.ToString();
+        string[] words = DscprestacionBuscador.Split('-');
+
+        if (words.Length >= 2)
+        {
+            PrestacionesE oPrestacionesE_Aux = new Bus.Clinica.Prestaciones().Prestaciones_ConsultaPorCodPrestacion(words[0]);
+            if (oPrestacionesE_Aux != null)
+            {
+                oPrestacionxMedicoE.CodPrestacion = oPrestacionesE_Aux.Codprestacion;
+                oPrestacionxMedicoE.NomPrestacion = oPrestacionesE_Aux.Nomprestacion;
+            }
+        }
+    }
+
+}
+
+

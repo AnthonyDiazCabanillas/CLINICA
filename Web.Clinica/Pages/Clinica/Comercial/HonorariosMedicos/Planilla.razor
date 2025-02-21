@@ -1,0 +1,1890 @@
+﻿@*
+====================================================================================================
+ INFORMACION GENERAL (Tildes omitidas intencionalmente)
+====================================================================================================
+ Proyecto         : HIS
+ Clase            : Planilla
+ Desarrollado por : GLLUNCOR
+ Fecha            : 26.10.2023
+====================================================================================================
+ @Copyright  Clinica San Felipe S.A.C. 2023. Todos los derechos reservados.
+====================================================================================================
+ DESCRIPCION FUNCIONAL:
+  Crear web pagina para mostrar las Planillas de Honorarios Medicos
+====================================================================================================
+ OBSERVACIONES:
+    - .Net 6.0
+====================================================================================================
+ MODIFICACIONES:
+ FECHA        USUARIO     REQUERIMIENTO	    DESCRIPCION
+ 26/10/2023   GLLUNCOR    REQ 2023-020050	Se creo la pagina
+====================================================================================================
+ Version  Fecha        Autor           Requerimiento
+   1.0   13/09/2024   CPARRALES       REQ 2024-012851 Ajuste en el Reporte de Médicos del HIS
+====================================================================================================
+ *@
+
+@page "/Clinica/Comercial/HonorariosMedicos/Planilla"
+@using ClosedXML.Excel
+@using Ent.Sql.ClinicaE.OtrosE;
+@using Ent.Sql.ClinicaE.TerceroE;
+@using Ent.Sql.ClinicaE;
+@using Bus.Clinica.Clinica;
+@using RestSharp
+@using Web.Clinica.Data
+@using Bus.Utilities;
+@using Ent.Sql;
+@using Microsoft.AspNetCore.Components.Forms
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IWebHostEnvironment WebHostEnvironment
+@inject IJSRuntime js
+
+
+@code {
+    decimal MontoTotal;
+    string ImagePath = "", BuscarMedico = "", CodTerceroSelect = "", MensajeMdl = "", ImgBase64 = "";
+    string FiltroFechaIncio = "", FiltroFechaFin = "";
+    string NombreExcel = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss").Replace("/", "").Replace(":", "").Replace(" ", "") + ".xlsx"; //Nombre del archivo
+    string Recibo = "", FileType = "", FileAdjunto = "", FileName = "", RutaDescarga = "", EstadoPlanilla = "", DscRespuestaOK = "", DscRespuestaError = "";
+    string Title = "", Pregunta = "";
+    DateTime FiltroFechaIncioTmp, FiltroFechaFinTmp;
+    bool FileAdjuntaFlg = false, IsDisabledEmail = false, IsDisabledExcel = false, Rpt = false, flgButtonProcesarTemp = false, flgButtonProcesar = false, flgSelectPlanillaDetalle = false;
+    bool Readonly = true;
+    int MsgModalPlanillaDetalle = 0, Procesar;
+    int TotalPages = 1, ItemsPerPage = 5;
+    int xValida = 0;
+    int CountRespuestaOk = 0, CountRespuestaError = 0;
+    int xIDLiqxTercerosRecibo = 0, xIDImgReciboLiq = 0;
+
+    PageIndexStateProvider State { get; set; }
+    FilterSearh oFilterSearchPantalla = new FilterSearh();
+    FilterSearh oFilterSearch = new FilterSearh();
+    List<int> oListItemsPerPage = new List<int>() { 0, 5, 20, 50, 100 };
+    TerceroE oTercero = new TerceroE();
+    List<TerceroE> oListTercero = new List<TerceroE>();
+    LiqxtercerosE oLiqxtercerosE = new LiqxtercerosE();
+    List<LiqxtercerosE> oListaMedicos = new List<LiqxtercerosE>();
+    LiqxtercerosE oLiqxtercerosCab = new LiqxtercerosE();
+    List<LiqxtercerosE> oListaLiqxtercerosCab = new List<LiqxtercerosE>();
+    List<LiqxtercerosE> _oListaLiqxtercerosCab = new List<LiqxtercerosE>();
+    List<LiqxtercerosE> oListaLiqxtercerosCabProc = new List<LiqxtercerosE>();
+    DetalleliquidacionE oDetalleLiquidacion = new DetalleliquidacionE();
+    List<DetalleliquidacionE> oListDetalleLiquidacion = new List<DetalleliquidacionE>();
+    List<string> oListaCab = new List<string>();
+    List<string> oListaCabContabilidad = new List<string>(); //1.0 
+
+    private bool Check { get; set; } = false;
+
+    protected override void OnInitialized()
+    {
+        js.InvokeVoidAsync("fnActualizarTitulo", "Planillas");
+        ImagePath = Path.Combine(WebHostEnvironment.WebRootPath, "images", "csf.jpg");
+        ColumnasCabecera();
+        ColumnasCabeceraContabilidad(); //1.0
+        oListaMedicos = new Bus.Clinica.Clinica.Liqxterceros().Sp_Liqxterceros_Consulta(new LiqxtercerosE("", "", "", "", 25, 2));
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await js.InvokeVoidAsync("eval", @"
+                window.downloadFile = function(url, fileName) {
+                    var link = document.createElement('a');
+                    link.href = url;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);}"
+            );
+        }
+    }
+
+    private void ColumnasCabecera()
+    {
+        oListaCab.Add("N° Planilla");
+        oListaCab.Add("Atención");
+        oListaCab.Add("Paciente");
+        oListaCab.Add("Prestación");
+        oListaCab.Add("Fecha Atención");
+        oListaCab.Add("Monto Prestación");
+        oListaCab.Add("%Retención");
+        oListaCab.Add("Retención");
+        oListaCab.Add("% Retención Pronto Pago");
+        oListaCab.Add("Retención Pronto Pago");
+        oListaCab.Add("Monto a pagar");
+    }
+    //1.0 INI
+    private void ColumnasCabeceraContabilidad()
+    {
+        oListaCabContabilidad.Add("N° Planilla");
+        oListaCabContabilidad.Add("Presotor");
+        oListaCabContabilidad.Add("Atención");
+        oListaCabContabilidad.Add("Paciente");
+        oListaCabContabilidad.Add("Prestación");
+        oListaCabContabilidad.Add("Fecha Atención");
+        oListaCabContabilidad.Add("Monto Prestación");
+        oListaCabContabilidad.Add("%Retención");
+        oListaCabContabilidad.Add("Retención");
+        oListaCabContabilidad.Add("% Retención Pronto Pago");
+        oListaCabContabilidad.Add("Retención Pronto Pago");
+        oListaCabContabilidad.Add("Monto a pagar");
+    }
+    //1.0 FIN
+
+    private async Task ModalMensaje(string TipoModal, string Mensajes)
+    {
+        if (TipoModal == "Advertencia")
+        {
+            switch (Mensajes)
+            {
+                case "msgReciboNull":
+                    MensajeMdl = "Por favor ingresar el N° de recibo";
+                    break;
+                case "msgPlanillaNull":
+                    MensajeMdl = "Por favor seleccione una planilla";
+                    break;
+
+                case "msgImagenNull":
+                    MensajeMdl = "Por favor cargar una imagen";
+                    break;
+                case "msgRegistroAlert":
+                    MensajeMdl = "Se registraron: " + CountRespuestaOk;
+                    if (!string.IsNullOrWhiteSpace(DscRespuestaOK)) { MensajeMdl = MensajeMdl + "(" + DscRespuestaOK + ")"; }
+                    if (CountRespuestaError != 0) { MensajeMdl = MensajeMdl + "<br> Error de resgistro: " + CountRespuestaError; }
+                    if (!string.IsNullOrWhiteSpace(DscRespuestaError)) { MensajeMdl = MensajeMdl + "(" + DscRespuestaError + ")"; }
+                    break;
+            }
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalAdvertencia");
+        }
+        if (TipoModal == "Error")
+        {
+            switch (Mensajes)
+            {
+                case "msgEmailNull":
+                    MensajeMdl = "Error al intentar enviar el correo";
+                    if (MsgModalPlanillaDetalle == 1) { MensajeMdl = MensajeMdl + " al médico"; }
+                    if (MsgModalPlanillaDetalle == 3) { MensajeMdl = MensajeMdl + " al área de contabilidad"; }
+                    break;
+                case "msgError":
+                    MensajeMdl = "Error al guardar registro";
+                    break;
+            }
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+        if (TipoModal == "Informativo")
+        {
+            switch (Mensajes)
+            {
+                case "msgEmailOk":
+                    MensajeMdl = "Correo enviado exitosamente";
+                    if (MsgModalPlanillaDetalle == 1) { MensajeMdl = MensajeMdl + " al médico"; }
+                    if (MsgModalPlanillaDetalle == 3) { MensajeMdl = MensajeMdl + " al área de contabilidad"; }
+                    break;
+                case "msgGrabarOk":
+                    MensajeMdl = "Guardado Exitoso";
+                    if (CountRespuestaOk > 1) { MensajeMdl = MensajeMdl + "<br> Planillas Registradas:" + CountRespuestaOk; }
+                    break;
+            }
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalInformacion");
+        }
+    }
+
+    private async Task EnterBuscarMedico(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        { await BuscarMedicoLista(1); }
+    }
+
+    private async Task BuscarMedicoLista(int selectedPageIndex)
+    {
+        await js.InvokeVoidAsync("ShowSpinnerSearch", "idspinnerMedico", "idSearchMedico");
+        try
+        {
+            oTercero.Buscar = BuscarMedico;
+            oListaMedicos = new Bus.Clinica.Clinica.Liqxterceros().Sp_Liqxterceros_Consulta(new LiqxtercerosE(oTercero.Buscar, "", "", "", 25, 2));
+        }
+        catch (Exception e)
+        {
+            MensajeMdl = e.Message;
+            await ModalMensaje("Error", "msgError");
+        }
+        await js.InvokeVoidAsync("CloseSpinnerSearch", "idspinnerMedico", "idSearchMedico");
+    }
+
+    private void PlanillaDetalle(string CodMedico)
+    {
+        try
+        {
+            MsgModalPlanillaDetalle = 0;
+            Recibo = "";
+            Procesar = 0;
+            EstadoPlanilla = "T";
+            Title = "Resultados";
+            MontoTotal = 0;
+
+
+            oFilterSearch.FechaInicio = DateTime.Now;
+            oFilterSearch.FechaFin = new DateTime();
+
+            _oListaLiqxtercerosCab = new List<LiqxtercerosE>();
+            oListaLiqxtercerosCab = new List<LiqxtercerosE>();
+            for (int i = 0; i < oListaMedicos.Count; i++)
+            {
+                if (oListaMedicos[i].Codmedico == CodMedico)
+                {
+                    _oListaLiqxtercerosCab = new Bus.Clinica.Clinica.Liqxterceros().Sp_Liqxterceros_Consulta(new LiqxtercerosE("", oListaMedicos[i].Codmedico, "", "", 99, 2));
+
+                    //Cabera de los Resultados
+                    oLiqxtercerosCab.Codmedico = oListaMedicos[i].Codmedico;
+                    oLiqxtercerosCab.NombreMedico = oListaMedicos[i].NombreMedico;
+                    oLiqxtercerosCab.RUCMedico = oListaMedicos[i].RUCMedico;
+
+                    //Detalle de los resultados
+                    oListaLiqxtercerosCab.AddRange(_oListaLiqxtercerosCab);
+
+                    for (int j = 0; j < oListaLiqxtercerosCab.Count; j++)
+                    {
+                        if (oFilterSearch.FechaInicio > Convert.ToDateTime(oListaLiqxtercerosCab[j].FechaGenera))
+                        {
+                            oFilterSearch.FechaInicio = Convert.ToDateTime(oListaLiqxtercerosCab[j].FechaGenera);
+                        }
+                        if (oFilterSearch.FechaFin < Convert.ToDateTime(oListaLiqxtercerosCab[j].FechaGenera))
+                        {
+                            oFilterSearch.FechaFin = Convert.ToDateTime(oListaLiqxtercerosCab[j].FechaGenera);
+                        }
+
+                        if (oListaLiqxtercerosCab[j].Estado == "G")
+                        { oListaLiqxtercerosCab[j].FlgSelect = false; }
+                        else
+                        { oListaLiqxtercerosCab[j].FlgSelect = true; }
+                    }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            MensajeMdl = e.Message;
+            ModalMensaje("Error", "msgError");
+        }
+    }
+
+    private async Task EnviarCorreo(int flgEnviaCorre)
+    {
+        try
+        {
+            bool respuesta = false;
+            List<TablasE> oListaTabla = new Bus.Clinica.Clinica.Tablas().Sp_Tablas_Consulta(new TablasE("HM_RUTA_ADJUNTOS", "", 0, 0, 26));
+            RutaDescarga = oListaTabla[0].Nombre;
+            DscRespuestaOK = "";
+            NombreExcel = "HM_" +
+                          DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss").Replace("/", "").Replace(":", "").Replace(" ", "")
+                          + ".xlsx"; //Nombre del archivo
+
+            if (flgEnviaCorre == 1 && MsgModalPlanillaDetalle == 1) //Enviar correo al Medico
+            {
+                ExportarExcel(1, NombreExcel, RutaDescarga);
+                respuesta = new EnviaCorreoHis().Sp_HIS_EnvioCorreo(new Ent.Sql.ClinicaE.OtrosE.EnviaCorreoHisE("1", oLiqxtercerosCab.Codmedico, RutaDescarga + NombreExcel, Convert.ToString(MontoTotal))); //Envia correo
+
+                if (respuesta)
+                { ModalMensaje("Informativo", "msgEmailOk"); }
+                else
+                { ModalMensaje("Error", "msgEmailNull"); }
+            }
+
+            if (flgEnviaCorre == 1 && MsgModalPlanillaDetalle == 3) //Enviar correo a Contabilidad
+            {
+                if (Rpt)
+                {
+                    System.IO.File.WriteAllBytes(RutaDescarga + FileName, Convert.FromBase64String(FileAdjunto)); //Guardar Imagen en el servidor de correos
+
+                    for (int i = 0; i < oListaLiqxtercerosCabProc.Count; i++)
+                    { DscRespuestaOK = DscRespuestaOK + oListaLiqxtercerosCabProc[i].Numeroliquidacion + "(" + oListaLiqxtercerosCabProc[i].MontoTotal.ToString("C") + ")" + ", "; }
+                    DscRespuestaOK = DscRespuestaOK.Remove(DscRespuestaOK.Length - 2);
+                    DscRespuestaOK = DscRespuestaOK + " Monto Total: " + MontoTotal.ToString("C");
+                    //1.0 INI 
+                    ExportarExcelContabilidad(1, NombreExcel, RutaDescarga);
+                    string ruta = RutaDescarga + FileName + ";" + RutaDescarga + NombreExcel;
+                    respuesta = new EnviaCorreoHis().Sp_HIS_EnvioCorreo(new Ent.Sql.ClinicaE.OtrosE.EnviaCorreoHisE("2", oLiqxtercerosCab.Codmedico, ruta, DscRespuestaOK)); //Envia correo
+                    //1.0 FIN
+                    if (respuesta)
+                    { 
+                        ModalMensaje("Informativo", "msgEmailOk"); 
+                    }
+                    else
+                    { 
+                        ModalMensaje("Error", "msgEmailNull"); 
+                    }
+
+                }
+                else
+                { PregGuardarArchivoRecibo_EnviarCorreo(); }
+            }
+        }
+        catch (Exception e)
+        {
+            MensajeMdl = e.Message;
+            ModalMensaje("Error", "msgError");
+        }
+    }
+
+    private async Task DescargarExcel(string NumeroLiquidacion, string CodLiqxTerceros)
+    {
+
+        MensajeMdl = "Descargando...";
+        MontoTotal = 0;
+        await ModalMensaje("Informativo", "");
+        DetalleliquidacionE xDetalleLiquidacion = new DetalleliquidacionE();
+        oListDetalleLiquidacion = new List<DetalleliquidacionE>();
+        xDetalleLiquidacion.Codliqxterceros = CodLiqxTerceros;
+        xDetalleLiquidacion.Numeroliquidacion = NumeroLiquidacion;
+        xDetalleLiquidacion.Orden = 2;
+        //1.0 INI
+        if (MsgModalPlanillaDetalle == 2)
+        {
+            xDetalleLiquidacion.Orden = 3;
+        }
+        //1.0 FIN
+
+        oListDetalleLiquidacion = new Bus.Clinica.Clinica.Detalleliquidacion().Sp_Detalleliquidacion_Consulta(xDetalleLiquidacion);
+        foreach (var item in oListDetalleLiquidacion)
+        { MontoTotal += item.Costo; }
+
+        await ExportarExcel(0, NumeroLiquidacion + CodLiqxTerceros, RutaDescarga);
+        MontoTotal = 0;
+        MensajeMdl = "Descarga Finalizada";
+    }
+
+    private async Task ExportarExcel(int flgdescarga, string xNombreExcel, string xRutaDescarga)
+    {
+        //1.0 INI
+        if(MsgModalPlanillaDetalle == 2 || MsgModalPlanillaDetalle == 3)
+        {
+            await ExportarExcelContabilidad(flgdescarga, xNombreExcel, xRutaDescarga);
+        }
+        else
+        {
+            await ExportarExcelMedico(flgdescarga, xNombreExcel, xRutaDescarga);
+        }
+        //1.0 FIN
+
+    }
+    //1.0 INI
+    private async Task ExportarExcelMedico(int flgdescarga, string xNombreExcel, string xRutaDescarga)
+    {
+
+        try
+        {
+            int FilaCab = 9, ColumnaCab = oListaCab.Count;
+            int FilaCuerpo = FilaCab + 1, ColumnaCuerpo = oListDetalleLiquidacion.Count;
+            MemoryStream excelStream;
+            string fileUrl;
+
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Honorarios Medicos"); //Nombre de la Hoja
+
+                //I-Contenido
+                //Cabecera
+                worksheet.Cell(2, 1).Value = "Médico:";
+                worksheet.Cell(3, 1).Value = "RUC:";
+                worksheet.Cell(4, 1).Value = "Fecha Inicio:";
+                worksheet.Cell(5, 1).Value = "Fecha Fin:";
+                worksheet.Cell(6, 1).Value = "Monto Total:";
+
+                worksheet.Cell(2, 2).Value = oLiqxtercerosCab.NombreMedico;
+                worksheet.Cell(3, 2).Value = oLiqxtercerosCab.RUCMedico;
+                worksheet.Cell(4, 2).Value = oFilterSearch.FechaInicio.ToShortDateString();
+                worksheet.Cell(5, 2).Value = oFilterSearch.FechaFin.ToShortDateString();
+                worksheet.Cell(6, 2).Value = MontoTotal.ToString("C");
+
+                var RangoCab_Hoja = worksheet.Range(2, 1, 6, 1); //Selecciona Rango
+                RangoCab_Hoja.Style.Border.BottomBorder = XLBorderStyleValues.Medium;
+                RangoCab_Hoja.Style.Border.BottomBorderColor = XLColor.White;
+                RangoCab_Hoja.Style.Border.RightBorder = XLBorderStyleValues.Medium;
+                RangoCab_Hoja.Style.Border.RightBorderColor = XLColor.White;
+
+                RangoCab_Hoja.Style.Fill.BackgroundColor = XLColor.FromHtml("#7ebf2a"); //Indicamos el color de background
+                RangoCab_Hoja.Style.Font.FontSize = 12; //Indicamos el tamaño de la fuente
+                RangoCab_Hoja.Style.Font.Bold = true;
+                RangoCab_Hoja.Style.Font.FontColor = XLColor.FromHtml("#ffffff");
+                RangoCab_Hoja.Style.Font.SetFontName("Calibri"); //Fuente
+
+                worksheet.Range(2, 2, 6, 2).Style.Font.Bold = true;
+
+                string direccionInstalacion = AppDomain.CurrentDomain.BaseDirectory;
+
+                worksheet.AddPicture(ImagePath).MoveTo(worksheet.Cell(2, 9)).Scale(0.3); //Imagen
+
+                //I-Cabecera_Tabla
+                for (int i = 1; ColumnaCab > i - 1; i++)
+                { worksheet.Cell(FilaCab, i).Value = oListaCab[i - 1].ToString(); }
+                //F-Cabecera_Tabla
+
+                //I-Cuerpo_Tabla
+                for (int i = 1; ColumnaCuerpo > i - 1; i++)
+                {
+                    worksheet.Cell(FilaCuerpo, 1).Value = oListDetalleLiquidacion[i - 1].Numeroliquidacion;
+                    worksheet.Cell(FilaCuerpo, 2).Value = oListDetalleLiquidacion[i - 1].Codatencion;
+                    worksheet.Cell(FilaCuerpo, 3).Value = oListDetalleLiquidacion[i - 1].NombPaciente;
+                    worksheet.Cell(FilaCuerpo, 4).Value = oListDetalleLiquidacion[i - 1].DscPrestacion;
+                    worksheet.Cell(FilaCuerpo, 5).Value = oListDetalleLiquidacion[i - 1].Fechahoraatencion;
+                    worksheet.Cell(FilaCuerpo, 6).Value = oListDetalleLiquidacion[i - 1].Monto.ToString("C");
+                    worksheet.Cell(FilaCuerpo, 7).Value = oListDetalleLiquidacion[i - 1].Retencion + "%";
+                    worksheet.Cell(FilaCuerpo, 8).Value = oListDetalleLiquidacion[i - 1].Montoretencion.ToString("C");
+                    worksheet.Cell(FilaCuerpo, 9).Value = oListDetalleLiquidacion[i - 1].Retencionppago + "%";
+                    worksheet.Cell(FilaCuerpo, 10).Value = oListDetalleLiquidacion[i - 1].Montoprontopago.ToString("C");
+                    worksheet.Cell(FilaCuerpo, 11).Value = oListDetalleLiquidacion[i - 1].Costo.ToString("C");
+
+                    worksheet.Range(FilaCuerpo, 1, FilaCuerpo, ColumnaCab).Style.Border.BottomBorder = XLBorderStyleValues.Dotted;
+                    worksheet.Range(FilaCuerpo, 1, FilaCuerpo, ColumnaCab).Style.Border.BottomBorderColor = XLColor.Black;
+                    FilaCuerpo++;
+                }
+                //F-Cuerpo_Tabla
+                //F-Contenido
+
+                //I-Estilo Cabecera_Tabla
+                var RangoCab = worksheet.Range(FilaCab, 1, FilaCab, ColumnaCab); //Selecciona Rango
+                RangoCab.Style.Border.RightBorder = XLBorderStyleValues.Medium;
+                RangoCab.Style.Border.RightBorderColor = XLColor.White;
+                //RangoCab.Style.Border.SetOutsideBorder(XLBorderStyleValues.Thick); //Generamos las lineas exteriores
+                //RangoCab.Style.Border.SetInsideBorder(XLBorderStyleValues.Medium); //Generamos las lineas interiores
+                RangoCab.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; //Alineamos horizontalmente
+                RangoCab.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;  //Alineamos verticalmente
+                RangoCab.Style.Fill.BackgroundColor = XLColor.FromHtml("#124498"); //Indicamos el color de background
+                RangoCab.Style.Font.FontSize = 13; //Indicamos el tamaño de la fuente
+                RangoCab.Style.Font.Bold = true;
+                RangoCab.Style.Font.FontColor = XLColor.FromHtml("#ffffff");
+                RangoCab.Style.Font.SetFontName("Sitka Display Semibold"); //Fuente
+                                                                           //F-Estilo Cabecera_Tabla
+
+                worksheet.Columns(1, ColumnaCab).AdjustToContents(); //Ajustamos el ancho de las columnas para que se muestren todos los contenidos
+                excelStream = new MemoryStream();
+                workbook.SaveAs(excelStream);
+
+                if (flgdescarga == 1) //Guardar el archivo para que sea enviado por correo
+                { workbook.SaveAs(xRutaDescarga + xNombreExcel); }//Ruta para guardar
+
+                // Obtener la URL del archivo Excel
+                if (flgdescarga == 0)
+                {
+                    xNombreExcel = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss").Replace("/", "").Replace(":", "").Replace(" ", "") + ".xlsx"; //Nombre del archivo
+                    fileUrl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{Convert.ToBase64String(excelStream.ToArray())}";
+                    OnAfterRenderAsync(true);//crea la funcion
+                    await js.InvokeVoidAsync("downloadFile", fileUrl, xNombreExcel);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            MensajeMdl = e.Message;
+            ModalMensaje("Error", "msgError");
+        }
+
+    }
+    private async Task ExportarExcelContabilidad(int flgdescarga, string xNombreExcel, string xRutaDescarga)
+    {
+        try
+        {
+            int FilaCab = 9, ColumnaCab = oListaCabContabilidad.Count;
+            int FilaCuerpo = FilaCab + 1, ColumnaCuerpo = oListDetalleLiquidacion.Count;
+            MemoryStream excelStream;
+            string fileUrl;
+
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Honorarios Medicos"); //Nombre de la Hoja
+
+                //I-Contenido
+                //Cabecera
+                worksheet.Cell(2, 1).Value = "Médico:";
+                worksheet.Cell(3, 1).Value = "RUC:";
+                worksheet.Cell(4, 1).Value = "Fecha Inicio:";
+                worksheet.Cell(5, 1).Value = "Fecha Fin:";
+                worksheet.Cell(6, 1).Value = "Monto Total:";
+
+                worksheet.Cell(2, 2).Value = oLiqxtercerosCab.NombreMedico;
+                worksheet.Cell(3, 2).Value = oLiqxtercerosCab.RUCMedico;
+                worksheet.Cell(4, 2).Value = oFilterSearch.FechaInicio.ToShortDateString();
+                worksheet.Cell(5, 2).Value = oFilterSearch.FechaFin.ToShortDateString();
+                worksheet.Cell(6, 2).Value = MontoTotal.ToString("C");
+
+                var RangoCab_Hoja = worksheet.Range(2, 1, 6, 1); //Selecciona Rango
+                RangoCab_Hoja.Style.Border.BottomBorder = XLBorderStyleValues.Medium;
+                RangoCab_Hoja.Style.Border.BottomBorderColor = XLColor.White;
+                RangoCab_Hoja.Style.Border.RightBorder = XLBorderStyleValues.Medium;
+                RangoCab_Hoja.Style.Border.RightBorderColor = XLColor.White;
+
+                RangoCab_Hoja.Style.Fill.BackgroundColor = XLColor.FromHtml("#7ebf2a"); //Indicamos el color de background
+                RangoCab_Hoja.Style.Font.FontSize = 12; //Indicamos el tamaño de la fuente
+                RangoCab_Hoja.Style.Font.Bold = true;
+                RangoCab_Hoja.Style.Font.FontColor = XLColor.FromHtml("#ffffff");
+                RangoCab_Hoja.Style.Font.SetFontName("Calibri"); //Fuente
+
+                worksheet.Range(2, 2, 6, 2).Style.Font.Bold = true;
+
+                string direccionInstalacion = AppDomain.CurrentDomain.BaseDirectory;
+
+                worksheet.AddPicture(ImagePath).MoveTo(worksheet.Cell(2, 9)).Scale(0.3); //Imagen
+
+                //Cabecera
+                for (int i = 1; ColumnaCab > i - 1; i++)
+                {
+                    worksheet.Cell(FilaCab, i).Value = oListaCabContabilidad[i - 1].ToString();
+                }
+
+                //Cuerpo
+                for (int i = 1; ColumnaCuerpo > i - 1; i++)
+                {
+
+                    if (oListDetalleLiquidacion[i - 1].Costo < 0)
+                    {
+                        worksheet.Cell(FilaCuerpo, 1).Value = oListDetalleLiquidacion[i - 1].Numeroliquidacion;
+                        worksheet.Cell(FilaCuerpo, 2).Value = oListDetalleLiquidacion[i - 1].Codpresotor;
+                        worksheet.Cell(FilaCuerpo, 3).Value = oListDetalleLiquidacion[i - 1].Codatencion;
+                        worksheet.Cell(FilaCuerpo, 4).Value = oListDetalleLiquidacion[i - 1].NombPaciente;
+                        worksheet.Cell(FilaCuerpo, 5).Value = oListDetalleLiquidacion[i - 1].DscPrestacion;
+                        worksheet.Cell(FilaCuerpo, 6).Value = oListDetalleLiquidacion[i - 1].Fechahoraatencion;
+                        worksheet.Cell(FilaCuerpo, 7).Value = oListDetalleLiquidacion[i - 1].Monto.ToString("C");
+                        worksheet.Cell(FilaCuerpo, 8).Value = oListDetalleLiquidacion[i - 1].Retencion + "%";
+                        worksheet.Cell(FilaCuerpo, 9).Value = oListDetalleLiquidacion[i - 1].Montoretencion.ToString("C");
+                        worksheet.Cell(FilaCuerpo, 10).Value = oListDetalleLiquidacion[i - 1].Retencionppago + "%";
+                        worksheet.Cell(FilaCuerpo, 11).Value = oListDetalleLiquidacion[i - 1].Montoprontopago.ToString("C");
+                        worksheet.Cell(FilaCuerpo, 12).Value = oListDetalleLiquidacion[i - 1].Costo.ToString("C");
+                        worksheet.Row(FilaCuerpo).Style.Font.FontColor = XLColor.Red;
+                        //worksheet.Cell(FilaCuerpo, 12).Style.Font.FontColor = XLColor.Red;
+                    }else
+                    {
+                        worksheet.Cell(FilaCuerpo, 1).Value = oListDetalleLiquidacion[i - 1].Numeroliquidacion;
+                        worksheet.Cell(FilaCuerpo, 2).Value = oListDetalleLiquidacion[i - 1].Codpresotor;
+                        worksheet.Cell(FilaCuerpo, 3).Value = oListDetalleLiquidacion[i - 1].Codatencion;
+                        worksheet.Cell(FilaCuerpo, 4).Value = oListDetalleLiquidacion[i - 1].NombPaciente;
+                        worksheet.Cell(FilaCuerpo, 5).Value = oListDetalleLiquidacion[i - 1].DscPrestacion;
+                        worksheet.Cell(FilaCuerpo, 6).Value = oListDetalleLiquidacion[i - 1].Fechahoraatencion;
+                        worksheet.Cell(FilaCuerpo, 7).Value = oListDetalleLiquidacion[i - 1].Monto.ToString("C");
+                        worksheet.Cell(FilaCuerpo, 8).Value = oListDetalleLiquidacion[i - 1].Retencion + "%";
+                        worksheet.Cell(FilaCuerpo, 9).Value = oListDetalleLiquidacion[i - 1].Montoretencion.ToString("C");
+                        worksheet.Cell(FilaCuerpo, 10).Value = oListDetalleLiquidacion[i - 1].Retencionppago + "%";
+                        worksheet.Cell(FilaCuerpo, 11).Value = oListDetalleLiquidacion[i - 1].Montoprontopago.ToString("C");
+                        worksheet.Cell(FilaCuerpo, 12).Value = oListDetalleLiquidacion[i - 1].Costo.ToString("C");
+                        
+                    }
+
+                    worksheet.Range(FilaCuerpo, 1, FilaCuerpo, ColumnaCab).Style.Border.BottomBorder = XLBorderStyleValues.Dotted;
+                    worksheet.Range(FilaCuerpo, 1, FilaCuerpo, ColumnaCab).Style.Border.BottomBorderColor = XLColor.Black;
+
+                    FilaCuerpo++;
+                }
+                //F-Cuerpo_Tabla
+                //F-Contenido
+
+                //I-Estilo Cabecera_Tabla
+                var RangoCab = worksheet.Range(FilaCab, 1, FilaCab, ColumnaCab); //Selecciona Rango
+                RangoCab.Style.Border.RightBorder = XLBorderStyleValues.Medium;
+                RangoCab.Style.Border.RightBorderColor = XLColor.White;
+                //RangoCab.Style.Border.SetOutsideBorder(XLBorderStyleValues.Thick); //Generamos las lineas exteriores
+                //RangoCab.Style.Border.SetInsideBorder(XLBorderStyleValues.Medium); //Generamos las lineas interiores
+                RangoCab.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; //Alineamos horizontalmente
+                RangoCab.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;  //Alineamos verticalmente
+                RangoCab.Style.Fill.BackgroundColor = XLColor.FromHtml("#124498"); //Indicamos el color de background
+                RangoCab.Style.Font.FontSize = 13; //Indicamos el tamaño de la fuente
+                RangoCab.Style.Font.Bold = true;
+                RangoCab.Style.Font.FontColor = XLColor.FromHtml("#ffffff");
+                RangoCab.Style.Font.SetFontName("Sitka Display Semibold"); //Fuente
+                                                                           //F-Estilo Cabecera_Tabla
+
+                worksheet.Columns(1, ColumnaCab).AdjustToContents(); //Ajustamos el ancho de las columnas para que se muestren todos los contenidos
+                excelStream = new MemoryStream();
+                workbook.SaveAs(excelStream);
+
+                if (flgdescarga == 1) //Guardar el archivo para que sea enviado por correo
+                { workbook.SaveAs(xRutaDescarga + xNombreExcel); }//Ruta para guardar
+
+                // Obtener la URL del archivo Excel
+                if (flgdescarga == 0)
+                {
+                    xNombreExcel = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss").Replace("/", "").Replace(":", "").Replace(" ", "") + ".xlsx"; //Nombre del archivo
+                    fileUrl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{Convert.ToBase64String(excelStream.ToArray())}";
+                    OnAfterRenderAsync(true);//crea la funcion
+                    await js.InvokeVoidAsync("downloadFile", fileUrl, xNombreExcel);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            MensajeMdl = e.Message;
+            ModalMensaje("Error", "msgError");
+        }
+
+    }
+    //1.0 FIN
+
+    private async Task FiltroBusqueda(DateTime xFechaInicio, DateTime xFechaFin, string xEstadoPlanilla)
+    {
+        try
+        {
+            oListaLiqxtercerosCab = new List<LiqxtercerosE>();
+            oFilterSearch.FechaInicio = xFechaInicio;
+            oFilterSearch.FechaFin = Convert.ToDateTime(xFechaFin.ToString("dd/MM/yyyy") + " 11:59 PM");
+
+            for (int i = 0; _oListaLiqxtercerosCab.Count > i; i++)
+            {
+                if (_oListaLiqxtercerosCab[i].Estado == xEstadoPlanilla || xEstadoPlanilla == "T")
+                {
+                    if (Convert.ToDateTime(_oListaLiqxtercerosCab[i].FechaGenera) >= oFilterSearch.FechaInicio && Convert.ToDateTime(_oListaLiqxtercerosCab[i].FechaGenera) <= oFilterSearch.FechaFin)
+                    { oListaLiqxtercerosCab.Add(_oListaLiqxtercerosCab[i]); }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            MensajeMdl = e.Message;
+            ModalMensaje("Error", "msgError");
+        }
+    }
+
+    private async Task AddListDetalleLiquidacion(List<LiqxtercerosE> oListaLiqxTerceros)
+    {
+        try
+        {
+            DetalleliquidacionE xDetalleLiquidacion = new DetalleliquidacionE();
+            List<DetalleliquidacionE> xListDetalleLiquidacion = new List<DetalleliquidacionE>();
+            oListDetalleLiquidacion = new List<DetalleliquidacionE>();
+            oListaLiqxtercerosCabProc = new List<LiqxtercerosE>();
+            MontoTotal = 0;
+            xValida = 0;
+            int count = 0;
+
+            for (int i = 0; i < oListaLiqxTerceros.Count; i++)
+            {
+                if (oListaLiqxTerceros[i].FlgSelect == true && oListaLiqxTerceros[i].Estado == "G")
+                {
+                    xDetalleLiquidacion.Codliqxterceros = oListaLiqxTerceros[i].Codliqxterceros;
+                    xDetalleLiquidacion.Numeroliquidacion = oListaLiqxTerceros[i].Numeroliquidacion;
+                    xDetalleLiquidacion.Orden = 2;
+                    //1.0 INI
+                    if (MsgModalPlanillaDetalle == 2)
+                    {
+                        xDetalleLiquidacion.Orden = 3;
+                    }
+                    //1.0 FIN
+                    var xFiltroFechaIncioTmp = oFilterSearch.FechaInicio;
+                    FiltroFechaIncioTmp = xFiltroFechaIncioTmp;
+                    var xFiltroFechaFinTmp = oFilterSearch.FechaFin;
+                    FiltroFechaFinTmp = xFiltroFechaFinTmp;
+                    (oFilterSearch.FechaInicio, oFilterSearch.FechaFin) = ValidarFecha(MsgModalPlanillaDetalle, oFilterSearch.FechaInicio, oFilterSearch.FechaFin, Convert.ToDateTime(oListaLiqxTerceros[i].FechaInicio), Convert.ToDateTime(oListaLiqxTerceros[i].FechaFin), count);
+                    count++;
+
+                    xListDetalleLiquidacion = new Bus.Clinica.Clinica.Detalleliquidacion().Sp_Detalleliquidacion_Consulta(xDetalleLiquidacion);
+
+                    oListDetalleLiquidacion.AddRange(xListDetalleLiquidacion); /* Tablas Detalle liquidacion */
+                    oListaLiqxtercerosCabProc.Add(oListaLiqxTerceros[i]); /* Tablas Procesado */
+                    MontoTotal = MontoTotal + oListaLiqxTerceros[i].MontoTotal;
+
+                    IsDisabledExcel = true;
+                    xValida++;
+                }
+            }
+            if (xValida == 0)
+            {
+                if (MsgModalPlanillaDetalle == 1)
+                { MsgModalPlanillaDetalle = 0; }
+
+                { await ModalMensaje("Advertencia", "msgPlanillaNull"); }
+            }
+        }
+        catch (Exception e)
+        {
+            MensajeMdl = e.Message;
+            await ModalMensaje("Error", "msgError");
+        }
+    }
+
+    private (DateTime, DateTime) ValidarFecha(int pMsgModalPlanillaDetalle, DateTime pFechaInicioAntiguo, DateTime pFechaFinAntiguo, DateTime pFechaInicioNuevo, DateTime pFechaFinNuevo, int pcount)
+    {
+        DateTime xFechaInicio, xFechaFin;
+        if (pcount == 0)
+        {
+            xFechaInicio = pFechaInicioNuevo;
+            xFechaFin = pFechaFinNuevo;
+        }
+        else
+        {
+            xFechaInicio = pFechaInicioAntiguo > pFechaInicioNuevo ? pFechaInicioNuevo : pFechaInicioAntiguo;
+            xFechaFin = pFechaFinAntiguo > pFechaFinNuevo ? pFechaFinAntiguo : pFechaFinNuevo;
+        }
+        return (xFechaInicio, xFechaFin);
+    }
+
+    private void TituloCabecera(int x)
+    {
+        if (x == 0) { Title = "Resultados"; }
+        if (x == 1) { Title = "Cuenta Corriente"; }
+        if (x == 2) { Title = "Planilla Contabilidad"; }
+        if (x == 3) { Title = "Enviar Correo"; }
+
+    }
+
+    private async Task CambiarCuerpo(int X)
+    {
+        try
+        {
+            DetalleliquidacionE DetalleLiquidacion = new DetalleliquidacionE();
+            List<DetalleliquidacionE> ListDetalleLiquidacion = new List<DetalleliquidacionE>();
+            MsgModalPlanillaDetalle = X;
+            Title = "";
+            xValida = 0;
+            CountRespuestaOk = 0;
+            CountRespuestaError = 0;
+            DscRespuestaOK = "";
+            DscRespuestaError = "";
+            IsDisabledEmail = false;
+            IsDisabledExcel = false;
+
+            if (MsgModalPlanillaDetalle == 0) /* Resultado Búsqueda */
+            {
+                Recibo = "";
+                oFilterSearch.FechaInicio = FiltroFechaIncioTmp;
+                oFilterSearch.FechaFin = FiltroFechaFinTmp;
+                MontoTotal = 0;
+                PlanillaDetalle(oLiqxtercerosCab.Codmedico);
+                for (int i = 0; i < oListaLiqxtercerosCab.Count; i++)
+                {
+                    if (oListaLiqxtercerosCab[i].Estado == "G" && oListaLiqxtercerosCab[i].FlgSelect == true)
+                    {
+                        MontoTotal = MontoTotal + oListaLiqxtercerosCab[i].MontoTotal;
+                    }
+                }
+            }
+
+            if (MsgModalPlanillaDetalle == 1) /* Planilla Médico */
+            {
+                TituloCabecera(MsgModalPlanillaDetalle);
+                IsDisabledEmail = true;
+                xIDLiqxTercerosRecibo = 0;
+                xIDImgReciboLiq = 0;
+                AddListDetalleLiquidacion(oListaLiqxtercerosCab);
+            }
+
+            if (MsgModalPlanillaDetalle == 2) /* Planilla Contabilidad */
+            {
+                TituloCabecera(MsgModalPlanillaDetalle);
+                flgButtonProcesarTemp = false;
+                flgButtonProcesar = false;
+                MontoTotal = 0;
+                xIDLiqxTercerosRecibo = 0;
+                xIDImgReciboLiq = 0;
+                xValida = 0;
+                oListaLiqxtercerosCabProc = new List<LiqxtercerosE>();
+                FiltroFechaIncioTmp = oFilterSearch.FechaInicio;
+                FiltroFechaFinTmp = oFilterSearch.FechaFin;
+                for (int i = 0; i < oListaLiqxtercerosCab.Count; i++)
+                {
+                    if (oListaLiqxtercerosCab[i].FlgSelect == true)
+                    { xValida++; }
+                }
+                if (xValida != 0)
+                {
+                    flgButtonProcesarTemp = true;
+                }
+            }
+
+            if (MsgModalPlanillaDetalle == 3) /* Cargar Recibo*/
+            {
+                if (!string.IsNullOrWhiteSpace(Recibo) && oListaLiqxtercerosCabProc.Count != 0)
+                {
+                    LiqxtercerosE oLiqxtercerosE = new LiqxtercerosE();
+                    TituloCabecera(2);
+                    IsDisabledEmail = false;
+                    IsDisabledExcel = true;
+                    FileAdjuntaFlg = false;
+                    FileAdjunto = "";
+                    Rpt = false;
+                    MsgModalPlanillaDetalle = 2;
+                    Pregunta = "¿Desea guardar el recibo del médico?";
+                    js.InvokeVoidAsync("ShowMessageModal", true, "msgModalQuestionGuardarRecibo");
+                }
+                else
+                {
+                    MsgModalPlanillaDetalle = 2;
+                    //mensaje alerta
+                    if (string.IsNullOrWhiteSpace(Recibo))
+                    { await ModalMensaje("Advertencia", "msgReciboNull"); }
+                    if (oListaLiqxtercerosCabProc.Count == 0)
+                    { await ModalMensaje("Advertencia", "msgPlanillaNull"); }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            MensajeMdl = e.Message;
+            await ModalMensaje("Error", "msgError");
+        }
+        finally
+        {
+
+        }
+    }
+    //
+    private async Task OnclickProcesado(string X)
+    {
+        xValida = 0;
+        for (int i = 0; oListaLiqxtercerosCabProc.Count() >= i; i++)
+        {
+            if (oListaLiqxtercerosCabProc[i].Numeroliquidacion == X)
+            {
+                MontoTotal -= oListaLiqxtercerosCabProc[i].MontoTotal;
+                oListaLiqxtercerosCabProc.Remove(oListaLiqxtercerosCabProc[i]);
+                xValida++;
+            }
+        }
+        flgButtonProcesarTemp = xValida == 0;
+        flgButtonProcesar = xValida == 0;
+    }
+
+    private async Task OnclickProcesar(int X)
+    {
+        try
+        {
+            int xValida = 0;
+
+            if (X == 1 && !string.IsNullOrWhiteSpace(Recibo))
+            {
+                oListaLiqxtercerosCabProc = new List<LiqxtercerosE>();
+                Procesar = 1;
+
+                AddListDetalleLiquidacion(oListaLiqxtercerosCab);
+                if (oListaLiqxtercerosCabProc.Count != 0)
+                { flgButtonProcesar = true; }
+            }
+
+            if (string.IsNullOrWhiteSpace(Recibo))
+            { ModalMensaje("Advertencia", "msgReciboNull"); }
+        }
+        catch (Exception e)
+        {
+            MensajeMdl = e.Message;
+            ModalMensaje("Error", "msgError");
+        }
+    }
+
+    private async Task OnchangeFilterEstadoPlanilla(ChangeEventArgs e)
+    {
+        try
+        {
+            EstadoPlanilla = Convert.ToString(e.Value);
+            FiltroBusqueda(oFilterSearch.FechaInicio, oFilterSearch.FechaFin, EstadoPlanilla);
+        }
+        catch (Exception ex)
+        {
+            MensajeMdl = ex.Message;
+            ModalMensaje("Error", "msgError");
+        }
+    }
+
+    private async Task OnchangeFilterFecInicio(ChangeEventArgs e)
+    {
+        try
+        {
+            oFilterSearch.FechaInicio = Convert.ToDateTime(e.Value);
+            FiltroFechaIncioTmp = oFilterSearch.FechaInicio;
+            FiltroBusqueda(oFilterSearch.FechaInicio, oFilterSearch.FechaFin, EstadoPlanilla);
+        }
+        catch (Exception ex)
+        {
+            MensajeMdl = ex.Message;
+            ModalMensaje("Error", "msgError");
+        }
+    }
+
+    private async Task OnchangeFilterFecFin(ChangeEventArgs e)
+    {
+        try
+        {
+            oFilterSearch.FechaFin = Convert.ToDateTime(e.Value);
+            FiltroFechaFinTmp = oFilterSearch.FechaFin;
+            FiltroBusqueda(oFilterSearch.FechaInicio, oFilterSearch.FechaFin, EstadoPlanilla);
+        }
+        catch (Exception ex)
+        {
+            MensajeMdl = ex.Message;
+            ModalMensaje("Error", "msgError");
+        }
+    }
+
+    private async Task OnchangeFilterCheckBox(ChangeEventArgs e)
+    {
+        try
+        {
+            var xboleano = Convert.ToBoolean(e.Value);
+            Check = xboleano;
+            if (Check == true)
+            { Readonly = false; }
+            else
+            { Readonly = true; }
+        }
+        catch (Exception ex)
+        {
+            MensajeMdl = ex.Message;
+            ModalMensaje("Error", "msgError");
+        }
+    }
+
+    private async Task OnchangeFiltroFechaInicio(ChangeEventArgs e)
+    {
+        try
+        {
+            var _fechaRecibida = Convert.ToDateTime(e.Value);
+            FiltroFechaIncio = _fechaRecibida.ToString("yyyy-MM-dd");
+
+            oFilterSearch.FechaInicio = _fechaRecibida;
+            if (_fechaRecibida > oFilterSearch.FechaFin)
+            { oFilterSearch.FechaFin = _fechaRecibida; }
+        }
+        catch (Exception ex)
+        {
+            MensajeMdl = ex.Message;
+            ModalMensaje("Error", "msgError");
+        }
+    }
+
+    private void AutoSumaMonto(string xCodliqxterceros, string xNumeroliquidacion, int xMsgModalPlanillaDetalle)
+    {
+        try
+        {
+            if (MsgModalPlanillaDetalle == 0)
+            {
+                for (int i = 0; i < oListaLiqxtercerosCab.Count; i++)
+                {
+                    if (oListaLiqxtercerosCab[i].Codliqxterceros == xCodliqxterceros && oListaLiqxtercerosCab[i].Numeroliquidacion == xNumeroliquidacion && oListaLiqxtercerosCab[i].FlgSelect == false)
+                    {
+                        MontoTotal = MontoTotal + oListaLiqxtercerosCab[i].MontoTotal;
+                    }
+                    if (oListaLiqxtercerosCab[i].Codliqxterceros == xCodliqxterceros && oListaLiqxtercerosCab[i].Numeroliquidacion == xNumeroliquidacion && oListaLiqxtercerosCab[i].FlgSelect == true)
+                    {
+                        MontoTotal = MontoTotal - oListaLiqxtercerosCab[i].MontoTotal;
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            MensajeMdl = ex.Message;
+            ModalMensaje("Error", "msgError");
+        }
+    }
+
+    private async Task OnclickSelectPlanillaDetalleProcesadas(string X)
+    {
+        xValida = 0;
+        flgButtonProcesarTemp = false;
+        for (int i = 0; i < oListaLiqxtercerosCab.Count; i++)
+        {
+            if (oListaLiqxtercerosCab[i].Numeroliquidacion == X)
+            {
+                if (oListaLiqxtercerosCab[i].FlgSelect)
+                { oListaLiqxtercerosCab[i].FlgSelect = false; }
+                else
+                { oListaLiqxtercerosCab[i].FlgSelect = true; }
+
+            }
+            if (oListaLiqxtercerosCab[i].FlgSelect && oListaLiqxtercerosCab[i].Estado == "G")
+            { xValida++; }
+        }
+        flgButtonProcesarTemp = xValida != 0;
+    }
+
+    private async Task OnclickSelectPlanillaDetalle(ChangeEventArgs e)
+    {
+        bool Event = Convert.ToBoolean(e.Value);
+        MontoTotal = 0;
+        flgButtonProcesarTemp = false;
+        if (Event)
+        {
+            for (int i = 0; i < oListaLiqxtercerosCab.Count; i++)
+            {
+                if (oListaLiqxtercerosCab[i].Estado == "G")
+                {
+                    oListaLiqxtercerosCab[i].FlgSelect = true;
+                    MontoTotal += oListaLiqxtercerosCab[i].MontoTotal;
+                    flgButtonProcesarTemp = true;
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < oListaLiqxtercerosCab.Count; i++)
+            {
+                if (oListaLiqxtercerosCab[i].Estado == "G")
+                { oListaLiqxtercerosCab[i].FlgSelect = false; }
+            }
+        }
+    }
+
+    private async Task ChangueIitemsPerPage(ChangeEventArgs e)
+    {
+        try
+        {
+            ItemsPerPage = Convert.ToInt32(e.Value.ToString());
+            BuscarMedicoLista(1);
+        }
+        catch { }
+    }
+
+    private async Task OnFileChange(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            string xfile64;
+            FileType = e.File.ContentType;
+            FileName = e.File.Name;
+            Rpt = false;
+
+            if (FileType.Contains("image/") || FileType.Contains("application/"))
+            {
+                MemoryStream ms = new MemoryStream();
+                await e.File.OpenReadStream().CopyToAsync(ms);
+                var buffer = ms.ToArray();
+                xfile64 = Convert.ToBase64String(buffer);
+                FileAdjunto = xfile64;
+                FileAdjuntaFlg = true;
+                this.StateHasChanged();
+                IsDisabledEmail = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            MensajeMdl = ex.Message;
+            ModalMensaje("Error", "msgError");
+        }
+    }
+
+    private async Task PregGuardarArchivoRecibo_EnviarCorreo()
+    {
+        try
+        {
+            if (FileAdjuntaFlg)
+            {
+                if (!Rpt)
+                {
+                    Pregunta = "¿Desea guardar el archivo y enviar correo al area de contabilidad?";
+                    js.InvokeVoidAsync("ShowMessageModal", true, "msgModalQuestionArchivoReciboEnviaCorreo");
+                }
+                else
+                { EnviarCorreo(1); }
+            }
+            else
+            { ModalMensaje("Advertencia", "msgImagenNull"); }
+        }
+        catch (Exception e)
+        {
+            MensajeMdl = e.Message;
+            ModalMensaje("Error", "msgError");
+        }
+    }
+
+    private async Task ActualizarReciboEnviarCorreo()
+    {
+        try
+        {
+            if (new Bus.Clinica.Clinica.Liqxterceros().Sp_LiqxtercerosReciboImg_UpdatexCampo(new LiqxtercerosReciboImgE(xIDImgReciboLiq, FileAdjunto, "Img_Recibo")))
+            {
+                if (new Bus.Clinica.Clinica.Liqxterceros().Sp_LiqxtercerosReciboImg_UpdatexCampo(new LiqxtercerosReciboImgE(xIDImgReciboLiq, FileName, "Nmb_Archivo")))
+                {
+                    Rpt = true;
+                    EnviarCorreo(1);
+
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            MensajeMdl = e.Message;
+            ModalMensaje("Error", "msgError");
+        }
+    }
+
+    private async Task PregGuardarArchivoRecibo()
+    {
+        try
+        {
+            if (FileAdjuntaFlg)
+            {
+                Pregunta = "¿Desea guardar el archivo?";
+                js.InvokeVoidAsync("ShowMessageModal", true, "msgModalQuestionArchivoRecibo");
+            }
+            else
+            { ModalMensaje("Advertencia", "msgImagenNull"); }
+            // EnviarCorreo(1);
+        }
+        catch (Exception e)
+        {
+            MensajeMdl = e.Message;
+            ModalMensaje("Error", "msgError");
+        }
+    }
+
+    private async Task ActualizarRecibo(bool acepted)
+    {
+        try
+        {
+            if (acepted)
+            {
+                if (new Bus.Clinica.Clinica.Liqxterceros().Sp_LiqxtercerosReciboImg_UpdatexCampo(new LiqxtercerosReciboImgE(xIDImgReciboLiq, FileAdjunto, "Img_Recibo")))
+                {
+                    if (new Bus.Clinica.Clinica.Liqxterceros().Sp_LiqxtercerosReciboImg_UpdatexCampo(new LiqxtercerosReciboImgE(xIDImgReciboLiq, FileName, "Nmb_Archivo")))
+                    {
+                        Rpt = true;
+                        ModalMensaje("Informativo", "msgGrabarOk");
+
+                    }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            MensajeMdl = e.Message;
+            ModalMensaje("Error", "msgError");
+        }
+    }
+
+    private async Task GuardarRecibo(bool acepted)
+    {
+        if (acepted)
+        {
+            MsgModalPlanillaDetalle = 3;
+            xIDLiqxTercerosRecibo = 0;
+            xIDImgReciboLiq = 0;
+            CountRespuestaOk = 0;
+            CountRespuestaError = 0;
+            DscRespuestaError = "";
+            DscRespuestaOK = "";
+            FileAdjunto = "";
+            FileName = "";
+            TituloCabecera(MsgModalPlanillaDetalle);
+
+            try
+            {
+                xIDImgReciboLiq = new Bus.Clinica.Clinica.Liqxterceros().Sp_LiqxtercerosReciboImg_Insert(new LiqxtercerosReciboImgE(Recibo, FileAdjunto, FileName, true));
+
+                if (xIDImgReciboLiq > 0)
+                {
+                    for (int i = 0; i < oListaLiqxtercerosCabProc.Count; i++)
+                    {
+                        xIDLiqxTercerosRecibo = new Bus.Clinica.Clinica.Liqxterceros().Sp_LiqxtercerosRecibo_Insert(new LiqxtercerosReciboE(xIDImgReciboLiq, oListaLiqxtercerosCabProc[i].Codliqxterceros, oListaLiqxtercerosCabProc[i].Numeroliquidacion, oListaLiqxtercerosCabProc[i].Codmedico, oListaLiqxtercerosCabProc[i].RUCMedico, true));
+                        if (xIDLiqxTercerosRecibo != 0)
+                        { CountRespuestaOk++; }
+                        else
+                        { CountRespuestaError++; }
+                    }
+
+                    if (CountRespuestaError != 0 && CountRespuestaOk != 0)
+                    { ModalMensaje("Advertencia", "msgRegistroAlert"); }
+                    if (CountRespuestaError == 0 && CountRespuestaOk != 0)
+                    { ModalMensaje("Informativo", "msgGrabarOk"); }
+                    else
+                    { ModalMensaje("Error", "msgError"); }
+                }
+                else
+                { ModalMensaje("Error", "msgError"); }
+            }
+            catch (Exception ex)
+            { ModalMensaje("Error", "msgError"); }
+        }
+    }
+
+    private void SelectedPage(int selectedPageIndex)
+    {
+        BuscarMedicoLista(selectedPageIndex);
+    }
+}
+
+<div class="bg-light">
+    <div class="form-bg">
+
+        <div class="row align-items-center form-toolbar">
+            <div class="row justify-content-between">
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <!--PRESENTACION-->
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 buscar-menuNuevo" style="border-radius:25px !important;">
+                <div class="input-group">
+                    <!--I.Buscar-->
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12" style="border-radius:25px !important;">
+                        <div class="DivSearchInput">
+                            <div class="DivSearch" style="width:100%">
+                                <input id="txtBuscarTercero" type="search" placeholder="Buscar Médico por Nombre o RUC" @bind-value=BuscarMedico @onkeyup="@EnterBuscarMedico">
+                                <i id="idSearchMedico" class="fa-solid fa-magnifying-glass" role="button" @onclick="@(()=>BuscarMedicoLista(1))"></i>
+                                <i id="idspinnerMedico" class="spinner-border text-success" tipo="spinner" role="spinbutton" style="display:none;">
+                                    <span class="visually-hidden">Loading...</span>
+                                </i>
+
+                                <div class="dropdown-menu col-12 dropdown-menu-search" aria-labelledby="idfiltroavanzado" style="transition: transform 0.7s ease 0s; z-index:10;">
+                                    <div class="form-group card card-menu-search" style="margin-top: 15px;    margin-left: 8px;">
+                                        <div class="col-12">
+                                            <div class="contenedor">
+                                                <h5 class="card-title" style="color:#000000; font-weight: bold; ">
+                                                    Búsqueda avanzada
+                                                </h5>
+                                                <label class="fw-bold">Filtro de búsqueda:&nbsp;Presione el check para filtrar por fecha</label>
+                                                <input type="checkbox" @onchange="@OnchangeFilterCheckBox" style="width: 20px; height: 20px; margin-top: 10px; margin-left: 20px;" />
+
+                                                <div class="card-body">
+                                                    <div class="row">
+
+                                                        @if (Readonly == true)
+                                                        {
+                                                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 form-group">
+                                                                <label class=" card-title title-paddin">Fecha Inicio</label>
+                                                                <input type="date" readonly @bind="@oFilterSearchPantalla.FechaInicio" class="form-control" onkeydown="return false" max="@FiltroFechaFin" />
+                                                            </div>
+                                                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 form-group">
+                                                                <label class=" card-title title-paddin">Fecha Fin</label>
+                                                                <input type="date" readonly class="form-control" @bind="@oFilterSearchPantalla.FechaFin" min="@FiltroFechaIncio" onkeydown="return false" max="@FiltroFechaFin" />
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 form-group">
+                                                                <label class=" card-title title-paddin">Fecha Inicio</label>
+                                                                <input type="date" @bind="@oFilterSearchPantalla.FechaInicio" class="form-control" @oninput="@OnchangeFiltroFechaInicio" onkeydown="return false" max="@FiltroFechaFin" />
+                                                            </div>
+                                                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 form-group">
+                                                                <label class=" card-title title-paddin">Fecha Fin</label>
+                                                                <input type="date" class="form-control" @bind="@oFilterSearchPantalla.FechaFin" min="@FiltroFechaIncio" onkeydown="return false" max="@FiltroFechaFin" />
+                                                            </div>
+                                                        }
+
+                                                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 form-group">
+                                                            <label class=" card-title title-paddin text-hide" style="color:white;">'</label>
+                                                            <input id="btnBusquedaAvanzada" type="button" class="btn btn-primary form-control font-weight-bold" style="z-index:auto;" value="Buscar" />
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!--F.Buscar-->
+
+                    <div class="DivSearchNuevo" style="width:100%">
+                        <div class="container" style="margin-top: 20px;">
+
+                            <div class="col-12 col-lg-12 col-md-12 buscar-menuNuevo">
+                                <div class="input-group">
+                                    <div class="card w-100">
+                                        <div class="card-header text-white fs-5" style="background:#124498;padding: 1rem 2rem; ">
+                                            <div class="col-12 row">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col-xl-12">
+                                                    <label>Resultado de búsqueda</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive">
+                                    <table class="table table-hover table-bordered">
+                                        <thead class="table-primary">
+                                            <tr class="fw-bolder">
+                                                <th class="col-1 text-center"></th>
+                                                <th class="col-1 text-center">Cod. Médico</th>
+                                                <th class="col-5 text-center">Médico</th>
+                                                <th class="col-2 text-center">RUC</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @foreach (var item in oListaMedicos)
+                                            {
+                                                <tr>
+                                                    <td class="text-center">
+                                                        <div class="btn-group dropstart">
+                                                            <button class="btn btn-menu" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <span class="fa-brands fa-elementor"></span>
+                                                            </button>
+                                                            <ul class="dropdown-menu">
+                                                                <li class="dropdown-header">Seleccione la opción</li>
+                                                                <li class="dropdown-item btn" data-bs-toggle="modal" data-bs-target="#msgModalResultados" @onclick="(()=>PlanillaDetalle(item.Codmedico))">
+                                                                    <span class="fa-solid fa-list">
+                                                                    </span>
+                                                                    Detalles
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">@item.Codmedico</td>
+                                                    <td>@item.NombreMedico</td>
+                                                    <td class="text-center">@item.RUCMedico</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <!-- I.MANTENIMIENTO -->
+    <div class="modal fade" style="overflow:auto" id="msgModalResultados" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-custom">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Resultado Búsqueda</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="(()=>CambiarCuerpo(-1))"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-bg">
+                        @*Cabecera Detalles*@
+                        <div class="row align-items-center form-toolbar" style="padding-bottom: 0px;">
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 row justify-content-end">
+                                @if (MsgModalPlanillaDetalle == 0)
+                                {
+                                    <h2 class="title-mant"><b>@Title</b></h2>
+                                }
+                                @if (MsgModalPlanillaDetalle == 1 || MsgModalPlanillaDetalle == 2)
+                                {
+                                    <h2 class="title-mant">
+                                        <button class="BtnCabecera" @onclick="(()=>CambiarCuerpo(0))">Resultados></button>
+                                        <b>@Title</b>
+                                    </h2>
+                                }
+                                @if (MsgModalPlanillaDetalle == 3)
+                                {
+                                    <h2 class="title-mant">
+                                        <button class="BtnCabecera" @onclick="(()=>CambiarCuerpo(0))">Resultados></button>
+                                        <button class="BtnCabecera" @onclick="(()=>CambiarCuerpo(2))">Planilla Contabilidad></button>
+                                        <b>@Title</b>
+                                    </h2>
+                                }
+                            </div>
+                            @if (MsgModalPlanillaDetalle != 0)
+                            {
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 row justify-content-end">
+                                    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12 row justify-content-end" style="margin-bottom: 0px;margin-right: 0px;">
+
+
+                                        @if (IsDisabledEmail)
+                                        {
+                                            <ButtonGeneral IdButton="idBtnEnviaCorreo" IdIcono="idIcnGuardarArchivos" IsButtonDisabled=false TipoButton="btn btn-primary" IconoButtonEnabled="fa fa-envelope" TxtButtonEnabled="Enviar Correo" IconoButtonDisabled="spinner-border spinner-border-sm" TxtButtonDisabled="Procesando..." OnClick="(()=>EnviarCorreo(1))" />
+                                        }
+                                        else
+                                        {
+                                            <ButtonGeneral IdButton="idBtnEnviaCorreo" IdIcono="idIcnGuardarArchivos" TipoButton="btn btn-primary" IconoButtonEnabled="fa fa-envelope" TxtButtonEnabled="Enviar Correo" Disabled=true />
+                                        }
+                                    </div>
+                                    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12 row justify-content-end" style="margin-bottom: 0px;">
+                                        @if (IsDisabledExcel)
+                                        {
+                                            <ButtonGeneral IdButton="idBtnExportar" IdIcono="idIcnExportar" IsButtonDisabled=false TipoButton="btn btn-success" IconoButtonEnabled="fa-solid fa-download" TxtButtonEnabled="Descargar" OnClick="(()=>ExportarExcel(0,NombreExcel,RutaDescarga))" />
+                                        }
+                                        else
+                                        {
+                                            <ButtonGeneral IdButton="idBtnExportar" IdIcono="idIcnExportar" TipoButton="btn btn-success" IconoButtonEnabled="fa-solid fa-download" TxtButtonEnabled="Descargar" Disabled=true />
+                                        }
+                                    </div>
+
+                                </div>
+                            }
+                        </div>
+
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col-xl-12">
+                            <div class="row group align-items-center">
+                                <div class="row group align-items-center">
+                                    <div class="col-xl-2 col-lg-1 col-md-1 col-sm-12 col-xs-12 col-12">
+                                        <b>Nombres del médico:</b>
+                                    </div>
+                                    <div class="col-xl-4 col-lg-5 col-md-5 col-sm-12 col-xs-12 col-12">
+                                        @oLiqxtercerosCab.NombreMedico
+                                    </div>
+                                    <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12 col-12">
+                                        <b>RUC:</b>
+                                    </div>
+                                    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-xs-12 col-12">
+                                        @oLiqxtercerosCab.RUCMedico
+                                    </div>
+                                </div>
+
+                                <div class="row group align-items-center">
+                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 col-12">
+                                        <label class=" card-title title-paddin" style="padding-bottom: 0px;margin-bottom:0px;">
+                                            <b>Fecha Inicio</b>
+                                        </label>
+                                        <input type="date" class="form-control" @oninput="OnchangeFilterFecInicio" @bind-value=@oFilterSearch.FechaInicio />
+                                    </div>
+                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 col-12">
+                                        <label class=" card-title title-paddin" style="padding-bottom: 0px;margin-bottom:0px;">
+                                            <b>Fecha Fin</b>
+                                        </label>
+                                        <input type="date" class="form-control" @oninput="@OnchangeFilterFecFin" @bind-value=@oFilterSearch.FechaFin />
+                                    </div>
+
+                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 col-12">
+                                        <select id="SelectEstado" class="form-select form-select-control" aria-label="Default select example" onchange="@OnchangeFilterEstadoPlanilla" style="margin-top:8%">
+                                            <option value="T" select>Todas las planillas</option>
+                                            <option value="G">Pendiente</option>
+                                            <option value="C">Realizado</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @*Cabecera Detalles*@
+                    <br />
+                    @*Cuerpo Detalles*@
+                    @if (MsgModalPlanillaDetalle == 0)
+                    {
+                        <div class="row group align-items-center">
+
+                            <div class="row group align-items-center">
+                                <div class="col-xl-9 col-lg-9 col-md-6 col-sm-12 col-xs-12 col-12">
+                                    <div class="contenedor" style="border: 2px solid #124498; border-radius:20px 20px 20px 20px">
+
+                                        <div style="position:relative; height:300px; overflow:auto; display:block">
+                                            <table class="table">
+                                                <thead style="position: sticky; top: 0; background-color: #ffffff; z-index: 1;">
+                                                    <tr>
+                                                        <th class="text-center"><input class="form-check-input" type="checkbox" @onchange=@OnclickSelectPlanillaDetalle></th>
+                                                        <th class="text-center">Planilla</th>
+                                                        <th class="text-center">Documento</th>
+                                                        <th class="text-center">Pago</th>
+                                                        <th class="text-center">Fecha Generada</th>
+                                                        <th class="text-center">Fecha Pago</th>
+                                                        <th style="text-align:right">Monto</th>
+                                                        <th class="text-center">Descargar</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in oListaLiqxtercerosCab)
+                                                    {
+
+                                                        <tr>
+                                                            <td class="text-center">
+                                                                @if (item.Estado == "G")
+                                                                {
+                                                                    <input class="form-check-input" type="checkbox" @bind="@item.FlgSelect" @onclick="() => AutoSumaMonto(item.Codliqxterceros, item.Numeroliquidacion,MsgModalPlanillaDetalle)">
+                                                                }
+                                                                else
+                                                                {
+                                                                    <input class="form-check-input gray-checkbox" type="checkbox" @bind="@item.FlgSelect" style="background-color:grey" disabled>
+                                                                }
+                                                            </td>
+                                                            <td class="text-center">@item.Numeroliquidacion</td>
+                                                            <td class="text-center">@item.Documento</td>
+
+                                                            @if (item.Estado == "G")
+                                                            {
+                                                                <td class="text-center"> Pendiente</td>
+                                                                <td class="text-center">@item.FechaGenera</td>
+                                                                <td class="text-center"> --- </td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td class="text-center">Realizado</td>
+                                                                <td class="text-center">@item.FechaGenera</td>
+                                                                <td class="text-center">@item.Fechacancela</td>
+
+                                                            }
+                                                            <td style="text-align:right">@item.MontoTotal.ToString("C")</td>
+
+                                                            <td style="text-align:center">
+                                                                <img src="/images/iconfinder_arrow_download.svg" width="20" height="20" class="center" @onclick="(()=>DescargarExcel(item.Numeroliquidacion, item.Codliqxterceros))" />
+                                                            </td>
+
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12 col-12">
+                                    <div class="contenedor" style="border: 2px solid #124498; border-radius:20px 20px 20px 20px; height:350px;">
+                                        <div>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                                <h3 style="color:#124498"><b>Cuenta Corriente:</b></h3>
+                                            </div>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                                <h5>Planilla detallada para el Médico:</h5>
+                                            </div>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                                <ButtonGeneral IdButton="idBtnCambiarCuerpo" IdIcono="idIcn" TipoButton="btn btn-primary" IconoButtonEnabled="fa-regular fa-file" TxtButtonEnabled="Procesar" OnClick="(()=>CambiarCuerpo(1))" />
+                                            </div>
+                                        </div>
+                                        <br />
+                                        <div>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                                <h3 style="color:#124498"><b>Planilla Contabilidad:</b></h3>
+                                            </div>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                                <h6>Planilla detallada para Contabilidad:</h6>
+                                            </div>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                                <ButtonGeneral IdButton="idBtnCuentaCorriente" IdIcono="idIcnCuentaCorriente" TipoButton="btn btn-primary" IconoButtonEnabled="fa-regular fa-file" TxtButtonEnabled="Procesar" OnClick="(()=>CambiarCuerpo(2))" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-9 col-lg-9 col-md-6 col-sm-12 col-xs-12 col-12" style="text-align:right">
+                                    <h4 class="MontoTotal">Total: @MontoTotal.ToString("C")</h4>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (MsgModalPlanillaDetalle == 1)
+                    {
+                        <div class="row group align-items-center">
+
+                            <div class="row group align-items-center">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                        <ButtonGeneral IdButton="idBtnAtras" IdIcono="idIcnAtras" TipoButton="btn btn-primary" IconoButtonEnabled="fa fa-delete-left" TxtButtonEnabled="Atras" OnClick="(()=>CambiarCuerpo(0))" />
+                                    </div>
+
+                                    <div style="position:relative; height:370px; overflow:auto; display:block">
+                                        <table class="table">
+                                            <thead>
+                                                <tr style="height: 50px;white-space:nowrap;">
+                                                    @foreach (var itemCab in oListaCab)
+                                                    {
+                                                        <th class="text-center;">@itemCab.ToString()</th>
+                                                    }
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in oListDetalleLiquidacion)
+                                                {
+                                                    <tr>
+                                                        <td class="text-center">@item.Numeroliquidacion</td>
+                                                        <td class="text-center">@item.Codatencion</td>
+                                                        <td style="text-align:right">@item.NombPaciente</td>
+                                                        <td style="text-align:left;white-space:nowrap;">@item.DscPrestacion</td>
+                                                        <td class="text-center">@item.Fechahoraatencion</td>
+                                                        <td style="text-align:right">@item.Monto.ToString("C")</td>
+                                                        <td style="text-align:right">@item.Retencion%</td>
+                                                        <td style="text-align:right">@item.Montoretencion.ToString("C")</td>
+                                                        <td style="text-align:right">@item.Retencionppago%</td>
+                                                        <td style="text-align:right">@item.Montoprontopago.ToString("C")</td>
+                                                        <td style="text-align:right">@item.Costo.ToString("C")</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <br>
+                                    <h4 class="MontoTotal">Total: @MontoTotal.ToString("C")</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+                    @if (MsgModalPlanillaDetalle == 2)
+                    {
+                        <div class="row group align-items-center">
+                            <div class="row group align-items-center">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                        <ButtonGeneral IdButton="idBtnAtras" IdIcono="idIcnAtras" TipoButton="btn btn-primary" IconoButtonEnabled="fa fa-delete-left" TxtButtonEnabled="Atras" OnClick="(()=>CambiarCuerpo(0))" />
+                                    </div>
+                                    <br>
+
+                                    <div class="row align-items-stretch">
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-xs-2 col-2">
+                                            <div class="omrs-input-group">
+                                                <label class="omrs-input-underlined">
+                                                    <input required="" type="text" step="any" @bind-value=@Recibo>
+                                                    <span class="omrs-input-label">Recibo</span>
+                                                    <span class="omrs-input-helper"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-1 col-1 row align-items-center">
+                                        </div>
+
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-xs-12 col-12">
+                                            <div style="position:relative; height:300px; overflow:auto; display:block">
+                                                <table id="TablaLisLiqxTerceros" class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-rigth"><input type="checkbox" @onchange=@OnclickSelectPlanillaDetalle></th>
+                                                            <th class="text-rigth">Planilla</th>
+                                                            <th class="text-rigth">Monto</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var itemCab in oListaLiqxtercerosCab)
+                                                        {
+                                                            @if (itemCab.Estado == "G")
+                                                            {
+                                                                <tr>
+
+                                                                    <td>
+                                                                        <input id="SelectLiqxTerceroCab" type="checkbox" @bind="@itemCab.FlgSelect" @onclick="(()=>OnclickSelectPlanillaDetalleProcesadas(itemCab.Numeroliquidacion))">
+                                                                    </td>
+                                                                    <td class="text-rigth"> @itemCab.Numeroliquidacion</td>
+                                                                    <td class="text-rigth"> @itemCab.MontoTotal.ToString("C")</td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12 col-12 row align-items-center">
+                                        </div>
+
+                                        <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12 col-12 row align-items-center">
+                                            @if (flgButtonProcesarTemp)
+                                            {
+                                                <ButtonGeneral IdButton="idBtnProcesarTemp" IdIcono="idIcnProcesarTemp" TipoButton="btn btn-primary" IconoButtonEnabled="fa-solid fa-arrow-right-from-bracket" OnClick="(()=>OnclickProcesar(1))" />
+                                            }
+                                            else
+                                            {
+                                                <ButtonGeneral IdButton="idBtnProcesarTemp" IdIcono="idIcnProcesarTemp" TipoButton="btn btn-primary" IconoButtonEnabled="fa-solid fa-arrow-right-from-bracket" OnClick="(()=>OnclickProcesar(1))" Disabled=true />
+                                            }
+                                        </div>
+
+                                        <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12 col-12 row align-items-center">
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-xs-12 col-12">
+                                            <div style="position:relative; height:300px; overflow:auto; display:block">
+                                                <table id="TablaLisLiqxTercerosProc" class="table table-active">
+                                                    <thead>
+                                                        <tr>
+                                                            <th></th>
+                                                            <th>Procesado</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var itemProc in oListaLiqxtercerosCabProc)
+                                                        {
+                                                            @if (itemProc.Estado == "G" && itemProc.FlgSelect == true && Procesar == 1)
+                                                            {
+                                                                <tr>
+                                                                    <td><input style="background-color: #FFFF !important;  border-color: #FFFF !important;" id="SelectProc" type="checkbox" @bind="@itemProc.FlgSelect" @onclick="(()=>OnclickProcesado(itemProc.Numeroliquidacion))"></td>
+                                                                    <td> @itemProc.Numeroliquidacion - @Recibo</td>
+                                                                </tr>
+
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <h6 class="MontoTotal">Total: @MontoTotal.ToString("C")</h6>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 d-flex align-items-center" style="padding-top: 10px;">
+                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 d-flex justify-content-center">
+                                        @if (flgButtonProcesar)
+                                        {
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-xs-4 col-7">
+
+                                                <ButtonGeneral IdButton="idBtnProcesarRecibo" IdIcono="idIcnProcesarRecibo" TipoButton="btn btn-primary" IconoButtonEnabled="fa-regular fa-save" TxtButtonEnabled="Procesar" OnClick="(()=>CambiarCuerpo(3))" />
+                                            </div>
+                                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-2 col-xs-2 col-3">
+                                                <ButtonGeneral IdButton="idBtnBorrarTemp" IdIcono="idIcnBorrarTemp" TipoButton="btn btn-danger" IconoButtonEnabled="fa-solid fa-trash" TxtButtonEnabled="Borrar" OnClick="(()=>CambiarCuerpo(2))" />
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-xs-4 col-7">
+                                                <ButtonGeneral IdButton="idBtnProcesarRecibo" IdIcono="idIcnProcesarRecibo" TipoButton="btn btn-primary" IconoButtonEnabled="fa-regular fa-save" TxtButtonEnabled="Procesar" OnClick="(()=>CambiarCuerpo(3))" Disabled=true />
+                                            </div>
+                                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-2 col-xs-2 col-3">
+                                                <ButtonGeneral IdButton="idBtnBorrarTemp" IdIcono="idIcnBorrarTemp" TipoButton="btn btn-danger" IconoButtonEnabled="fa-solid fa-trash" TxtButtonEnabled="Borrar" OnClick="(()=>CambiarCuerpo(2))" Disabled=true />
+                                            </div>
+                                        }
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    @if (MsgModalPlanillaDetalle == 3)
+                    {
+                        <div class="row group align-items-center">
+                            <div class="row group align-items-center">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                                        <ButtonGeneral IdButton="idBtnAtras" IdIcono="idIcnAtras" TipoButton="btn btn-primary" IconoButtonEnabled="fa fa-delete-left" TxtButtonEnabled="Atras" OnClick="(()=>CambiarCuerpo(2))" />
+                                    </div>
+                                    <br>
+
+                                    <div class="row align-items-stretch">
+                                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 col-12 d-flex justify-content-center">
+                                            <div style="position:relative; height:300px; overflow:auto; display:block">
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-center">N° Planilla</th>
+                                                            <th class="text-center">N° Recibo</th>
+                                                            <th class="text-center">Monto a pagar</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var item in oListaLiqxtercerosCab)
+                                                        {
+                                                            @if (item.Estado == "G" && item.FlgSelect == true && Procesar == 1)
+                                                            {
+                                                                <tr>
+                                                                    <td style="text-align:center">@item.Numeroliquidacion</td>
+                                                                    <td style="text-align:center">@Recibo</td>
+                                                                    <td style="text-align:right"> @item.MontoTotal.ToString("C") </td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                    <tfoot class="table-primary-footer">
+                                                        <tr>
+                                                            <th colspan="2" style="text-align:right">Total:</th>
+                                                            <th style="text-align:right">@MontoTotal.ToString("C")</th>
+
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 col-12">
+                                            @*//row align-items-center*@
+                                            <h3 style="color:#124498"><b><center>Recibo del Médico</center></b></h3>
+                                            <div class="contenedor" style="border: 2px dashed #124498; border-radius:40px 0px 40px 0px">
+                                                <div>
+                                                    <center>
+                                                        @if (FileAdjuntaFlg == false)
+                                                        {
+                                                            <i class="fa-solid fa-arrow-up-from-bracket fa-beat fa-2xl"></i>
+                                                        }
+                                                        else
+                                                        {
+                                                            if (FileType.Contains("image/"))
+                                                            {
+                                                                <img src="data:image/jpg;base64,@FileAdjunto" alt="imagen" width="120" height="72" class="center"
+                                                                     style="padding:20px 0px 0px 20px; margin:0px 0px 0px 0px; " />
+                                                                <label>@FileName</label>
+                                                            }
+                                                            if (FileType.Contains("application/"))
+                                                            {
+
+                                                                <img src="/images/svg/file-pdf-solid.svg" alt="pdf" width="120" height="72" class="center"
+                                                                     style="padding:20px 0px 0px 20px; margin:0px 0px 0px 0px; " />
+                                                                <label>@FileName</label>
+                                                            }
+                                                        }
+                                                        <br>
+                                                        <label for="fileInput3" class="file-input-zone" style="margin-top: 10px; width:150px">Seleccionar Archivo</label>
+                                                        <InputFile id="fileInput3" OnChange="OnFileChange" hidden multiple accept=".pdf , .png, .jpg" />
+                                                    </center>
+                                                </div>
+
+                                                <div>
+                                                    <center>
+                                                        <br>
+                                                        <h3>Cargar archivo PDF o Imagen</h3>
+                                                    </center>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12" style="text-align:center; ">
+                                            <br>
+                                            <ButtonGeneral IdButton="idBtnGuardarArchivos" IdIcono="idIcnGuardarArchivos" IsButtonDisabled=false TipoButton="btn btn-primary" IconoButtonEnabled="fa-regular fa-save" TxtButtonEnabled="Guardar Recibo" OnClick=PregGuardarArchivoRecibo />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @*Cuerpo Detalles*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .gray-checkbox {
+            color: grey;
+        }
+
+        .title-mant {
+            color: #124498;
+            font-size: 17px;
+        }
+
+        .BtnCabecera {
+            border: none;
+        }
+    </style>
+
+    @*==========================================0*@
+    <MessageModal IdMessage="msgModalAdvertencia"
+                  TitleModal="Advertencia"
+                  IconMessage=MessageModal.iconMessage.Advertencia
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@MensajeMdl>
+    </MessageModal>
+    <MessageModal IdMessage="msgModalError"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@MensajeMdl>
+    </MessageModal>
+    <MessageModal IdMessage="msgModalInformacion"
+                  TitleModal="Confirmación"
+                  IconMessage=MessageModal.iconMessage.Informacion
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@MensajeMdl>
+    </MessageModal>
+    <MessageModal IdMessage="msgModalQuestionArchivoRecibo"
+                  TitleModal="Confirmación"
+                  BodyMessage=@Pregunta
+                  IconMessage=MessageModal.iconMessage.Question
+                  TypeButton=MessageModal.typeButton.OkCancel
+                  OnClose="@ActualizarRecibo">
+    </MessageModal>
+    <MessageModal IdMessage="msgModalQuestionArchivoReciboEnviaCorreo"
+                  TitleModal="Confirmación"
+                  BodyMessage=@Pregunta
+                  IconMessage=MessageModal.iconMessage.Question
+                  TypeButton=MessageModal.typeButton.OkCancel
+                  OnClose="@ActualizarReciboEnviarCorreo">
+    </MessageModal>
+    <MessageModal IdMessage="msgModalQuestionGuardarRecibo"
+                  TitleModal="Confirmación"
+                  BodyMessage=@Pregunta
+                  IconMessage=MessageModal.iconMessage.Question
+                  TypeButton=MessageModal.typeButton.OkCancel
+                  OnClose="@GuardarRecibo">
+    </MessageModal>
+
+</div>

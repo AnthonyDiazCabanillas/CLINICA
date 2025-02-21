@@ -1,0 +1,746 @@
+/*@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");*/
+/*@import url("../webfonts/Nunito?family=Nunito:wght@400;600;700&display=swap");*/
+@font-face {
+    font-family: "CSF";
+    src: url("../webfonts/Nunito/static/Nunito-Regular.ttf") format('truetype');
+}
+
+:root {
+    --header-height: 3rem;
+    --nav-width: 68px;
+    --first-color: #124498;
+    --first-color-light: #AFA5D9;
+    --white-color: #F7F6FB;
+    --body-font: 'CSF', sans-serif;
+    --normal-font-size: 0.925rem;
+    --z-fixed: 100
+}
+
+*,
+::before,
+::after {
+    box-sizing: border-box
+}
+
+body {
+    position: relative;
+    margin: var(--header-height) 0 0 0;
+    /*padding: 0 1rem;*/
+    font-family: var(--body-font);
+    font-size: var(--normal-font-size);
+    transition: .5s
+}
+
+a {
+    text-decoration: none;
+}
+
+.header {
+    width: 100%;
+    height: var(--header-height);
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    background-color: var(--white-color);
+    z-index: var(--z-fixed);
+    transition: .5s
+}
+
+.header_toggle {
+    color: var(--first-color);
+    font-size: 1.5rem;
+    cursor: pointer
+}
+
+.header_img {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    border-radius: 50%;
+    overflow: hidden
+}
+
+    .header_img img {
+        width: 40px
+    }
+
+.l-navbar {
+    position: fixed;
+    top: 0;
+    left: -30%;
+    width: var(--nav-width);
+    height: 100vh;
+    background-color: var(--first-color);
+    padding: .5rem 1rem 0 0;
+    transition: .5s;
+    z-index: var(--z-fixed)
+}
+
+.nav {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden
+}
+
+.nav_logo,
+.nav_link {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    align-items: center;
+    column-gap: 1rem;
+    padding: .5rem 0 .5rem 1.5rem
+}
+
+.nav_logo {
+    margin-bottom: 2rem
+}
+
+.nav_logo-icon {
+    font-size: 1.25rem;
+    color: var(--white-color)
+}
+
+.nav_logo-name {
+    color: var(--white-color);
+    font-weight: 700
+}
+
+.nav_link {
+    position: relative;
+    color: var(--first-color-light);
+    margin-bottom: 1rem;
+    transition: .3s
+}
+
+    .nav_link:hover {
+        color: var(--white-color);
+        background: #ffffff33;
+        border-radius: 8px;
+    }
+
+.nav_icon {
+    font-size: 1.25rem
+}
+
+.show_sidebar {
+    left: 0
+}
+
+.body-pd {
+    padding-left: calc(var(--nav-width) + 1rem)
+}
+
+.active {
+    color: var(--white-color)
+}
+
+    .active::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        width: 2px;
+        height: 32px;
+        background-color: var(--white-color)
+    }
+
+.height-100 {
+    height: 91vh
+}
+
+@media screen and (min-width: 768px) {
+    body {
+        margin: calc(var(--header-height) + 1rem) 0 0 0;
+        padding-left: calc(var(--nav-width) + 1rem);
+        padding-top: 1rem;
+    }
+
+    .header {
+        height: calc(var(--header-height) + 1rem);
+        padding: 0 2rem 0 calc(var(--nav-width) + 2rem)
+    }
+
+    .header_img {
+        width: 100px;
+        height: 40px
+    }
+
+        .header_img img {
+            width: 45px
+        }
+
+    .l-navbar {
+        left: 0;
+        padding: 1rem 1rem 0 0
+    }
+
+    .show_sidebar {
+        width: calc(var(--nav-width) + 156px);
+    }
+
+    .body-pd {
+        padding-left: calc(var(--nav-width) + 188px)
+    }
+}
+
+@media (max-width:576px) {
+    .form-bg {
+        border: 0px !important;
+        margin: 0px !important;
+    }
+
+    button span[role=toolbar] {
+        display: none;
+    }
+
+    .form-toolbar {
+        background: #8b8a8e05 !important;
+    }
+
+    .slider-frame img {
+        width: 1800px !important;
+    }
+}
+
+@media (min-width:577px) and (max-width:768px) {
+    .form-bg {
+        border: 0px !important;
+        margin: 0px !important;
+    }
+
+    .form-toolbar {
+        background: #8b8a8e05 !important;
+    }
+
+    .slider-frame img {
+        width: 1800px !important;
+    }
+}
+
+@media screen and (min-width: 798px) {
+    .xx {
+        display: flex !important;
+    }
+}
+
+@media (max-width:768px) {
+    .icon-button-title-description {
+        visibility: hidden !important;
+    }
+
+    .icon-button-title {
+        font-weight: normal !important;
+        font-size: 0.85rem;
+    }
+
+    .Formulario {
+        width: 130px !important;
+        height: 120px !important;
+    }
+
+    .footer-form-csf-complete {
+        visibility: hidden !important;
+        display: none;
+    }
+
+    .footer-form-csf-light {
+        visibility: visible !important;
+    }
+
+    .footer-form-ambiente-complete {
+        visibility: hidden !important;
+        display: none;
+    }
+
+    .footer-form-ambiente-light {
+        visibility: visible !important;
+    }
+
+    .footer-form {
+        width: calc(100% - 0px) !important;
+    }
+}
+
+.footer-form {
+    background: #FAFAFA;
+    border-top: 1px solid #cccccc6f;
+    padding: 10px 8px;
+    margin-top: 5px;
+    bottom: 0;
+    position: fixed;
+    width: calc(100% - var(--nav-width));
+    height: 45px;
+}
+
+.footer-form-csf-light {
+    visibility: hidden;
+}
+
+.footer-form-ambiente-light {
+    visibility: hidden;
+}
+
+.container {
+    max-width: 100% !important;
+}
+
+.xx {
+    color: #124498;
+    width: 100%;
+    background: #ffffff52;
+    transition: 1s;
+    display: block;
+    border-radius: 0px 0px 0.55rem 0.55rem;
+}
+
+.Formulario {
+    width: 220px;
+    height: 200px;
+    border: 1px solid #d4ebcb;
+    border-radius: 10px;
+    font-size: 18px;
+    background: #fefefee3;
+    padding: 10px;
+    margin: 20px 15px;
+    display: inline-flex;
+    color: #13489e;
+}
+
+    .Formulario:hover {
+        cursor: pointer;
+    }
+
+    .Formulario div {
+        width: 100%;
+    }
+
+.icon-button {
+    font-size: 32px;
+    color: #96dd43;
+    padding: 10px 10px;
+    display: block !important;
+}
+
+.icon-button-title {
+    font-weight: bold;
+    display: block;
+    font-size: 0.85rem;
+}
+
+.icon-button-title-div {
+    align-items: center;
+    height: 110px;
+    overflow: hidden;
+}
+
+
+.icon-button-title-description {
+    font-size: 0.8rem;
+}
+
+.buscar-menu {
+    box-sizing: border-box;
+    padding: 1% 1% 1% 1%;
+}
+
+    .buscar-menu [type="text"] {
+        width: 100%;
+        margin: 20px 5% 2% 5%;
+        border-radius: 25px;
+        border: 3px solid #81aee4ff;
+        padding: 15px 35px;
+        font-size: 16px;
+    }
+
+    .buscar-menu div input {
+        border-radius: 50px 0px 0px 50px;
+        padding: 15px 30px;
+    }
+
+    .buscar-menu div span {
+        border-radius: 0px 50px 50px 0px;
+    }
+
+.buscar-control {
+}
+
+
+#components-reconnect-modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgb(0 0 0 / 75%);
+    z-index: 1000;
+}
+
+    #components-reconnect-modal.components-reconnect-show,
+    #components-reconnect-modal.components-reconnect-failed,
+    #components-reconnect-modal.components-reconnect-rejected {
+        display: flex;
+    }
+
+    #components-reconnect-modal .components-messages {
+        color: #f0f0f0;
+        margin: auto;
+        text-align: center;
+    }
+
+        #components-reconnect-modal .components-messages h2 {
+            color: white;
+        }
+
+        #components-reconnect-modal .components-messages a {
+            color: rgb(135 178 62 / 80%);
+            background: #ffffff21;
+            border-radius: 5px;
+            padding: 5px 10px;
+            border-bottom: 1px solid;
+            border-bottom-style: dotted;
+            margin: 5px;
+        }
+
+    #components-reconnect-modal .components-reconnecting,
+    #components-reconnect-modal .components-failed,
+    #components-reconnect-modal .components-rejected {
+        display: none;
+    }
+
+    #components-reconnect-modal.components-reconnect-show .components-reconnecting,
+    #components-reconnect-modal.components-reconnect-failed .components-failed,
+    #components-reconnect-modal.components-reconnect-rejected .components-rejected {
+        display: block;
+    }
+
+
+#components-modal-await {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgb(0 0 0 / 0.5);
+    z-index: 10;
+    transition: all 1s;
+}
+
+    #components-modal-await .components-modal-await-messages {
+        color: #f0f0f0;
+        margin: auto;
+        text-align: center;
+    }
+
+    /*#components-modal-await .components-modal-await-messages-text {
+        display: none;
+    }*/
+
+    #components-modal-await .components-modal-await-messages {
+        display: block;
+    }
+
+/*#components-modal-await_show {
+    display: flex;
+}*/
+
+
+/****************************************+*/
+
+.DivSearchInput input[type="search"] {
+    margin: 10px;
+    border: 2px solid #a7c7eb;
+    border-radius: 25px;
+    margin: 8px 0;
+    outline: none;
+    padding: 8px;
+    box-sizing: border-box;
+    transition: 0.3s;
+    width: 100%;
+}
+
+    .DivSearchInput input[type="search"]:focus {
+        border-color: #3273e0e8;
+        border-width: 2px;
+        box-shadow: 5px;
+    }
+
+    .DivSearchInput input[type="search"]::-webkit-search-cancel-button {
+        position: relative;
+        right: 1rem;
+        height: 20px;
+        width: 20px;
+        border-radius: 10px;
+    }
+
+.DivSearch {
+    position: relative;
+}
+
+    .DivSearch input[type="search"] {
+        padding-left: 20px;
+    }
+
+    .DivSearch i {
+        position: absolute;
+        right: 0.4rem;
+        top: 0.8rem;
+        padding: 9px 10px;
+        color: #aaa;
+        transition: 0.3s;
+        color: #5898de;
+        background: #fafafa;
+        border-radius: 15px;
+    }
+
+        /* .DivSearch Tooltip
+    {
+        position:absolute !important;
+        top:0;
+    }
+*/
+        .DivSearch i[typeof="AdvancedSearch"] {
+            position: absolute;
+            right: 3.0rem;
+            top: 0.8rem;
+            padding: 9px 10px;
+            color: #aaa;
+            transition: 0.3s;
+            color: #5898de;
+            background: #fafafa;
+            border-radius: 15px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50px !important;
+        }
+
+        .DivSearch i[tipo="spinner"] {
+            right: 0.9rem;
+            top: 1rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50px !important;
+            padding: 10px;
+        }
+
+    .DivSearch input[type="search"]:focus + i {
+        color: #5898de;
+    }
+
+.SearchOptions {
+    height: 45px;
+}
+
+.advanced-search {
+    transition: all 3s;
+}
+
+.BgSearch {
+    background-image: url(/images/Background2.jpg);
+    background-color: #00000003;
+    background-repeat:;
+    background-size: 100%;
+    width: 100%;
+    text-align: center;
+}
+
+.form-bg {
+    background-color: #FDFDFD;
+    background-size: 100%;
+    width: 100%;
+    border: 1px solid #b3d6ffff;
+    border-radius: 8px;
+    padding: 00px 20px 0px 20px;
+    margin: 0px 0px 0px -8px;
+}
+
+
+.form-toolbar {
+    border-style: solid;
+    border-color: #b3d6ffff;
+    border-width: 0px;
+    border-bottom-width: 1px;
+    padding: 15px 10px;
+    background: #dfdee147;
+    margin: 0px -20px 15px -20px;
+}
+
+@media print {
+    .form-toolbar {
+        display: none !important
+    }
+}
+
+.header_fijo {
+    width: 100%; /* 750px;*/
+    /*table-layout: fixed;*/
+    /*border-collapse: collapse;*/
+}
+
+    .header_fijo thead {
+        background-color: #124498;
+        color: #FEFEFE;
+    }
+
+        .header_fijo thead tr {
+            display: block;
+            position: relative;
+        }
+
+    .header_fijo tbody {
+        display: block;
+        overflow: auto;
+        width: 100%;
+        height: 100%; /* 300px;;*/
+    }
+
+.modal-fullscreen .modal-dialog {
+    /*max-width: 100%;
+     margin: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+   display: flex;
+    position: fixed;
+    z-index: 100000;*/
+}
+
+.window {
+    position: absolute;
+    width: 100px;
+    height: 50px;
+    background-color: red;
+    border: 10px solid gray;
+    cursor: move;
+}
+
+.MontoTotal {
+    text-align: right;
+    color: #13489e;
+    font-weight: bold;
+}
+
+.modal-custom {
+    max-width: 80%; /* Ancho personalizado, ajusta según tus necesidades */
+    max-height: 80vh; /* Altura personalizada, ajusta según tus necesidades */
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.button-wait {
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.btn-disabled {
+    background-color: #ccc; /* Color de fondo gris para indicar que está deshabilitado */
+    color: #888; /* Color de texto gris claro para indicar que está deshabilitado */
+    cursor: not-allowed; /* Cambia el cursor para indicar que el botón no está disponible */
+    /* Otros estilos específicos para el botón deshabilitado */
+}
+
+.spinner-icon {
+    animation: spin 1s linear infinite;
+}
+
+.floating-search-list {
+    position: absolute;
+    z-index: 1000; /* Puedes ajustar el valor del índice Z según sea necesario para superponer otros elementos. */
+    background-color: #fff; /* Opcional: Establece el color de fondo que desees. */
+    /* Agrega cualquier otro estilo que desees para el componente flotante, como ancho, bordes, sombra, etc. */
+}
+
+.btn-disabled {
+    background-color: #ccc; /* Color de fondo gris para indicar que está deshabilitado */
+
+
+    color: #888; /* Color de texto gris claro para indicar que está deshabilitado */
+    cursor: not-allowed; /* Cambia el cursor para indicar que el botón no está disponible */
+    /* Otros estilos específicos para el botón deshabilitado */
+}
+
+/* Agrega clases de estilo para ocultar y mostrar campos */
+.hidden {
+    display: none;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+
+
+/*CALENDARIO*/
+/*.custom-sm-modal-calendario {
+    max-width: 80%;*/ /* Adjust the percentage based on your preference */
+/*}
+
+.calendario {
+    font-family: Arial, sans-serif;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th {
+    background-color: #333;
+    color: white;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    text-align: center;
+    padding: 8px;
+}
+
+.celda {
+    cursor: pointer;
+    height: 50px;
+}
+
+.celda-seleccionada {
+    background-color: lightgreen;
+}
+
+button {
+    margin: 10px;
+    background-color: #333;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+}
+
+    button:hover {
+        background-color: #555;
+    }*/

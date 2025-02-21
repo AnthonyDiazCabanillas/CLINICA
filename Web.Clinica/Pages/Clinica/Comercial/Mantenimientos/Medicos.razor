@@ -1,0 +1,2176 @@
+﻿@* ********************************************************************************************************************
+    Copyright Clinica San Felipe S.A.C. 2024. Todos los derechos reservados.
+
+    Version  Fecha        Autor           Requerimiento
+    1.1      09/05/2024   CPARRALES       REQ 2024-007413 Maestro de medicos y empresas
+    1.2      14/06/2024   CPARRALES       REQ 2024-005048 Proyecto buscador web
+******************************************************************************************************************** *@
+@page "/Clinica/Comercial/Mantenimientos/Medicos"
+@inject IJSRuntime js
+@using Bus.Clinica.Clinica;
+@using Bus.Utilities
+@using Dat.Sql
+@using Ent.Sql.ClinicaE.MedicosE;
+@using Ent.Sql.ClinicaE.OtrosE
+@using Ent.Sql.ClinicaE.EspecialidadesE
+@using System.Xml.Serialization
+@using System.Text.Json
+@using RestSharp
+@using Web.Clinica.Data
+@using System.Text.RegularExpressions;
+@using Web.Clinica.Pages.Clinica.Comercial.Componentes
+@using Ent.Sql;
+@using Dat.Sql.ClinicaAD.EspecialidadesAD;
+@using Ent.Sql.SeguridadE.SeguridadE;
+@using Ent.Sql.ClinicaE;
+@using ClosedXML.Excel
+@inherits MainLayout
+
+@code {
+    //INICIO FGONZALES - 07/02/2024 REPORTE MEDICO
+    List<MedicoReporteE> oListarMedicosReporte = new List<MedicoReporteE>(); 
+    MedicoReporteE oMedicoReporteE = new MedicoReporteE("", "", "", "", "", "","");
+    //1.1 INI
+    List<MedicoReporteCompletoE> oListarMedicosReporteCompleto = new List<MedicoReporteCompletoE>();
+    MedicoReporteCompletoE oMedicoReporteCompletoE = new MedicoReporteCompletoE();
+    //1.1 FIN
+    string NombreExcel = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss").Replace("/", "").Replace(":", "").Replace(" ", "") + ".xlsx"; //Nombre del archivo
+    string RutaDescarga = "";
+    //FIN FGONZALES - 07/02/2024 REPORTE MEDICO
+    TablasE oTablasE = new TablasE();
+    List<TablasE> oListTablasTipoAtencion = new List<TablasE>();
+    List<TablasE> oListTablasTipoPaciente = new List<TablasE>();
+    List<TablasE> oListaTablasTipDocIdentidad = new List<TablasE>();
+    List<TablasE> oListaTablasSexo = new List<TablasE>();
+    List<TablasE> oListaTablasCodCivil = new List<TablasE>();
+    List<TablasE> oListaTablasTipoIdentidad = new List<TablasE>();
+    List<TablasE> oListaTablasTipoColegio = new List<TablasE>();
+    List<TablasE> oListaTablasAreas = new List<TablasE>();
+    List<TablasE> oListaTablasAFP = new List<TablasE>();
+    List<TablasE> oListaTablasTipDocEmitira = new List<TablasE>();
+    List<TablasE> oListaTablasSedes = new List<TablasE>();
+    List<TablasE> oListaTablasDatoMedico = new List<TablasE>();
+    List<TablasE> oListaTablasBancos = new List<TablasE>();
+
+    //List<TablasE> oListaTablasEspecialidades = new List<TablasE>();
+    List<EspecialidadesE> oListEspecialidadesE = new List<EspecialidadesE>();
+    List<TablasE> oListaTablasMoneda = new List<TablasE>();
+
+    List<EspecialidadxMedicoE> oListaEspecialidades = new List<EspecialidadxMedicoE>();
+
+    List<MedicosEspecialidadE> oListaMedicosEspecialidadE = new List<MedicosEspecialidadE>();
+    List<AsistentexMedicoE> oListaAsistentexMedicoE = new List<AsistentexMedicoE>();
+    List<MedicoxEmpresaE> oListaMedicoxEmpresaE = new List<MedicoxEmpresaE>();
+    List<MedicosDatosE> oListaMedicosDatosE = new List<MedicosDatosE>();
+    List<MedicosCtaBancoE> oListaMedicosCtaBancoE = new List<MedicosCtaBancoE>();
+
+    MedicosE oMedicosE = new MedicosE("", 0, 25, 19);
+    //MedicoE oMedicosEBusquedaAvanzada = new MedicoE("", 0, 25, 19);
+
+    MedicoE oMedicoE = new MedicoE();
+    //MedicoE oMedicoE_Original = new MedicoE();
+    List<CfgUpdatePorCampoE> oListarCfgUpdatePorCampoE = new List<CfgUpdatePorCampoE>();
+
+    List<MedicosE> oListaMedicos = new List<MedicosE>();
+    MedicoE objMedico = new MedicoE();
+    List<PrestacionxMedicoE> oListaPrestacionxMedicoE = new List<PrestacionxMedicoE>();
+    /*Lista Horario Medico*/
+    List<HorariosE> oListaHorarioMedico = new List<HorariosE>();
+    public string Mensaje { get; set; } = "";
+    public bool FlgNuevo { get; set; } = false;
+
+    bool xFlgPresencialCM, xFlgPresencialJM, xFlgTeleConsulta;
+
+    MedicoObsAuxE oMedicoObsAux = new MedicoObsAuxE();
+
+    IDictionary<string, string> dictionaryOriginal = new Dictionary<string, string>();
+    IDictionary<string, string> dictionaryMovimiento = new Dictionary<string, string>();
+
+    [CascadingParameter]
+    PageIndexStateProvider State { get; set; }
+
+    private int itemsPerPage = 5;
+    private int totalPages = 1;
+
+
+
+    List<int> oListItemsPerPage = new List<int>() { 5, 20, 50, 100 };
+
+    Utilitario utilitario = new Utilitario();
+    MedicoBuscaE oMedicoBuscaE = new MedicoBuscaE();
+
+    List<string> oListError = new List<string>();
+
+    public List<string> oListStyleInfo = new List<string> { "text-decoration: line-through; color:darkred;", "", "font-family: 'Calibri'; color: blue !important;", "" };
+
+    //List<string> optionList = new List<string>
+    //        { "AdditionalCardPersonAdressType", /* rest of elements */ };
+
+    //JVALVERDE - 06/06/2023  PERMISOS CONTROLES
+    List<SegOpcionE> oListSegOpcions = new List<SegOpcionE>();
+
+    private string RutaEmbed = "";
+    //1.1 INI
+    public bool FlgReporteSimple { get; set; } = false;
+    public bool FlgReporteCompleto { get; set; } = false;
+    public bool FlgReporteSimpleCorrecto { get; set; } = false;
+    public bool FlgReporteCompletoCorrecto { get; set; } = false;
+    //1.1 FIN
+
+
+    protected override void OnInitialized()
+    {
+        State = new PageIndexStateProvider();
+
+        oListTablasTipoAtencion = new Bus.Clinica.Clinica.Tablas().ListaConsulta(new TablasE("", "MEDISYN_ESTADO_CONSULTA_MEDICA", 0, 0, 1));
+        oListTablasTipoPaciente = new Bus.Clinica.Clinica.Tablas().ListaConsulta(new TablasE("", "MEDISYN_TIPO_CONSULTA", 0, 0, 1));
+        oListaTablasTipDocIdentidad = new Bus.Clinica.Clinica.Tablas().ListaConsulta(new TablasE("", "TIPOIDENTIDAD", 0, 0, 1));
+        oListaTablasSexo = new Bus.Clinica.Clinica.Tablas().ListaConsulta(new TablasE("OTROSSEXO", "", 0, 0, 5));
+        oListaTablasCodCivil = new Bus.Clinica.Clinica.Tablas().ListaConsulta(new TablasE("CODCIVIL", "", 0, 0, 5));
+        oListaTablasTipoIdentidad = new Bus.Clinica.Clinica.Tablas().ListaConsulta(new TablasE("TIPOIDENTIDAD", "", 0, 0, 5));
+        oListaTablasTipoColegio = new Bus.Clinica.Clinica.Tablas().ListaConsulta(new TablasE("TIPOCOLEGIO", "", 0, 0, 5));
+        oListaTablasAreas = new Bus.Clinica.Clinica.Tablas().ListaConsulta(new TablasE("AREA", "", 0, 0, 5));
+        oListaTablasAFP = new Bus.Clinica.Clinica.Tablas().ListaConsulta(new TablasE("CODAFP", "", 0, 0, 5));
+        oListaTablasTipDocEmitira = new Bus.Clinica.Clinica.Tablas().ListaConsulta(new TablasE("TIPODOC_EMITE_MEDICO_TERCERO", "", 0, 0, 5));
+        oListaTablasSedes = new Bus.Clinica.Clinica.Tablas().ListaConsulta(new TablasE("SEDES", "", 0, 0, 5));
+        oListaTablasDatoMedico = new Bus.Clinica.Clinica.Tablas().ListaConsulta(new TablasE("DATOMEDICO", "", 0, 0, 18));
+        oListaTablasMoneda = new Bus.Clinica.Clinica.Tablas().ListaConsulta(new TablasE("MONEDA_SITEDS_10", "", 0, 0, 5));
+        oListaTablasBancos = new Bus.Clinica.Clinica.Tablas().ListaConsulta(new TablasE("BANCOS", "", 0, 0, 5));
+        //oListaMedicos = new Bus.Clinica.Medicos().ConsultarMedicos(oMedicosE);
+        oListarCfgUpdatePorCampoE = new Bus.Clinica.Otros().CfgUpdatePorCampo_Consulta("medicos");
+
+
+        oListEspecialidadesE = new EspecialidadesAD().Sp_Especialidades_Consulta(new EspecialidadesE("", 50, 500, 2));
+
+        oMedicosE.Buscar = "";
+
+        //INICIO - JVALVERDE - 06/06/2023  PERMISOS CONTROLES
+        oListSegOpcions = new Bus.Clinica.Seguridad.Seguridad().CargarPermisos(new SegOpcionE(4, 102, "02/02/01", Convert.ToInt32(SessionUser(TypeSession.IdeUsuario).Result)));
+        //FIN - JVALVERDE - 06/06/2023  PERMISOS CONTROLES
+
+        //INICIO - FGONZALES - 07/02/2024 LISTA DE MEDICOS
+        oListarMedicosReporte = new Bus.Clinica.Clinica.MedicosReporte().ListaMedicosReporte(oMedicoReporteE);
+        //1.1 INI
+        oListarMedicosReporteCompleto = new Bus.Clinica.Clinica.MedicosReporte().ListaMedicosReporteCompleto(oMedicoReporteCompletoE);
+        //1.1 FIN
+        //FIN - FGONZALES - 07/02/2024 LISTA DE MEDICOS
+        base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        BuscarMedico(1);
+
+
+    }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender == true)
+        {
+            js.InvokeVoidAsync("fnActualizarTitulo", "Mantenimiento Medicos");
+        }
+        js.InvokeVoidAsync("eliminarElementosHtml", oListSegOpcions);
+        //INICIO - FGONZALES - 07/02/2024 LISTA DE MEDICOS
+        js.InvokeVoidAsync("fnActualizarTitulo", "Mantenimiento de Médicos");
+        js.InvokeVoidAsync("eliminarElementosHtml", oListarMedicosReporte);
+
+        if (firstRender)
+        {
+            js.InvokeVoidAsync("eval", @"
+		          window.downloadFile = function(url, fileName) {
+		              var link = document.createElement('a');
+		              link.href = url;
+		              link.download = fileName;
+		              document.body.appendChild(link);
+		              link.click();
+		              document.body.removeChild(link);
+		          }");
+            //1.1 INI
+            js.InvokeVoidAsync("eval", @"
+                                  window.ocultarModal = function() {
+                                    $('#msgModalReportes').modal('hide');
+
+                                  }
+                              ");
+        }
+        //1.1 FIN
+        //FIN - FGONZALES - 07/02/2024 LISTA DE MEDICOS
+    }
+
+    private async Task ModalMensaje(string Mensajes, string TipoModal)
+    {
+
+        if (TipoModal == "Advertencia")
+        {
+            switch (Mensajes)
+            {
+                case "MedicoNull":
+                    Mensaje = "Lo sentimos, no logramos encontrar al MEDICO .<br>Por favor intenta ser más especifico con la búsqueda.";
+                    break;
+                case "EspecialidadNull":
+                    Mensaje = "El médico no tiene ESPECIALIDADES registradas";
+                    break;
+
+            }
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalAdvertencia");
+        }
+
+        if (TipoModal == "AdvertenciaSelect")
+        {
+            switch (Mensajes)
+            {
+                case "NoSelectTipoCliente":
+                    Mensaje = "TIPO DE CLIENTE";
+                    break;
+            }
+            Mensaje = "Por favor Seleccione un: " + Mensaje;
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalAdvertencia");
+        }
+
+        if (TipoModal == "Error")
+        {
+            switch (Mensajes)
+            {
+                case "Catch":
+                    Mensaje = "Error: " + Mensaje;
+                    break;
+                case "EmailNull":
+                    Mensaje = "Si el médico va atender de manera particular, por favor ingresar su correo eléctronico.";
+                    break;
+                case "TarifaNull":
+                    Mensaje = "Si el médico va atender de manera particular, por favor ingrese la tarifa.";
+                    break;
+
+
+            }
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+        if (TipoModal == "Informativo")
+        {
+            switch (Mensajes)
+            {
+                case "ConfirmacionRegistro":
+                    Mensaje = "Se registraron los datos de manera correcta";
+                    break;
+                case "ConfirmacionEliminacion":
+                    Mensaje = "Se eliminaron los datos de manera correcta";
+                    break;
+            }
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacion");
+        }
+        if (TipoModal == "Preguntas")
+        {
+            switch (Mensajes)
+            {
+                case "PreguntaEliminar":
+                    Mensaje = "¿Desea eliminar este registro?";
+                    break;
+            }
+            js.InvokeVoidAsync("ShowMessageModal", true, "msgModalPregunta");
+        }
+        //1.1 INI
+        if (TipoModal == "InformativoReporte")
+        {
+            switch (Mensajes)
+            {
+                case "Simple":
+                    Mensaje = "Descarga exitosa del Reporte Simple";
+                    break;
+                case "Completo":
+                    Mensaje = "Descarga exitosa del Reporte Completo";
+                    break;
+                case "SimpleCompleto":
+                    Mensaje = "Descarga exitosa del Reporte Simple y Completo";
+                    break;
+            }
+
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacionReporte");
+        }
+        if (TipoModal == "AdvertenciaReporte")
+        {
+            switch (Mensajes)
+            {
+                case "Simple":
+                    Mensaje = "Error en Descarga del Reporte Simple";
+                    break;
+                case "Completo":
+                    Mensaje = "Error en Descarga del Reporte Completo";
+                    break;
+                case "SimpleCompleto":
+                    Mensaje = "Error en Descarga del Reporte Simple y Completo";
+                    break;
+            }
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalAdvertencia");
+        }
+    }
+    //1.1 FIN
+    private async Task Actualizarpagina()
+    {
+        BuscarMedico(1);
+    }
+
+    private async Task ChangueIitemsPerPage(ChangeEventArgs e)
+    {
+        itemsPerPage = Convert.ToInt32(e.Value.ToString());
+        BuscarMedico(1);
+    }
+
+    private async Task BuscarMedico(int selectedPageIndex)
+    {
+        //await js.InvokeVoidAsync("ShowSpinnerSearch", "idspinnerMedico", "idSearchMedico");
+        try
+        {
+            //State = new PageIndexStateProvider();
+            //totalPages = 3;// (int)(oListHospitalFiltrada.Count() / itemsPerPage);
+
+            var serializer = new XmlSerializer(typeof(MedicoBuscaE));
+            oMedicosE.Orden = 20;
+            oMedicosE.Key = selectedPageIndex;
+            oMedicosE.NumeroLineas = itemsPerPage;
+            StringWriter writer = new StringWriter();
+            serializer.Serialize(writer, oMedicoBuscaE);
+            oMedicosE.ParXML = writer.ToString();
+            oMedicosE.Buscar = oMedicoBuscaE.Buscar;
+            oListaMedicos = new Bus.Clinica.Medicos().ConsultarMedicos(oMedicosE);
+
+            if (oListaMedicos.Count == 0)
+            {
+                ModalMensaje("MedicoNull", "Advertencia");
+            }
+            else
+            {
+                totalPages = oListaMedicos[0].TotalPages;
+                State.PageIndex = selectedPageIndex;
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+        //await js.InvokeVoidAsync("CloseSpinnerSearch", "idspinnerMedico", "idSearchMedico");
+    }
+
+    private void SelectedPage(int selectedPageIndex)
+    {
+        BuscarMedico(selectedPageIndex);
+    }
+
+    private async Task BuscarAvanzadoMedico()
+    {
+        try
+        {
+            await BuscarMedico(1);
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+        // await js.InvokeVoidAsync("C", "idfiltroavanzado");
+    }
+
+    //1.1 INI
+    private async void  DescargarReportes()
+    {
+
+        FlgReporteSimpleCorrecto =  false;
+        FlgReporteCompletoCorrecto = false;
+        if (FlgReporteSimple && FlgReporteCompleto)
+        {
+            ExportarExcel(0, "", "");
+            ExportarExcelCompleto(0, "","");
+            if (FlgReporteSimpleCorrecto == false && FlgReporteCompletoCorrecto == false)
+                await ModalMensaje("SimpleCompleto", "AdvertenciaReporte");
+            else if (FlgReporteSimpleCorrecto == false) 
+                await ModalMensaje("Simple", "AdvertenciaReporte");
+            else if (FlgReporteCompletoCorrecto == false) 
+                await ModalMensaje("Completo", "AdvertenciaReporte");
+            else
+            {
+                await ModalMensaje("SimpleCompleto", "InformativoReporte");
+                await js.InvokeVoidAsync("ocultarModal");
+            }
+        }
+        else if (FlgReporteSimple)
+        {
+            ExportarExcel(0, "", "");
+            if (FlgReporteSimpleCorrecto == false)
+                await ModalMensaje("Simple", "AdvertenciaReporte");
+            else
+            {
+                await ModalMensaje("Simple", "InformativoReporte");
+                await js.InvokeVoidAsync("ocultarModal");
+            }
+        }
+        else if (FlgReporteCompleto)
+        {
+            ExportarExcelCompleto(0, "", "");
+            if (FlgReporteCompletoCorrecto == false)
+                await ModalMensaje("Completo", "AdvertenciaReporte");
+            else {
+                await ModalMensaje("Completo", "InformativoReporte");
+                await js.InvokeVoidAsync("ocultarModal");
+            }
+
+        }
+
+    }
+    private void LimpiarCheckReporte()
+    {
+        FlgReporteSimple = false;
+        FlgReporteCompleto = false;
+    }
+    //1.1 FIN
+    private async Task EditarMedico(string pcodmedico)
+    {
+        try
+        {
+            for (var i = 0; i < oListaMedicos.Count; i++)
+            {
+                if (oListaMedicos[i].CodMedico == pcodmedico)
+                {
+                    oMedicosE = oListaMedicos[i];
+
+                    if (oMedicosE.CodTipoConsulta == "")
+                    { oMedicosE.CodTipoConsulta = "SELECCIONE UN TIPO DE CONSULTA MÉDICA"; }
+
+                    if (oMedicosE.FlgPresencialCM == "true")
+                    { xFlgPresencialCM = true; }
+                    else
+                    { xFlgPresencialCM = false; }
+
+                    if (oMedicosE.FlgPresencialJM == "true")
+                    { xFlgPresencialJM = true; }
+                    else
+                    { xFlgPresencialJM = false; }
+
+                    if (oMedicosE.FlgTeleConsulta == "true")
+                    { xFlgTeleConsulta = true; }
+                    else
+                    { xFlgTeleConsulta = false; }
+                    oListaEspecialidades = new Bus.Clinica.Especialidades().ConsultarEspecialidadxMedicos(new EspecialidadxMedicoE(oListaMedicos[i].CodMedico, "", 0, 2));
+
+                    if (oListaEspecialidades.Count == 0)
+                    { ModalMensaje("EspecialidadNull", "Advertencia"); }
+
+                    if (oMedicosE.MntTarifaParticular == "")
+                    { oMedicosE.MntTarifaParticular = "0"; }
+
+                }
+            }
+
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+
+
+
+
+    private void ActualizarEstado(int x)
+    {
+        if (x == 1)
+        {
+            if (xFlgPresencialCM)
+            { xFlgPresencialCM = false; }
+            else { xFlgPresencialCM = true; }
+        }
+        if (x == 2)
+        {
+            if (xFlgPresencialJM)
+            { xFlgPresencialJM = false; }
+            else { xFlgPresencialJM = true; }
+        }
+        if (x == 3)
+        {
+            if (xFlgTeleConsulta)
+            { xFlgTeleConsulta = false; }
+            else { xFlgTeleConsulta = true; }
+        }
+    }
+
+    private async Task GrabarMedico()
+    {
+        try
+        {
+            if (oListaEspecialidades.Count != 0)
+            {
+                if (xFlgPresencialCM)
+                { oMedicosE.FlgPresencialCM = "S"; }
+                else
+                { oMedicosE.FlgPresencialCM = ""; }
+
+                if (xFlgPresencialJM)
+                { oMedicosE.FlgPresencialJM = "S"; }
+                else
+                { oMedicosE.FlgPresencialJM = ""; }
+
+                if (xFlgTeleConsulta)
+                { oMedicosE.FlgTeleConsulta = "S"; }
+                else
+                { oMedicosE.FlgTeleConsulta = ""; }
+
+                if (oMedicosE.CodTipoConsulta == "SELECCIONE UN TIPO DE CONSULTA MÉDICA")
+                { oMedicosE.CodTipoConsulta = ""; }
+
+                if (IsValidEmail(oMedicosE.DscEmail) == false && (oMedicosE.CodTipoConsulta == "P" || oMedicosE.CodTipoConsulta == "B"))
+                { ModalMensaje("EmailNull", "Error"); }
+                else
+                {
+                    if (Convert.ToDecimal(oMedicosE.MntTarifaParticular) == 0 && (oMedicosE.CodTipoConsulta == "P" || oMedicosE.CodTipoConsulta == "B"))
+                    { ModalMensaje("TarifaNull", "Error"); }
+                    else
+                    {
+                        new Bus.Clinica.Medicos().ActualizarMedicosAgendamiento(oMedicosE);
+                        ModalMensaje("ConfirmacionRegistro", "Informativo");
+                    }
+                }
+            }
+            else
+            { ModalMensaje("EspecialidadNull", "Advertencia"); }
+
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+
+    static bool IsValidEmail(string Email)
+    {
+        try
+        {
+            var add = new System.Net.Mail.MailAddress(Email);
+            return add.Address == Email;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    static bool ContainsAccentedLetters(string input)
+    {
+        // Expresión regular que busca letras acentuadas
+        string pattern = @"[\u00C0-\u017F]+";
+        bool resultado = Regex.IsMatch(input, pattern);
+        return resultado;
+    }
+
+    static bool ContainsSpecialCharacters(string input)
+    {
+        // Define una expresión regular que coincide con cualquier carácter que no sea letra ni número.
+        Regex regex = new Regex(@"[^a-zA-Z0-9]");
+        return regex.IsMatch(input);
+    }
+
+    static bool ContainsSpecificSpecialCharacters(string input)
+    {
+        // Define una expresión regular que coincide con cualquiera de los caracteres especiales dados.
+        Regex regex = new Regex(@"[()<>;:""´¨{}\[\]ç%&]");
+        return regex.IsMatch(input);
+    }
+
+    async Task EnterBuscarMedico(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await BuscarMedico(1);
+        }
+    }
+
+    private async Task CargaListaPrestacionxMedicoE()
+    {
+        try
+        {
+            oListaPrestacionxMedicoE = new Bus.Clinica.Medicos().Sp_Prestacionxmedico_Consulta(oMedicoE.CodMedico);
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+
+    private async Task CargaListaMedicosEspecialidadE()
+    {
+        try
+        {
+            oListaMedicosEspecialidadE = new Bus.Clinica.Medicos().MedicosEspecialidad_Consulta(oMedicoE.CodMedico);
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.ToString();
+            ModalMensaje("Catch", "Error");
+        }
+    }
+
+    private async Task CargaListaAsistentexMedicoE()
+    {
+        try
+        {
+            oListaAsistentexMedicoE = new Bus.Clinica.Medicos().AsistentexMedico_Consulta(oMedicoE.CodMedico);
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+
+    private async Task CargaListaMedicoxEmpresaE()
+    {
+        try
+        {
+            oListaMedicoxEmpresaE = new Bus.Clinica.Medicos().Medicoxempresa_ConsultaPorCodigoMedico(oMedicoE.CodMedico);
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+
+    private async Task CargaListaMedicosDatos()
+    {
+        try
+        {
+            oListaMedicosDatosE = new Bus.Clinica.Medicos().Sp_MedicosDatos_ConsultaPorCodigoMedico(oMedicoE.CodMedico);
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+
+    private async Task CargaListaMedicosCtaBanco()
+    {
+        try
+        {
+            oListaMedicosCtaBancoE = new Bus.Clinica.Medicos().MedicosCtaBanco_ConsultaPorCodMedico(oMedicoE.CodMedico);
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+
+    private async Task NuevoMedico(string pcodmedico)
+    {
+        try
+        {
+            EditaMedico(pcodmedico, 0);
+            FlgNuevo = true;
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+    private async Task EditaMedico(string pcodmedico, int pNuevo)
+    {
+        try
+        {
+            oMedicoE = new Bus.Clinica.Medicos().Medico_ConsultaPorCodMedico(pcodmedico);
+            //oListaPrestacionxMedicoE = new Bus.Clinica.Medicos().Sp_Prestacionxmedico_Consulta(pcodmedico);
+            CargaListaPrestacionxMedicoE();
+            CargaListaMedicosEspecialidadE();
+            CargaListaAsistentexMedicoE();
+            CargaListaMedicoxEmpresaE();
+            CargaListaMedicosDatos();
+            CargaListaMedicosCtaBanco();
+
+            var jsonOriginal = JsonConvert.SerializeObject(oMedicoE);
+            dictionaryOriginal = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonOriginal);
+
+
+            oListaEspecialidades = new Bus.Clinica.Especialidades().ConsultarEspecialidadxMedicos(new EspecialidadxMedicoE(pcodmedico, "", 0, 2));
+            oMedicoObsAux.Foto = new Bus.Clinica.Medicos().ConsultarMedicoFoto(pcodmedico);
+            if (oMedicoObsAux.Foto == "")
+            {
+                oMedicoObsAux.Foto = "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+            }
+            oMedicoObsAux.FlagCambiaFoto = false;
+
+            FlgNuevo = false;
+            if (pNuevo == 0)
+            {
+                oMedicoE.FlagEstado = true;
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+
+    private void ValidaGrabaMedico()
+    {
+        oListError.Clear();
+
+        if (oMedicoE.FlgCia == true)
+        {
+            if (oMedicoE.Nombres == "")
+            {
+                oListError.Add("El campo descripción es un dato requerido");
+            }
+            if (oMedicoE.FlagAfectoSnp == true || oMedicoE.FlagAfectoSpp == true)
+            {
+                oListError.Add("Empresas no pueden tener check de SNP o SPP");
+            }
+        }
+        if (oMedicoE.FlgCia == false)
+        {
+            if (oMedicoE.ApPaterno == "")
+            {
+                oListError.Add("El Apellido Paterno es un dato requerido");
+            }
+
+            if (oMedicoE.ApMaterno == "")
+            {
+                oListError.Add("El Apellido Materno es un dato requerido");
+            }
+
+            if (oMedicoE.Nombre == "")
+            {
+                oListError.Add("El Nombre es un dato requerido");
+            }
+
+            if (oMedicoE.TipColegio == "")
+            {
+                oListError.Add("El Tipo de Colegio es un dato requerido");
+            }
+
+            if (oMedicoE.ColMedico == "")
+            {
+                oListError.Add("El campo colegio medico es un dato requerido");
+            }
+
+            if (oMedicoE.FlagCortesia == false && oMedicoE.FlagAmbulatorio == false && oMedicoE.FlgAsistente == false)
+            {
+                oListError.Add("Debe seleccionar una de estas opciones Cortesia, Staff o Asistente");
+            }
+            if (oMedicoE.FlagAfectoSnp == true && oMedicoE.FlagAfectoSpp == true)
+            {
+                oListError.Add("No pueden tener check a la vez SNP y SPP. Elija uno");
+            }
+
+            if (oMedicoE.CodAfp.Length > 2)//aqui se cambia =>2 a >2, ya que los códigos de AFP son de dos dígitos
+            {
+                if (oMedicoE.FlagAfectoSnp == true && oMedicoE.CodAfp != "" && oMedicoE.CodAfp.Substring(0, 2) != "10")
+                {
+                    oListError.Add("El nombe de AFP no corresponde a un SNP");
+                }
+                if (oMedicoE.FlagAfectoSpp == true && oMedicoE.CodAfp != "" && oMedicoE.CodAfp.Substring(0, 2) != "10")
+                {
+                    oListError.Add("El nombe de AFP no corresponde a un SPP");
+                }
+            }
+
+            if (oMedicoE.Ruc.Length >= 2)
+            {
+                if (oMedicoE.Ruc.Substring(0, 2) != "10")
+                {
+                    if (oMedicoE.FlagAfectoSnp == true && oMedicoE.FlagAfectoSpp == true)
+                    {
+                        oListError.Add("Médicos con RUC diferente a 10 no pueden tener check de SNP o SPP");
+                    }
+                }
+                if (oMedicoE.Ruc.Substring(0, 2) != "20")
+                {
+                    //if (oMedicoE.TipDocEmite == "") oListError.Add("El Tipo de Doc. que emitirá es un dato requerido");
+                }
+            }
+
+            if ((IsValidEmail(oMedicoE.Email) == false || ContainsAccentedLetters(oMedicoE.Email) == true || ContainsSpecificSpecialCharacters(oMedicoE.Email) == true) && oMedicoE.Email != "")
+            {
+                oListError.Add("El formato de E-mail ingresado es incorrecto");
+            }
+        }
+
+
+        if (oMedicoE.TipDocIdentidad == "0" && oMedicoE.DocIdentidad.Length != 8)
+        {
+            oListError.Add("El número de DNI debe ser de 8 carácteres");
+        }
+
+        if (oMedicoE.TipDocIdentidad == "0" && Regex.IsMatch(oMedicoE.DocIdentidad, @"^-?\d+(\.\d+)?$") == false)
+        {
+            oListError.Add("El número de DNI debe ser solo numérico");
+        }
+
+        if (oMedicoE.TipDocIdentidad == "4" && oMedicoE.DocIdentidad.Length > 15)
+        {
+            oListError.Add("El carnet de extranjería debe ser máximo de 15 carácteres");
+        }
+
+        if (oMedicoE.TipDocIdentidad == "5" && oMedicoE.DocIdentidad.Length > 15)
+        {
+            oListError.Add("El número de pasaporte debe ser máximo de 15 carácteres");
+        }
+
+        // if (oMedicoE.TipDocIdentidad == "5" && oMedicoE.DocIdentidad.Length < 16)
+        // {
+        //     oListError.Add("El número de partida de nacimiento debe ser máxino de 15 carácteres");
+        // }
+
+        // if (oMedicoE.TipDocIdentidad == "5" && oMedicoE.DocIdentidad.Length < 16)
+        // {
+        //     oListError.Add("El número de partida de nacimiento debe ser máxino de 15 carácteres");
+        // }
+
+        if (ContainsSpecialCharacters(oMedicoE.DocIdentidad) == true)
+        {
+            oListError.Add("El número de documento de identidad solo debe contener letras y números");
+        }
+
+        if (!(oMedicoE.Beeper.Length == 0 || oMedicoE.Beeper.Length == 9))
+        {
+            oListError.Add("El número de celular debe tener un máximo de 9 dígitos");
+        }
+
+        if (oMedicoE.Beeper.Length == 9)
+        {
+            // //INI - mBardales - 26/01/2024
+            int numberBeeper = 0;
+            bool canConvertBeeper = int.TryParse(oMedicoE.Beeper, out numberBeeper);
+
+            if (canConvertBeeper == false)
+            {
+                oListError.Add("El campo celular debe ser sólo números");
+            }
+            //FIN - mBardales - 26/01/2024
+        }
+
+        if (!(oMedicoE.Telefono.Length == 0 || oMedicoE.Telefono.Length == 7))
+        {
+            oListError.Add("El número de teléfono debe tener un máximo de 7 dígitos");
+        }
+
+        if (oMedicoE.Telefono.Length == 7)
+        {
+            //INI - mBardales - 26/01/2024
+            int numberFono = 0;
+            bool canConvertFono = int.TryParse(oMedicoE.Telefono, out numberFono);
+
+            if (canConvertFono == false)
+            {
+                oListError.Add("El campo teléfono debe ser sólo números");
+            }
+            //FIN - mBardales - 26/01/2024
+        }
+
+        if (oMedicoE.ColMedico.Trim().Length > 0)
+        {
+            //INI - mBardales - 24/01/2024
+            int number1 = 0;
+            bool canConvert = int.TryParse(oMedicoE.ColMedico, out number1);
+
+            if (canConvert == false)
+            {
+                oListError.Add("El campo colegio medico debe ser sólo números");
+            }
+            //FIN - mBardales - 24/01/2024
+        }
+
+        if (!(oMedicoE.Ruc.Length == 0 || oMedicoE.Ruc.Length == 11))
+        {
+            oListError.Add("El número de RUC debe tener un máximo de 11 dígitos");
+        }
+
+        if (oMedicoE.Ruc.Length == 11)
+        {
+            //INI - mBardales - 24/01/2024
+            long number2 = 0;
+            bool canConvert2 = long.TryParse(oMedicoE.Ruc, out number2);
+
+            if (canConvert2 == false)
+            {
+                oListError.Add("El campo RUC debe ser sólo números");
+            }
+            //FIN - mBardales - 24/01/2024
+        }
+
+        //INI - mBardales - 29/01/2024
+        if (!(oMedicoE.Consultorio.Length == 0 || oMedicoE.Consultorio.Length < 4))
+        {
+            oListError.Add("El Consultorio debe tener un máximo de 3 dígitos");
+        }
+
+        if (oMedicoE.Consultorio.Length > 1)
+        {            
+            int numberConsultorio = 0;
+            bool canConvertConsultorio = int.TryParse(oMedicoE.Consultorio, out numberConsultorio);
+
+            if (canConvertConsultorio == false)
+            {
+                oListError.Add("El campo Consultorio debe ser sólo números");
+            }
+        }
+        //FIN - mBardales - 29/01/2024
+
+        //INI - mBardales - 29/01/2024
+        if (!(oMedicoE.Anexo.Length == 0 || oMedicoE.Anexo.Length < 6))
+        {
+            oListError.Add("El Anexo debe tener un máximo de 5 dígitos");
+        }
+
+        if (oMedicoE.Anexo.Length > 1)
+        {
+            int numberAnexo = 0;
+            bool canConvertAnexo = int.TryParse(oMedicoE.Anexo, out numberAnexo);
+
+            if (canConvertAnexo == false)
+            {
+                oListError.Add("El campo Anexo debe ser sólo números");
+            }
+        }
+        //FIN - mBardales - 29/01/2024
+
+
+        //INI - mBardales - 29/01/2024
+        if (!(oMedicoE.Cuspp.Length == 0 || oMedicoE.Cuspp.Length < 21))
+        {
+            oListError.Add("El Nro de Afiliado debe tener un máximo de 20 dígitos");
+        }
+
+        if (oMedicoE.Cuspp.Length > 1)
+        {
+            decimal numberCuspp = 0;
+            bool canConvertCuspp = decimal.TryParse(oMedicoE.Cuspp, out numberCuspp);
+
+            if (canConvertCuspp == false)
+            {
+                oListError.Add("El campo Nro de Afiliado debe ser sólo números");
+            }
+        }
+        //FIN - mBardales - 29/01/2024
+
+        //Solo si n hay errores valida en base de datos
+        // valida que no exista otro medico con el mismo nombre o razon social
+        // valida que no exista con el mismo RUC o DNI
+
+        //Valifación agenda solo Callcenter debe tener un mensaje personalizado
+        if (oListaMedicosEspecialidadE.Count>0)
+        {
+            if (oListaMedicosEspecialidadE[0].TipAgendaCallCenter && !oListaMedicosEspecialidadE[0].TipAgendaInternet)
+            {
+                if (oMedicoE.MensajePersonalizado == "")
+                {
+                    oListError.Add("El médico tiene tipo de agenda 'Call Center' es necesario ingresar un mensaje personalizado.");
+                }
+                else if (oMedicoE.TelefonoSecretaria == "")
+                {
+                    oListError.Add("El médico tiene tipo de agenda 'Call Center' es necesario el teléfono de la secretaria del médico.");
+                }
+                else if (oMedicoE.TelefonoSecretaria.Length < 9)
+                {
+                    oListError.Add("El médico tiene tipo de agenda 'Call Center' es necesario ingresar el teléfono de 9 dígitos de la secretaria del médico.");
+                }
+            }
+        }
+
+        //var x = oListaMedicosEspecialidadE;
+        //string permite = "";
+    }
+
+    private void ValidaGrabaMedicoBD()
+    {
+        if (oListError.Count <= 0)
+        {
+            var serializer = new XmlSerializer(typeof(MedicoE));
+            StringWriter writer = new StringWriter();
+            serializer.Serialize(writer, oMedicoE);
+            var ParXML = writer.ToString();
+            oListError = new Bus.Clinica.Medicos().ValidaInsertMedicos(ParXML);
+        }
+    }
+
+    private async Task GrabaMedico()
+    {
+        try
+        {
+            //var options = new JsonSerializerOptions() { WriteIndented = true };
+            //options.Converters.Add(new CustomDateTimeConverter("yyyy-MM-dd"));
+
+            if (oMedicoE.ColMedico.Trim().Length != 6)
+            {
+                oMedicoE.ColMedico = ("000000" + oMedicoE.ColMedico.Trim()).PadRight(6);
+                oMedicoE.ColMedico = oMedicoE.ColMedico.Substring(oMedicoE.ColMedico.Length - 6);
+            }
+            //1.2 INI
+            if (!string.IsNullOrEmpty(oMedicoE.PalabraClave))
+            {
+                oMedicoE.PalabraClave = Regex.Replace(oMedicoE.PalabraClave, @"\d", "");
+            }
+            //1.2 FIN
+            var json = JsonConvert.SerializeObject(oMedicoE);
+
+
+
+            dictionaryMovimiento = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+            oListarCfgUpdatePorCampoE.ForEach(x => { x.ValorUpdate = ""; x.FlagActualiza = false; });
+
+            foreach (var item in oListarCfgUpdatePorCampoE)
+            {
+                if (dictionaryMovimiento[item.CampoEntidad] != dictionaryOriginal[item.CampoEntidad])
+                {
+                    item.ValorUpdate = dictionaryMovimiento[item.CampoEntidad];
+                    item.FlagActualiza = true;
+                }
+            }
+
+            #region Valida Nombres
+            var including = new string[] { "ApPaterno", "ApMaterno", "Nombre", "Nombres", "FlgCia" };
+            int outPutCount = oListarCfgUpdatePorCampoE.Where(x => including.Contains(x.CampoEntidad) && x.CampoUpdate != "" && x.FlagActualiza == true).Count();
+            if (outPutCount > 0)
+            {
+                if (oMedicoE.FlgCia == true)
+                {
+                    var includingBlank = new string[] { "ApPaterno", "ApMaterno", "Nombre" };
+                    oListarCfgUpdatePorCampoE.Where(x => includingBlank.Contains(x.CampoEntidad)).ToList().ForEach(x => { x.ValorUpdate = ""; x.FlagActualiza = true; });
+                }
+                else
+                {
+                    string nombres = oMedicoE.ApPaterno + " " + oMedicoE.ApMaterno + " " + oMedicoE.Nombre;
+                    oListarCfgUpdatePorCampoE.Where(x => x.CampoEntidad == "Nombres").ToList().ForEach(x => { x.ValorUpdate = nombres; x.FlagActualiza = true; });
+                }
+
+            }
+            #endregion
+
+            ValidaGrabaMedico();//aqui hay un cambio
+            ValidaGrabaMedicoBD();
+            if (oListError.Count > 0)
+            {
+                string texto;
+                texto = "Verifique las siguientes observaciones:\n";
+                texto += "<div id=\"Layer1\" style=\"width:100%; height:115px; overflow: scroll;\">";
+                foreach (string error in oListError)
+                {
+                    texto += "<br> " + error;
+                }
+                Mensaje = texto;
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalAdvertencia");
+                return;
+
+            }
+
+            if (oListError.Count <= 0)
+            {
+                Mensaje = "No hay cambios a actualizar";
+                var oListaDatosAGrabar = oListarCfgUpdatePorCampoE.Where(x => x.FlagActualiza == true).ToList();
+                if (oListaDatosAGrabar.Count > 0)
+                {
+                    var usrModifica = Convert.ToInt32(SessionUser(TypeSession.CodUser).Result);
+                    oMedicoE = new Bus.Clinica.Medicos().GrabarMedico(oMedicoE, oListaDatosAGrabar, usrModifica);
+                    Mensaje = "Cambios actualizados correctamente";
+                    EditaMedico(oMedicoE.CodMedico, 1);
+
+                }
+                if (oMedicoObsAux.FlagCambiaFoto == true)
+                {
+                    //string aux = oMedicoObsAux.Foto;
+                    oMedicoObsAux.CodMedico = oMedicoE.CodMedico;
+                    new Bus.Clinica.Medicos().GrabarFoto(oMedicoObsAux);
+                    // new Bus.Clinica.Medicos().GrabarFotoFTP(oMedicoObsAux);
+                    //new Bus.Clinica.Medicos().GrabarFotoApi(oMedicoObsAux);
+
+
+                    Mensaje = "Se actualizo la foto del médico.";
+                }
+                //await ModalMensaje("ConfirmacionRegistro", "Informativo");
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacion");
+            }
+
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+
+
+    private async Task EliminaMedico(bool Estado)
+    {
+        try
+        {
+            bool Estado1 = false;
+            if (Estado == false)
+            {
+                Estado1 = true;
+            }
+            else
+            {
+                Estado1 = false;
+            }
+            if (Estado1 == false)
+            {
+                Mensaje = "¿Desea dar de baja al medico  <br><b>" + oMedicosE.NombresMedico + "</b>?";
+            }
+            else
+            {
+                Mensaje = "¿Desea activar al medico  <br><b>" + oMedicosE.NombresMedico + "</b>?";
+            }
+            js.InvokeVoidAsync("ShowMessageModal", true, "msgModalPreguntaElimina");
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+
+
+    private async Task DesbloquearMedico()
+    {
+        try
+        {
+            Mensaje = "¿Desea desbloquear la cuenta del médico  <br><b>" + oMedicosE.NombresMedico + "</b>?";
+            js.InvokeVoidAsync("ShowMessageModal", true, "msgModalDesbloquearMedico");
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+
+    private async Task ConfirmarEliminarConvenio(bool acepted)
+    {
+        try
+        {
+            if (acepted)
+            {
+                bool lswOK = false;
+
+                lswOK = new Bus.Clinica.Medicos().EliminaMedico(oMedicosE.CodMedico);
+                if (lswOK)
+                {
+                    Mensaje = "Se registro correctamente la información";
+                    await js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacion");
+                }
+                else
+                {
+                    Mensaje = "No se elimino el registro";
+                    await js.InvokeVoidAsync("NotFoundSpinner", "msgModalAdvertencia");
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+
+    private async Task ConfirmarDesbloquearMedico(bool acepted)
+    {
+        RespuestaJsonE respuestaJsonE = new RespuestaJsonE();
+        try
+        {
+            if (acepted)
+            {
+                respuestaJsonE = new Bus.Clinica.Medicos().DesbloquearMedico(oMedicosE.CodMedico);
+                Mensaje = respuestaJsonE.message;
+                if (respuestaJsonE.exito)
+                {
+                    await js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacion");
+                }
+                else
+                {
+                    await js.InvokeVoidAsync("NotFoundSpinner", "msgModalAdvertencia");
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+
+    private async Task ConfirmarActivarConvenio(bool acepted)
+    {
+        try
+        {
+            if (acepted)
+            {
+                bool lswOK = false;
+                lswOK = new Bus.Clinica.Medicos().EliminaMedico(oMedicosE.CodMedico);
+                if (lswOK)
+                {
+                    Mensaje = "Se activó el registro correctamente";
+                    await js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacion");
+                }
+                else
+                {
+                    Mensaje = "No se activó el registro correctamente";
+                    await js.InvokeVoidAsync("NotFoundSpinner", "msgModalAdvertencia");
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+    void OnSelect(ChangeEventArgs e)
+    {
+        //selectedString = e.Value.ToString();
+        //Console.WriteLine("The selected country is : " + selectedString);
+    }
+
+    //INICIO FGONZALES - 07/02/2024 EXPORTAR EN EXCEL LISTA DE MEDICOS
+    private void ExportarExcel(int flgdescarga, string xNombreExcel, string xRutaDescarga)
+    {
+        //1.1 INI
+        try
+        {
+        //1.1 FIN
+            int FilaCab = 4;
+            int FilaCuerpo = FilaCab + 1, ColumnaCuerpo = oListarMedicosReporte.Count;
+            MemoryStream excelStream;
+            string fileUrl;
+
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Medicos");
+                var RangoCab_Hoja = worksheet.Range(2, 1, 2, 7).Merge();
+                RangoCab_Hoja.Value = "Lista de Medicos";
+                RangoCab_Hoja.Style.Fill.BackgroundColor = XLColor.FromHtml("#7ebf2a"); //Indicamos el color de background
+                RangoCab_Hoja.Style.Font.FontSize = 17; //Indicamos el tamaño de la fuente
+                RangoCab_Hoja.Style.Font.Bold = true;
+                RangoCab_Hoja.Style.Font.FontColor = XLColor.FromHtml("#ffffff");
+                RangoCab_Hoja.Style.Font.SetFontName("Calibri"); //Fuente
+                RangoCab_Hoja.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                //I-Logo
+                //string relativePath;
+                //relativePath = @"wwwroot\images\csf.jpg";
+                // string basePath = AppDomain.CurrentDomain.BaseDirectory;
+                //string fullPath = Path.GetFullPath(Path.Combine(basePath, relativePath));
+                // worksheet.AddPicture(fullPath).MoveTo(worksheet.Cell(2, 5)).Scale(0.1); // Imagen
+
+
+                //I-Cuerpo_Tabla
+                worksheet.Cell(FilaCab, 1).Value = "CMP";
+                worksheet.Cell(FilaCab, 2).Value = "Nombres";
+                worksheet.Cell(FilaCab, 3).Value = "Documento";
+                worksheet.Cell(FilaCab, 4).Value = "Celular";
+                worksheet.Cell(FilaCab, 5).Value = "Email";
+                worksheet.Cell(FilaCab, 6).Value = "Servicios";
+                worksheet.Cell(FilaCab, 7).Value = "Especialidad";
+
+
+                for (int i = 1; ColumnaCuerpo > i - 1; i++)
+                {
+                    worksheet.Cell(FilaCuerpo, 1).Value = oListarMedicosReporte[i - 1].CMP;
+                    worksheet.Cell(FilaCuerpo, 2).Value = oListarMedicosReporte[i - 1].Nombres;
+                    worksheet.Cell(FilaCuerpo, 3).Value = oListarMedicosReporte[i - 1].Documento;
+                    worksheet.Cell(FilaCuerpo, 4).Value = oListarMedicosReporte[i - 1].Celular;
+                    worksheet.Cell(FilaCuerpo, 5).Value = oListarMedicosReporte[i - 1].Email;
+                    worksheet.Cell(FilaCuerpo, 6).Value = oListarMedicosReporte[i - 1].Servicios;
+                    worksheet.Cell(FilaCuerpo, 7).Value = oListarMedicosReporte[i - 1].Especialidad;
+
+                    worksheet.Range(FilaCuerpo, 1, FilaCuerpo, 7).Style.Border.BottomBorder = XLBorderStyleValues.Dotted;
+                    worksheet.Range(FilaCuerpo, 1, FilaCuerpo, 7).Style.Border.BottomBorderColor = XLColor.Black;
+                    FilaCuerpo++;
+                }
+
+                //I-Estilo Cabecera_Tabla
+                var RangoCab = worksheet.Range(FilaCab, 1, FilaCab, 7); //Selecciona Rango
+                RangoCab.Style.Border.RightBorder = XLBorderStyleValues.Medium;
+                RangoCab.Style.Border.RightBorderColor = XLColor.White;
+                RangoCab.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; //Alineamos horizontalmente
+                RangoCab.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;  //Alineamos verticalmente
+                RangoCab.Style.Fill.BackgroundColor = XLColor.FromHtml("#124498"); //Indicamos el color de background
+                RangoCab.Style.Font.FontSize = 13; //Indicamos el tamaño de la fuente
+                RangoCab.Style.Font.Bold = true;
+                RangoCab.Style.Font.FontColor = XLColor.FromHtml("#ffffff");
+                RangoCab.Style.Font.SetFontName("Sitka Display Semibold"); //Fuente
+
+                worksheet.Columns(1, 7).AdjustToContents(); //Ajustamos el ancho de las columnas para que se muestren todos los contenidos
+
+                // Guardar el archivo Excel en un MemoryStream
+                excelStream = new MemoryStream();
+                workbook.SaveAs(excelStream);
+
+                if (flgdescarga == 1) //Guardar el archivo para que sea enviado por correo
+                {
+                    workbook.SaveAs(xRutaDescarga + xNombreExcel);//Ruta para guardar
+                }
+
+                // Obtener la URL del archivo Excel
+                if (flgdescarga == 0)
+                {
+                    //1.1 INI
+                    xNombreExcel = "Reporte Simple " + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss").Replace("/", "").Replace(":", "").Replace(" ", "") + ".xlsx"; //Nombre del archivo
+                    //1.1 FIN
+                    fileUrl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{Convert.ToBase64String(excelStream.ToArray())}";
+                    OnAfterRender(true);//crea la funcion
+                    //1.1 INI
+                    js.InvokeVoidAsync("downloadFile", fileUrl, xNombreExcel);
+                    FlgReporteSimpleCorrecto = true;
+                    //1.1 FIN
+                }
+            }
+        }
+        //1.1 INI
+        catch (Exception ex)
+        {
+            FlgReporteSimpleCorrecto = false;            
+        }
+    }
+    //1.1 FIN
+    //FIN FGONZALES - 07/02/2024 EXPORTAR EN EXCEL LISTA DE MEDICOS
+    //1.1 INI
+    private void ExportarExcelCompleto(int flgdescarga, string xNombreExcel, string xRutaDescarga)
+    {
+        try
+        {
+            int FilaCab = 3;
+            int FilaCuerpo = FilaCab + 1, ColumnaCuerpo = oListarMedicosReporteCompleto.Count;
+            MemoryStream excelStream;
+            string fileUrl;
+
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Medicos");
+                var RangoCab_Hoja = worksheet.Range(2, 1, 2, 31).Merge();
+                RangoCab_Hoja.Value = "Lista de Medicos y Empresas";
+                RangoCab_Hoja.Style.Fill.BackgroundColor = XLColor.FromHtml("#7ebf2a"); //Indicamos el color de background
+                RangoCab_Hoja.Style.Font.FontSize = 17; //Indicamos el tamaño de la fuente
+                RangoCab_Hoja.Style.Font.Bold = true;
+                RangoCab_Hoja.Style.Font.FontColor = XLColor.FromHtml("#ffffff");
+                RangoCab_Hoja.Style.Font.SetFontName("Calibri"); //Fuente
+                RangoCab_Hoja.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                //I-Cuerpo_Tabla
+                worksheet.Cell(FilaCab, 1).Value = "Codigo del medico";
+                worksheet.Cell(FilaCab, 2).Value = "Fecha de ingreso";
+                worksheet.Cell(FilaCab, 3).Value = "Apellidos";
+                worksheet.Cell(FilaCab, 4).Value = "Nombres";
+                worksheet.Cell(FilaCab, 5).Value = "Fecha de nacimiento";
+                worksheet.Cell(FilaCab, 6).Value = "Tipo de documento";
+                worksheet.Cell(FilaCab, 7).Value = "Documento";
+                worksheet.Cell(FilaCab, 8).Value = "RUC";
+                worksheet.Cell(FilaCab, 9).Value = "Tipo de colegio";
+                worksheet.Cell(FilaCab, 10).Value = "CMP/CNP/COP/CPP";
+                worksheet.Cell(FilaCab, 11).Value = "Especialidad";
+                worksheet.Cell(FilaCab, 12).Value = "RNE";
+                worksheet.Cell(FilaCab, 13).Value = "Especialidad 2";
+                worksheet.Cell(FilaCab, 14).Value = "RNE 2";
+                worksheet.Cell(FilaCab, 15).Value = "Sub especialidad";
+                worksheet.Cell(FilaCab, 16).Value = "Area";
+                worksheet.Cell(FilaCab, 17).Value = "Consultorio";
+                worksheet.Cell(FilaCab, 18).Value = "Telefono";
+                worksheet.Cell(FilaCab, 19).Value = "Celular";
+                worksheet.Cell(FilaCab, 20).Value = "Correo";
+                worksheet.Cell(FilaCab, 21).Value = "Compañia";
+                worksheet.Cell(FilaCab, 22).Value = "Asistente";
+                worksheet.Cell(FilaCab, 23).Value = "Cortesia";
+                worksheet.Cell(FilaCab, 24).Value = "Staff";
+                worksheet.Cell(FilaCab, 25).Value = "Ver en web";
+                worksheet.Cell(FilaCab, 26).Value = "De baja";
+                worksheet.Cell(FilaCab, 27).Value = "Nombre de Empresa";
+                worksheet.Cell(FilaCab, 28).Value = "Ruc empresa";
+                worksheet.Cell(FilaCab, 29).Value = "Planilla";
+                worksheet.Cell(FilaCab, 30).Value = "Afecto a pronto pago";
+                worksheet.Cell(FilaCab, 31).Value = "% de retencion";
+
+                for (int i = 1; ColumnaCuerpo > i - 1; i++)
+                {
+                    worksheet.Cell(FilaCuerpo, 1).Value = oListarMedicosReporteCompleto[i - 1].CodMedico;
+                    worksheet.Cell(FilaCuerpo, 2).Value = oListarMedicosReporteCompleto[i - 1].FechaIngreso;
+                    worksheet.Cell(FilaCuerpo, 3).Value = oListarMedicosReporteCompleto[i - 1].Apellidos;
+                    worksheet.Cell(FilaCuerpo, 4).Value = oListarMedicosReporteCompleto[i - 1].Nombres;
+                    worksheet.Cell(FilaCuerpo, 5).Value = oListarMedicosReporteCompleto[i - 1].FechaNacimiento;
+                    worksheet.Cell(FilaCuerpo, 6).Value = oListarMedicosReporteCompleto[i - 1].TipoDocumento;
+                    worksheet.Cell(FilaCuerpo, 7).Value = oListarMedicosReporteCompleto[i - 1].DocIdentidad;
+                    worksheet.Cell(FilaCuerpo, 8).Value = oListarMedicosReporteCompleto[i - 1].Ruc;
+                    worksheet.Cell(FilaCuerpo, 9).Value = oListarMedicosReporteCompleto[i - 1].TipoColegio;
+                    worksheet.Cell(FilaCuerpo, 10).Value = oListarMedicosReporteCompleto[i - 1].ColMedico;
+                    worksheet.Cell(FilaCuerpo, 11).Value = oListarMedicosReporteCompleto[i - 1].Especialidad1;
+                    worksheet.Cell(FilaCuerpo, 12).Value = oListarMedicosReporteCompleto[i - 1].RNE1;
+                    worksheet.Cell(FilaCuerpo, 13).Value = oListarMedicosReporteCompleto[i - 1].Especialidad2;
+                    worksheet.Cell(FilaCuerpo, 14).Value = oListarMedicosReporteCompleto[i - 1].RNE2;
+                    worksheet.Cell(FilaCuerpo, 15).Value = oListarMedicosReporteCompleto[i - 1].SubEspecialidad;
+                    worksheet.Cell(FilaCuerpo, 16).Value = oListarMedicosReporteCompleto[i - 1].Area;
+                    worksheet.Cell(FilaCuerpo, 17).Value = oListarMedicosReporteCompleto[i - 1].Consultorio;
+                    worksheet.Cell(FilaCuerpo, 18).Value = oListarMedicosReporteCompleto[i - 1].Telefono;
+                    worksheet.Cell(FilaCuerpo, 19).Value = oListarMedicosReporteCompleto[i - 1].Celular;
+                    worksheet.Cell(FilaCuerpo, 20).Value = oListarMedicosReporteCompleto[i - 1].Email;
+                    worksheet.Cell(FilaCuerpo, 21).Value = oListarMedicosReporteCompleto[i - 1].Compania;
+                    worksheet.Cell(FilaCuerpo, 22).Value = oListarMedicosReporteCompleto[i - 1].Asistente;
+                    worksheet.Cell(FilaCuerpo, 23).Value = oListarMedicosReporteCompleto[i - 1].Cortesia;
+                    worksheet.Cell(FilaCuerpo, 24).Value = oListarMedicosReporteCompleto[i - 1].Staff;
+                    worksheet.Cell(FilaCuerpo, 25).Value = oListarMedicosReporteCompleto[i - 1].Verenweb;
+                    worksheet.Cell(FilaCuerpo, 26).Value = oListarMedicosReporteCompleto[i - 1].Debaja;
+                    worksheet.Cell(FilaCuerpo, 27).Value = oListarMedicosReporteCompleto[i - 1].NombreEmpresa;
+                    worksheet.Cell(FilaCuerpo, 28).Value = oListarMedicosReporteCompleto[i - 1].RUC;
+                    worksheet.Cell(FilaCuerpo, 29).Value = oListarMedicosReporteCompleto[i - 1].Planilla;
+                    worksheet.Cell(FilaCuerpo, 30).Value = oListarMedicosReporteCompleto[i - 1].Afectoaprontopago;
+                    worksheet.Cell(FilaCuerpo, 31).Value = oListarMedicosReporteCompleto[i - 1].Retencion;
+
+                    worksheet.Range(FilaCuerpo, 1, FilaCuerpo, 31).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    worksheet.Range(FilaCuerpo, 1, FilaCuerpo, 31).Style.Border.BottomBorderColor = XLColor.Black;
+
+                    FilaCuerpo++;
+                }
+
+                //I-Estilo Cabecera_Tabla
+                var RangoCab = worksheet.Range(FilaCab, 1, FilaCab, 31); //Selecciona Rango
+                RangoCab.Style.Border.RightBorder = XLBorderStyleValues.Medium;
+                RangoCab.Style.Border.RightBorderColor = XLColor.White;
+                RangoCab.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; //Alineamos horizontalmente
+                RangoCab.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;  //Alineamos verticalmente
+                RangoCab.Style.Fill.BackgroundColor = XLColor.FromHtml("#124498"); //Indicamos el color de background
+                RangoCab.Style.Font.FontSize = 13; //Indicamos el tamaño de la fuente
+                RangoCab.Style.Font.Bold = true;
+                RangoCab.Style.Font.FontColor = XLColor.FromHtml("#ffffff");
+                RangoCab.Style.Font.SetFontName("Calibri"); //Fuente
+
+                worksheet.Columns(1, 31).AdjustToContents(); //Ajustamos el ancho de las columnas para que se muestren todos los contenidos
+
+                // Guardar el archivo Excel en un MemoryStream
+                excelStream = new MemoryStream();
+                workbook.SaveAs(excelStream);
+
+                // Obtener la URL del archivo Excel
+                if (flgdescarga == 0)
+                {
+                    xNombreExcel = "Reporte Completo " + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss").Replace("/", "").Replace(":", "").Replace(" ", "") + ".xlsx"; //Nombre del archivo
+                    fileUrl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{Convert.ToBase64String(excelStream.ToArray())}";
+                    OnAfterRender(true);//crea la funcion
+                    js.InvokeVoidAsync("downloadFile", fileUrl, xNombreExcel);
+                    FlgReporteCompletoCorrecto = true;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            FlgReporteCompletoCorrecto = false;
+        }
+        
+    }
+    //1.1 FIN
+}
+@{
+    bool tieneBtnEditar = false;
+    bool tieneBtnDarBaja = false;
+    bool tieneBtnDesbloquearMed = false;
+    bool tieneBtnVerInfo = false;
+    bool tieneBtnActivar = false;
+    bool tieneBtnVerDataM = false;
+
+    if (oListSegOpcions.Count > 0)
+    {
+        @foreach (var iOpcion in oListSegOpcions)
+        {
+            if (iOpcion.CodOpcion == "02/02/01/02")
+            {
+                tieneBtnEditar = true;
+            }
+            if (iOpcion.CodOpcion == "02/02/01/03")
+            {
+                tieneBtnDarBaja = true;
+            }
+            if (iOpcion.CodOpcion == "02/02/01/15")
+            {
+                tieneBtnDesbloquearMed = true;
+            }
+            if (iOpcion.CodOpcion == "02/02/01/16")
+            {
+                tieneBtnVerInfo = true;
+            }
+            if (iOpcion.CodOpcion == "02/02/01/17")
+            {
+                tieneBtnActivar = true;
+            }
+            if (iOpcion.CodOpcion.Trim() == "02/02/01/18")
+            {
+                tieneBtnVerDataM = true;
+            }
+        }
+    }
+
+    async Task MostrarModalDatoPaciente(string pcodmedico, int pNuevo)
+    {
+        try
+        {
+            RutaEmbed = "";
+            oMedicoE = new Bus.Clinica.Medicos().Medico_ConsultaPorCodMedico(pcodmedico);
+            //MostrarAgendaMedica();
+            //oListaPrestacionxMedicoE = new Bus.Clinica.Medicos().Sp_Prestacionxmedico_Consulta(pcodmedico);
+            CargaListaPrestacionxMedicoE();
+            CargaListaMedicosEspecialidadE();
+            CargaListaAsistentexMedicoE();
+            CargaListaMedicoxEmpresaE();
+            CargaListaMedicosDatos();
+            CargaListaMedicosCtaBanco();
+
+            var jsonOriginal = JsonConvert.SerializeObject(oMedicoE);
+            dictionaryOriginal = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonOriginal);
+
+
+            oListaEspecialidades = new Bus.Clinica.Especialidades().ConsultarEspecialidadxMedicos(new EspecialidadxMedicoE(pcodmedico, "", 0, 2));
+            oMedicoObsAux.Foto = new Bus.Clinica.Medicos().ConsultarMedicoFoto(pcodmedico);
+            if (oMedicoObsAux.Foto == "")
+            {
+                oMedicoObsAux.Foto = "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+            }
+            oMedicoObsAux.FlagCambiaFoto = false;
+
+            FlgNuevo = false;
+            if (pNuevo == 0)
+            {
+                oMedicoE.FlagEstado = true;
+            }
+
+            /*Trae datos de horario medico*/
+            oListaHorarioMedico = new List<HorariosE>();
+            HorariosB oHorarioB = new HorariosB();
+            oListaHorarioMedico = oHorarioB.Lista_Horario_Medico(oMedicoE.TipColegio.Trim() + "-" + oMedicoE.ColMedico.Trim());
+            /**/
+            await js.InvokeVoidAsync("ShowMessageModal", true, "msgModalDatoMedico");
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            await ModalMensaje("Catch", "Error");
+        }
+    }
+
+    async Task MostrarAgendaMedica()
+    {
+
+        //Primero validamos que el medico tenga colegio medico ---  CMP
+        try
+        {
+            RutaEmbed = "";
+            if (oMedicoE.TipColegio.Trim().Equals("CMP"))
+            {
+                string rutaApiclinica = MetaGlobal.RutaApiClinica;
+                string cmp = oMedicoE.TipColegio.Trim() + "-" + oMedicoE.ColMedico.Trim();
+
+                var _config = new ApiRutaConexion();
+
+                var urlClient = rutaApiclinica + "DatosControlWeb/API/Clinica/DatosValidadoAccesoAgenda?_Key=" + Criptography.EncryptConectionString(cmp);
+                var _client = new RestClient(urlClient);
+                var _request = new RestRequest();
+                _request.Method = Method.Get;
+                _request.AddHeader("Authorization", Criptography.EncryptConectionString(_config.Key));
+                RestResponse restResponse = _client.Execute(_request);
+                var resultadoJson = JsonConvert.DeserializeObject<RespuestaJsonE>(restResponse.Content);
+
+                if (resultadoJson.exito == true)
+                {
+                    RutaEmbed = MetaGlobal.RutaApiAgendaSoftvan + resultadoJson.message;
+                }
+                else
+                {
+                    RutaEmbed = "";
+                }
+            }
+        }
+        catch { RutaEmbed = ""; }
+    }
+}
+
+
+<div class="bg-light">
+    <div class="form-bg">
+
+        <div class="row align-items-center form-toolbar">
+            @* 1.1 INI *@
+            <div class="col-md-auto mb-2 mb-md-0">
+            @* 1.1 FIN *@
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#msgModalMantenimiento" @onclick="@(()=> NuevoMedico("n"))" data-permiso="02/02/01/01">
+                    <span class="fa-regular fa-file"></span> <span role="toolbar"> Nuevo</span>
+                </button>
+            </div>
+            @* 1.1 INI *@
+            <div class="col-md text-md-end">
+                <button id="btnExcelReportes" class="btn btn-success col-md-auto col-lg-1 col-2" style="width:110px;" data-bs-toggle="modal" data-bs-target="#msgModalReportes" @onclick="@(()=> LimpiarCheckReporte())">
+                    <span class="fa-solid fa-file-excel"></span><span id="TitleView"> Reportes</span>
+                </button>
+            </div>
+            @* 1.1 FIN *@
+        </div>
+
+        <div class="container-fluid">
+            <!--PRESENTACION-->
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 buscar-menuNuevo" style="border-radius:25px !important;">
+                <div class="input-group">
+
+
+
+                    <div class="DivSearchNuevo" style="width:100%">
+
+                        <div class="row group align-items-center">
+                            <!--I.Medico-->
+                            <div class="col-xl-1 col-lg-2 col-md-3 col-sm-12 col-xs-12 col-12">
+                                <label>Médico:</label>
+                            </div>
+                            <div class="col-xl-11 col-lg-10 col-md-9 col-sm-12 col-xs-12 col-12" style="border-radius:25px !important;">
+                                <div class="DivSearchInput">
+                                    <div class="DivSearch" style="width:100%">
+                                        <input id="txtMedico" type="search" placeholder="Buscar por el Nombre del Medico, Doc. Identidad. Col. Médico o R.U.C."
+                                               @bind-value="@oMedicoBuscaE.Buscar" @onkeyup="@EnterBuscarMedico">
+                                        <i id="idfiltroavanzado" class="fa-solid fa-sliders" role="button" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false"></i>
+                                        <i id="idSearchMedico" class="fa-solid fa-magnifying-glass" role="button" @onclick="@(()=>BuscarMedico(1))" typeof="AdvancedSearch"></i>
+                                        <i id="idspinnerMedico" class="spinner-border text-success" tipo="spinner" role="spinbutton" style="display:none;">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </i>
+
+                                        <div class="dropdown-menu col-12 dropdown-menu-search" aria-labelledby="idfiltroavanzado">
+                                            <div class="form-group card card-menu-search">
+                                                <div class="col-12">
+                                                    <div class="contenedor">
+                                                        <h5 class="card-title" style="color:#000000; font-weight: bold; ">Búsqueda avanzada</h5>
+                                                        <div class="card-body">
+                                                            <div class="row">
+                                                                <div class="col-sm-12 col-md-2  col-lg-2  form-group">
+                                                                    <button class="btn btn-primary" @onclick="@(()=>BuscarAvanzadoMedico())">
+                                                                        <span class="fa fa-search"></span> <span role="toolbar"> Buscar</span>
+                                                                        @*<label class=" card-title title-paddin text-hide" style="color:white;">'</label>
+                                                                        <input id="btnBusquedaAvanzada" type="button" class="btn btn-primary form-control font-weight-bold" @onclick="@BuscarAvanzadoMedico" value="Buscar" />*@
+
+                                                                    </button>
+                                                                </div>
+                                                                <div class="col-sm-12 col-md-3  col-lg-3">
+                                                                    <!--I.CodSede-->
+                                                                    <div class="form-floating mb-3">
+                                                                        <select class="form-select" id="lstCodSede" aria-label="Sede" @bind="@oMedicoBuscaE.CodSede">
+                                                                            <option selected></option>
+                                                                            @foreach (var item in oListaTablasSedes)
+                                                                            {
+                                                                                <option value="@item.Codigo">@item.Nombre</option>
+                                                                            }
+                                                                        </select>
+                                                                        <label for="lstCodSede">Sede</label>
+                                                                    </div>
+                                                                    <!--F.CodSede-->
+                                                                </div>
+                                                                <div class="col-sm-12 col-md-3  col-lg-3">
+                                                                    <!--I.CodEspecialidad-->
+                                                                    <div class="form-floating mb-3">
+                                                                        <select class="form-select" id="lstCodEspecialidad" aria-label="Tipo de documento" @bind="@oMedicoBuscaE.CodEspecialidad">
+                                                                            <option selected></option>
+                                                                            @foreach (var item in oListEspecialidadesE)
+                                                                            {
+                                                                                <option value="@item.Codespecialidad">@item.Nombre</option>
+                                                                            }
+                                                                        </select>
+                                                                        <label for="lstCodEspecialidad">Especialidad</label>
+                                                                    </div>
+                                                                    <!--F.CodEspecialidad-->
+                                                                </div>
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!--F.Medico-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        
+        @* 1.1 INI *@
+@*         <div class="row align-items-center d-print-none form-toolbar">
+            <div>
+                <button id="btnExcel" class="btn btn-outline-success col-lg-1 col-2" @onclick="(()=>ExportarExcel(0,NombreExcel,RutaDescarga))">
+                    <span class="fa-solid fa-file-excel"></span><span id="TitleView"> Excel</span>
+                </button>
+                <button id="btnExcelCompleto" class="btn btn-outline-success col-lg-2 col-3" @onclick="(()=>ExportarExcelCompleto(0,NombreExcel,RutaDescarga))">
+                    <span class="fa-solid fa-file-excel"></span><span id="TitleView"> Excel Completo</span>
+                </button>
+            </div>
+        </div> *@
+        @* 1.1 FIN *@
+
+        <div class="container" style="margin-top: 20px;">
+            <div class="col-12 col-lg-12 col-md-12 buscar-menuNuevo">
+                <div class="input-group">
+                    <div class="card w-100">
+                        <div class="card-header text-white fs-5" style="background:#124498;padding: 1rem 2rem; ">
+                            Resultado de búsqueda
+                        </div>
+                        <div class="card-body">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive">
+                                <table class="table table-hover   table-bordered">
+                                    <thead class="table-primary">
+                                        <tr class="fw-bolder">
+                                            <th class="col-1 text-center"></th>
+                                            <th class="col-1 text-center">N°</th>
+                                            <th class="col-4 text-center">Médico</th>
+                                            <th class="col-3 text-center">Contacto</th>
+                                            <th class="col-3 text-center">Especialidad</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (oListaMedicos != null)
+                                        {
+                                            var EstMed = 0;
+                                            @foreach (var item in oListaMedicos)
+                                            {
+                                                <tr>
+
+                                                    <td class="text-center">
+                                                        <div class="btn-group dropstart">
+                                                            <button class="btn btn-menu" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <span class="fa-solid fa-ellipsis-vertical"></span>
+                                                            </button>
+                                                            <ul class="dropdown-menu">
+                                                                <li class="dropdown-header">Seleccione la opción</li>
+                                                                @{
+                                                                    EstMed = item.Estado;
+                                                                    bool ActDes = false;
+                                                                    bool ActEst = false;
+                                                                    if (EstMed == 0)
+                                                                    {
+                                                                        ActDes = true;
+                                                                        ActEst = false;
+                                                                        if (tieneBtnVerInfo)
+                                                                        {
+                                                                            <li class="dropdown-item btn" data-bs-toggle="modal" data-bs-target="#msgModalMantenimiento" @onclick="@(()=> EditaMedico(item.CodMedico,1))" data-permiso="02/02/01/16"><span class="fa-regular fa-eye"></span> Ver Información</li>
+                                                                        }
+                                                                        if (tieneBtnActivar)
+                                                                        {
+                                                                            <li class="dropdown-item btn" @onclick="@(()=> {oMedicosE = item; EliminaMedico(ActEst);})" data-permiso="02/02/01/17"><span class="fa-solid fa-check-to-slot"></span> Activar</li>
+                                                                        }
+                                                                        if (tieneBtnDesbloquearMed)
+                                                                        {
+                                                                            <li class="dropdown-item btn" @onclick="@(()=> {oMedicosE = item; DesbloquearMedico();})" data-permiso="02/02/01/15"><span class="fa-solid fa-lock-open"></span> Desbloquear Usuario</li>
+                                                                        }
+                                                                        <li class="dropdown-item btn" @onclick="@(()=>MostrarModalDatoPaciente(item.CodMedico,1))" data-permiso="02/02/01/18"><span class="fa-solid fas fa-user-md"></span>Datos del Médico</li>
+                                                                        if (tieneBtnVerDataM)
+                                                                        {
+                                                                            <li class="dropdown-item btn" @onclick="@(()=>MostrarModalDatoPaciente(item.CodMedico,1))" data-permiso="02/02/01/18"><span class="fa-solid fas fa-user-md"></span>Datos del Médico</li>
+                                                                        }
+
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        ActDes = false;
+                                                                        ActEst = true;
+                                                                        if (tieneBtnEditar)
+                                                                        {
+                                                                            <li class="dropdown-item btn" data-bs-toggle="modal" data-bs-target="#msgModalMantenimiento" @onclick="@(()=> EditaMedico(item.CodMedico,1))" data-permiso="02/02/01/02"><span class="fa-solid fa-pen"></span> Editar</li>
+                                                                        }
+                                                                        if (tieneBtnDarBaja)
+                                                                        {
+                                                                            <li class="dropdown-item btn" @onclick="@(()=> {oMedicosE = item; EliminaMedico(ActEst);})" data-permiso="02/02/01/03"><span class="fa-regular fa-trash-can"></span> Dar de Baja</li>
+                                                                        }
+                                                                        if (tieneBtnDesbloquearMed)
+                                                                        {
+                                                                            <li class="dropdown-item btn" @onclick="@(()=> {oMedicosE = item; DesbloquearMedico();})" data-permiso="02/02/01/15"><span class="fa-solid fa-lock-open"></span> Desbloquear Usuario</li>
+                                                                        }
+
+                                                                        if (tieneBtnVerDataM)
+                                                                        {
+                                                                            <li class="dropdown-item btn" @onclick="@(()=>MostrarModalDatoPaciente(item.CodMedico,1))" data-permiso="02/02/01/18"><span class="fa-solid fas fa-user-md"></span>Datos del Médico</li>
+                                                                        }
+
+                                                                    }
+                                                                }
+                                                                @*<li class="dropdown-item btn" data-bs-toggle="modal" data-bs-target="#msgModalHorarioMedico" @onclick="@(()=> EditaMedico(item.CodMedico,1))"><span class="fa-thin fa-calendar-days"></span> Horario</li>*@
+
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span class="span-color">@item.Sec</span><br>
+                                                    </td>
+                                                    <td style="@oListStyleInfo[@item.Estado]">
+                                                        <span class="span-color">@item.NombresMedico</span><br>
+                                                        <span class="span-color">@item.DscDocIdentidad: </span> @item.DocIdentidad<br>
+                                                        <span class="span-color">Colegiatura: </span>@item.TipoColegio @item.ColMedico <br>
+                                                    </td>
+                                                    <td style="@oListStyleInfo[@item.Estado]">
+                                                        <span class="span-color">Teléfono: </span>@item.Telefono<br>
+                                                        <span class="span-color">Email: </span>@item.DscEmail<br>
+                                                        <span class="span-color">RUC: </span>@item.Ruc<br>
+
+                                                    </td>
+                                                    <td style="@oListStyleInfo[@item.Estado]">
+                                                        <span class="span-color">Especialidad: </span>@item.DscEspecialidad<br>
+                                                        <span class="span-color">Sede: </span>@item.DscSede<br>
+                                                        <span class="span-color">Cód medico: </span>@item.CodMedico<br>
+                                                    </td>
+
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="2">
+                                            </td>
+                                            <td colspan="5">
+                                            </td>
+                                        </tr>
+
+
+
+
+                                    </tfoot>
+
+                                </table>
+                                <div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 0px 0px; ">
+                                    <div class="col-sm-12 col-md-2  col-lg-2">
+                                        <div class="form-floating mb-3">
+                                            <select class="form-select" id="lstTipDocIdentidad" aria-label="Tipo de documento" value="@itemsPerPage" @onchange="ChangueIitemsPerPage">
+                                                @foreach (var item in oListItemsPerPage)
+                                                {
+                                                    <option value=@item>@item</option>
+                                                }
+                                            </select>
+                                            <label for="lstTipDocIdentidad">Items por página:</label>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="col-sm-12 col-md-10  col-lg-10">
+                                        <Pagination TotalPages="@(totalPages != 0 ? totalPages : 1)"
+                                                    PageIndex="@State.PageIndex"
+                                                    Radius="3"
+                                                    OnSelectedPage="@SelectedPage">
+                                        </Pagination>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<div>
+    <!--I.Actualizar Medico -->
+    <div class="modal fade" id="msgModalMantenimiento" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" style="max-width: 90%;  margin: 10 auto;">
+            @*style="max-width: 90%; min-height: 90vh; background-color: papayawhip; margin:10 auto;" >*@
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Registro de Médicos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div style="background-color: #FFF; width: 100%; height:100%; border:1px solid #b3d6ffff; border-radius:8px; padding:5px 10px; margin-bottom:5px;">
+                        <div class="row align-items-center" style="border-style: solid; border-color: #b3d6ffff; border-width: 0px; border-bottom-width: 2px; padding:0px 0px 5px 0px; background:#f6f6f645; ">
+                            <div>
+                                <button class="btn btn-outline-success col-lg-2 col-3" @onclick="@GrabaMedico"><span class="fa-regular fa-save"></span> <span id="TitleView"> Guardar</span></button>
+                                @*<button class="btn btn-outline-primary col-lg-2 col-3" @onclick="@BuscarAvanzadoMedico"><spam class="fa fa-arrow-rotate-left"></spam> <span id="TitleView"> Cancelar</span></button>*@
+                                <button class="btn btn-outline-primary col-lg-2 col-3" data-bs-dismiss="modal" @onclick="(()=>{BuscarMedico(1);})"><spam class="fa fa-arrow-rotate-left"></spam> <span id="TitleView"> Cerrar</span></button>
+                            </div>
+                        </div>
+
+                        <MedicoModal oMedicoE="oMedicoE"
+                                     oListaTablasSexo="oListaTablasSexo"
+                                     oListaTablasCodCivil="oListaTablasCodCivil"
+                                     oListaTablasTipoIdentidad="oListaTablasTipoIdentidad"
+                                     oListaTablasTipoColegio="oListaTablasTipoColegio"
+                                     oListaEspecialidades="oListaEspecialidades"
+                                     oListaMedicosEspecialidadE="oListaMedicosEspecialidadE"
+                                     oListaTablasAreas="oListaTablasAreas"
+                                     oListaTablasAFP="oListaTablasAFP"
+                                     oListaTablasTipDocEmitira="oListaTablasTipDocEmitira"
+                                     oMedicoObsAux="oMedicoObsAux"
+                                     oListaPrestacionxMedicoE="oListaPrestacionxMedicoE"
+                                     oListaTablasSedes="oListaTablasSedes"
+                                     oListEspecialidadesE="oListEspecialidadesE"
+                                     oListTablasTipoAtencion="oListTablasTipoAtencion"
+                                     oListTablasTipoPaciente="oListTablasTipoPaciente"
+                                     oListaTablasMoneda="oListaTablasMoneda"
+                                     oListaTablasDatoMedico="oListaTablasDatoMedico"
+                                     oListaAsistentexMedicoE="oListaAsistentexMedicoE"
+                                     oListaMedicoxEmpresaE="oListaMedicoxEmpresaE"
+                                     oListaMedicosDatosE="oListaMedicosDatosE"
+                                     oListaMedicosCtaBancoE="oListaMedicosCtaBancoE"
+                                     oListaTablasBancos="oListaTablasBancos"
+                                     FlgNuevo="FlgNuevo"
+                                     oListSegOpcions="oListSegOpcions">
+                        </MedicoModal>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* 1.1 INI *@
+    <div class="modal fade" id="msgModalReportes" style="border-radius:20px;" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 30%;">
+            <div class="modal-content" style="border-radius:20px;">
+                <div class="modal-body">
+                    <div class="text-md-end">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="row align-items-center">
+                        <div style="display: flex; align-items: center;">
+                            <input type="checkbox" class="form-check-input" id="checkReporteSimple" @bind="@FlgReporteSimple" style="margin-left:20px; width: 18px; height: 18px; border: 2px solid #7ebf2a;" />
+                            <label for="checkReporteSimple" style="margin-left: 5px; font-weight: bold; font-size: 1.1em;">Reporte Simple</label>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row align-items-center">
+                        <div style="display: flex; align-items: center;">
+                            <input type="checkbox" id="checkReporteCompleto" @bind="@FlgReporteCompleto" class="form-check-input" style="margin-left:20px; width: 18px; height: 18px; border: 2px solid #7ebf2a;" />
+                            <label for="checkReporteCompleto" style="margin-left: 5px; font-weight: bold; font-size: 1.1em;">Reporte Completo</label>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row justify-content-center">
+                        <button id="btnExcelDescargar" class="btn btn-success col-md-auto col-lg-1 col-2" style="width:130px;" @onclick="@DescargarReportes">
+                            <span class="fa-solid fa-file-excel"></span><span id="TitleView">&nbsp Descargar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* 1.1 FIN *@
+    <div class="modal" id="msgModalDatoMedico" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" style="max-width: 95%;  margin: 10 auto;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Dato Médico</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <MedicoInformacion oMedicoE="oMedicoE"
+                                       RutaEmbed="@RutaEmbed"
+                                       oListaTablasSexo="oListaTablasSexo"
+                                       oListaTablasCodCivil="oListaTablasCodCivil"
+                                       oListaTablasTipoIdentidad="oListaTablasTipoIdentidad"
+                                       oListaTablasTipoColegio="oListaTablasTipoColegio"
+                                       oListaEspecialidades="oListaEspecialidades"
+                                       oListaMedicosEspecialidadE="oListaMedicosEspecialidadE"
+                                       oListaTablasAreas="oListaTablasAreas"
+                                       oListaTablasAFP="oListaTablasAFP"
+                                       oListaTablasTipDocEmitira="oListaTablasTipDocEmitira"
+                                       oMedicoObsAux="oMedicoObsAux"
+                                       oListaPrestacionxMedicoE="oListaPrestacionxMedicoE"
+                                       oListaTablasSedes="oListaTablasSedes"
+                                       oListEspecialidadesE="oListEspecialidadesE"
+                                       oListTablasTipoAtencion="oListTablasTipoAtencion"
+                                       oListTablasTipoPaciente="oListTablasTipoPaciente"
+                                       oListaTablasMoneda="oListaTablasMoneda"
+                                       oListaTablasDatoMedico="oListaTablasDatoMedico"
+                                       oListaAsistentexMedicoE="oListaAsistentexMedicoE"
+                                       oListaMedicoxEmpresaE="oListaMedicoxEmpresaE"
+                                       oListaMedicosDatosE="oListaMedicosDatosE"
+                                       oListaMedicosCtaBancoE="oListaMedicosCtaBancoE"
+                                       oListaTablasBancos="oListaTablasBancos"
+                                       FlgNuevo="FlgNuevo"
+                                       oListaHorarioMedico="oListaHorarioMedico"
+                                       oListSegOpcions="oListSegOpcions">
+                    </MedicoInformacion>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- I.MODAL MESSAGE -->
+    @*==========================================0*@
+    <MessageModal IdMessage="msgModalAdvertencia"
+                  TitleModal="Advertencia"
+                  IconMessage=MessageModal.iconMessage.Advertencia
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalError"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalConfirmacion"
+                  TitleModal="Información"
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  OnClose="@Actualizarpagina"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+    @* 1.1 INI *@
+    <MessageModal IdMessage="msgModalConfirmacionReporte"
+                  TitleModal="Confirmación"
+                  IconMessage=MessageModal.iconMessage.Informacion
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  OnClose="@Actualizarpagina"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+    @* 1.1 FIN *@
+    <MessageModal IdMessage="msgModalPreguntaElimina"
+                  TitleModal="Confirmación"
+                  BodyMessage=@Mensaje
+                  IconMessage=MessageModal.iconMessage.Question
+                  TypeButton=MessageModal.typeButton.OkCancel
+                  OnClose="@ConfirmarEliminarConvenio">
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalDesbloquearMedico"
+                  TitleModal="Confirmación"
+                  BodyMessage=@Mensaje
+                  IconMessage=MessageModal.iconMessage.Question
+                  TypeButton=MessageModal.typeButton.OkCancel
+                  OnClose="@ConfirmarDesbloquearMedico">
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalCerrarMedico"
+                  TitleModal="Información"
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  OnClose="@BuscarAvanzadoMedico"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+    <MessageModal IdMessage="msgModalConfirmacionMedicoAlquila"
+                  TitleModal="Información"
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  OnClose="@CargaListaPrestacionxMedicoE"
+                  BodyMessage="La operación se realizo con exito">
+    </MessageModal>
+    <MessageModal IdMessage="msgModalConfirmacionMedicosEspecialidad"
+                  TitleModal="Información"
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  OnClose="@CargaListaMedicosEspecialidadE"
+                  BodyMessage="La operación se realizo con exito">
+    </MessageModal>
+    <MessageModal IdMessage="msgModalConfirmacionAsistentexMedico"
+                  TitleModal="Información"
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  OnClose="@CargaListaAsistentexMedicoE"
+                  BodyMessage="La operación se realizo con exito">
+    </MessageModal>
+    <MessageModal IdMessage="msgModalConfirmacionMedicoxEmpresa"
+                  TitleModal="Información"
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  OnClose="@CargaListaMedicoxEmpresaE"
+                  BodyMessage="La operación se realizo con exito">
+    </MessageModal>
+    <MessageModal IdMessage="msgModalConfirmacionMedicosDatos"
+                  TitleModal="Información"
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  OnClose="@CargaListaMedicosDatos"
+                  BodyMessage="La operación se realizo con exito">
+    </MessageModal>
+    <MessageModal IdMessage="msgModalConfirmacionMedicosCtaBanco"
+                  TitleModal="Información"
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  OnClose="@CargaListaMedicosCtaBanco"
+                  BodyMessage="La operación se realizo con exito">
+    </MessageModal>
+    @*
+    <MessageModal IdMessage="msgModalPregunta"
+    TitleModal="Confirmación"
+    BodyMessage=@Mensaje
+    IconMessage=MessageModal.iconMessage.Question
+    TypeButton=MessageModal.typeButton.ActualizarCancelar
+    OnClose="@ConfirmarEliminarConvenio">
+    </MessageModal>*@
+    @*==========================================0*@
+    <!-- F.MESSAGE NOT FOUND -->
+</div>
+
+
+
+<div>
+    <!--I.Actualizar Medico -->
+    <div class="modal fade" id="msgModalHorarioMedico" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            @* style="max-width: 90%; min-height: 90vh; background-color: papayawhip; margin:10 auto;"  style="max-width: 90%;  min-height: 90vh;  background-color: papayawhip; margin: 10 auto;*@
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Registro de Médicos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div style="background-color: #FFF; width: 100%; height:100%; border:1px solid #b3d6ffff; border-radius:8px; padding:5px 10px; margin-bottom:5px;">
+                        <div class="row align-items-center" style="border-style: solid; border-color: #b3d6ffff; border-width: 0px; border-bottom-width: 2px; padding:0px 0px 5px 0px; background:#f6f6f645; ">
+                            <div>
+                                @*<button class="btn btn-outline-success col-lg-2 col-3" @onclick="@GrabaMedico"><span class="fa-regular fa-save"></span> <span id="TitleView"> Guardar</span></button>
+                                <button class="btn btn-outline-primary col-lg-2 col-3" @onclick="@BuscarAvanzadoMedico"><spam class="fa fa-arrow-rotate-left"></spam> <span id="TitleView"> Cancelar</span></button>*@
+                                <button class="btn btn-outline-primary col-lg-2 col-3" data-bs-dismiss="modal" @onclick="(()=>{BuscarMedico(1);})"><spam class="fa fa-arrow-rotate-left"></spam> <span id="TitleView"> Cerrar</span></button>
+                            </div>
+                        </div>
+
+                        <MedicoHorario>
+
+                        </MedicoHorario>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- I.MODAL MESSAGE -->
+    @*==========================================0*@
+    <MessageModal IdMessage="msgModalAdvertencia"
+                  TitleModal="Advertencia"
+                  IconMessage=MessageModal.iconMessage.Advertencia
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalError"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalConfirmacion"
+                  TitleModal="Información"
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  OnClose="@Actualizarpagina"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+</div>
+
+

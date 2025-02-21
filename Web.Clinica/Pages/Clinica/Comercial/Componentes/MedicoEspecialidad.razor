@@ -1,0 +1,377 @@
+﻿@using Ent.Sql.ClinicaE.MedicosE
+@using Ent.Sql.ClinicaE.EspecialidadesE
+@using Web.Clinica.Components
+@using Ent.Sql.ClinicaE.OtrosE
+@using System.Text.Json
+@using System.Globalization
+
+@inject IJSRuntime js
+
+
+
+@code {
+    [Parameter]
+    public MedicoE oMedicoE { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasSedes { get; set; }
+
+    [Parameter]
+    public List<MedicosEspecialidadE> oListaMedicosEspecialidadE { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasTipoColegio { get; set; }
+
+    [Parameter]
+    public List<EspecialidadesE> oListEspecialidadesE { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListTablasTipoAtencion { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListTablasTipoPaciente { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasMoneda { get; set; }
+
+    [Parameter]
+    public string Mensaje { get; set; }
+
+    [Parameter]
+    public bool FlgNuevo { get; set; }
+
+
+    MedicosEspecialidadE oMedicosEspecialidadE = new MedicosEspecialidadE();
+
+    private TabModalHijo TabModalHijo { get; set; }
+
+    private bool ModoEditaExistente { get; set; }
+
+    //string Mensaje = "";
+    private List<string> effects = new List<string>() { "a", "b", "c" };
+    public List<MedicosEspecialidadE> lstMedicosEspecialidadSedeE { get; set; } = new List<MedicosEspecialidadE> { new MedicosEspecialidadE {DscSede = "Camacho", TipAgendaSecretaria = true},
+                                                                                                      new MedicosEspecialidadE {DscSede = "Jesús Maria", TipAgendaSecretaria = false},
+                                                                                                      new MedicosEspecialidadE {DscSede = "La Molina", TipAgendaSecretaria = true} };
+
+
+    protected override void OnInitialized()
+    {
+    }
+
+
+    private void Crea()
+    {
+        ModoEditaExistente = false;
+        oMedicosEspecialidadE = new MedicosEspecialidadE();
+        TabModalHijo.Open();
+    }
+
+    private void Edita()
+    {
+        var options = new JsonSerializerOptions { };
+        string jsonString = System.Text.Json.JsonSerializer.Serialize<MedicosEspecialidadE>(oMedicosEspecialidadE, options);
+        oMedicosEspecialidadE = System.Text.Json.JsonSerializer.Deserialize<MedicosEspecialidadE>(jsonString);
+
+        ModoEditaExistente = true;
+        TabModalHijo.Open();
+    }
+
+    private void Elimina()
+    {
+        Mensaje = " ¿Desea eliminar la siguiente especialidad: <br> <b>" + oMedicosEspecialidadE.DscEspecialidad + "</b>? ";
+        js.InvokeVoidAsync("ShowMessageModal", true, "msgModalPregunta");
+    }
+
+    private async Task ConfirmaElimina(bool acepted)
+    {
+        try
+        {
+            if (acepted)
+            {
+                oMedicosEspecialidadE.CodMedico = oMedicoE.CodMedico;
+                new Bus.Clinica.Medicos().MedicosEspecialidad_Delete(oMedicosEspecialidadE);
+
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacionMedicosEspecialidad");
+                //ModalMensaje("ConfirmacionEliminacion", "Informativo");
+                //TabModalHijo.Close();
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            //ModalMensaje("Catch", "Error");
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+    }
+
+
+
+    private async Task Graba()
+    {
+        try
+        {
+            oMedicosEspecialidadE.CodMedico = oMedicoE.CodMedico;
+
+            if (ValidaGraba() != "") return;
+
+            if (ModoEditaExistente == true)
+                new Bus.Clinica.Medicos().MedicosEspecialidad_Update(oMedicosEspecialidadE);
+            else
+                new Bus.Clinica.Medicos().MedicosEspecialidad_Insert(oMedicosEspecialidadE);
+
+            js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacionMedicosEspecialidad");
+            TabModalHijo.Close();
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+    }
+
+    private string ValidaGraba()
+    {
+        string resultado = "";
+        if (oMedicosEspecialidadE.CodMedico == "") resultado = resultado + "Seleccione un médico <br>";
+        if (oMedicosEspecialidadE.CodEspecialidad == "") resultado = resultado + "La especialida es obligatorio <br>";
+
+        if (oMedicosEspecialidadE.Rne == "") resultado = resultado + "Rne es obligatorio <br>";
+
+
+        //INI - mBardales - 29/01/2024
+        if (oMedicosEspecialidadE.Rne.Trim().Length > 0)
+        {
+            long numberRne = 0;
+            bool canConvertRne = long.TryParse(oMedicosEspecialidadE.Rne, out numberRne);
+
+            if (canConvertRne == false)
+            {
+                resultado = resultado + "Rne debe ser sólo números <br>";
+            }
+        }
+        //FIN - mBardales - 29/01/2024
+
+
+
+        if (ModoEditaExistente == false)
+        {
+            int outPutCount = oListaMedicosEspecialidadE.Where(x => x.CodMedico == oMedicosEspecialidadE.CodMedico
+                                                                 && x.CodEspecialidad == oMedicosEspecialidadE.CodEspecialidad
+                                                                ).Count();
+            if (outPutCount > 0) resultado = resultado + "Ya existe un registro con la información ingresada <br>";
+        }
+
+        if (resultado != "")
+        {
+            Mensaje = "<b>Por favor verifique lo siguiente:</b> <br>" + resultado;
+            js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+
+        return resultado;
+    }
+
+
+    private void Cancela()
+    {
+        TabModalHijo.Close();
+    }
+}
+
+
+
+<div style="background-color: #FFF; width: 100%; min-height:300px; border:1px solid #b3d6ffff; border-radius:8px; padding:20px 10px; margin-bottom:20px;">
+    @{
+        bool fila = false;
+        if (oMedicoE.FlagEstado == true)
+        {
+            fila = false;
+        }
+        else
+        {
+            fila = true;
+        }
+
+        fila = FlgNuevo ? FlgNuevo : fila;
+
+    }
+    <div class="row">
+
+        <!--I.TABLA-->
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive" style="min-height:300px;">
+            <table class="table table-hover table-bordered">
+                <thead class="table-primary">
+                    <tr class="fw-bolder">
+                        <th class="col-1 text-center">
+                            <div class="btn-group dropstart">
+                                <button class="btn btn-menu" aria-expanded="false" @onclick="() => Crea()" disabled="@fila">
+                                    <span class="fa-solid fa-plus"></span>
+                                </button>
+                            </div>
+                        </th>
+                        <th class="col-4 text-center" style="">Especialidad</th>
+                        <th class="col-2 text-center" style="">RNE</th>
+                        <th class="col-2 text-center" style="">Privilegio</th>
+                        <th class="col-2 text-center" style="">Ambulario</th>
+                        <th class="col-2 text-center" style="">Hospitalario</th>
+                        <th class="col-2 text-center" style="">Emergencia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in oListaMedicosEspecialidadE)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                <div class="btn-group dropstart">
+                                    <button class="btn" data-bs-toggle="dropdown" disabled="@fila" aria-expanded="false">
+                                        <span class="fa-solid fa-grip-vertical"></span> <span id="TitleView"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li class="dropdown-item btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" @onclick="@(()=> {oMedicosEspecialidadE = item; Edita();})"><span class="fa-regular fa-edit "></span> Editar</li>
+                                        <li class="dropdown-item btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#msgModalEliminarContratoConsultorios" @onclick="@(()=>{oMedicosEspecialidadE = item; Elimina();})"><span class="fa-regular fa-trash-can "></span> Eliminar</li>
+                                    </ul>
+                                </div>
+                            </td>
+                            <td style="text-align:left;">@item.DscEspecialidad</td>
+                            <td style="text-align:center;">@item.Rne</td>
+                            <td>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="chkFlgPrivilegio" @bind="@item.FlgPrivilegio" onclick="return false;">
+                                    <label class="form-check-label" for="chkFlgPrivilegio">Privilegio</label>
+                                </div>
+                            </td>
+                            <td style="text-align:left;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="chkFlgambulatorio" @bind="@item.flg_ambulatorio" onclick="return false;">
+                                    <label class="form-check-label" for="chkFlgambulatorio">Ambulatorio</label>
+                                </div>
+                            </td>
+                            <td style="text-align:left;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="chkFlgHospitalario" @bind="@item.flg_hospitalario" onclick="return false;">
+                                    <label class="form-check-label" for="chkFlgHospitalario">Hospitalario</label>
+                                </div>
+                            </td>
+                            <td style="text-align:left;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="chkFlgEmergencia" @bind="@item.flg_emergencia" onclick="return false;">
+                                    <label class="form-check-label" for="chkFlgEmergencia">Emergencia</label>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+        <!--F.TABLA-->
+
+
+    </div>
+
+    <MessageModal IdMessage="msgModalPregunta"
+                  TitleModal="Confirmación"
+                  BodyMessage=@Mensaje
+                  IconMessage=MessageModal.iconMessage.Question
+                  TypeButton=MessageModal.typeButton.OkCancel
+                  OnClose="@ConfirmaElimina">
+    </MessageModal>
+
+</div>
+
+
+<TabModalHijo @ref="@TabModalHijo" Title="Especialidad">
+    <div style="min-height: 300px">
+        <div class="row">
+
+            <div class="col-sm-12 col-md-12  col-lg-12">
+                <!--I.CodEspecialidad-->
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="lstCodEspecialidad" aria-label="Tipo de documento" @bind="@oMedicosEspecialidadE.CodEspecialidad" disabled="@ModoEditaExistente">
+                        @foreach (var item in oListEspecialidadesE)
+                        {
+                            <option value="@item.Codespecialidad">@item.Nombre</option>
+                        }
+                    </select>
+                    <label for="lstCodEspecialidad">Especialidad</label>
+                </div>
+                <!--F.CodEspecialidad-->
+            </div>
+
+
+            <div class="col-sm-8 col-md-4  col-lg-4">
+                <!--I.Rne-->
+                <div class="omrs-input-group">
+                    <label class="omrs-input-underlined">
+                        <input id="txtRne" required="" @bind-value="@oMedicosEspecialidadE.Rne" maxlength="6"
+                               onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
+                        <span class="omrs-input-label">Reg. Nac de Especialista - RNE</span>
+                        <span class="omrs-input-helper"></span>
+                    </label>
+                </div>
+                <!--F.Rne-->
+            </div>
+
+            <div class="col-sm-12 col-md-2  col-lg-2">
+                <fieldset class="omrs-fieldset">
+                    <legend>Privilegio</legend>
+                    <!--I.FlgPresencialJm-->
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="chkPrivilegio" @bind="@oMedicosEspecialidadE.FlgPrivilegio">
+                        <label class="form-check-label" for="chkPrivilegio"> Privilegio</label>
+                    </div>
+                    <!--F.FlgPresencialJm-->
+
+                </fieldset>
+            </div>
+
+            <div class="col-sm-12 col-md-2  col-lg-2">
+                <fieldset class="omrs-fieldset">
+                    <legend>Ambulatorio</legend>
+                    <!--I.Flg_Ambulatorio-->
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="chkAmbulatorio" @bind="@oMedicosEspecialidadE.flg_ambulatorio">
+                        <label class="form-check-label" for="chkAmbulatorio"> Ambulatorio</label>
+                    </div>
+                    <!--F.Flg_Ambulatorio-->
+                </fieldset>
+            </div>
+            <div class="col-sm-12 col-md-2  col-lg-2">
+                <fieldset class="omrs-fieldset">
+                    <legend>Hospitalario</legend>
+                    <!--I.Flg_Hospitalario-->
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="chkHospitalario" @bind="@oMedicosEspecialidadE.flg_hospitalario">
+                        <label class="form-check-label" for="chkHospitalario"> Hospitalario</label>
+                    </div>
+                    <!--F.Flg_Hospitalario-->
+                </fieldset>
+            </div>
+            <div class="col-sm-12 col-md-2  col-lg-2">
+                <fieldset class="omrs-fieldset">
+                    <legend>Emergencia</legend>
+                    <!--I.Flg_Emergencia-->
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="chkEmergencia" @bind="@oMedicosEspecialidadE.flg_emergencia">
+                        <label class="form-check-label" for="chkEmergencia"> Emergencia</label>
+                    </div>
+                    <!--F.Flg_Emergencia-->
+                </fieldset>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <button class="btn btn-outline-success col-lg-2 col-3" @onclick="() => Graba()"><span class="fa-regular fa-save"></span> <span id="TitleView"> Guardar</span></button>
+        <button class="btn btn-outline-primary col-lg-2 col-3" @onclick="() => Cancela()"><spam class="fa fa-arrow-rotate-left"></spam> <span id="TitleView"> Cancelar</span></button>
+
+    </div>
+
+    <MessageModal IdMessage="msgModalError"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+</TabModalHijo>

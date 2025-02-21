@@ -1,0 +1,467 @@
+﻿@using Ent.Sql.ClinicaE.ContratosE;
+@using Ent.Sql.ClinicaE.GeneraE;
+@using static Web.Clinica.Pages.Clinica.Comercial.Mantenimientos.ContratoAlquilerConsultorio
+@inject IJSRuntime js
+
+@code {
+    [Parameter]
+    public List<HisContratoconsultoriocalendarioMaeE> ListaCalendario { get; set; }
+    [Parameter]
+    public List<HisContratoconsultoriocalendarioMaeE> ListaCalendarioBack { get; set; }
+    [Parameter]
+    public List<HisContratoconsultoriocalendarioMaeE> ListaCanlendarioHoras { get; set; }
+    [Parameter]
+    public List<Dias> ListaCanlendarioDias { get; set; }
+    [Parameter]
+    public HisContratoconsultoriobeneficioMaeE Beneficios { get; set; }
+    [Parameter]
+    public List<HisContratoconsultoriobeneficioMaeE> ListaBeneficios { get; set; }
+    [Parameter]
+    public EventCallback<bool> OnClick { get; set; }
+    [Parameter]
+    public tipPantalla Pantalla { get; set; }
+    [Parameter]
+    public bool EstadoBeneficio { get; set; } = false;
+
+    HisContratoconsultoriocalendarioMaeE ResponseCalendario { get; set; }
+    List<HisContratoconsultoriocalendarioMaeE> ListaCalendarioTemp { get; set; }
+    bool initial = false;
+    string MsjModalCalendario = "";
+
+    protected override void OnParametersSet()
+    { base.OnParametersSet(); }
+    protected override void OnAfterRender(bool firstRender)
+    { }
+
+    protected override async void OnInitialized()
+    {
+        var Lista = ListaCalendario;
+        ListaCalendarioTemp = Lista;
+    }
+
+    private async Task ValidarDescuento(int pIDBeneficio, int pDescuento)
+    {
+        int CntMaxDescuento = ListaBeneficios.Where(p => p.IDBeneficio == pIDBeneficio).Select(p => p.CntDescuento).FirstOrDefault();
+        if (CntMaxDescuento < pDescuento)
+        {
+            Beneficios.CntDescuentoAplicar = CntMaxDescuento;
+            MsjModalCalendario = "El descuento ingresado no puede ser mayor a:" + CntMaxDescuento;
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalAdvertenciaCalendario");
+        }
+    }
+
+    // private async Task onclickBeneficio(int IDBeneficio)
+    // {
+    //     for (int i = 0; ListaBeneficios.Count > i; i++)
+    //     {
+    //         if (ListaBeneficios[i].IDBeneficio == IDBeneficio)
+    //         {
+    //             ListaBeneficios[i].CheckBoxBeneficio = true;
+    //             Beneficios.CntDescuentoAplicar = ListaBeneficios[i].CntDescuento;
+    //             Beneficios.TipDescuento = ListaBeneficios[i].TipDescuento;
+    //             Beneficios.HorasAplicar = ListaBeneficios[i].HorasAplicar;
+    //         }
+    //         else { ListaBeneficios[i].CheckBoxBeneficio = false; }
+    //     }
+    //     if (Beneficios.HorasAplicar == "P")
+    //     {
+    //         foreach (var item in ListaCalendario)
+    //         {
+    //             if (item.EstCalendario == "B")
+    //             { item.EstBeneficio = false; }
+    //             else if (item.EstCalendario == "S")
+    //             { item.EstBeneficio = true; }
+    //         }
+    //         foreach (var item in ListaCalendarioBack)
+    //         {
+    //             if (item.EstCalendario == "B" && item.EstBeneficio == true)
+    //             {
+    //                 var itemToUpdate = ListaCalendario.FirstOrDefault(item2 => item2.IDCalendario == item.IDCalendario);
+    //                 if (itemToUpdate != null)
+    //                 {
+    //                     itemToUpdate.EstCalendario = "B";
+    //                     itemToUpdate.EstBeneficio = true;
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     else if (Beneficios.HorasAplicar == "T")
+    //     {
+    //         foreach (var item in ListaCalendario)
+    //         {
+    //             if (item.EstCalendario != "A")
+    //             { item.EstBeneficio = true; }
+    //         }
+    //     }
+    // }
+    private async Task onclickBeneficio(int IDBeneficio)
+    {
+        // Busca el beneficio correspondiente en la lista y actualiza las propiedades
+        var beneficio = ListaBeneficios.FirstOrDefault(b => b.IDBeneficio == IDBeneficio);
+        if (beneficio != null)
+        {
+            foreach (var beneficioEnLista in ListaBeneficios)
+            {
+                // beneficioEnLista.CheckBoxBeneficio = beneficioEnLista == beneficio;
+                beneficioEnLista.CheckBoxBeneficio = false;
+            }
+
+            Beneficios.CntDescuentoAplicar = beneficio.CntDescuento;
+            Beneficios.TipDescuento = beneficio.TipDescuento;
+            Beneficios.HorasAplicar = beneficio.HorasAplicar;
+
+            // Si HorasAplicar es "P", actualiza ListaCalendario y ListaCalendarioBack
+            if (Beneficios.HorasAplicar == "P")
+            {
+                foreach (var item in ListaCalendario)
+                {
+                    if (item.EstCalendario == "B")
+                    { item.EstBeneficio = false; }
+                    else if (item.EstCalendario == "S")
+                    { item.EstBeneficio = true; }
+                }
+
+                foreach (var item in ListaCalendarioBack.Where(item => item.EstCalendario == "B" && item.EstBeneficio))
+                {
+                    var itemToUpdate = ListaCalendario.FirstOrDefault(item2 => item2.IDCalendario == item.IDCalendario);
+                    if (itemToUpdate != null)
+                    {
+                        itemToUpdate.EstCalendario = "B";
+                        itemToUpdate.EstBeneficio = true;
+                    }
+                }
+            }
+            // Si HorasAplicar es "T", actualiza ListaCalendario
+            else if (Beneficios.HorasAplicar == "T")
+            {
+                foreach (var item in ListaCalendario.Where(item => item.EstCalendario != "A"))
+                { item.EstBeneficio = true; }
+            }
+        }
+    }
+
+
+    private async Task OnchangeBeneficioFechaInicio(ChangeEventArgs e)
+    {
+        Beneficios.FechaIncio = Convert.ToDateTime(e.Value);
+        Beneficios.FechaFin = Beneficios.FechaFin < Beneficios.FechaIncio ? Beneficios.FechaIncio : Beneficios.FechaFin;
+    }
+
+    private async Task OnchangeBeneficioFechaFin(ChangeEventArgs e)
+    {
+        Beneficios.FechaFin = Convert.ToDateTime(e.Value);
+        Beneficios.FechaFin = new DateTime(Beneficios.FechaFin.Year, Beneficios.FechaFin.Month, DateTime.DaysInMonth(Beneficios.FechaFin.Year, Beneficios.FechaFin.Month));
+        Beneficios.FechaIncio = Beneficios.FechaIncio > Beneficios.FechaFin ? Beneficios.FechaFin : Beneficios.FechaIncio;
+    }
+    // CALENDARIO
+    private async Task SeleccionarCelda(HisContratoconsultoriocalendarioMaeE pCalendario)
+    {
+        for (int i = 0; i < ListaCalendario.Count(); i++)
+        {
+            if (ListaCalendario[i].HoraInicio == pCalendario.HoraInicio && ListaCalendario[i].HoraFin == pCalendario.HoraFin && ListaCalendario[i].Dia == pCalendario.Dia)
+            {
+                if (ListaCalendario[i].EstCalendario == "A")
+                { ListaCalendario[i].EstCalendario = "S"; }
+                // else if (ListaCalendario[i].EstCalendario == "S" || ListaCalendario[i].EstCalendario == "B")
+                else if (ListaCalendario[i].EstCalendario == "S")
+                { ListaCalendario[i].EstCalendario = "A"; }
+                else if (ListaCalendario[i].EstCalendario == "B" && ListaCalendario[i].EstBeneficio == false)
+                { ListaCalendario[i].EstCalendario = "A"; }
+                else if (ListaCalendario[i].EstCalendario == "B" && ListaCalendario[i].EstBeneficio == true)
+                { ListaCalendario[i].EstBeneficio = false; }
+            }
+        }
+    }
+
+    private async Task onclickAplicarBeneficio(bool Active)
+    {
+        EstadoBeneficio = Active;
+
+        if (EstadoBeneficio)
+        { EstadoBeneficio = false; }
+        else { EstadoBeneficio = true; }
+
+        int IDBeneficio = ListaBeneficios.Where(p => p.CheckBoxBeneficio == true).Select(p => p.IDBeneficio).FirstOrDefault(); ;
+        string HorasAplicar = ListaBeneficios.Where(p => p.CheckBoxBeneficio == true).Select(p => p.HorasAplicar).FirstOrDefault(); ;
+        onclickBeneficio(IDBeneficio);
+
+        if (EstadoBeneficio)
+        {
+            foreach (var item in ListaCalendario)
+            {
+                if (item.EstCalendario != "B")
+                { item.EstBeneficio = true; }
+                else
+                {
+                    if (HorasAplicar == "T")
+                    { item.EstBeneficio = true; }
+                }
+            }
+        }
+        else
+        {
+            foreach (var item in ListaCalendario)
+            {
+                if (item.EstCalendario != "B")
+                { item.EstBeneficio = false; }
+            }
+        }
+
+        // Beneficios.CntDescuentoAplicar = ListaBeneficios.Where(p => p.CheckBoxBeneficio == true).Select(p => p.CntDescuento).FirstOrDefault(); ;
+        // Beneficios.TipDescuento = ListaBeneficios.Where(p => p.CheckBoxBeneficio == true).Select(p => p.TipDescuento).FirstOrDefault(); ;
+        await OnClick.InvokeAsync(EstadoBeneficio);
+    }
+
+}
+
+<div class="modal-body">
+    <div class="calendario-body row">
+        @* @if (EstadoBeneficio)
+        { *@
+        <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 col-xs-12 col-12 transition-active">
+            <div class="calendario">
+                <ContratoAlqCalendario ListaCalendario="ListaCalendario"
+                                       ListaCanlendarioHoras=ListaCanlendarioHoras
+                                       ListaCanlendarioDias=ListaCanlendarioDias
+                                       estBeneficio=EstadoBeneficio
+                                       Calendario="ResponseCalendario"
+                                       OnClick="SeleccionarCelda" />
+
+                <div>
+                    <div class="custom-checkbox">
+                        <div class="colored-box color-sin-beneficio"></div>
+                        <label>Hora elegida sin beneficio</label>
+                    </div>
+                    <div class="custom-checkbox">
+                        <div class="colored-box color-beneficio"></div>
+                        <label>Hora elegida con beneficio</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 col-12">
+
+            <div class="title-beneficios">
+                <input class="color-beneficio beneficios-input" type="checkbox" @bind="EstadoBeneficio" @onclick="(() =>onclickAplicarBeneficio(EstadoBeneficio))" /><b> <label class="h4">Aplicar Beneficio</label></b>
+            </div>
+            <div class="Beneficios">
+
+                <div class="row" style="pointer-events: @(EstadoBeneficio==true ? "" :"none"); opacity: @(EstadoBeneficio==true ? "1" :"0.5") ;">
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 col-12">
+                        <div class="omrs-input-group SelectRegistro">
+                            <label class="omrs-input-underlined">
+                                <input type="date" class="form-control" onkeydown="return false" min="@Beneficios.FechaIncio.ToString("yyyy-MM-dd")" @bind-value="@Beneficios.FechaIncio" @oninput="@OnchangeBeneficioFechaInicio" />
+                                <span class="omrs-input-label">Inicio:</span>
+                                <span id="" class="omrs-input-helper"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 col-12">
+                        <div class="omrs-input-group SelectRegistro">
+                            <label class="omrs-input-underlined">
+                                <input type="month" class="form-control" onkeydown="return false" min="@Beneficios.FechaIncio.ToString("yyyy-MM")" @bind-value="@Beneficios.FechaFin" @oninput="@OnchangeBeneficioFechaFin" />
+                                <span class="omrs-input-label">Fin</span>
+                                <span id="" class="omrs-input-helper">Ultimo día del mes</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div style="pointer-events: @(EstadoBeneficio==true ? "" :"none");opacity: @(EstadoBeneficio==true ? "1" :"0.5") ;">
+                    @foreach (var item in ListaBeneficios)
+                    {
+                        <div class="lista-beneficios fade-in">
+                            <input class="beneficios-input" type="checkbox" @bind="@item.CheckBoxBeneficio" @onclick="@(()=>onclickBeneficio(item.IDBeneficio))" /><label class="h6">@item.DscBeneficio</label>
+                            @if (item.CheckBoxBeneficio && item.TipCantidad == "P")
+                            {
+                                <label class="omrs-input-underlined">
+                                    <input id="idRentaMensual" type="number" min="0" max=@item.CntDescuento @bind-value="@Beneficios.CntDescuentoAplicar" required="true" @onblur=@(()=>ValidarDescuento(item.IDBeneficio,Beneficios.CntDescuentoAplicar)) />
+                                    <span class="omrs-input-label"></span>
+                                    @if (item.TipDescuento == "P")
+                                    {
+                                        <span class="omrs-input-helper">Cantidad de descuento por porcentaje. Max:@item.CntDescuento</span>
+                                    }
+                                    @if (item.TipDescuento == "S")
+                                    {
+                                        <span class="omrs-input-helper">Cantidad de descuento por soles. Max:@item.CntDescuento</span>
+                                    }
+                                </label>
+                            }
+                        </div>
+                    }
+
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined">
+                                <input id="idRentaMensual" required="true" @bind-value="@Beneficios.DscBeneficio" />
+                                <span class="omrs-input-label">Observaciones</span>
+                                <span class="omrs-input-helper">Observaciones del Beneficio</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* }
+        else
+        {
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+        <div class="calendario">
+        <ContratoAlqCalendario ListaCalendario="ListaCalendario"
+        ListaCanlendarioHoras=ListaCanlendarioHoras
+        ListaCanlendarioDias=ListaCanlendarioDias
+        estBeneficio=EstadoBeneficio
+        Calendario="ResponseCalendario"
+        OnClick="SeleccionarCelda" />
+        <div>
+        <div class="custom-checkbox">
+        <div class="colored-box color-sin-beneficio"></div>
+        <label>Hora elegida sin beneficio</label>
+        </div>
+        <div class="custom-checkbox">
+        <div class="colored-box color-beneficio"></div>
+        <label>Hora elegida con beneficio</label>
+        </div>
+        @if (!EstadoBeneficio)
+        {
+        <div class="Beneficios">
+        <div class="title-beneficios">
+        <input class="color-beneficio beneficios-input" type="checkbox" @bind="EstadoBeneficio" @onclick="@(() =>onclickAplicarBeneficio(true))" /><b> <label class="h4">Aplicar Beneficio</label></b>
+        </div>
+        </div>
+        }
+        </div>
+        </div>
+        </div>
+        } *@
+    </div>
+</div>
+
+<style>
+    :root {
+        --color-azul: #0043A5;
+        --color-verde: #96DD43;
+        --color-celeste: #76DCFF;
+        --color-anaranjado: #FFB829;
+        --color-rojo: #FC6B8A;
+    }
+
+    .modal-content-calendario {
+        border: 3px groove var(--color-azul);
+    }
+
+    .custom-sm-modal-calendario {
+        border-radius: 20px;
+        max-width: 60%;
+    }
+
+    .modal-calendario {
+        border-radius: 20px;
+        margin-top: 1%;
+        overflow: auto;
+    }
+
+    .calendario-body {
+        margin-bottom: 0px;
+    }
+
+    .SelectRegistro {
+        margin: 2px;
+    }
+
+    .color-beneficio {
+        background-color: var(--color-verde);
+    }
+
+    .color-sin-beneficio {
+        background-color: var(--color-celeste);
+    }
+
+    .background-disabled {
+        background-color: #9ca2a7;
+    @* background-color: black; *@ pointer-events: none;
+        opacity: 0.5;
+        border: 1px solid white;
+    }
+
+    .custom-checkbox {
+        display: flex;
+        align-items: center;
+    }
+
+        .custom-checkbox input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+    .colored-box {
+        width: 30px;
+        height: 20px;
+        margin-right: 10px;
+    }
+
+
+    .table-calendario {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 10px;
+    }
+
+    .celda {
+        cursor: pointer;
+        height: 22px;
+    }
+
+    .celda-seleccionada {
+        background-color: lightgreen;
+    }
+
+    .table-calendario th {
+        background-color: var(--color-azul);
+        color: white;
+    }
+
+    .table-calendario .th-calendario, .td-calendario {
+        border: 1px solid var(--color-azul);
+    }
+
+    th, td {
+        text-align: center;
+        padding: 0px;
+    }
+
+    .Beneficios {
+        color: var(--color-azul);
+        margin-top: 10px;
+    }
+
+    .beneficios-input {
+        margin: 3px;
+    }
+
+    div.Beneficios .title-beneficios label {
+        color: var(--color-azul) !important;
+        font-weight: bold;
+    }
+
+    div.Beneficios .lista-beneficios label {
+        color: black !important;
+    }
+
+    div.calendario-head h5 {
+        color: var(--color-azul);
+        font-weight: bold;
+    }
+
+    .transition-active {
+        opacity: 1;
+        transition: opacity 0.5s ease;
+    }
+
+</style>
+
+<MessageModal IdMessage="msgModalAdvertenciaCalendario"
+              TitleModal="Advertencia"
+              IconMessage=MessageModal.iconMessage.Advertencia
+              TypeButton=MessageModal.typeButton.Ok
+              EscapeKey="true"
+              BodyMessage=@MsjModalCalendario>
+</MessageModal>

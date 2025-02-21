@@ -1,0 +1,596 @@
+﻿@page "/Clinica/Sistemas/Mantenimientos/CorreoDestinatario"
+@inject IJSRuntime js
+@using Ent.Sql.ClinicaE.OtrosE
+@using Ent.Sql.ClinicaE.SistemasE;
+@using System;
+@using Ent.Sql.SeguridadE.SeguridadE;
+@inherits MainLayout
+
+@if (xUpdateCorreo)
+{
+	js.InvokeVoidAsync("ShowMessageModal", true, "MsgConfirmarActualizacion");
+}
+
+@code {
+	public bool xUpdateCorreo { get; set; }
+
+	SisCorreoDestinatarioMaeE sisCorreoE = new SisCorreoDestinatarioMaeE("", "", 25, 1);
+	SisCorreoDestinatarioMaeE sisCorreoE1 = new SisCorreoDestinatarioMaeE();
+	TablasE oTablasE = new TablasE();
+	List<TablasE> olistaTablas = new List<TablasE>();
+	List<SisCorreoDestinatarioMaeE> list = new List<SisCorreoDestinatarioMaeE>();
+	List<SisCorreoDestinatarioMaeE> olistaFiltro = new List<SisCorreoDestinatarioMaeE>();
+	string Mensaje = "";
+
+	//JVALVERDE - 06/06/2023  PERMISOS CONTROLES
+	List<SegOpcionE> segOpcions = new List<SegOpcionE>();
+
+
+	protected override void OnInitialized()
+	{
+		//INICIO - JVALVERDE - 06/06/2023  PERMISOS CONTROLES
+		segOpcions = new Bus.Clinica.Seguridad.Seguridad().CargarPermisos(new SegOpcionE(4, 102, "03/01/01", Convert.ToInt32(SessionUser(TypeSession.IdeUsuario).Result)));
+		//FIN - JVALVERDE - 06/06/2023  PERMISOS CONTROLES
+
+		olistaTablas = new Bus.Clinica.Clinica.Tablas().ListaConsulta(new TablasE("", "CORREO_TIPO", 0, 0, 1));
+		list = new Bus.Clinica.Clinica.Sistemas().ListarCorreosDestinatarios(sisCorreoE);
+		base.OnInitialized();
+	}
+
+	private async Task ModalMensaje(string Mensajes, string TipoModal)
+	{
+		if (TipoModal == "Advertencia")
+		{
+			switch (Mensajes)
+			{
+				case "msgAlertNull":
+					Mensaje = "Lo sentimos, no logramos encontrar lo buscado.<br>Por favor intenta ser más especifico con la búsqueda.";
+					break;
+				case "msgAsuntoNull":
+					Mensaje = "Por favor Ingrese un Asunto";
+					break;
+			}
+			await js.InvokeVoidAsync("NotFoundSpinner", "msgModalAdvertencia");
+		}
+
+		if (TipoModal == "AdvertenciaSelect")
+		{
+			switch (Mensajes)
+			{
+				case "msgAlertTipoCorreo":
+					Mensaje = "TIPO DE ENVIO DE CORREO";
+					break;
+			}
+			Mensaje = "Por favor Seleccione un: " + Mensaje;
+			await js.InvokeVoidAsync("NotFoundSpinner", "msgModalAdvertencia");
+		}
+
+		if (TipoModal == "Error")
+		{
+			switch (Mensajes)
+			{
+				case "Catch":
+					Mensaje = "Error: " + Mensaje;
+					break;
+			}
+			await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+		}
+		if (TipoModal == "Informativo")
+		{
+			switch (Mensajes)
+			{
+				case "ConfirmacionRegistro":
+					Mensaje = "Se registraron los datos de manera correcta.<br>Gracias";
+					break;
+				case "ConfirmacionActualizacion":
+					Mensaje = "Se grabaron los datos de manera correcta.<br>Gracias";
+					break;
+			}
+			await js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacion");
+		}
+		if (TipoModal == "Preguntas")
+		{
+			switch (Mensajes)
+			{
+				case "msgPreguntaActualizar":
+					Mensaje = "¿Desea grabar la información?";
+					break;
+				case "msgPreguntaGrabarSinCorreo":
+					Mensaje = "¿Desea grabar la información sin un correo de destino?";
+					break;
+			}
+			//xDeleteConvenio = true;
+			js.InvokeVoidAsync("ShowMessageModal", true, "msgModalPregunta");
+			//await js.InvokeVoidAsync("NotFoundSpinner", "msgModalPregunta");
+		}
+	}
+
+
+	private async Task Listar()
+	{
+		await js.InvokeVoidAsync("ShowSpinnerSearch", "idSpinnerDestinatario", "idSearchDestinatario");
+
+		sisCorreoE.Orden = 1;
+		sisCorreoE.NroFilas = 100;
+		list = new Bus.Clinica.Clinica.Sistemas().ListarCorreosDestinatarios(sisCorreoE);
+
+		if (list.Count == 0)
+		{
+			ModalMensaje("msgAlertNull", "Advertencia");
+			//await js.InvokeVoidAsync("NotFoundSpinner", "msgAlertNull");
+		}
+
+		await js.InvokeVoidAsync("CloseSpinnerSearch", "idSpinnerDestinatario", "idSearchDestinatario");
+	}
+
+	private async Task BuscarListaDscDestinatario()
+	{
+		await js.InvokeVoidAsync("ShowSpinnerSearch", "idSpinnerCodLista", "idSearchCodLista");
+		try
+		{
+			sisCorreoE1.Orden = 3;
+			sisCorreoE1.NroFilas = 25;
+			olistaFiltro = new Bus.Clinica.Clinica.Sistemas().ListarCorreosDestinatarios(sisCorreoE1);
+
+			if (olistaFiltro.Count == 0)
+			{
+				ModalMensaje("msgAlertNull", "Advertencia");
+				//await js.InvokeVoidAsync("NotFoundSpinner", "msgAlertNull");
+			}
+		}
+		catch (Exception ex)
+		{
+			Mensaje = ex.ToString();
+			ModalMensaje("Catch", "Error");
+			//await js.InvokeVoidAsync("NotFoundSpinner", "msjError");
+		}
+		await js.InvokeVoidAsync("CloseSpinnerSearch", "idSpinnerCodLista", "idSearchCodLista");
+	}
+
+	private async Task BuscarListaCorreo()
+	{
+		await js.InvokeVoidAsync("ShowSpinnerSearch", "idSpinnerDscDestinatarioReg", "idSearchDscDestinatarioReg");
+		try
+		{
+			sisCorreoE1.Orden = 4;
+			sisCorreoE1.NroFilas = 25;
+			olistaFiltro = new Bus.Clinica.Clinica.Sistemas().ListarCorreosDestinatarios(sisCorreoE1);
+
+			if (olistaFiltro.Count == 0)
+			{
+				ModalMensaje("msgAlertNull", "Advertencia");
+				//await js.InvokeVoidAsync("NotFoundSpinner", "msgAlertNull");
+			}
+		}
+		catch (Exception ex)
+		{
+			Mensaje = ex.ToString();
+			ModalMensaje("Catch", "Error");
+			//await js.InvokeVoidAsync("NotFoundSpinner", "msjError");
+		}
+		await js.InvokeVoidAsync("CloseSpinnerSearch", "idSpinnerDscDestinatarioReg", "idSearchDscDestinatarioReg");
+	}
+
+	private void  LimpiarCampos()
+	{
+		oTablasE = new TablasE();
+		sisCorreoE = new SisCorreoDestinatarioMaeE();
+		sisCorreoE1 = new SisCorreoDestinatarioMaeE();
+		sisCorreoE1.CodTipo = 1;
+	}
+
+	private async Task ActualizarEstado(int x)
+	{
+		try
+		{
+			for (var i = 0; i < list.Count; i++)
+			{
+				if (list[i].IdeCorreo == x)
+				{
+					if (list[i].FlgRegistro == true)
+					{ sisCorreoE.NuevoValor = "False"; }
+					else
+					{ sisCorreoE.NuevoValor = "True"; }
+				}
+			}
+			sisCorreoE.IdeCorreo = x;
+			sisCorreoE.Campo = "flg_registro";
+			new Bus.Clinica.Clinica.Sistemas().ActualizarCorreoDestinatario(sisCorreoE);
+			ModalMensaje("ConfirmacionActualizacion", "Informativo");
+		}
+		catch (Exception ex)
+		{
+			Mensaje = ex.ToString();
+			ModalMensaje("Catch", "Error");
+		}
+	}
+
+	private async Task Actualizarpagina()
+	{ await js.InvokeVoidAsync("locationreload"); }
+
+	private async Task Editar(int x)
+	{
+		try
+		{
+			for (var i = 0; i < list.Count; i++)
+			{
+				if (list[i].IdeCorreo == x)
+				{
+					sisCorreoE1=list[i];
+					//olistaTablas = new Bus.Clinica.Clinica.Tablas().ListaConsulta(new TablasE("", "CORREO_TIPO", 0, 0, 1));
+					//oTablasE.Codigo = "Seleccione un Tipo"; //--Cambiar
+					//sisCorreoE1.DscDestinatario = list[i].DscDestinatario;
+					//sisCorreoE1.CodLista = list[i].CodLista;
+					//sisCorreoE1.FlgRegistro = true;
+					//sisCorreoE1.IdeCorreo = list[i].IdeCorreo;
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			Mensaje = ex.ToString();
+			ModalMensaje("Catch", "Error");
+			//await js.InvokeVoidAsync("NotFoundSpinner", "msjError");
+		}
+	}
+
+	async Task GrabarCorreo()
+	{
+		try
+		{
+			if (sisCorreoE1.CodLista == null || sisCorreoE1.CodLista == "")
+			{ ModalMensaje("msgAsuntoNull", "Advertencia"); }
+			else
+			{
+				//if (oTablasE.Codigo == "Seleccione un Tipo de Envio de Correo")
+				//{ sisCorreoE1.CodTipo = 0; }
+				//else
+				//{ sisCorreoE1.CodTipo = Convert.ToInt32(oTablasE.Codigo); }
+
+				if (sisCorreoE1.DscDestinatario != null && sisCorreoE1.DscDestinatario != "")
+				{
+					if (sisCorreoE1.CodTipo == 0)
+					{ ModalMensaje("msgAlertTipoCorreo", "AdvertenciaSelect"); }
+					else
+
+					{ ModalMensaje("msgPreguntaActualizar", "Preguntas"); }
+				}
+				else
+				{
+					ModalMensaje("msgPreguntaGrabarSinCorreo", "Preguntas");
+					//new Bus.Clinica.Clinica.Sistemas().GrabarCorreoDestinatario(sisCorreoE1);
+					////await js.InvokeVoidAsync(VariablesGlobales.InvokeTypeModal.ShowMessageModal, true, "msgChangedSave");
+					//ModalMensaje("ConfirmacionRegistro", "Informativo");
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			Mensaje = ex.ToString();
+			ModalMensaje("Catch", "Error");
+			//await js.InvokeVoidAsync("NotFoundSpinner", "msjError");
+		}
+	}
+
+
+	async Task GrabarCorreo2Close(bool acepted)
+	{
+		try
+		{
+			if (acepted)
+			{
+				new Bus.Clinica.Clinica.Sistemas().GrabarCorreoDestinatario(sisCorreoE1);
+				xUpdateCorreo = false;
+				ModalMensaje("ConfirmacionActualizacion", "Informativo");
+				//await js.InvokeVoidAsync("NotFoundSpinner", "msgChangedSave");
+			}
+			xUpdateCorreo = false;
+		}
+		catch (Exception ex)
+		{
+			Mensaje = ex.ToString();
+			ModalMensaje("Catch", "Error");
+			//await js.InvokeVoidAsync("NotFoundSpinner", "msjError");
+		}
+	}
+
+	async Task EnterBuscarListaCorreo(KeyboardEventArgs e)
+	{
+		if (e.Code == "Enter" || e.Code == "NumpadEnter")
+		{ await BuscarListaCorreo(); }
+	}
+
+	async Task EnterListar(KeyboardEventArgs e)
+	{
+		if (e.Code == "Enter" || e.Code == "NumpadEnter")
+		{ await Listar(); }
+	}
+
+	async Task EnterBuscarDscDestinatario(KeyboardEventArgs e)
+	{
+		if (e.Code == "Enter" || e.Code == "NumpadEnter")
+		{ await BuscarListaDscDestinatario(); }
+	}
+
+	protected override void OnAfterRender(bool firstRender)
+	{ 
+		js.InvokeVoidAsync("fnActualizarTitulo", "Mantenimiento de Correo Destinatario");
+		js.InvokeVoidAsync("eliminarElementosHtml", segOpcions);
+	}
+}
+
+@*@{
+	String tieneBtnNuevo = "0";
+	String tieneBtnEditar = "0";
+	if (segOpcions.Count > 0)
+	{
+		@foreach (var iOpcion in segOpcions)
+		{
+			if (iOpcion.CodOpcion == "03/01/01/01")
+			{
+				tieneBtnNuevo = "1";
+			}
+			if (iOpcion.CodOpcion == "03/01/01/02")
+			{
+				tieneBtnEditar = "1";
+			}
+		}
+	}
+}*@
+
+<!--Container Main start-->
+<div class="bg-light">
+	<div class="form-bg">
+		<div class="row align-items-center form-toolbar">
+			@*@if (tieneBtnNuevo == "1")
+			{
+				<div>
+					<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#msgModalMantenimiento" @onclick="@LimpiarCampos">
+						<span class="fa-regular fa-file"></span> <span role="toolbar"> Nuevo</span>
+					</button>
+				</div>
+			}*@
+			<div>
+				<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#msgModalMantenimiento" @onclick="@LimpiarCampos" data-permiso="03/01/01/01">
+					<span class="fa-regular fa-file"></span> <span role="toolbar"> Nuevo</span>
+				</button>
+			</div>
+		</div>
+
+		<div>
+			<!--I.Buscar-->
+			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12" style="border-radius:25px !important;">
+				<div class="DivSearchInput">
+					<div class="DivSearch" style="width:100%">
+						<input id="txtCorreoDestinatario" type="search" placeholder="Buscar por el correo destinatario o Asunto" @bind-value="@sisCorreoE.DscDestinatario" @onkeyup="@EnterListar">
+						<i id="idSearchDestinatario" class="fa-solid fa-magnifying-glass" role="button" @onclick="@Listar"></i>
+						<i id="idSpinnerDestinatario" class="spinner-border text-success" tipo="spinner" role="spinbutton" style="display:none;">
+							<span class="visually-hidden">Loading...</span>
+						</i>
+					</div>
+				</div>
+			</div>
+			<!--F.Buscar-->
+			<br />
+			@*<!--I.Buscar-->
+			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+			<div class="omrs-input-group">
+			<label class="omrs-input-underlined">
+			<input id="txtDestinatario" class="form-control text-uppercase" @bind-value="@sisCorreoE.DscDestinatario" @onkeyup="@EnterListar">
+			<span class="omrs-input-label">Buscar por correo</span>
+			<span class="omrs-input-helper"></span>
+			<i id="idSearchDestinatario" class="fa-solid fa-magnifying-glass text-primary" @onclick="@Listar"></i>
+			<i id="idSpinnerDestinatario" class="spinner-border text-success" role="status" style="display:none; width:20px; height:20px;">
+			<span class="visually-hidden">Loading...</span>
+			</i>
+			</label>
+			</div>
+			</div>
+			<!--F.Buscar-->*@
+
+			<!--I.TABLA-->
+			<div class="col-12 table-responsive">
+				<table class="table table-hover table-border align-middle">
+					<thead class="table-primary">
+						<tr class="fw-bolder">
+							<th text-align:center;> </th>
+							<td>Id</td>
+							<td>Lista</td>
+							<td class="text-center">Nro</td>
+							<td class="text-center">Tipo Correo</td>
+							<td>Destinatario</td>
+							<td class="text-center">Estado</td>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in list)
+						{
+							<tr>
+								<td class="text-center">
+									<div class="btn-group dropstart">
+										<button class="btn btn-menu" data-bs-toggle="dropdown" aria-expanded="false">
+											@*<span class="fa-solid fa-grip-vertical"></span>*@
+											<span class="fa-brands fa-elementor"></span>
+											@*<span class="fa-solid fa-ellipsis-vertical"></span>*@
+										</button>
+										<ul class="dropdown-menu">
+											<li class="dropdown-header">Seleccione la opción</li>
+											<li class="dropdown-item btn" data-bs-toggle="modal" data-bs-target="#msgModalMantenimiento" @onclick="@(()=> Editar(item.IdeCorreo))" data-permiso="03/01/01/02"><span class="fa-solid fa-pen"></span> Editar</li>
+											@*@if (tieneBtnEditar == "1")
+											{
+												<li class="dropdown-item btn" data-bs-toggle="modal" data-bs-target="#msgModalMantenimiento" @onclick="@(()=> Editar(item.IdeCorreo))"><span class="fa-solid fa-pen"></span> Editar</li>
+											}*@
+											@*<li class="dropdown-item btn" data-bs-toggle="modal" data-bs-target="#msgModal"><span class="fa-regular fa-trash-can"></span> Eliminar</li>*@
+										</ul>
+									</div>
+								</td>
+								<td>@item.IdeCorreo</td>
+								<td>@item.CodLista</td>
+								<td class="text-center">@item.SecLista</td>
+								<td class="text-center">@item.NombCodTipo</td>
+								<td>@item.DscDestinatario</td>
+								<td class="text-center"><input type="checkbox" checked="@item.FlgRegistro" @bind-value="@item.FlgRegistro" @onclick="@(()=> ActualizarEstado(item.IdeCorreo))"></td>
+							</tr>
+						}
+					</tbody>
+					<tfoot class="table-primary-footer">
+						<tr>
+							<td colspan=8>
+								-
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+			<!--F.TABLA-->
+			@*<!--I.PAGINACIÓN-->
+			<div class="text-center">
+				<nav aria-label="Página de navegación">
+					<ul class="pagination">
+						<li class="page-item"><a class="page-link" href="#">Anterior</a></li>
+						<li class="page-item"><a class="page-link" href="#">1</a></li>
+						<li class="page-item"><a class="page-link" href="#">2</a></li>
+						<li class="page-item"><a class="page-link" href="#">3</a></li>
+						<li class="page-item"><a class="page-link" href="#">Siguiente</a></li>
+					</ul>
+				</nav>
+			</div>
+			<!--F.PAGINACIÓN-->*@
+
+		</div>
+		<!--F.TABLA-->
+	</div>
+</div>
+<!--Container Main end-->
+
+<div>
+	<!-- I.MANTENIMIENTO DE CORREOS -->
+	<div class="modal fade" id="msgModalMantenimiento" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="staticBackdropLabel">Mantenimiento de Correo</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+
+				<div class="modal-body">
+					<div class="form-bg">
+						<div class="row align-items-center form-toolbar">
+							<div>
+
+								<button class="btn btn-outline-success" @onclick="GrabarCorreo">
+									<span class="fa-regular fa-save"></span><span id="TitleView"> Guardar</span>
+								</button>
+								<!--<button class="btn btn-outline-primary col-lg-2 col-2"><span class="fa-regular fa-edit"></span> <span id="TitleView"> Editar</span></button>
+								<button class="btn btn-outline-danger col-lg-2 col-2"><spam class="fa-regular fa-trash-can"></spam> <span id="TitleView"> Eliminar</span></button>-->
+								<button class="btn btn-outline-primary" @onclick="Actualizarpagina"><spam class="fa fa-arrow-rotate-left"></spam> <span id="TitleView"> Cancelar</span></button>
+							</div>
+						</div>
+						
+						<br />
+						<div class="row group align-items-center">
+							<!--I.Tipo de Destinatario - para, cc, cco-->
+							<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 col-12">
+								<select id="selectTipCliente" @bind="@sisCorreoE1.CodTipo" class="form-select form-select-control" aria-label="Default select example">
+									@*<option selected>Seleccione un Tipo de Envio de Correo</option>*@
+									@foreach (var item in olistaTablas)
+									{
+										<option value="@item.Codigo">@item.Codigo - @item.Nombre</option>
+									}
+								</select>
+							</div>
+							<!--F.Tipo de Destinatario-->
+							<!--I.Correo del Destinatario-->
+							<div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-xs-12 col-12">
+								<div class="omrs-input-group">
+									<label class="omrs-input-underlined">
+										<input id="txtDestinatario" required="" @bind-value="sisCorreoE1.DscDestinatario" @onkeyup="EnterBuscarListaCorreo" list="lstCorreo" type="email">
+										<span class="omrs-input-label">Correo del Destinatario</span>
+										<span class="omrs-input-helper"></span>
+										<i id="idSearchDscDestinatarioReg" class="fa-solid fa-magnifying-glass text-primary" @onclick="@Listar"></i>
+										<i id="idSpinnerDscDestinatarioReg" class="spinner-border text-success" role="status" style="display:none; width:20px; height:20px;">
+											<span class="visually-hidden">Loading...</span>
+										</i>
+										<datalist id="lstCorreo" style="width:100%">
+											@foreach (var listaP1 in olistaFiltro)
+											{
+												<option>@listaP1.DscDestinatario</option>
+											}
+										</datalist>
+									</label>
+								</div>
+							</div>
+							<!--F.Correo Del Destinatario-->
+						</div>
+						<!--I.Asunto- descripcion del correo-->
+						<div class="row group align-items-center">
+							<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+								<div class="omrs-input-group">
+									<label class="omrs-input-underlined">
+										<input id="txtAsunto" type="search" required="" @bind-value="sisCorreoE1.CodLista" @onkeyup="@EnterBuscarDscDestinatario" list="list">
+										<span class="omrs-input-label">Asunto</span>
+										<span class="omrs-input-helper"></span>
+										<i id="idSearchCodLista" class="fa-solid fa-magnifying-glass text-primary" @onclick="@Listar"></i>
+										<i id="idSpinnerCodLista" class="spinner-border text-success" role="status" style="display:none; width:20px; height:20px;">
+											<span class="visually-hidden">Loading...</span>
+										</i>
+										<datalist id="list" style="width:100%">
+											@foreach (var lista in olistaFiltro)
+											{
+												<option>@lista.CodLista</option>
+											}
+										</datalist>
+									</label>
+								</div>
+							</div>
+						</div>
+						<!--F.Asunto-->
+					</div>
+				</div>
+			</div>
+			<!--<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Understood</button>
+			</div>-->
+		</div>
+	</div>
+
+	<!-- I.MODAL MESSAGE -->
+	@*==========================================0*@
+	<MessageModal IdMessage="msgModalAdvertencia"
+				  TitleModal="Advertencia"
+				  IconMessage=MessageModal.iconMessage.Advertencia
+				  TypeButton=MessageModal.typeButton.Ok
+				  EscapeKey="true"
+				  BodyMessage=@Mensaje>
+	</MessageModal>
+
+	<MessageModal IdMessage="msgModalError"
+				  TitleModal="Error"
+				  IconMessage=MessageModal.iconMessage.Error
+				  TypeButton=MessageModal.typeButton.Ok
+				  EscapeKey="true"
+				  OnClose="@Actualizarpagina"
+				  BodyMessage=@Mensaje>
+	</MessageModal>
+
+	<MessageModal IdMessage="msgModalConfirmacion"
+				  TitleModal="Información"
+				  TypeButton=MessageModal.typeButton.Ok
+				  EscapeKey="true"
+				  OnClose="@Actualizarpagina"
+				  BodyMessage=@Mensaje>
+	</MessageModal>
+
+	<MessageModal IdMessage="msgModalPregunta"
+				  TitleModal="Confirmación"
+				  BodyMessage=@Mensaje
+				  IconMessage=MessageModal.iconMessage.Question
+				  TypeButton=MessageModal.typeButton.OkCancel
+				  OnClose="@GrabarCorreo2Close">
+	</MessageModal>
+
+	<!-- F.MODAL MESSAGE -->
+
+</div>
+<!-- F.MANTENIMIENTO DE CORREOS -->

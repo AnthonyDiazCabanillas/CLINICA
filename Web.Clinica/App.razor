@@ -1,0 +1,36 @@
+﻿@*@using Web.Clinica.Services;
+@inject IdentityInformation _identity;
+*@
+@*Agregado para el Login*@
+@*Camb 19/04/2022*@
+
+<CascadingAuthenticationState>
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>Not found</PageTitle>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p role="alert">Lo sentimos, la ruta de la página no existe.</p>
+        </LayoutView>
+    </NotFound>
+</Router>
+</CascadingAuthenticationState>
+
+
+@code{
+    //[Parameter]
+    //public InitialApplicationState InitialState { get; set; }
+    //protected override void OnInitialized()
+    //{
+    //    _identity.UserName = InitialState.UserName;
+    //    _identity.IsAuthenticated = InitialState.IsAuthenticated;
+
+    //    //bool lsw = HttpContext.User.Identity.IsAuthenticated;
+
+
+    //}
+
+}

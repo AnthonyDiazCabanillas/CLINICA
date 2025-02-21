@@ -1,0 +1,577 @@
+﻿@* **********************************************************************************************************************
+    Copyright Clinica San Felipe S.A.C 2024. Todos los derechos reservados.
+    Version     Fecha           Autor       Requerimiento
+    1.1         01/04/2024      AROMERO     REQ-2024-006637:  FINANCIAMIENTO LABORATORIO
+*********************************************************************************************************************** *@
+
+@page "/Clinica/Clinica/Mantenimientos/FinanciamientoLaboratorioCargaMasiva"
+@attribute [Authorize]
+@inject IJSRuntime js
+@inject IJSRuntime JSRuntime
+@using Bus.Clinica.Clinica;
+@using Bus.Utilities
+@using Dat.Sql
+@using Ent.Sql.ClinicaE.FinanciamientoDetalleE;
+@using System.Xml.Serialization
+@using System.Text.Json
+@using RestSharp
+@using System.Data;
+@using Web.Clinica.Data
+@using System.Text.RegularExpressions;
+@using Web.Clinica.Pages.Clinica.Comercial.Componentes
+@using Ent.Sql;
+@using Ent.Sql.ClinicaE;
+@using ClosedXML.Excel
+@inherits MainLayout
+
+@code {
+    string NombreExcel = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss").Replace("/", "").Replace(":", "").Replace(" ", "") + ".xlsx"; //Nombre del archivo
+    string RutaDescarga = "";   
+    public string Mensaje { get; set; } = "";   
+
+    FinanciamientoDetalleE ofinanciamientoDetE = new FinanciamientoDetalleE("", 0, 25, 19);
+    FinanciamientoBuscaE oFinanciamientoBuscaE = new FinanciamientoBuscaE();
+    List<FinanciamientoDetalleE> oListaFinanciamientoDet = new List<FinanciamientoDetalleE>();
+
+    Utilitario utilitario = new Utilitario();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        BuscarFinanciamientoDet(1, 17);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await JSRuntime.InvokeVoidAsync("eval", @"
+                $('#staticBackdrop').on('hidden.bs.modal', function () {
+                    breake;
+                    $('.modal-backdrop').hide();
+                });
+            ");
+    }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        js.InvokeVoidAsync("fnActualizarTitulo", "Cargar Archivo");
+
+        if (firstRender)
+        {
+            js.InvokeVoidAsync("eval", @"
+		          window.downloadFile = function(url, fileName) {
+		              var link = document.createElement('a');
+		              link.href = url;
+		              link.download = fileName;
+		              document.body.appendChild(link);
+		              link.click();
+		              document.body.removeChild(link);
+		          }");
+        }
+    }
+
+    private async Task ModalMensaje(string Mensajes, string TipoModal)
+    {
+        if (TipoModal == "Informativo")
+        {
+            switch (Mensajes)
+            {
+                case "ConfirmacionDescarga":
+                    Mensaje = "Archivo: Plantilla-carga-masiva.XLSX";
+                    break;
+            }
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacion");
+        }
+    }  
+    
+    private async Task BuscarFinanciamientoDet(int selectedPageIndex, int orden)
+    {
+        //Consulta general de analisis
+        try
+        {
+            var serializer = new XmlSerializer(typeof(FinanciamientoDetalleE));
+            ofinanciamientoDetE.Orden = orden;
+            StringWriter writer = new StringWriter();
+            serializer.Serialize(writer, ofinanciamientoDetE);
+            ofinanciamientoDetE.Buscar = oFinanciamientoBuscaE.Buscar;
+            oListaFinanciamientoDet = new Bus.Clinica.FinanciamientoLaboratorio().Financiamiento_ConsultaAnalisisxCodigo(ofinanciamientoDetE);
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+
+    private async Task ExportarExcelAnalisis(int flgdescarga, string xNombreExcel, string xRutaDescarga)
+    {
+        //Exportar consulta de analisis con atenciones
+        try
+        {
+            int FilaCab = 4;
+            int FilaCuerpo = FilaCab + 1, ColumnaCuerpo = oListaFinanciamientoDet.Count;
+            MemoryStream excelStream;
+            string fileUrl;
+
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Lista Analisis");
+                var RangoCab_Hoja = worksheet.Range(2, 1, 2, 5).Merge();
+                RangoCab_Hoja.Value = "Lista de Analisis con atenciones";
+                RangoCab_Hoja.Style.Fill.BackgroundColor = XLColor.FromHtml("#7ebf2a"); //Indicamos el color de background
+                RangoCab_Hoja.Style.Font.FontSize = 17; //Indicamos el tamaño de la fuente
+                RangoCab_Hoja.Style.Font.Bold = true;
+                RangoCab_Hoja.Style.Font.FontColor = XLColor.FromHtml("#ffffff");
+                RangoCab_Hoja.Style.Font.SetFontName("Calibri"); //Fuente
+                RangoCab_Hoja.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                //I-Cuerpo_Tabla
+                worksheet.Cell(FilaCab, 1).Value = "ID";
+                worksheet.Cell(FilaCab, 2).Value = "ID Análisis";
+                worksheet.Cell(FilaCab, 3).Value = "Cód. ROE";
+                worksheet.Cell(FilaCab, 4).Value = "Prueba ROE";
+                worksheet.Cell(FilaCab, 5).Value = "Tipo Atencion";
+                
+
+                for (int i = 1; ColumnaCuerpo > i - 1; i++)
+                {
+                    worksheet.Cell(FilaCuerpo, 1).Value = oListaFinanciamientoDet[i - 1].Item;
+                    worksheet.Cell(FilaCuerpo, 2).Value = oListaFinanciamientoDet[i - 1].Ide_Analisis;
+                    worksheet.Cell(FilaCuerpo, 3).Value = oListaFinanciamientoDet[i - 1].Cod_ROE;
+                    worksheet.Cell(FilaCuerpo, 4).Value = oListaFinanciamientoDet[i - 1].Prueba_ROE;
+                    worksheet.Cell(FilaCuerpo, 5).Value = oListaFinanciamientoDet[i - 1].Tipo_Atencion;  
+                    worksheet.Range(FilaCuerpo, 1, FilaCuerpo, 5).Style.Border.BottomBorder = XLBorderStyleValues.Dotted;
+                    worksheet.Range(FilaCuerpo, 1, FilaCuerpo, 5).Style.Border.BottomBorderColor = XLColor.Black;
+                    FilaCuerpo++;
+                }
+
+                //I-Estilo Cabecera_Tabla
+                var RangoCab = worksheet.Range(FilaCab, 1, FilaCab, 5); //Selecciona Rango
+                RangoCab.Style.Border.RightBorder = XLBorderStyleValues.Medium;
+                RangoCab.Style.Border.RightBorderColor = XLColor.White;
+                RangoCab.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; //Alineamos horizontalmente
+                RangoCab.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;  //Alineamos verticalmente
+                RangoCab.Style.Fill.BackgroundColor = XLColor.FromHtml("#124498"); //Indicamos el color de background
+                RangoCab.Style.Font.FontSize = 13; //Indicamos el tamaño de la fuente
+                RangoCab.Style.Font.Bold = true;
+                RangoCab.Style.Font.FontColor = XLColor.FromHtml("#ffffff");
+                RangoCab.Style.Font.SetFontName("Sitka Display Semibold"); //Fuente
+
+                worksheet.Columns(1, 5).AdjustToContents(); //Ajustamos el ancho de las columnas para que se muestren todos los contenidos
+
+                // Guardar el archivo Excel en un MemoryStream
+                excelStream = new MemoryStream();
+                workbook.SaveAs(excelStream);
+
+                if (flgdescarga == 1)
+                {
+                    workbook.SaveAs(xRutaDescarga + xNombreExcel);//Ruta para guardar
+                }
+
+                // Obtener la URL del archivo Excel
+                if (flgdescarga == 0)
+                {
+                    xNombreExcel = "Lista Análisis - " + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss").Replace("/", "").Replace(":", "").Replace(" ", "") + ".xlsx"; //Nombre del archivo
+                    fileUrl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{Convert.ToBase64String(excelStream.ToArray())}";
+                    OnAfterRender(true);//crea la funcion
+                    await js.InvokeVoidAsync("downloadFile", fileUrl, xNombreExcel);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            ModalMensaje("Catch", "Error");
+        }
+    }
+
+    private async Task ExportarExcel(int flgdescarga, string xNombreExcel, string xRutaDescarga)
+    {
+        //Descarga de plantilla vacia del excel
+        int FilaCab = 4;
+        int FilaCuerpo = FilaCab + 1, ColumnaCuerpo = 1;
+        MemoryStream excelStream;
+        string fileUrl;
+
+        using (var workbook = new XLWorkbook())
+        {
+            var worksheet = workbook.Worksheets.Add("Financiamiento");
+            var RangoCab_Hoja = worksheet.Range(2, 1, 2, 19).Merge();
+            RangoCab_Hoja.Value = "Lista de Financiamiento Laboratorio";
+            RangoCab_Hoja.Style.Fill.BackgroundColor = XLColor.FromHtml("#7ebf2a"); //Indicamos el color de background
+            RangoCab_Hoja.Style.Font.FontSize = 17; //Indicamos el tamaño de la fuente
+            RangoCab_Hoja.Style.Font.Bold = true;
+            RangoCab_Hoja.Style.Font.FontColor = XLColor.FromHtml("#ffffff");
+            RangoCab_Hoja.Style.Font.SetFontName("Calibri"); //Fuente
+            RangoCab_Hoja.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            //I-Cuerpo_Tabla
+            worksheet.Cell(FilaCab, 1).Value = "ID";
+            worksheet.Cell(FilaCab, 2).Value = "CIE-10";
+            worksheet.Cell(FilaCab, 3).Value = "Descripción";
+            worksheet.Cell(FilaCab, 4).Value = "Cód. Prestación";
+            worksheet.Cell(FilaCab, 5).Value = "Ide Análisis";
+            worksheet.Cell(FilaCab, 6).Value = "Cód. ROE";
+            worksheet.Cell(FilaCab, 7).Value = "Prueba ROE";
+            worksheet.Cell(FilaCab, 8).Value = "Pacifico S.A. Entidad Prestadora de Salud";
+            worksheet.Cell(FilaCab, 9).Value = "Pacifico Compañia de Seguros y Reaseguros S.A.";
+            worksheet.Cell(FilaCab, 10).Value = "Rimac S.A. Entidad Prestadora de Salud";
+            worksheet.Cell(FilaCab, 11).Value = "Rimac Seguros y Reaseguros";
+            worksheet.Cell(FilaCab, 12).Value = "Sanitas Perú S.A. - EPS";
+            worksheet.Cell(FilaCab, 13).Value = "La Positiva S.A. Entidad Prestadora de Salud";
+            worksheet.Cell(FilaCab, 14).Value = "Fondo para Enfermedades, Seg y Pensiones de Empleados - BCRP";
+            worksheet.Cell(FilaCab, 15).Value = "BNP Paribas Cardif S.A Compañia de Seguros y Reaseguros";
+            worksheet.Cell(FilaCab, 16).Value = "Particular";
+            worksheet.Cell(FilaCab, 17).Value = "La Positiva Seguros y Reaseguros";
+            worksheet.Cell(FilaCab, 18).Value = "Mapfre Perú CIA. de Seguros y Reaseguros";
+            worksheet.Cell(FilaCab, 19).Value = "Mapfre Perú S.A. Entidad Prestadora de Salud";
+
+
+            for (int i = 1; ColumnaCuerpo > i - 1; i++)
+            {
+                if (i == 1)
+                {
+                    worksheet.Cell(FilaCuerpo, 1).Value = " - ";
+                    worksheet.Cell(FilaCuerpo, 2).Value = " - ";
+                    worksheet.Cell(FilaCuerpo, 3).Value = " - ";
+                    worksheet.Cell(FilaCuerpo, 4).Value = " - ";
+                    worksheet.Cell(FilaCuerpo, 5).Value = " - ";
+                    worksheet.Cell(FilaCuerpo, 6).Value = " - ";
+                    worksheet.Cell(FilaCuerpo, 7).Value = " - ";
+                    worksheet.Cell(FilaCuerpo, 8).Value = "0121";
+                    worksheet.Cell(FilaCuerpo, 9).Value = "0257";
+                    worksheet.Cell(FilaCuerpo, 10).Value = "0111";
+                    worksheet.Cell(FilaCuerpo, 11).Value = "0013";
+                    worksheet.Cell(FilaCuerpo, 12).Value = "0207";
+                    worksheet.Cell(FilaCuerpo, 13).Value = "0259";
+                    worksheet.Cell(FilaCuerpo, 14).Value = "0019";
+                    worksheet.Cell(FilaCuerpo, 15).Value = "0235";
+                    worksheet.Cell(FilaCuerpo, 16).Value = "0001";
+                    worksheet.Cell(FilaCuerpo, 17).Value = "0053";
+                    worksheet.Cell(FilaCuerpo, 18).Value = "0275";
+                    worksheet.Cell(FilaCuerpo, 19).Value = "0205";
+
+                    worksheet.Range(FilaCuerpo, 1, FilaCuerpo, 19).Style.Border.BottomBorder = XLBorderStyleValues.Dotted;
+                    worksheet.Range(FilaCuerpo, 1, FilaCuerpo, 19).Style.Border.BottomBorderColor = XLColor.Black;
+                    FilaCuerpo++;
+                }
+                else
+                {
+                    worksheet.Cell(FilaCuerpo, 1).Value = "";
+                    worksheet.Cell(FilaCuerpo, 2).Value = "";
+                    worksheet.Cell(FilaCuerpo, 3).Value = "";
+                    worksheet.Cell(FilaCuerpo, 4).Value = "";
+                    worksheet.Cell(FilaCuerpo, 5).Value = "";                    
+                    worksheet.Cell(FilaCuerpo, 6).Value = "";
+                    worksheet.Cell(FilaCuerpo, 7).Value = "";
+                    worksheet.Cell(FilaCuerpo, 8).Value = "";
+                    worksheet.Cell(FilaCuerpo, 9).Value = "";
+                    worksheet.Cell(FilaCuerpo, 10).Value = "";
+                    worksheet.Cell(FilaCuerpo, 11).Value = "";
+                    worksheet.Cell(FilaCuerpo, 12).Value = "";
+                    worksheet.Cell(FilaCuerpo, 13).Value = "";
+                    worksheet.Cell(FilaCuerpo, 14).Value = "";
+                    worksheet.Cell(FilaCuerpo, 15).Value = "";
+                    worksheet.Cell(FilaCuerpo, 16).Value = "";
+                    worksheet.Cell(FilaCuerpo, 17).Value = "";
+                    worksheet.Cell(FilaCuerpo, 18).Value = "";
+                    worksheet.Cell(FilaCuerpo, 19).Value = "";
+
+                    worksheet.Range(FilaCuerpo, 1, FilaCuerpo, 19).Style.Border.BottomBorder = XLBorderStyleValues.Dotted;
+                    worksheet.Range(FilaCuerpo, 1, FilaCuerpo, 19).Style.Border.BottomBorderColor = XLColor.Black;
+                    FilaCuerpo++;
+                }
+                
+            }
+
+            //I-Estilo Cabecera_Tabla
+            var RangoCab = worksheet.Range(FilaCab, 1, FilaCab, 19); //Selecciona Rango
+            RangoCab.Style.Border.RightBorder = XLBorderStyleValues.Medium;
+            RangoCab.Style.Border.RightBorderColor = XLColor.White;
+            RangoCab.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; //Alineamos horizontalmente
+            RangoCab.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;  //Alineamos verticalmente
+            RangoCab.Style.Fill.BackgroundColor = XLColor.FromHtml("#124498"); //Indicamos el color de background
+            RangoCab.Style.Font.FontSize = 13; //Indicamos el tamaño de la fuente
+            RangoCab.Style.Font.Bold = true;
+            RangoCab.Style.Font.FontColor = XLColor.FromHtml("#ffffff");
+            RangoCab.Style.Font.SetFontName("Sitka Display Semibold"); //Fuente
+
+            worksheet.Columns(1, 19).AdjustToContents(); //Ajustamos el ancho de las columnas para que se muestren todos los contenidos
+
+            // Guardar el archivo Excel en un MemoryStream
+            excelStream = new MemoryStream();
+            workbook.SaveAs(excelStream);
+
+            if (flgdescarga == 1)
+            {
+                workbook.SaveAs(xRutaDescarga + xNombreExcel);//Ruta para guardar
+            }
+
+            // Obtener la URL del archivo Excel
+            if (flgdescarga == 0)
+            {
+                xNombreExcel = "Plantilla-carga-masiva" + ".xlsx"; //Nombre del archivo
+                fileUrl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{Convert.ToBase64String(excelStream.ToArray())}";
+                OnAfterRender(true);//crea la funcion
+                await js.InvokeVoidAsync("downloadFile", fileUrl, xNombreExcel);
+                ModalMensaje("ConfirmacionDescarga", "Informativo");
+
+            }
+        }
+    }
+}
+
+<style>  
+    .GrillaSmall {
+        align-content: center;
+        font-size: smaller;
+    }
+
+    .GrillaXXSmall {
+        align-content: center;
+        font-size: xx-small
+    }
+</style>
+
+<div class="bg-light">
+    <div class="form-bg">
+        
+        <div class="container-fluid">
+            <!--PRESENTACION-->
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 buscar-menuNuevo" style="border-radius:25px !important;">
+                <div class="input-group">
+                </div>
+            </div>
+        </div>  
+
+        <div class="row align-items-center justify-content-between" style="display:flow; text-align:right; padding: 15px 10px 5px 10px; margin: 0px -20px 0px -20px">
+                                
+            <div class="row" style="display:flow; text-align:center; padding:0px 0px 0px 0px; margin:0px 0px 0px 0px; ">
+
+                <div class="form-floating mb-3">
+                    <div class="col-auto">
+                        <span class="span-color" style="font-size:medium; display:inline-block; text-align:left; width:33%; color: #124498;">1. Descargar Plantilla</span>
+                        <span class="span-color" style="font-size:medium; display:inline-block; width:33%; color: darkgray;">2. Cargar archivo</span>
+                        <span class="span-color" style="font-size:medium; display:inline-block; text-align:right; width:33%; color: darkgray;">3. Resumen</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+            <div class="row" style="display:flow; text-align:center; padding:0px 0px 0px 0px; margin:0px 0px 0px 0px; ">
+            <div class="form-floating mb-3" style="display: inline-block; padding-right:35px; padding-left: 35px">
+                    <div class="col-auto" style="display:flex; align-items:center">
+                    <button class="rounded-circle btn btn-primary" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="fa-solid fa-arrow-down"></span>
+                    </button>
+                    <div style="width: 50%;height: 5px;background-color: #124498; margin: 10px 5px;"></div>
+                    <button class="rounded-circle btn btn-primary" style="background-color:darkgray; border-color:darkgray" data-bs-toggle="dropdown" aria-expanded="false">
+                          <span class="fa-solid fa-arrow-up"></span>
+                    </button>
+                    <div style="width: 50%;height: 5px;background-color: #124498; margin: 10px 5px;"></div>
+                    <button class="rounded-circle btn btn-primary" style="background-color:darkgray; border-color:darkgray" data-bs-toggle="dropdown" aria-expanded="false">
+                         <span class="fa-solid fa-file-lines"></span>
+                    </button>                                                
+                     </div>
+            </div>
+            </div>
+            <div class="col-auto" style="display:flex; justify-content:flex-end; margin-top:10px; margin-bottom:10px">
+            <button id="IdButtonExcel0" style="margin-right:8px" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target @onclick="(()=>ExportarExcelAnalisis(0,NombreExcel,RutaDescarga))">
+                    <div class="d-flex align-items-center justify-content-center">
+                       <span role="toolbar"> Exportar Análisis</span>
+                    </div>
+                    </button>
+
+                    <button id="IdButtonExcel" class="btn btn-success" data-bs-toggle="modal" data-bs-target @onclick="(()=>ExportarExcel(0,NombreExcel,RutaDescarga))">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <span role="toolbar"> Descargar Plantilla</span>
+                        </div>
+                    </button>
+            </div>
+    
+        </div>
+
+        <div class="container" style="margin-top: 20px;">
+            <div class="col-12 col-lg-12 col-md-12 buscar-menuNuevo">
+                <div class="input-group">
+                    <div class="card w-100">
+                        <div style="padding-top: 20px;">
+                            <span class="span-color" style="font-size:medium; margin-left: 20px;">Archivo: Plantilla-carga-masiva.XLSX</span><br>
+                        </div>
+                        <div style="padding-top: 10px;">
+                            <span class="span-color" style="font-size:medium; margin-left: 20px; font-weight: lighter">Esta plantilla tiene los datos obligatorios que debe tener el excel cargado.</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive">
+                                <table class="table table-hover   table-bordered">
+                                    <thead class="table-primary">
+                                        <tr class="fw-bolder">
+                                            <th class="col-1 text-center GrillaSmall">ID</th>
+                                            <th class="col-1 text-center GrillaSmall">CIE-10</th>
+                                            <th class="col-3 text-center GrillaSmall">Descripción</th>
+                                            <th class="col-1 text-center GrillaSmall">Cod. Prestación</th>
+                                            <th class="col-1 text-center GrillaSmall">Ide Análisis</th>
+                                            <th class="col-1 text-center GrillaSmall">Cod. ROE</th>
+                                            <th class="col-1 text-center GrillaSmall">Pruebas ROE</th>
+                                            <th class="col-1 text-center GrillaXXSmall">PACIFICO S.A. ENTIDAD PRESTADORA DE SALUD</th>
+                                            <th class="col-1 text-center GrillaXXSmall">PACIFICO COMPAÑIA DE SEGUROS Y REASEGUROS S.A.</th>
+                                            <th class="col-1 text-center GrillaXXSmall">RIMAC S.A. ENTIDAD PRESTADORA DE SALUD</th>
+                                            <th class="col-1 text-center GrillaXXSmall">RIMAC SEGUROS Y REASEGUROS</th>
+                                            <th class="col-1 text-center GrillaXXSmall">SANITAS PERU S.A. - EPS</th>
+                                            <th class="col-1 text-center GrillaXXSmall">LA POSITIVA S.A. ENTIDAD PRESTADORA DE SALUD</th>
+                                            <th class="col-1 text-center GrillaXXSmall">FONDO PARA ENFERMEDADES, SEG Y PENSIONES DE EMPLEADOS - BCRP</th>
+                                            <th class="col-1 text-center GrillaXXSmall">BNP PARIBAS CARDIF S.A COMPAÑIA DE SEGUROS Y REASEGUROS</th>
+                                            <th class="col-1 text-center GrillaXXSmall">PARTICULAR</th>
+                                            <th class="col-1 text-center GrillaXXSmall">LA POSITIVA SEGUROS Y REASEGUROS</th>
+                                            <th class="col-1 text-center GrillaXXSmall">MAPFRE PERU CIA. DE SEGUROS Y REASEGUROS</th>
+                                            <th class="col-1 text-center GrillaXXSmall">MAPFRE PERU S.A. ENTIDAD PRESTADORA DE SALUD</th>                                                                                     
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < 5; i++)
+                                            {
+                                                <tr>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color"> - </span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color"> - </span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color"> - </span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color"> - </span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color"> - </span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color"> - </span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color"> - </span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color"> - </span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color"> - </span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color"> - </span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color"> - </span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color"> - </span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color"> - </span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color"> - </span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color"> - </span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color"> - </span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color"> - </span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color"> - </span><br>
+                                                    </td>
+                                                    <td class="text-center GrillaSmall">
+                                                        <span class="span-color"> - </span><br>
+                                                    </td>
+                                                </tr>
+                                            }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="2">
+                                            </td>
+                                            <td colspan="5">
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                <div class="row" style="display:flow; text-align:right; padding:0px 0px 0px 0px; margin:0px 0px 0px 0px; ">
+                                        <div class="form-floating mb-3">
+                                            <div class="col-auto">
+                                        <a href="/Clinica/Clinica/Mantenimientos/FinanciamientoLaboratorio">
+                                            <span class="btn btn-primary"> Cancelar
+                                            </span>
+                                        </a>
+                                        
+
+                                        <a href="/Clinica/Clinica/Mantenimientos/FinanciamientoLaboratorioCargaArchivo">
+                                            <span class="btn btn-primary">
+                                                Siguiente
+                                            </span>
+                                        </a> 
+                                            </div>
+                                        </div>
+                                       
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div>
+    
+    @*==========================================0*@
+    <MessageModal IdMessage="msgModalAdvertencia"
+                  TitleModal="Advertencia"
+                  IconMessage=MessageModal.iconMessage.Advertencia
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalError"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalConfirmacion"
+                  TitleModal="Descarga Exitosa"
+                  IconMessage=MessageModal.iconMessage.Check
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="false"
+                  BodyMessage=@Mensaje>
+    </MessageModal>   
+    @*==========================================0*@
+    <!-- F.MESSAGE NOT FOUND -->
+</div>
+
+<div>
+ 
+    @*==========================================0*@
+    <MessageModal IdMessage="msgModalAdvertencia"
+                  TitleModal="Advertencia"
+                  IconMessage=MessageModal.iconMessage.Advertencia
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+    <MessageModal IdMessage="msgModalError"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>   
+</div>
+
+

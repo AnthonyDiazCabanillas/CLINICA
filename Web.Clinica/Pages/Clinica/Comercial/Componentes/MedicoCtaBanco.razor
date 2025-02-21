@@ -1,0 +1,346 @@
+﻿@using Ent.Sql.ClinicaE.MedicosE
+@using Ent.Sql.ClinicaE.EspecialidadesE
+@using Web.Clinica.Components
+@using Ent.Sql.ClinicaE.OtrosE
+@using System.Text.Json
+@using System.Globalization
+
+@inject IJSRuntime js
+
+
+
+@code {
+    [Parameter]
+    public MedicoE oMedicoE { get; set; }
+
+    [Parameter]
+    public List<MedicosCtaBancoE> oListaMedicosCtaBancoE { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasBancos { get; set; }
+
+    [Parameter]
+    public List<TablasE> oListaTablasMoneda { get; set; }
+
+    [Parameter]
+    public string Mensaje { get; set; }
+
+    [Parameter]
+    public bool FlgNuevo { get; set; }
+
+
+    MedicosCtaBancoE oMedicosCtaBancoE = new MedicosCtaBancoE();
+
+    private TabModalHijo TabModalHijo { get; set; }
+
+    private bool ModoEditaExistente { get; set; }
+
+    //string Mensaje = "";
+
+    protected override void OnInitialized()
+    {
+    }
+
+
+    private void Crea()
+    {
+        ModoEditaExistente = false;
+        oMedicosCtaBancoE = new MedicosCtaBancoE();
+        TabModalHijo.Open();
+    }
+
+    private void Edita()
+    {
+        var options = new JsonSerializerOptions { };
+        string jsonString = System.Text.Json.JsonSerializer.Serialize<MedicosCtaBancoE>(oMedicosCtaBancoE, options);
+        oMedicosCtaBancoE = System.Text.Json.JsonSerializer.Deserialize<MedicosCtaBancoE>(jsonString);
+
+        ModoEditaExistente = true;
+        TabModalHijo.Open();
+    }
+
+    private void Elimina()
+    {
+        Mensaje = " ¿Desea eliminar la siguiente cuenta de banco: <br> <b>" + oMedicosCtaBancoE.CodCtaBanco + "</b>? ";
+        js.InvokeVoidAsync("ShowMessageModal", true, "msgModalPregunta");
+    }
+
+    private async Task ConfirmaElimina(bool acepted)
+    {
+        try
+        {
+            if (acepted)
+            {
+                oMedicosCtaBancoE.CodMedico = oMedicoE.CodMedico;
+                new Bus.Clinica.Medicos().MedicosCtaBanco_Delete(oMedicosCtaBancoE);
+
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacionMedicosCtaBanco");
+                //ModalMensaje("ConfirmacionEliminacion", "Informativo");
+                //TabModalHijo.Close();
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            //ModalMensaje("Catch", "Error");
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+    }
+
+
+
+    private async Task Graba()
+    {
+        try
+        {
+            oMedicosCtaBancoE.CodMedico = oMedicoE.CodMedico;
+
+            if (ValidaGraba() != "") return;
+            if (ValidaGrabaBD(oMedicosCtaBancoE) != "") return;
+
+
+
+            if (ModoEditaExistente == true)
+
+                new Bus.Clinica.Medicos().MedicosCtaBanco_Update(oMedicosCtaBancoE);
+            else
+                new Bus.Clinica.Medicos().MedicosCtaBanco_Insert(oMedicosCtaBancoE);
+
+
+
+
+            js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacionMedicosCtaBanco");
+            TabModalHijo.Close();
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+    }
+
+    private string ValidaGraba()
+    {
+        string resultado = "";
+        if (oMedicosCtaBancoE.CodMedico == "") resultado = resultado + "Seleccione un médico <br>";
+        if (oMedicosCtaBancoE.CodBanco == "") resultado = resultado + "Entidad bancaria es obligatorio <br>";
+
+        //INI - mBardales - 29/01/2024
+        if (oMedicosCtaBancoE.CodCtaBanco.Trim().Length > 0)
+        {
+            decimal numberCodCtaBanco = 0;
+            bool canConvertCodCtaBanco = decimal.TryParse(oMedicosCtaBancoE.CodCtaBanco, out numberCodCtaBanco);
+
+            if (canConvertCodCtaBanco == false)
+            {
+                resultado = resultado + "La Cta bancaria debe ser sólo números <br>";
+            }
+        }
+        //FIN - mBardales - 29/01/2024
+
+        //INI - mBardales - 29/01/2024
+        if (oMedicosCtaBancoE.CodCciBanco.Trim().Length > 0)
+        {
+            decimal numberCodCciBanco = 0;
+            bool canConvertCodCciBanco = decimal.TryParse(oMedicosCtaBancoE.CodCciBanco, out numberCodCciBanco);
+
+            if (canConvertCodCciBanco == false)
+            {
+                resultado = resultado + "La Cta CCI debe ser sólo números <br>";
+            }
+        }
+        //FIN - mBardales - 29/01/2024
+
+        if (ModoEditaExistente == false)
+        {
+            int outPutCount = oListaMedicosCtaBancoE.Where(x => x.CodMedico == oMedicosCtaBancoE.CodMedico
+                                                                 && x.IdeMedicosCtaBanco == oMedicosCtaBancoE.IdeMedicosCtaBanco
+                                                                ).Count();
+            if (outPutCount > 0) resultado = resultado + "Ya existe un registro con la información ingresada <br>";
+        }
+
+        if (resultado != "")
+        {
+            Mensaje = "<b>Por favor verifique lo siguiente:</b> <br>" + resultado;
+            js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+
+        return resultado;
+    }
+
+    private string ValidaGrabaBD(MedicosCtaBancoE pMedicosCtaBancoE)
+    {
+        string resultado = "";
+
+        resultado = new Bus.Clinica.Medicos().Sp_MedicosCtaBanco_ValidaGraba(oMedicosCtaBancoE);
+
+        if (resultado != "")
+        {
+            Mensaje = "<b>Por favor verifique lo siguiente:</b> <br>" + resultado;
+            js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+
+        return resultado;
+    }
+
+    private void Cancela()
+    {
+        TabModalHijo.Close();
+    }
+
+
+ }
+
+
+
+<div style="background-color: #FFF; width: 100%; min-height:300px; border:1px solid #b3d6ffff; border-radius:8px; padding:20px 10px; margin-bottom:20px;">
+
+    <div class="row">
+        @{
+            bool ActNoa = false;
+            if (oMedicoE.FlagEstado == true)
+            {
+                ActNoa = false;
+            }
+            else
+            {
+                ActNoa = true;
+            }
+            ActNoa = FlgNuevo ? FlgNuevo : ActNoa;
+        }
+        <!--I.TABLA-->
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive" style="min-height:300px;">
+            <table class="table table-hover table-bordered">
+                <thead class="table-primary">
+                    <tr class="fw-bolder">
+                        <th class="col-1 text-center">
+                            <div class="btn-group dropstart">
+                                <button class="btn btn-menu" aria-expanded="false" @onclick="() => Crea()" disabled="@ActNoa">
+                                    <span class="fa-solid fa-plus"></span>
+                                </button>
+                            </div>
+                        </th>
+                        <th class="col-5 text-center" style="">Banco</th>
+                        <th class="col-1 text-center" style="">Moneda</th>
+                        <th class="col-3 text-center" style="">Cta Banco</th>
+                        <th class="col-3 text-center" style="">Cta CCI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in oListaMedicosCtaBancoE)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                <div class="btn-group dropstart">
+                                    <button class="btn" disabled="@ActNoa" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="fa-solid fa-grip-vertical"></span> <span id="TitleView"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li class="dropdown-item btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" @onclick="@(()=> {oMedicosCtaBancoE = item; Edita();})"><span class="fa-regular fa-edit "></span> Editar</li>
+                                        <li class="dropdown-item btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#msgModalEliminarContratoConsultorios" @onclick="@(()=>{oMedicosCtaBancoE = item; Elimina();})"><span class="fa-regular fa-trash-can "></span> Eliminar</li>
+                                    </ul>
+                                </div>
+                            </td>
+
+                            <td style="text-align:left;">@item.DscBanco</td>
+                            <td style="text-align:left;">@item.DscMoneda</td>
+                            <td style="text-align:left;">@item.CodCtaBanco</td>
+                            <td style="text-align:left;">@item.CodCciBanco</td>
+
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+        <!--F.TABLA-->
+    </div>
+
+    <MessageModal IdMessage="msgModalPregunta"
+                  TitleModal="Confirmación"
+                  BodyMessage=@Mensaje
+                  IconMessage=MessageModal.iconMessage.Question
+                  TypeButton=MessageModal.typeButton.OkCancel
+                  OnClose="@ConfirmaElimina">
+    </MessageModal>
+
+</div>
+
+<TabModalHijo @ref="@TabModalHijo" Title="Cuenta de Banco">
+    <div style="min-height: 300px">
+        <div class="row">
+
+            <div class="col-sm-12 col-md-6  col-lg-6">
+                <!--I.TipPaciente-->
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="lstTipPaciente" aria-label="Tipo de documento" @bind="@oMedicosCtaBancoE.CodBanco" disabled="@ModoEditaExistente">
+                        @foreach (var item in oListaTablasBancos)
+                        {
+                            <option value="@item.Codigo">@item.Nombre</option>
+                        }
+                    </select>
+                    <label for="floatingSelect">Entidad financiera</label>
+                </div>
+                <!--F.TipPaciente-->
+            </div>
+
+            <div class="col-sm-12 col-md-6  col-lg-6">
+                <!--I.Moneda-->
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="lstMoneda" aria-label="Tipo de documento" @bind="@oMedicosCtaBancoE.Moneda">
+                        @foreach (var item in oListaTablasMoneda)
+                        {
+                            <option value="@item.Codigo">@item.Nombre</option>
+                        }
+                    </select>
+                    <label for="floatingSelect">Moneda</label>
+                </div>
+                <!--F.Moneda-->
+            </div>
+        </div>
+
+        <div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 0px 0px;">
+
+            <div class="col-sm-12 col-md-6  col-lg-6">
+                <!--I.ImporteTarifa-->
+                <div class="omrs-input-group">
+                    <label class="omrs-input-underlined">
+                        <input id="txtImporteTarifa" required="" @bind-value="@oMedicosCtaBancoE.CodCtaBanco" maxlength="20">
+                        <span class="omrs-input-label">Cta bancaria</span>
+                        <span class="omrs-input-helper"></span>
+                    </label>
+                </div>
+                <!--F.ImporteTarifa-->
+            </div>
+            <div class="col-sm-12 col-md-6  col-lg-6">
+                <!--I.Rne-->
+                <div class="omrs-input-group">
+                    <label class="omrs-input-underlined">
+                        <input id="txtRne" required="" @bind-value="@oMedicosCtaBancoE.CodCciBanco" maxlength="20">
+                        <span class="omrs-input-label">Cta CCI</span>
+                        <span class="omrs-input-helper"></span>
+                    </label>
+                </div>
+                <!--F.Rne-->
+            </div>
+
+
+
+        </div>
+    </div>
+
+    <div>
+        <button class="btn btn-outline-success col-lg-2 col-3" @onclick="() => Graba()"><span class="fa-regular fa-save"></span> <span id="TitleView"> Guardar</span></button>
+        <button class="btn btn-outline-primary col-lg-2 col-3" @onclick="() => Cancela()"><spam class="fa fa-arrow-rotate-left"></spam> <span id="TitleView"> Cancelar</span></button>
+
+    </div>
+
+    <MessageModal IdMessage="msgModalError"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+</TabModalHijo>

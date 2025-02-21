@@ -1,0 +1,261 @@
+﻿@page "/Login"
+@page "/Login/{ErrorMessage}"
+@page "/Login/{ErrorMessage}/{Usuario}"
+@page "/Login/{ErrorMessage}/{Usuario}/{Clave}"
+
+
+
+@*Se agrega para poder ver los mensajes que validación, que retornan*@
+@layout MainLogin
+
+
+@*Traer data desde el appsettings.json*@
+@using Ent.Sql.ClinicaE;
+@using Microsoft.AspNetCore.Identity;
+@using Microsoft.AspNetCore.WebUtilities;
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@*Nos permite desplazarnos por las capas e invocar a la tabla tablas*@
+@using Ent.Sql.ClinicaE.UsuariosE
+@using Bus.Clinica.Clinica
+@inject IJSRuntime js;
+
+
+@*@inject NavigationManager NavigationManager;*@
+@*@using Microsoft.AspNetCore.Http*@
+@using System.Text;
+@using RestSharp;
+@using System.Xml;
+@using Web.Clinica.Controllers;
+@inject IHttpContextAccessor httpContextAccessor
+
+@inject NavigationManager NavManager
+
+
+@code {
+    [Parameter]
+    //[SupplyParameterFromQuery]
+    public string ErrorMessage { get; set; } = "";
+
+    [Parameter]
+    //[SupplyParameterFromQuery]
+    public string Usuario { get; set; } = "";
+
+
+    
+    UsuarioAux oUsuarioAux = new UsuarioAux();
+
+    [Parameter] public string Clave { get; set; } = "";
+    [Parameter] public bool RememberMe { get; set; } = false;
+
+    Controllers.Credenciales credenciales = new Controllers.Credenciales();
+    Controllers.LoginController ejecutar = new Controllers.LoginController();
+    private readonly Seguridad SeguridadBL = new Seguridad();
+
+    protected override void OnInitialized()
+    {
+        MostrarBD();
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        //nav.NavigateTo("/login", true);
+        await base.OnInitializedAsync();
+    }
+
+
+    private async Task pLeeTokenAsync()
+    {
+        string resultContent = "";
+        try
+        {
+
+        }
+        catch (Exception ex)
+        {
+            resultContent = ex.Message;
+        }
+    }
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        return base.SetParametersAsync(ParameterView.Empty);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+        }
+    }
+
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        try
+        {
+            //SeguridadBL.Sp_XTMP_Auditor_Insert(NavManager.Uri + " -- NavManager.Uri OnParametersSet(1)");
+            var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+
+            //SeguridadBL.Sp_XTMP_Auditor_Insert(Usuario + " -- Usuario OnParametersSet(2)");
+            string automatico = "";
+
+            if (uri.Segments.Length == 4 && Usuario == "")
+            {
+                Usuario = uri.Segments[3];
+                automatico = uri.Segments[2];
+
+            }
+            //SeguridadBL.Sp_XTMP_Auditor_Insert(Usuario + " -- Usuario OnParametersSet(3)");
+
+            if (Usuario != "" && automatico.Substring(0, 4) == "auto")
+            {
+                oUsuarioAux = ejecutar.pLeeRutaVerAsync(Usuario);
+                if (oUsuarioAux.ruta != "")
+                {
+                    //SeguridadBL.Sp_XTMP_Auditor_Insert(oUsuarioAux.ruta + " -- OnParametersSet(4)" );
+                    ejecutar.LoginAsync2(credenciales, httpContextAccessor.HttpContext, oUsuarioAux);
+                    NavManager.NavigateTo(oUsuarioAux.ruta);
+                }
+            }
+        }
+
+        catch (Exception ex)
+        {
+            //SeguridadBL.Sp_XTMP_Auditor_Insert(oUsuarioAux.ruta + " -- OnParametersSet(5)");
+            if (oUsuarioAux.ruta != "")
+                NavManager.NavigateTo(oUsuarioAux.ruta);
+        }
+    }
+
+
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender == true)
+        {
+            var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        }
+    }
+
+
+
+    private void MostrarBD()
+    {
+        string CadenaConexion = "";
+        string BaseDatosIP = "";
+        string BaseDatosConexion = "";
+        //Se trae el parametro de la cadena de configuración appsettings.json
+        //credenciales.TipoConexion = Configuration.GetValue<string>("WebsiteTitle");
+        CadenaConexion = Configuration.GetSection("ConnectionStrings").GetValue<string>("CnnClinica");
+        //Aqui se limpia la cadena para consultarla en el servidor
+        BaseDatosIP = CadenaConexion.Split(";")[0];
+        BaseDatosIP = BaseDatosIP.Substring(12, BaseDatosIP.Length - 12);
+        //Aqui hace la consulta de la base de datos
+        BaseDatosE oBaseDatosE = new BaseDatosE();
+        oBaseDatosE.Nombre = BaseDatosIP;
+        //Se hace la invocación de la tabla tablas
+        oBaseDatosE = SeguridadBL.GetBaseDatos(oBaseDatosE);
+        //Verifica si existe en la tabla tablas
+        if (oBaseDatosE != null)
+        {
+            //Si existe nos muestra el nombre de la base de datos, caso contrario nos mostrara el ip
+            if (oBaseDatosE.Descripcion != null)
+                BaseDatosConexion = oBaseDatosE.Descripcion;
+            else
+                BaseDatosConexion = BaseDatosIP;
+        }
+        credenciales.TipoConexion = BaseDatosConexion;
+    }
+
+
+}
+
+@{
+
+
+    MetaGlobal.PageTitle = "Iniciar Sesión";
+}
+
+<head>
+    <title>"Iniciar sesión"</title>
+</head>
+
+<body class="hold-transition login-page">
+    <div class="slider-frame">
+        <div class="contenedor">
+            <ul>
+                <li>
+                    <img srcset="/images/banner1.jpg 16w,
+                             /images/banner1.jpg 24w,
+                             /images/banner1.jpg 40w"
+                         sizes="(max-width: 16px) 14px,
+                            (max-width: 24px) 22px,
+                            40px"
+                         src="/images/banner1.jpg" />
+                </li>
+                <li><img src="/images/banner1_v2.jpg" /></li>
+                <li><img src="/images/banner3.jpg" /></li>
+                <li><img src="/images/banner4.jpg" /></li>
+            </ul>
+
+
+
+
+            <div class="centrado">
+                <form id="frmLogin" action="/account/login" method="post">
+
+
+                    <div class="login-card">
+                        @*<h4 class="color-primary">Clínica San Felipe</h4>*@
+                        <img src="/images/logo-clinicasanfelipe.png" style="width: 160px !important;">
+                        <br />
+                        <br />
+                        <p>Ingrese las Credenciales para el Nuevo Sistema de Clinica</p>
+                        <br />
+                        @*Si queremos mostrar informacion de configuración appsettings.json en html   *@
+                        @* <h1> Dato es @(Configuration.GetValue<string>("WebsiteTitle")) </h1>
+                        <h1> Subdato es  @(Configuration.GetSection("ConnectionStrings").GetValue<string>("CnnClinica").Split(";").GetValue(0)) </h1>*@
+
+                        @if (ErrorMessage != null && ErrorMessage != "")
+                        {
+                            <div class="text-danger" style="font-weight:bold;">@ErrorMessage</div>
+                            <br />
+                        }
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text input-radius-left" id="Login-addon"><i class="fa-regular fa-user"></i></span>
+                            <input id="Login" value="@Usuario" name="UsernameClinica" pattern="[A-Za-z0-9_-]{1,20}" type="text" maxlength="20" class="form-control input-radius-right" placeholder="Usuario" aria-label="Login" aria-describedby="Login-addon" style="text-transform:uppercase;" required>
+                            @* valida numeros y letras pattern="[A-Za-z0-9_-]{1,20}" @bind-value="credenciales.usernameClinica" / value="@Usuario" / onchange="javascript:this.value=this.value.toUpperCase();" / style="text-transform:uppercase;"*@
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text input-radius-left" id="Login-addon"><i class="fas fa-lock"></i></span>
+                            <input id="Password" value="@Clave" name="PasswordClinica" type="password" maxlength="20" class="form-control input-radius-right" placeholder="Contraseña" aria-label="Password" aria-describedby="Password-addon" required>
+                            @*@bind-value="credenciales.Password"*@
+                        </div>
+
+                        <input id="IdTipoConexion" @bind="credenciales.TipoConexion" name="tipoConexion" class="form-control" readonly="true" style="text-align:center;">
+                        <br />
+                        <br />
+                        @*  <p>¿Tienes problemas para iniciar sesión?</p>
+                        <p>
+                        Te sugerimos <a href="" class="text-center"><strong>Recuperar tu contraseña</strong></a>
+                        </p>*@
+                        <div class="col-12">
+                            <button id="btnLogin" type="submit" class="btn btn-outline-success col-12">
+                                <span id="idUserCheck" class="fa-solid fa-user-check"></span>
+                                @*<span id="idSpinnerCheck" class="spinner-border text-success"></span>*@
+                                Iniciar Sesión
+                            </button>
+                            @* <a href="/account/ejecuta" action="/account/ejecuta" method="get">
+                            <i class='fa-solid fa-laptop-medical nav_icon'></i><span class="nav_name">Clínica</span>
+                            </a>*@
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>

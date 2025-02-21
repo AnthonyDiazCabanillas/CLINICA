@@ -1,0 +1,436 @@
+﻿@using Ent.Sql.ClinicaE.MedicosE
+@using Ent.Sql.ClinicaE.EspecialidadesE
+@using System.Text.Json
+@using System.Globalization
+@using Web.Clinica.Components
+@using Ent.Sql.ClinicaE.OtrosE
+
+@inject IJSRuntime js
+
+<div style="background-color: #FFF; width: 100%; min-height:300px; border:1px solid #b3d6ffff; border-radius:8px; padding:20px 10px; margin-bottom:20px;">
+
+    <div class="row">
+        @{
+            bool ActNoa = false;
+            if (oMedicoE.FlagEstado == true)
+            {
+                ActNoa = false;
+            }
+            else
+            {
+                ActNoa = true;
+            }
+            ActNoa = FlgNuevo ? FlgNuevo : ActNoa;
+        }
+
+        <!--I.TABLA-->
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 table-responsive" style="min-height:300px;">
+            <table class="table table-hover table-bordered">
+                <thead class="table-primary">
+                    <tr class="fw-bolder">
+                        <th class="col-1 text-center">
+                            <div class="btn-group dropstart">
+                                <button class="btn btn-menu" aria-expanded="false" @onclick="() => Crea()" disabled="@ActNoa">
+                                    <span class="fa-solid fa-plus"></span>
+                                    @*<span class="fa-solid fa-ellipsis-vertical"></span>*@
+                                </button>
+                            </div>
+                        </th>
+                        <th class="col-2 text-center" style="">Código</th>
+                        <th class="col-8 text-center" style="">Empresa</th>
+                        <th class="col-2 text-center" style="">Facturar</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in oListaMedicoxEmpresaE)
+                    {
+                        auxBool = bool.Parse(item.FlgFacturar.ToString());
+                        <tr>
+                            <td class="text-center">
+                                <div class="btn-group dropstart">
+                                    <button class="btn" data-bs-toggle="dropdown" disabled="@ActNoa"  aria-expanded="false">
+                                        <span class="fa-solid fa-grip-vertical"></span> <span id="TitleView"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li class="dropdown-item btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" @onclick="@(()=> {oMedicoxEmpresaE = item; Edita();})"><span class="fa-regular fa-edit "></span> Editar</li>
+                                        <li class="dropdown-item btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#msgModalEliminarContratoConsultorios" @onclick="@(()=>{oMedicoxEmpresaE = item; Elimina();})"><span class="fa-regular fa-trash-can "></span> Eliminar</li>
+                                    </ul>
+                                </div>
+                            </td>
+
+
+                            <td style="text-align:center;">@item.CodEmpresa</td>
+                            <td style="text-align:left;">@item.NombreEmpresa</td>
+                            <td style="text-align:center; vertical-align: middle;">
+                                <input type="checkbox" checked="@auxBool" id="chkFlgPresencialJmxxxxxx" disabled>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+        <!--F.TABLA-->
+    </div>
+
+    <MessageModal IdMessage="msgModalPregunta"
+                  TitleModal="Confirmación"
+                  BodyMessage=@Mensaje
+                  IconMessage=MessageModal.iconMessage.Question
+                  TypeButton=MessageModal.typeButton.OkCancel
+                  OnClose="@ConfirmaElimina">
+    </MessageModal>
+
+</div>
+
+
+<TabModalHijo @ref="@TabModalHijo" Title="Agregar empresa">
+    <div style="min-height: 300px">
+
+        <!--I.Busca Prestación-->
+        <fieldset class="omrs-fieldset">
+            <legend>Empresa</legend>
+            <div class="row group align-items-center">
+                <div class="DivSearchInput">
+
+                    <div class="DivSearch" style="width:100%">
+                        <input id="txtPrestacion" type="search" list="lstPrestaciones" placeholder="Buscar por nombre"
+                               @onkeydown="@EnterBuscar" @onchange="@((args) => Selecciona(args))" disabled="@ModoEditaExistente">
+                        <i id="idBuscarPrestacion" class="fa-solid fa-magnifying-glass" role="button" onclick="@(()=>Buscar())"></i>
+                        <i id="idspinnerPrestacion" class="spinner-border text-success" tipo="spinner" role="spinbutton" style="display:none;">
+                            <span class="visually-hidden">Loading...</span>
+                        </i>
+                    </div>
+                </div>
+                <datalist id="lstPrestaciones" style="width:100%">
+                    @foreach (var lista in oListABuscarMedicos)
+                    {
+                        <option>@lista.CodMedico - @lista.NombresMedico</option>
+                    }
+                </datalist>
+
+            </div>
+        </fieldset>
+        <!--F.Busca Prestación-->
+
+
+
+
+        <div class="row">
+            <div class="row" style="padding:0px 0px 0px 0px; margin:0px 0px 0px 0px;">
+                <div class="col-sm-12 col-md-2  col-lg-2">
+                    <!--I.ImporteTarifa-->
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined">
+                            <input id="txtImporteTarifa" required="" @bind-value="@oMedicoxEmpresaE.CodEmpresa" disabled>
+                            <span class="omrs-input-label">Código</span>
+                            <span class="omrs-input-helper"></span>
+                        </label>
+                    </div>
+                    <!--F.ImporteTarifa-->
+                </div>
+                <div class="col-sm-12 col-md-8  col-lg-8">
+                    <!--I.Rne-->
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined">
+                            <input id="txtRne" required="" @bind-value="@oMedicoxEmpresaE.NombreEmpresa" disabled>
+                            <span class="omrs-input-label">Asistente</span>
+                            <span class="omrs-input-helper"></span>
+                        </label>
+                    </div>
+                    <!--F.Rne-->
+                </div>
+                <div class="col-sm-12 col-md-2  col-lg-2">
+                    <!--I.FlgPresencialJm-->
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="chkFlgPresencialJm" @bind="@oMedicoxEmpresaE.FlgFacturar">
+                        <label class="form-check-label" for="chkFlgPresencialJm"> Facturar</label>
+                    </div>
+                    <!--F.FlgPresencialJm-->
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <button class="btn btn-outline-success col-lg-2 col-3" @onclick="() => Graba()"><span class="fa-regular fa-save"></span> <span id="TitleView"> Guardar</span></button>
+            <button class="btn btn-outline-primary col-lg-2 col-3" @onclick="() => Cancela()"><spam class="fa fa-arrow-rotate-left"></spam> <span id="TitleView"> Cancelar</span></button>
+
+        </div>
+    </div>
+
+    <MessageModal IdMessage="msgModalError"
+                  TitleModal="Error"
+                  IconMessage=MessageModal.iconMessage.Error
+                  TypeButton=MessageModal.typeButton.Ok
+                  EscapeKey="true"
+                  BodyMessage=@Mensaje>
+    </MessageModal>
+
+</TabModalHijo>
+
+
+
+
+
+
+
+
+@code {
+
+    [Parameter]
+    public MedicoE oMedicoE { get; set; }
+
+    [Parameter]
+    public List<MedicoxEmpresaE> oListaMedicoxEmpresaE { get; set; }
+
+    [Parameter]
+    public bool FlgNuevo { get; set; }
+
+
+    private bool ModoEditaExistente { get; set; }
+
+
+
+    string Mensaje = "";
+    string TextoaBuscar = "";
+
+    bool auxBool = false;
+    int? _count = 0;
+
+    MedicoxEmpresaE oMedicoxEmpresaE = new MedicoxEmpresaE();
+
+    private TabModalHijo TabModalHijo { get; set; }
+
+
+    List<MedicosE> oListABuscarMedicos = new List<MedicosE>();
+
+
+    protected override void OnInitialized()
+    {
+    }
+
+
+
+    private void Crea()
+    {
+        ModoEditaExistente = false;
+        oMedicoxEmpresaE = new MedicoxEmpresaE();
+        js.InvokeVoidAsync("ClearText", "txtPrestacion");
+        TabModalHijo.Open();
+    }
+
+    private void Edita()
+    {
+        var options = new JsonSerializerOptions { };
+        string jsonString = System.Text.Json.JsonSerializer.Serialize<MedicoxEmpresaE>(oMedicoxEmpresaE, options);
+        oMedicoxEmpresaE = System.Text.Json.JsonSerializer.Deserialize<MedicoxEmpresaE>(jsonString);
+
+        ModoEditaExistente = true;
+        js.InvokeVoidAsync("ClearText", "txtPrestacion");
+        TabModalHijo.Open();
+    }
+
+
+    private void Elimina()
+    {
+        Mensaje = " ¿Desea eliminar el registro del siguiente asistente: <br> <b>" + oMedicoxEmpresaE.NombreEmpresa + "</b>? ";
+        js.InvokeVoidAsync("ShowMessageModal", true, "msgModalPregunta");
+    }
+
+    private async Task ConfirmaElimina(bool acepted)
+    {
+        try
+        {
+            if (acepted)
+            {
+                oMedicoxEmpresaE.CodMedico = oMedicoE.CodMedico;
+                new Bus.Clinica.Medicos().MedicoxEmpresa_Delete(oMedicoxEmpresaE);
+
+                await js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacionMedicoxEmpresa");
+                //ModalMensaje("ConfirmacionEliminacion", "Informativo");
+                //TabModalHijo.Close();
+            }
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            //ModalMensaje("Catch", "Error");
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+    }
+
+
+    private async Task Graba()
+    {
+        try
+        {
+            oMedicoxEmpresaE.CodMedico = oMedicoE.CodMedico;
+
+            if (ValidaGraba() != "") return;
+
+            if (ModoEditaExistente == true)
+                new Bus.Clinica.Medicos().MedicoxEmpresa_Update(oMedicoxEmpresaE);
+            else
+                new Bus.Clinica.Medicos().MedicoxEmpresa_Insert(oMedicoxEmpresaE);
+
+            js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacionMedicoxEmpresa");
+            TabModalHijo.Close();
+        }
+        catch (Exception e)
+        {
+            Mensaje = e.Message;
+            await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+    }
+
+    private string ValidaGraba()
+    {
+        string resultado = "";
+        if (oMedicoxEmpresaE.CodMedico == "") resultado = resultado + "Seleccione un médico <br>";
+        if (oMedicoxEmpresaE.CodEmpresa == "") resultado = resultado + "La empresa es obligatorio <br>";
+
+        if (ModoEditaExistente == false)
+        {
+            int outPutCount = oListaMedicoxEmpresaE.Where(x => x.CodMedico == oMedicoxEmpresaE.CodMedico
+                                                                 && x.CodEmpresa == oMedicoxEmpresaE.CodEmpresa
+                                                                ).Count();
+            if (outPutCount > 0) resultado = resultado + "Ya existe un registro con la información ingresada <br>";
+        }
+
+        if (resultado != "")
+        {
+            Mensaje = "<b>Por favor verifique lo siguiente:</b> <br>" + resultado;
+            js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+        }
+
+        return resultado;
+    }
+
+
+    private void Cancela()
+    {
+        TabModalHijo.Close();
+    }
+
+    async Task EnterBuscar(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        { await Buscar(); }
+    }
+
+    //private async Task Buscar()
+    //{
+    //    await js.InvokeVoidAsync("ShowSpinnerSearch", "idspinnerPrestacion", "idBuscarPrestacion");
+    //    try
+    //    {
+    //        //if (prestacion.Dscprestacion != null && prestacion.Dscprestacion != "")
+    //        if (TextoaBuscar != "")
+    //        {
+    //            oListABuscarMedicos = new Bus.Clinica.Medicos().EmpresaMedico_ConsultaPorNombreMedico(TextoaBuscar);
+    //            if (oListABuscarMedicos.Count == 0)
+    //            {
+    //                oMedicoxEmpresaE.CodEmpresa = "";
+    //                oMedicoxEmpresaE.NombreEmpresa = "";
+    //                await js.InvokeVoidAsync("ShowMessageModal", true, "msgerrorPrestacion");
+
+    //            }
+    //            await js.InvokeVoidAsync("focusControl", "txtPrestacion");
+    //        }
+    //        else
+    //        { await js.InvokeVoidAsync("ShowMessageModal", true, "msgerrorPrestacion"); }
+    //    }
+    //    catch { }
+    //    await js.InvokeVoidAsync("CloseSpinnerSearch", "idspinnerPrestacion", "idBuscarPrestacion");
+    //}
+
+
+    //protected async Task Selecciona(ChangeEventArgs args)
+    //{
+    //    TextoaBuscar = args.Value.ToString();
+    //    string[] words = TextoaBuscar.Split('-');
+
+    //    if (words.Length == 2)
+    //    {
+    //        List<MedicosE> oListMedicosE_Aux = new Bus.Clinica.Medicos().EmpresaMedico_ConsultaPorCodigoMedico(words[0]);
+    //        if (oListMedicosE_Aux != null)
+    //        {
+    //            if (oListMedicosE_Aux.Count > 0)
+    //            {
+    //                oMedicoxEmpresaE.CodEmpresa = oListMedicosE_Aux[0].CodMedico;
+    //                oMedicoxEmpresaE.NombreEmpresa = oListMedicosE_Aux[0].NombresMedico;
+    //            }
+    //        }
+    //    }
+    //}
+
+
+
+    private async Task Buscar()
+    {
+        await js.InvokeVoidAsync("ShowSpinnerSearch", "idspinnerPrestacion", "idBuscarPrestacion");
+        try
+        {
+            //if (prestacion.Dscprestacion != null && prestacion.Dscprestacion != "")
+
+            if (TextoaBuscar != "")
+            {
+                string[] words = TextoaBuscar.Split('-');
+
+                if (words.Length >= 2)
+                {
+                    SeleccionaPorCodigoMedico(TextoaBuscar);
+                }
+                else
+                {
+                    oListABuscarMedicos = new Bus.Clinica.Medicos().EmpresaMedico_ConsultaPorNombreMedico(TextoaBuscar);
+                    if (oListABuscarMedicos.Count == 0)
+                    {
+                        oMedicoxEmpresaE.CodEmpresa = "";
+                        oMedicoxEmpresaE.NombreEmpresa = "";
+                        await js.InvokeVoidAsync("ShowMessageModal", true, "msgerrorPrestacion");
+
+                    }
+                    await js.InvokeVoidAsync("focusControl", "txtPrestacion");
+                }
+            }
+            else
+            { 
+                await js.InvokeVoidAsync("ShowMessageModal", true, "msgerrorPrestacion"); 
+            }
+        }
+        catch { }
+        await js.InvokeVoidAsync("CloseSpinnerSearch", "idspinnerPrestacion", "idBuscarPrestacion");
+    }
+
+
+    protected async Task Selecciona(ChangeEventArgs args)
+    {
+        TextoaBuscar = args.Value.ToString();
+        SeleccionaPorCodigoMedico(TextoaBuscar);
+    }
+
+    protected void SeleccionaPorCodigoMedico(string TextoaBuscar)
+    {
+        string[] words = TextoaBuscar.Split('-');
+
+        if (words.Length >= 2)
+        {
+            List<MedicosE> oListMedicosE_Aux = new Bus.Clinica.Medicos().EmpresaMedico_ConsultaPorCodigoMedico(words[0]);
+            if (oListMedicosE_Aux != null)
+            {
+                if (oListMedicosE_Aux.Count > 0)
+                {
+                    oMedicoxEmpresaE.CodEmpresa = oListMedicosE_Aux[0].CodMedico;
+                    oMedicoxEmpresaE.NombreEmpresa = oListMedicosE_Aux[0].NombresMedico;
+                }
+            }
+        }
+    }
+
+
+}
+
+
+
+

@@ -1,0 +1,1372 @@
+﻿@page "/Clinica/HistoriaClinica/Kardex/DatosPacientesHospitalizados"
+@attribute [Authorize]
+
+@inject IJSRuntime js
+@using Bus.Utilities
+@using Ent.Sql.ClinicaE
+@using Ent.Sql.ClinicaE.HospitalE
+@using RestSharp
+@using System.ComponentModel.DataAnnotations
+@using Web.Clinica.Data
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<AuthorizeView >
+	<Authorized Context="AuthenticationState">
+
+	
+	@code 
+	{
+			/*Permite obtener el valor del parametro*/
+		[Parameter]
+		[SupplyParameterFromQuery]
+		public string? Key { get; set; }
+		[CascadingParameter]
+		PageIndexStateProvider State { get; set; }
+		/*Variable de datos del modelo */
+		ApiRutaConexion _app = new ApiRutaConexion();
+		HospitalE oHospital = new HospitalE();
+		List<IndicacionesMedicasE> oListIndicacionesMedica = new List<IndicacionesMedicasE>();
+		List<IndicacionesMedicasE> oListCabecera = new List<IndicacionesMedicasE>();
+		/*Para datos Historicos, para segmentar la data se utilizará LinQ*/
+		IEnumerable <IndicacionesMedicaDetalleE>  oListGeneral =new List<IndicacionesMedicaDetalleE>();
+		IEnumerable<IndicacionesMedicaDetalleE> olistFechas =new List<IndicacionesMedicaDetalleE>();
+		IEnumerable<IndicacionesMedicaDetalleE> olistFechasPaginado = new List<IndicacionesMedicaDetalleE>();
+		IEnumerable<IndicacionesMedicaDetalleE> oListTipos = new List<IndicacionesMedicaDetalleE>();
+		IEnumerable<IndicacionesMedicaDetalleE> oListGeneralDetalle = new List<IndicacionesMedicaDetalleE>();
+		IEnumerable<IndicacionesMedicaDetalleE> oListGeneralCabaeceraDetalle = new List<IndicacionesMedicaDetalleE>();
+		IEnumerable<ProgramacionKardexE> oListProgramacion;
+
+		IndicacionesMedicasE _objindicacionMedica = new IndicacionesMedicasE();
+		IndicacionesMedicasE _objindicacionMedicaJson = new IndicacionesMedicasE();
+		KardexHospitalarioE _objkardex = new KardexHospitalarioE();
+		/*Permite obtener los valores guardados en las cookies ClaimsPrincipal*/
+		private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
+		private Claim _ObjClaim; 
+		/**/
+		int cab_count = 0;
+		int det_count = 0;
+		decimal? _Peso = 0M;
+		string _Error = "";
+		string _MensajeBody { get; set; } = "";
+		string _TitleAlergia { get; set; } = "";
+		MarkupString _BodyAlergia;
+		string[] _BodyDiagnostico;
+
+		private int itemsPerPage = 10;
+		private int totalPages = 1;
+		/*Para registros de kardex*/
+ 		/*otros*/
+		int? _ideMedic; int? _ideReceta; string? _codatencion;
+		int? _count = 0; 
+		int? _total = 0;
+		/**/
+		/*Filtros de búsqueda kardex*/
+		private bool _Check { get; set; }= false;
+
+		/*filtro de busqueda*/
+		private DateTime _FechaInicio { get; set; } = DateTime.Now.Date; 
+		private DateTime _FechaFin { get; set; } = DateTime.Now.Date;
+ 		/**/
+		List<int> _ListaNumerica = new List<int>();
+ 		int _IdListNumeric { get; set; } = 1;
+		string _periodoNumeric = "AM";
+		bool _boolaceptacion = false;
+		string _fechaInciofiltro ;
+		string _fechaFinFiltro;
+		List<string> _listarHorario = new List<string>();
+
+		bool _ReadOnly;
+		bool valueIncidcacion { get; set;} = true;
+		bool valueInformacionPaciente { get; set;} = false;
+
+		string _readonlyval = "readonly";
+
+		bool recorrer = true;
+
+		protected override void OnInitialized()
+		{
+			Key = Key ?? "";
+			cab_count = 0;
+			det_count = 0;
+			LeerDatosCookie();
+			//_UserRegistra =  
+			js.InvokeVoidAsync("fnActualizarTitulo", "Control de pacientes hospitalizados - enfermería");
+			Dato_Paciente(Key);
+			Llenar_Lista();
+			Dato_IndicacionesMedica(Key);
+			//DatosKardexHistoricos(Key);
+			traer_Programado(Key);
+			_fechaInciofiltro = DateTime.Now.ToString("yyyy-MM-dd");
+			_fechaFinFiltro = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd");
+			_ReadOnly = true;	
+			recorrer = true;
+			base.OnInitialized();			
+		}
+
+		async Task Llenar_Lista()
+		{
+			try
+			{
+				for (int i = 1; i <= 12; i++)
+				{
+					_ListaNumerica.Add(i);
+				}
+			}
+			catch (Exception ex)
+			{
+			}
+		}
+
+		async Task LeerDatosCookie()
+		{
+			try
+			{
+				var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+				var user = authState.User;
+				if (user.Identity.IsAuthenticated)
+				{
+					claims = user.Claims;
+				}
+				_ObjClaim = (from n in claims where n.Type == ClaimTypes.NameIdentifier select n).FirstOrDefault();				 
+			}
+			catch (Exception ex) 
+			{ 
+
+            }
+        }
+
+		protected override void OnAfterRender(bool firstRender)
+		{
+
+
+			//EventType.Add("OnAfterRender is called");
+			if(firstRender)
+			{
+				StateHasChanged();	
+			}
+
+			if (oHospital.Ide_kardexhospitalizacion == 0)
+			{
+				if(_boolaceptacion == false)
+				{
+					_boolaceptacion = true;
+					js.InvokeVoidAsync("ShowMessageModal", true, "ControlPesoPaciente");
+				}
+			}
+
+
+
+		} 
+
+		async Task Dato_Paciente(string _key)
+		{
+			try
+			{
+				var _cliente = new RestClient(MetaGlobal.RutaApiClinica + "KardexHospitalizacion/API/Clinica/DatosPacienteHospitalizado?_Key=" + _key);
+				var _request = new RestRequest();
+				_request.Method = Method.Get;
+				_request.AddHeader("Authorization", Criptography.EncryptConectionString(_app.Key));
+				RestResponse _response = _cliente.Execute(_request);
+				oHospital = JsonConvert.DeserializeObject<HospitalE>(_response.Content);
+				if (oHospital != null) {
+					if (oHospital.EstadoAlergia == "1")
+					{
+						_TitleAlergia = "Presenta alergias";
+						_BodyAlergia = new MarkupString(oHospital.alergias);
+
+					}
+					else
+					{
+						_TitleAlergia = "";
+						_BodyAlergia = new MarkupString();
+
+					}
+
+					_BodyDiagnostico = oHospital.Diagnostico.Split("PP");
+					_Peso = oHospital.PesoPaciente;
+				}
+				if (string.IsNullOrWhiteSpace(oHospital.CodAtencion)) 
+				{
+					oHospital.FechaNacimiento = DateTime.Now;
+					oHospital.FechaIngresoHabitacion = DateTime.Now;
+				}
+
+			}
+			catch (Exception)
+			{
+				oHospital = new HospitalE();
+				_TitleAlergia = "";
+				_BodyAlergia = new MarkupString();				
+			}
+		}
+
+		async Task traer_Programado(string _key)
+		{
+			try 
+			{
+				oListProgramacion = new List<ProgramacionKardexE>();
+				var _cliente = new RestClient(MetaGlobal.RutaApiClinica + "KardexHospitalizacion/API/Clinica/KardexHistoricoPacienteHospitalarioPRogramado?_Key=" + _key);
+				var _request = new RestRequest();
+				_request.Method = Method.Get;
+				_request.AddHeader("Authorization", Criptography.EncryptConectionString(_app.Key));
+				RestResponse _response = _cliente.Execute(_request);
+				oListProgramacion = JsonConvert.DeserializeObject<List<ProgramacionKardexE>>(_response.Content);
+			} 
+			catch (Exception ex)
+			{ 
+				oListProgramacion = new List<ProgramacionKardexE>();				   
+			}
+		}
+
+		async Task Dato_IndicacionesMedica(string _key)
+		{
+			try
+			{
+				oListCabecera = new List<IndicacionesMedicasE>();
+				oListIndicacionesMedica = new List<IndicacionesMedicasE>();
+				var _cliente = new RestClient(MetaGlobal.RutaApiClinica + "KardexHospitalizacion/API/Clinica/PacienteIndicacionesMedica?_Key=" + _key);
+				var _request = new RestRequest();
+				_request.AddHeader("Authorization", Criptography.EncryptConectionString(_app.Key));
+				_request.Method = Method.Get;
+				RestResponse _response = _cliente.Execute(_request);
+				oListIndicacionesMedica = JsonConvert.DeserializeObject<List<IndicacionesMedicasE>>(_response.Content);
+
+				oListCabecera = (from n in oListIndicacionesMedica select new { Id = n.IdTipo, Tipo = n.NombreTipo, Icons = n.Icons }).ToList()
+				.GroupBy(g => new { g.Tipo, g.Id, g.Icons })
+				.Select(s => new IndicacionesMedicasE { IdTipo = s.FirstOrDefault().Id, NombreTipo = s.FirstOrDefault().Tipo, Icons = s.FirstOrDefault().Icons, ide_receta = s.Sum(s => s.Id) }).OrderBy(o=>o.IdTipo).ToList();
+			}
+			catch (Exception ex) { 
+				oListIndicacionesMedica = new List<IndicacionesMedicasE>(); }
+		}
+
+		async Task DatosKardexHistoricos(string _key)
+		{
+			try
+			{
+				oListGeneral = new List<IndicacionesMedicaDetalleE>();
+				olistFechas = new List<IndicacionesMedicaDetalleE>();
+				oListTipos = new List<IndicacionesMedicaDetalleE>();
+				olistFechasPaginado = new List<IndicacionesMedicaDetalleE>();
+				State = new PageIndexStateProvider();
+
+
+				var _cliente = new RestClient(MetaGlobal.RutaApiClinica + "KardexHospitalizacion/API/Clinica/KardexHistoricoPacienteHospitalario?_Key=" + _key);
+				var _request = new RestRequest();
+				_request.AddHeader("Authorization", Criptography.EncryptConectionString(_app.Key));
+				_request.Method = Method.Get;
+				RestResponse _response = _cliente.Execute(_request);
+				oListGeneral = JsonConvert.DeserializeObject<List<IndicacionesMedicaDetalleE>>(_response.Content);
+
+                if (oListGeneral.Count() > 0)
+                {
+                    olistFechas = (from n in oListGeneral select new { Fecha = n.Fecha, Peso = n.peso })
+                    .GroupBy(g => new { g.Fecha, g.Peso })
+                    .Select(s => new IndicacionesMedicaDetalleE { Fecha = s.FirstOrDefault().Fecha, peso = "- Peso: " + s.FirstOrDefault().Peso + " Kg" }).OrderByDescending(o => o.Fecha).ToList();
+                    if (olistFechas.Count() > 0 || olistFechas != null)
+                    {
+                        olistFechasPaginado = new List<IndicacionesMedicaDetalleE>();
+                        totalPages = (int)(olistFechas.Count() / itemsPerPage);
+                        State.PageIndex = 1;
+                        var skipCount = itemsPerPage * (State.PageIndex - 1);
+                        olistFechasPaginado = olistFechas.Skip(skipCount).Take(itemsPerPage);
+                    }
+
+                    oListTipos = (from n in oListGeneral select new { Fecha = n.Fecha, IdTipo = n.i_Idtipo, Tipo = n.dsc_tipo, Icons = n.Icons })
+                    .GroupBy(g => new { g.Fecha, g.IdTipo, g.Tipo, g.Icons }).Select(s => new IndicacionesMedicaDetalleE
+                    {
+                        Fecha = s.FirstOrDefault().Fecha,
+                        i_Idtipo = s.FirstOrDefault().IdTipo,
+                        dsc_tipo = s.FirstOrDefault().Tipo,
+                        Icons = s.FirstOrDefault().Icons,
+                    }).OrderBy(o => o.i_Idtipo).ToList();
+                }
+
+			}
+			catch (Exception ex) 
+			{
+				oListGeneral = new List<IndicacionesMedicaDetalleE>();
+				olistFechas = new List<IndicacionesMedicaDetalleE>();
+				oListTipos = new List<IndicacionesMedicaDetalleE>();
+				olistFechasPaginado = new List<IndicacionesMedicaDetalleE>();
+
+			}
+		}
+
+		void Kardex_PacienteCabecera()
+		{
+			try
+			{
+				_boolaceptacion = true;
+				ocultarModal();
+				if (_Peso < 1 || string.IsNullOrWhiteSpace(_Peso.ToString()))
+				{	
+					_MensajeBody  = "Ingrese un valor mayor a cero*";
+					js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+				}
+				else if (_Peso > 550)
+				{ 					
+					_MensajeBody = "Actualmente se maneja un rango de hasta 550 kg, por favor ingrese in peso válido";
+					js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+				}
+				else
+				{					
+					_objkardex.codatencion = oHospital.CodAtencion;
+					_objkardex.codpaciente = oHospital.CodPaciente;
+					_objkardex.ide_kardexhospitalario = 0;
+					_objkardex.peso = _Peso;
+					_objkardex.usr_registra = _ObjClaim.Value.ToString();
+					_objkardex.estado = "0";
+					_objkardex.eliminado = 0;
+					_objkardex.order = 1;
+
+					var _Json = JsonConvert.SerializeObject(_objkardex);
+					var client = new RestClient(MetaGlobal.RutaApiClinica + "KardexHospitalizacion/API/Clinica/RegistroKardexCabecera");
+					var request = new RestRequest();
+					request.AddHeader("Authorization", Criptography.EncryptConectionString(_app.Key));
+					request.Method = Method.Post;
+					request.AddHeader("Accept", "application/json");
+					request.AddJsonBody(_Json);
+					RestResponse response = client.Execute(request);
+					var JsonGet = JsonConvert.DeserializeObject<RespuestaJsonE>(response.Content);
+					bool _exito = JsonGet.exito;
+					string Mensaje = JsonGet.message;
+					if (_exito == true)
+					{
+						_MensajeBody = "Registro Correcto";
+						js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacion");						
+					}
+					else {
+						_MensajeBody = Mensaje;
+						js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+					}
+
+				}
+			}
+			catch (Exception ex) 
+			{
+				_MensajeBody = ex.Message;
+				js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+			}
+		}
+
+		async Task Kardex_RegistrosDetalle(int? ideMedic, int? ideReceta, string? codatencion) 
+		{
+			try 
+			{
+				_boolaceptacion = true;
+				_objindicacionMedicaJson.ide_KardexHospitalario = oHospital.Ide_kardexhospitalizacion;
+
+				if (_objindicacionMedicaJson.ide_KardexHospitalario == 0 || _objindicacionMedicaJson.ide_KardexHospitalario == null)
+				{
+					_MensajeBody = "Aún no se ha ingresado el peso del paciente para la fecha " + DateTime.Now.ToShortDateString();
+					await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+				}
+				else 
+				{ 
+					_ideMedic = ideMedic;
+					_ideReceta = ideReceta;
+					_codatencion = codatencion;
+					_objindicacionMedicaJson = new IndicacionesMedicasE();
+					_objindicacionMedicaJson = (from n in oListIndicacionesMedica where n.ide_medicamentorec == ideMedic select n).FirstOrDefault();
+					_objindicacionMedicaJson.HoraSecundaria = 0;
+					_MensajeBody = "Está seguro de confirmar la administración y/o atención de la indicación médica: \n\n" + _objindicacionMedicaJson.NombreTipo + " - " + _objindicacionMedicaJson.dsc_producto;
+					await js.InvokeVoidAsync("NotFoundSpinner", "msgModalPregunta");
+				}	 
+			} 
+			catch (Exception ex) { 
+
+			}
+		}
+
+		async Task ProgramarHorarios(int? ideMedic, int? ideReceta, string? codatencion)
+		{
+			try 
+			{
+				_readonlyval = "readonly";
+				_boolaceptacion = true;
+				_objindicacionMedicaJson.ide_KardexHospitalario = oHospital.Ide_kardexhospitalizacion;
+				_listarHorario = new List<string>();
+				if (_objindicacionMedicaJson.ide_KardexHospitalario == 0 || _objindicacionMedicaJson.ide_KardexHospitalario == null)
+				{
+					_MensajeBody = "Aún no se ha ingresado el peso del paciente para la fecha " + DateTime.Now.ToShortDateString();
+					await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+				}
+				else 
+				{					
+					_ideMedic = ideMedic;
+					_ideReceta = ideReceta;
+					_codatencion = codatencion;
+					_objindicacionMedicaJson = new IndicacionesMedicasE();
+					_objindicacionMedicaJson = (from n in oListIndicacionesMedica where n.ide_medicamentorec == ideMedic select n).FirstOrDefault();
+					_MensajeBody = _objindicacionMedicaJson.dsc_producto;
+
+					await js.InvokeVoidAsync("ShowMessageModal", true, "MsjRegistrarKardex");
+				}	 
+			} 
+			catch (Exception ex) { 
+
+            }
+        }
+
+		async Task ConfirmarRegistroKardex(bool acepted)
+		{
+			try
+			{
+				if (acepted)
+				{
+
+					_objindicacionMedicaJson.UserRegistro = _ObjClaim.Value.ToString();
+					_objindicacionMedicaJson.horaAtencion = "";
+					_objindicacionMedicaJson.ide_KardexHospitalario = oHospital.Ide_kardexhospitalizacion;					 
+
+					var _Json = JsonConvert.SerializeObject(_objindicacionMedicaJson);
+					var client = new RestClient(MetaGlobal.RutaApiClinica + "KardexHospitalizacion/API/Clinica/RegistroKardexDetalle");
+					var request = new RestRequest();
+					request.AddHeader("Authorization", Criptography.EncryptConectionString(_app.Key));
+					request.Method = Method.Post;
+					request.AddHeader("Accept", "application/json");
+					request.AddJsonBody(_Json);
+					RestResponse response = client.Execute(request);
+					var JsonGet = JsonConvert.DeserializeObject<RespuestaJsonE>(response.Content);
+					bool _exito = JsonGet.exito;
+					string Mensaje = JsonGet.message;
+					if (_exito == true)
+					{ 
+						await Dato_IndicacionesMedica(Key);
+						//await DatosKardexHistoricos(Key);
+						await traer_Programado(Key);
+						_MensajeBody = Mensaje;
+						await js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacion2");						
+					}
+					else {
+						_MensajeBody = Mensaje;
+						await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+					}			
+				}
+				else
+				{
+					_objindicacionMedicaJson = (from n in oListIndicacionesMedica where n.ide_medicamentorec == _ideMedic select n).FirstOrDefault();
+					//para los casos de stat y prn se debe ingresar hora de aplicación y observación
+					_objindicacionMedicaJson._Seleccion = false;
+
+                    _ideMedic = 0;
+                    _ideReceta = 0;
+                    _codatencion = "";
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                _MensajeBody = e.ToString();
+            }
+        }
+
+		async Task ConfirmarregistroKardex2(bool acepted)
+		{ 
+			try
+			{
+				if (acepted)
+				{
+					int Hora = _IdListNumeric;
+					if(_periodoNumeric=="PM")
+					{
+						if(Hora == 12)
+						{
+							Hora = 12;
+						}
+						else {
+							Hora = Hora + 12;
+						}
+					}
+
+					if(_periodoNumeric=="AM" && Hora  == 12)
+					{
+						Hora = 0;
+					}
+
+					_objindicacionMedicaJson.UserRegistro = _ObjClaim.Value.ToString();
+					_objindicacionMedicaJson.HoraSecundaria = Hora;
+					_objindicacionMedicaJson.horaAtencion = "PROG";
+					_objindicacionMedicaJson.i_horasugerida = 3;
+					_objindicacionMedicaJson.ide_KardexHospitalario = oHospital.Ide_kardexhospitalizacion;
+
+
+					var _Json = JsonConvert.SerializeObject(_objindicacionMedicaJson);
+					var client = new RestClient(MetaGlobal.RutaApiClinica + "KardexHospitalizacion/API/Clinica/RegistroKardexDetalle");
+					var request = new RestRequest();
+					request.Method = Method.Post;
+					request.AddHeader("Authorization", Criptography.EncryptConectionString(_app.Key));
+					request.AddHeader("Accept", "application/json");
+					request.AddJsonBody(_Json);
+					RestResponse response = client.Execute(request);
+					var JsonGet = JsonConvert.DeserializeObject<RespuestaJsonE>(response.Content);
+					bool _exito = JsonGet.exito;
+					string Mensaje = JsonGet.message;
+					if (_exito == true)
+					{
+						await Dato_IndicacionesMedica(Key);
+						//await DatosKardexHistoricos(Key);
+						await traer_Programado(Key);
+						_MensajeBody = "Registro Correcto";
+						await js.InvokeVoidAsync("CloseModalMessage");
+						await js.InvokeVoidAsync("CloseModal");
+						await js.InvokeVoidAsync("NotFoundSpinner", "msgModalConfirmacion2");			
+					}
+					else {
+						_MensajeBody = Mensaje;
+						await js.InvokeVoidAsync("NotFoundSpinner", "msgModalError");
+					}									
+				}
+				else
+				{
+					_objindicacionMedicaJson = (from n in oListIndicacionesMedica where n.ide_medicamentorec == _ideMedic select n).FirstOrDefault();
+					//para los casos de stat y prn se debe ingresar hora de aplicación y observación
+					_objindicacionMedicaJson._Seleccion = false;
+
+					_ideMedic = 0;
+					_ideReceta = 0;
+					_codatencion = "";
+					return;
+				}
+			}
+			catch (Exception e)
+			{
+				_MensajeBody = e.ToString();
+			}
+
+		}
+
+		async Task ConfirmaError(bool acepted)
+		{
+			try
+			{
+
+				_objindicacionMedicaJson._Seleccion = false;
+
+				_ideMedic = 0;
+				_ideReceta = 0;
+				_codatencion = "";
+				return;
+			}
+			catch (Exception e)
+			{
+				_MensajeBody = e.ToString();
+			}
+		}
+		//Recarga Página
+		async Task Actualizarpagina()
+		{ 
+			await js.InvokeVoidAsync("locationreload"); 
+		}
+
+		async Task  SelectedPage(int selectedPageIndex)
+		{
+			if (olistFechas.Count() > 0 || olistFechas != null)
+			{
+				State.PageIndex = selectedPageIndex;
+				var skipCount = itemsPerPage * (State.PageIndex - 1);
+				olistFechasPaginado = olistFechas.Skip(skipCount).Take(itemsPerPage);
+			}
+
+		}
+
+		void Buscar_Datos_Kardex()
+		{
+			try 
+			{
+				recorrer = false;
+				bool _v = _Check;
+				oListGeneral = new List<IndicacionesMedicaDetalleE>();
+				olistFechas = new List<IndicacionesMedicaDetalleE>();
+				oListTipos = new List<IndicacionesMedicaDetalleE>();
+				olistFechasPaginado = new List<IndicacionesMedicaDetalleE>();
+				State = new PageIndexStateProvider();
+				//_FechaInicio.Date && w.Fecha <= _FechaFin.Date
+				var fechaI = _FechaInicio.Date.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.CurrentCulture);
+				var fechaF = _FechaFin.Date.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.CurrentCulture);
+
+				string busq =Criptography.EncryptConectionString( fechaI + "_" + fechaF);
+
+				RestClient  _cliente;
+				if(_v == false)
+				{
+					_cliente = new RestClient(MetaGlobal.RutaApiClinica + "KardexHospitalizacion/API/Clinica/KardexHistoricoPacienteHospitalario?_Key=" + Key);
+				}
+				else
+				{
+					_cliente = new RestClient(MetaGlobal.RutaApiClinica + "KardexHospitalizacion/API/Clinica/KardexHistoricoPacienteHospitalario2?_Key=" + Key + "&valor=" +  busq);
+				}
+				var _request = new RestRequest();
+				_request.AddHeader("Authorization", Criptography.EncryptConectionString(_app.Key));
+				_request.Method = Method.Get;
+				RestResponse _response = _cliente.Execute(_request);
+				oListGeneral = JsonConvert.DeserializeObject<List<IndicacionesMedicaDetalleE>>(_response.Content);
+
+				if (oListGeneral.Count() > 0) 
+				{
+					olistFechas = (from n in oListGeneral select new { Fecha = n.Fecha, Peso = n.peso})
+					.GroupBy(g => new { g.Fecha, g.Peso})
+					.Select(s => new IndicacionesMedicaDetalleE { Fecha = s.FirstOrDefault().Fecha, peso = "- Peso: " + s.FirstOrDefault().Peso + " Kg"}).OrderByDescending(o=>o.Fecha).ToList();
+					if (olistFechas.Count() > 0 || olistFechas != null) 
+					{
+						olistFechasPaginado = new List<IndicacionesMedicaDetalleE>();
+						totalPages = (int)(olistFechas.Count() / itemsPerPage);
+						State.PageIndex = 1;
+						var skipCount = itemsPerPage * (State.PageIndex - 1);
+						olistFechasPaginado = olistFechas.Skip(skipCount).Take(itemsPerPage);
+					}
+
+					oListTipos = (from n in oListGeneral select new { Fecha = n.Fecha, IdTipo = n.i_Idtipo, Tipo = n.dsc_tipo, Icons = n.Icons })
+					.GroupBy(g => new { g.Fecha, g.IdTipo, g.Tipo, g.Icons }).Select(s => new IndicacionesMedicaDetalleE {
+						Fecha = s.FirstOrDefault().Fecha,
+						i_Idtipo = s.FirstOrDefault().IdTipo,
+						dsc_tipo = s.FirstOrDefault().Tipo,
+						Icons = s.FirstOrDefault().Icons,
+					}).OrderBy(o => o.i_Idtipo).ToList();
+				}
+			} 
+			catch (Exception ex) 
+			{ 
+
+			}
+		}
+
+		void ocultarModal()
+		{
+			try 
+			{
+
+				js.InvokeVoidAsync("CloseModalMessage");
+			} 
+			catch (Exception ex) 
+			{
+			}
+		}
+
+		void Onfocus()
+		{
+		}
+
+		async Task onchangefiltrofechaInicio(ChangeEventArgs e) 
+		{
+			try
+			{
+				var _fechaRecibida = Convert.ToDateTime(e.Value);
+				_fechaInciofiltro   =  _fechaRecibida.ToString("yyyy-MM-dd");
+				_FechaInicio = _fechaRecibida;
+				if (_fechaRecibida > _FechaFin)
+				{					
+					_FechaFin = _fechaRecibida;
+				}
+			}
+			catch (Exception ex) 
+			{ 
+
+			}
+		}
+
+		async Task OnchangeFilterCheckBox(ChangeEventArgs e)
+		{
+			try
+			{
+				var _boleano = Convert.ToBoolean(e.Value);
+				_Check = _boleano;
+				if(_Check== true)
+				{
+					_ReadOnly = false;
+				}
+				else{
+					_ReadOnly = true;
+				}
+			}
+			catch (Exception ex) { }
+		}
+
+		async Task calcularHorarios()
+		{
+			try
+			{
+				//int _IdListNumeric { get; set; } = 1;
+				//string _periodoNumeric = "AM";
+				_readonlyval = "";
+				int Hora = _IdListNumeric;
+				if(_periodoNumeric=="AM" && Hora == 12)
+				{
+					Hora = 0;
+				}
+
+
+				if(_periodoNumeric=="PM")
+				{
+					if(Hora == 12)
+					{
+						Hora = 12;
+					}
+					else
+					{
+						Hora = Hora + 12;
+					}					
+				}
+				_listarHorario = new List<string>();
+				var variable = _objindicacionMedicaJson;
+				int numeracionfrecuencia = variable.NumeracionFrecuencia??0;
+				int sumarhora = int.Parse(variable.num_frecuencia.ToString());
+				DateTime _horatime;
+				System.Globalization.CultureInfo culture = System.Globalization.CultureInfo.GetCultureInfo("es-PE"); //new System.Globalization.CultureInfo("en-US");
+				_horatime = DateTime.Parse(Hora.ToString() + ":00:00", culture);
+
+
+				for (int i = 0; i < numeracionfrecuencia; i++)
+				{
+					string horaMostrar = "";
+					if(i > 0)
+					{
+						_horatime = _horatime.AddHours(sumarhora);	
+					}
+					horaMostrar = _horatime.ToString("hh:mm:ss tt");
+					_listarHorario.Add(horaMostrar);
+
+				}
+			}
+			catch (Exception ex) 
+			{
+
+			}
+
+		}
+
+		async Task pacienteonclose(){
+			try {
+				 	await js.InvokeVoidAsync("CloseModalMessage");
+						await js.InvokeVoidAsync("CloseModal");
+			} catch  { }
+		}
+
+	}
+	
+		<h5 class="fw-bold" style="margin-left:10px;">
+			<a href="/Clinica/HistoriaClinica/Kardex/ConsultaPacienteHospitalizado">
+				<span class="rounded-circle btn btn-sm btn-success">
+					<i class="fa fa-arrow-left" style="color:white;" aria-hidden="true">
+					</i>
+				</span>
+			</a>
+			<label class="Title-page-info">Kardex</label>
+		</h5>	
+		
+		<div class="bg-light" style="margin-top:20px;">
+			<div class="form-bg" style="border:0px;">
+				<div class="container-fluid">
+					<!--PRESENTACION-->
+					<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 buscar-menuNuevo" style="border-radius:25px !important;">
+						<div class="input-group">
+							<div class="form-group card card-menu-search">
+								<div class="col-12">
+									<div class="contenedor">
+ 										<CollapsePanelComponent 
+											Title="@oHospital.NombresPaciente"	Title2="@_TitleAlergia"	Icons="fa fa-user"
+											Separador=":"
+											ButtonText="Datos del paciente"
+											IdTab="Informacion"
+											Collapsed="false">										
+										    <ChildContent>
+												<div class="card-body">
+													<div class="row">
+														<div class="col-lg-2 col-xs-6 col-sm-6 form-group div-contenedor">
+															<div><label class="title-dato">Tipo de Documento</label></div>
+															<div><label class="body-dato">@oHospital.TipoDocumento</label></div>
+														</div>
+														<div class="col-lg-2 col-xs-6 col-sm-6 form-group div-contenedor">
+															<div><label class="title-dato">N° de documento</label></div>
+															<div><label class="body-dato">@oHospital.DocumentoIdentidad</label></div>
+														</div>
+														<div class="col-lg-6 col-xs-12 col-sm-12 form-group div-contenedor">
+															<div><label class="title-dato">Nombres</label></div>
+															<div><label class="body-dato">@oHospital.NombresPaciente</label></div>
+														</div>
+														<div class="col-lg-2 col-xs-6 col-sm-3 form-group div-contenedor">
+															<div><label class="title-dato">Edad</label></div>
+															<div><label class="body-dato">@oHospital.Edad</label></div>
+														</div>
+														<div class="col-lg-2 col-xs-6 col-sm-3 form-group div-contenedor">
+															<div><label class="title-dato">Fecha de nacimiento</label></div>
+															<div><label class="body-dato">@oHospital.FechaNacimiento.Value.ToShortDateString()</label></div>
+														</div>
+														<div class="col-lg-2 col-xs-6 col-sm-3 form-group div-contenedor">
+															<div><label class="title-dato">Télefono</label></div>
+															<div><label class="body-dato">@oHospital.Telefono</label></div>
+														</div>
+														<div class="col-lg-2 col-xs-6 col-sm-3 form-group div-contenedor">
+															<div><label class="title-dato">Género</label></div>
+															<div><label class="body-dato">@oHospital.Sexo</label></div>
+														</div>
+														<div class="col-lg-2 col-xs-6 col-sm-3 form-group div-contenedor">
+															<div><label class="title-dato">Estado civil</label></div>
+															<div><label class="body-dato">@oHospital.CodCivil</label></div>
+														</div>
+														<div class="col-lg-2 col-xs-6 col-sm-3 form-group div-contenedor">
+															<div><label class="title-dato">Habitación</label></div>
+															<div><label class="body-dato">@oHospital.Cama</label></div>
+														</div>
+														<div class="col-lg-2 col-xs-6 col-sm-3 form-group div-contenedor">
+															<div><label class="title-dato">Fecha Hospitalización</label></div>
+															<div><label class="body-dato">@oHospital.FechaIngresoHabitacion.Value.ToShortDateString()</label></div>
+														</div>
+														<div class="col-lg-2 col-xs-6 col-sm-3 form-group div-contenedor">
+															<div><label class="title-dato">N° días Hospitalizado</label></div>
+															<div><label class="body-dato-alert">@oHospital.DiasHospitalizados</label></div>
+														</div>
+														<div class="col-lg-2 col-xs-6 col-sm-3 form-group div-contenedor">
+															<div><label class="title-dato">N° historia</label></div>
+															<div><label class="body-dato">@oHospital.Ide_Historia</label></div>
+														</div>
+														<div class="col-lg-4 col-xs-6 col-sm-6 form-group div-contenedor">
+															<div><label class="title-dato">Aseguradora</label></div>
+															<div><label class="body-dato">@oHospital.NombreAseguradora</label></div>
+														</div>
+														<div class="col-lg-2 col-xs-6 col-sm-3 form-group div-contenedor">
+															<div><label class="title-dato">Código atención</label></div>
+															<div><label class="body-dato">@oHospital.CodAtencion</label></div>
+														</div>
+														<div class="col-lg-6 col-xl-6 col-xs-12 col-md-12 col-sm-12 form-group div-contenedor">
+															<div><label class="title-dato">Diagnóstico</label></div>
+															<div>
+																<label class="body-dato">
+																	@foreach(var item in _BodyDiagnostico)
+																	{
+																		if (!string.IsNullOrWhiteSpace(item)) {
+																			<label>@item</label>
+																			<br />
+																		}
+																	}
+																</label>
+															</div>
+														</div>
+														<div class="col-lg-6 col-xl-6 col-xs-12 col-md-12  col-sm-12 form-group div-contenedor">
+															<div><label class="title-dato">Alergias</label></div>
+															<div style="color: #dc3545;  font-weight: bold;"> 
+																@_BodyAlergia
+															</div>
+														</div>
+													</div>
+												</div>
+ 										    </ChildContent>
+										</CollapsePanelComponent>
+										
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div style="margin-top:15px;" class="card card-menu-search">
+						
+							<CollapseTableComponent Title=""
+											Icons="fa fa-file-text"
+											Separador=""
+											ButtonText="Indicaciones médicas"											
+											IdTab="DatosclinicosKardextable"
+												Collapsed="true">
+							<ChildContent>
+								<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+									<div class="input-group">
+										<div class="col-12">
+										<TabControlComponent>
+											@foreach (var item in oListCabecera)
+											{
+												<TabPageComponent Text="@item.NombreTipo"   _ICons="@item.Icons" >
+													<table class="table table-hover   table-bordered">
+														<thead class="table-primary">
+															<tr class="fw-bolder">
+																<th class="text-center col-2">Registro</th>
+																<th class="text-center col-7">Indicaciones</th>
+																<th class="text-center col-1">Confirmar</th>
+															</tr>
+														</thead>
+														<tbody>
+															@foreach (var _det in oListIndicacionesMedica.Where(w => w.IdTipo == item.IdTipo).ToList())
+															{
+																if (_det.flg_suspendido == "0")
+																{
+																	<tr>
+																		<td style="text-decoration: line-through; color:darkred;">
+																			<label style="font-weight:bold;">Médico:&ensp;</label>@_det.NombreMedico<br />
+																			<label style="font-weight:bold;">Fecha:&ensp;</label>@_det.Fecha<br />
+																			<label style="font-weight:bold;">Hora:&ensp;</label>@_det.HOR_REGISTRO<br />
+																		</td>
+
+																		<td style="text-decoration: line-through; color:darkred;">
+																			@if (_det.IdTipo == 3)
+																			{
+																				<label style=" font-weight:bold;">DCI:&ensp;</label>
+																				<label>@_det.dsc_producto.Replace("+", " + ")</label> <br />
+																				<label style="font-weight:bold;">Dosis:&ensp;</label>
+																				<label>@_det.num_dosis &ensp;&ensp;</label>
+																				<label style="font-weight:bold;">Vía:&ensp;</label>
+																				<label>@_det.dsc_via  &ensp;&ensp;</label>
+																				@if (_det.num_frecuencia == "STAT" || _det.num_frecuencia == "PRN")
+																				{
+																					<label style="color:red; font-weight:bold;">@_det.num_frecuencia &ensp; &ensp;</label>
+																				}
+																				else
+																				{
+																					<label style="font-weight:bold;">Cada (Hrs):&ensp;</label>
+																					<label>@_det.num_frecuencia &ensp; &ensp;</label>
+																				}
+																				<label style="font-weight:bold;">Detalle: &ensp;</label>@_det.txt_detalle
+																			}
+																			else{
+																				<label>@_det.dsc_producto.Replace("+", " + ")</label>
+																			}
+																			
+																		</td>
+																			<td style="text-align: center; width:350px;">
+																			<span class="badge bg-danger">SUSPENDIDO</span>
+																		</td>
+
+																	</tr>
+																}
+																else 
+																{
+																	<tr >
+																		<td style="color:black; ">
+																			<label style="font-weight:bold;">Médico:&ensp;</label>@_det.NombreMedico<br />
+																			<label style="font-weight:bold;">Fecha:&ensp;</label>@_det.Fecha<br />
+																			<label style="font-weight:bold;">Hora:&ensp;</label>@_det.HOR_REGISTRO<br />
+																		</td>
+
+																		<td style="color:black; ">
+																			@if (_det.IdTipo==3) {
+																				<label style="font-weight:bold;">DCI:&ensp;</label>
+																				@_det.dsc_producto.Replace("+", " + ")<br />
+																				<label style="font-weight:bold;">Dosis:&ensp;</label>
+																				<label>@_det.num_dosis &ensp; &ensp;</label>																				
+																				<label style="font-weight:bold;">Vía:&ensp;</label>
+																				<label>@_det.dsc_via &ensp; &ensp;</label>																				
+																				@if (_det.num_frecuencia == "STAT" || _det.num_frecuencia == "PRN") {
+																					<label style="color:red; font-weight:bold;">@_det.num_frecuencia &ensp; &ensp;</label>
+																				}
+																				else{
+																						<label style="font-weight:bold;">Cada (Hrs):&ensp;</label>
+																					<label>@_det.num_frecuencia &ensp; &ensp;</label>
+																				}
+
+																				<label style="font-weight:bold;">Detalle: &ensp;</label>@_det.txt_detalle
+																			}
+																			else{
+																				<label>@_det.dsc_producto.Replace("+", " + ")</label>
+																			}
+																		</td>
+																		<td style="text-align: center; width:350px;">
+																			@if (_det.IdTipo == 3 && _det.TotDetalle == 0  && _det.NumeracionFrecuencia > 0 && _det.num_frecuencia != "STAT" && _det.num_frecuencia != "PRN") 
+																			{
+																				<input type="button" value="Programar" class="btn btn-sm btn-primary"  @onclick="@(()=> ProgramarHorarios(_det.ide_medicamentorec , _det.ide_receta, _det.cod_atencion))"/>
+																			}
+																			else if (_det.IdTipo == 3 && _det.NumeracionFrecuencia > 0 && _det.TotDetalle > 0 && _det.num_frecuencia != "STAT" && _det.num_frecuencia != "PRN")
+																											{
+																				if (_det._item == 0 || _det.SumEstado < _det.TotDetalle)
+																				{
+																					<table>
+																						<tbody>
+																							<tr style="overflow-y: auto; display: block;  width: 350px;">
+																								@foreach(var _pr in (from n in oListProgramacion where n.ide_medicamentorec == _det.ide_medicamentorec select n).ToList())
+																									{
+																										<td>
+																										@if (_pr.i_estadoadministrado == 0)
+																											{
+																												@if (_pr.item == 1)
+																												{
+																													<input type="checkbox" class="checkBox-Confirms" @bind="@_det._Seleccion" id="@_det.ide_medicamentorec" @onclick="@(()=> Kardex_RegistrosDetalle(_det.ide_medicamentorec , _det.ide_receta, _det.cod_atencion))" />
+																													<p>@_pr.fechaprogramada<br><label style="font-weight:bold;">@_pr.horaprogramada</label></p>
+																													<p style="color:white;"><label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><br><label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></p>
+
+																												}
+																												else
+																												{
+																													<input type="checkbox" readonly  class="checkBox-Confirms" disabled="disabled" />
+																													<p>@_pr.fechaprogramada<br><label style="font-weight:bold;">@_pr.horaprogramada</label></p>
+																													<p style="color:white;"><label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><br><label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></p>
+																												}
+																											}
+																										else
+																											{
+																												<input type="checkbox" readonly  class="checkBox-Confirms" checked="checked" disabled="disabled" />
+																												<p style="font-weight:bold;">@_pr.fechaprogramada<br><label style="font-weight:bold;">@_pr.horaprogramada</label></p>
+																												<p style="font-weight:bold;"><label>@_pr.usr_adminstra</label><br> @_pr.FechaAdministrada</p>
+																											}
+
+																										 
+																									</td>
+																								}
+																							</tr>
+																						</tbody>
+																					</table>
+																				}
+																				else
+																				{
+																					<span class="badge bg-primary">ADMINISTRACIÓN COMPLETA</span>
+																				}
+																			}
+																			else
+																			{
+																				<input type="checkbox" class="checkBox-Confirms" @bind="@_det._Seleccion" id="@_det.ide_medicamentorec" @onclick="@(()=> Kardex_RegistrosDetalle(_det.ide_medicamentorec , _det.ide_receta, _det.cod_atencion))" />
+																					
+																				@if(!string.IsNullOrWhiteSpace(@_det.UltimoUserRegistro))
+																				{
+																					@if(_det.IdTipo==2){
+																						<p><label style="color:darkred; font-weight: bold;"> Hora Inicio:</label><br>
+																							<label style="font-weight:bold;">@_det.UltimoUserRegistro &nbsp;</label><br>
+																							<label style="font-weight:bold;">@_det.UltimoFechaRegistro  &nbsp;</label>
+																						</p>
+																					}
+																					else{
+																						<p><label style="color:darkred; font-weight: bold;"> Ultima administración:</label><br>
+																							<label style="font-weight:bold;">@_det.UltimoUserRegistro &nbsp;</label><br>
+																							<label style="font-weight:bold;">@_det.UltimoFechaRegistro  &nbsp;</label>
+																						</p>
+																					}
+																					
+																				}
+																			}
+																						
+																																					
+																		</td>
+
+																	</tr>
+																}
+															}
+														</tbody>
+													</table>
+												</TabPageComponent>
+											}
+										</TabControlComponent>
+										</div>
+									</div>
+								</div>
+							</ChildContent>
+						</CollapseTableComponent>	
+					
+					</div>
+					
+					
+
+					<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 buscar-menuNuevo" style="border-radius:25px !important; margin-top:15px;">
+						<div class="input-group">
+							<div class="form-group card card-menu-search">
+								<div class="col-12">
+									<div class="contenedor">
+										<div class="card-title">
+											<label class="h5" style="color:#124498; font-weight: bold; ">
+												<span style="margin-right:10px;">
+													<i class="fa fa-paste" aria-hidden="true"></i>
+													Kardex (Datos históricos)
+												</span>
+											</label> 
+											<div class="col-lg-12 col-12 row">
+												<label class="fw-bold">Filtro de búsqueda:&nbsp;Presione el check para filtrar por fecha</label><br /><br />												
+												<div class="col-1 col-lg-1 col-md-1 col-sm-1 col-xl-1" style="text-align: center;">
+													<input type="checkbox" @onchange="@OnchangeFilterCheckBox" style="width: 20px; height: 20px; margin-top: 10px; margin-left: 20px;" />
+												</div>
+												@if (@_ReadOnly)
+												{
+												<div id="dtFechaiNicio" class="col-md-3 col-lg-3 col-sm-3 col-xl-3">
+													<input type="date" id="inputfechainiciokardex"  readonly @bind="_FechaInicio" class="form-control"  onkeydown="return false" max="@_fechaInciofiltro" />
+												</div>
+												<div id="dtFechaFin" class="col-md-3 col-lg-3 col-sm-3 col-xl-3">
+													<input type="date" style="" id="inputfechafinkardex" readonly @bind="@_FechaFin" class="form-control" min="@_fechaInciofiltro" onkeydown="return false" max="@_fechaFinFiltro" />
+												</div>
+												}
+												else
+												{
+												<div id="dtFechaiNicio" class="col-md-3 col-lg-3 col-sm-3 col-xl-3">
+														<input type="date" id="inputfechainiciokardex" @bind="_FechaInicio" @oninput="@onchangefiltrofechaInicio" class="form-control" onkeydown="return false" max="@_fechaFinFiltro" />
+												</div>
+												<div id="dtFechaFin" class="col-md-3 col-lg-3 col-sm-3 col-xl-3">
+													<input type="date" style="" id="inputfechafinkardex" @bind="@_FechaFin" class="form-control" min="@_fechaInciofiltro" onkeydown="return false" max="@_fechaFinFiltro" />
+												</div>
+												}
+												
+
+												<div class="col-md-3 col-lg-3 col-sm-3 col-xl-3">
+													<input id="btnBusquedaAvanzada" @onclick:stopPropagation="true" @onclick:preventDefault="true" @onclick="@Buscar_Datos_Kardex" type="button" class="btn btn-primary form-control font-weight-bold" style="z-index:auto;" value="Buscar" />
+												</div>
+											</div>
+										</div>
+										
+										<table class="table table-hover   table-bordered" style="margin-top:10px;">
+											<tbody>
+												@if (olistFechasPaginado.Count() > 0)
+												{
+													@foreach (var item in olistFechasPaginado)
+													{
+														<tr>
+															<td style="padding-top: 15px;">
+																<CollapsePanelComponent Title="" Icons="fa fa-calendar" Separador="@item.peso" IdTab="@item.Fecha.Value.ToShortDateString()" ButtonText="@item.Fecha.Value.ToShortDateString()" Collapsed=false>
+																	<ChildContent>
+																		<div class="card-body">
+																			<div class="row">
+																				<TabControlComponent>
+																					@foreach (var tipo in oListTipos.Where(w => w.Fecha == item.Fecha).ToList())
+																					{
+																						<TabPageComponent Text="@tipo.dsc_tipo" _ICons="@tipo.Icons">
+																							<table class="table table-responsive table-bordered">
+																								<tbody>
+																									<tr>
+																										<td class="text-center col-12">
+																											Detalle
+																										</td>
+																									</tr>
+																								</tbody>
+																								<tbody>
+																									@{
+																										oListGeneralDetalle = oListGeneral.Where(w => w.Fecha == tipo.Fecha && w.i_Idtipo == tipo.i_Idtipo).OrderBy(o => o.i_Correlativo).OrderBy(o => o.dsc_producto).ToList();
+																										oListGeneralCabaeceraDetalle = oListGeneral.Where(w => w.Fecha == tipo.Fecha && w.i_Idtipo == tipo.i_Idtipo).OrderBy(o => o.i_Correlativo).OrderBy(o => o.dsc_producto).ToList()
+																										.GroupBy(g => new { g.ide_medicamentorec, g.dsc_producto }).Select(s => new IndicacionesMedicaDetalleE { ide_medicamentorec = s.FirstOrDefault().ide_medicamentorec, dsc_producto = s.FirstOrDefault().dsc_producto }).ToList();
+
+																									}
+																									@foreach (var _det in oListGeneralCabaeceraDetalle)
+																									{
+																										<tr>
+																											<td>
+																												<label style="font-weight:bold;">Descripción:&ensp;</label>@_det.dsc_producto<br />
+																												@foreach (var __item in oListGeneralDetalle.Where(w => w.ide_medicamentorec == _det.ide_medicamentorec).ToList())
+																												{
+																													@if(__item.i_Idtipo == 3 && __item.dsc_tipoAdminstracio =="" )
+																													{
+																														<label style="font-weight:bold;">Administración N°:&ensp;</label>	@__item.i_Correlativo  <label>&ensp;</label>
+																														
+																														<label style="font-weight:bold;">Fecha y hora Programada:&ensp;</label>
+																														@__item.fechaprogramada  <label>&ensp;</label> @__item.HInsert <label>&ensp;</label>
+
+																														<label style="font-weight:bold;">Encargado(a) Programación:&ensp;</label>
+																														@__item.usr_registra <label>&ensp;</label>
+
+																														<label style="font-weight:bold;">Fecha y hora administración:&ensp;</label>
+																														@__item.fechaadministrada <label>&ensp;</label>
+
+																														<label style="font-weight:bold;">Encargado(a) Administración:&ensp;</label>
+																														@__item.usr_adminstra <label>&ensp;</label>
+																														<br />
+																													}
+																													else{
+																														
+																														<label style="font-weight:bold;">Administración N°:&ensp;</label>
+																														@__item.i_Correlativo  <label>&ensp;</label>
+																														<label style="font-weight:bold;">Encargado(a):&ensp;</label>
+																														@__item.usr_registra
+																														
+																														<label>&ensp;</label>
+																														<label style="font-weight:bold;">Fecha y hora atención:&ensp;</label>
+																														@__item.FInsert  <label>&ensp;</label>
+																														@__item.HInsert
+
+																														@if(__item.dsc_tipoAdminstracio!="")
+																														{
+																														<label>&ensp;</label><label>&ensp;</label><label style="font-weight:bold; color:darkred;">(@__item.dsc_tipoAdminstracio )</label>
+																														}
+																														<br />
+																													}
+																													
+																												}
+																											</td>
+																										</tr>
+																									}
+																								</tbody>
+																							</table>
+																						</TabPageComponent>
+																					}
+																				</TabControlComponent>
+																			</div>
+																		</div>
+																	</ChildContent>
+																</CollapsePanelComponent>
+															</td>
+														</tr>
+													}
+												}
+												else
+												{
+													<tr>
+														<td>
+															Sin Resultados!...
+														</td>
+													</tr>
+												}
+
+											</tbody>
+											<tfoot>
+												<tr>
+													<td colspan="5">
+														@if (olistFechasPaginado.Count() > 0)
+														{
+															<Pagination TotalPages="@(totalPages != 0 ? totalPages : 1)"
+																	PageIndex="@State.PageIndex"
+																	Radius="3"
+																	OnSelectedPage="@SelectedPage">
+															</Pagination>
+														}
+													</td>
+												</tr>
+											</tfoot>
+										</table>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>					
+				</div>
+			</div>
+		</div>
+
+		<div class="bg-light" style="margin-top:20px;">
+			<div class="form-bg" style="border:0px;">
+				<div class="col-xs-12 col-lg-12 col-sm-12 col-xl-12 col-12">
+					
+					<div class="modal" id="ControlPesoPaciente" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h4 class="fw-bold">Control de Peso del Paciente</h4>
+									<button type="button" id="idCloseModal" class="btn-close"  data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<div class="text-center">
+										Ingrese el peso del paciente (KG) <br />
+										<br />
+										<input type="text"   maxlength="5" min="1" max="300" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" step="0.00" class="form-group form-group-lg input-number-steep" @bind="@_Peso" />
+										<br />
+										<br />
+									</div>
+								</div>
+								<div class="modal-footer text-center">
+									<div class="text-center">
+										<input type="button" value="Guardar" class="btn btn-success" @onclick="@Kardex_PacienteCabecera" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal" id="MsjRegistrarKardex" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered">
+							<div class="modal-content">
+								<div class="modal-header">
+									Programar administración
+									<button type="button" id="idCloseModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<div class="text-center">
+										<i class="fa-solid fa-circle-info modal-icon"></i><br />
+										@_MensajeBody
+										<div class="input-group text-center col-12 col-lg-12 col-sm-12" style="justify-content: center;">
+											<div class="col-lg-2 col-sm-2 col-md-2 col-xl-2"></div>
+											<div class="col-lg-4 col-sm-4 col-md-4 col-xl-4">
+												<select @bind="@_IdListNumeric"  class="form-control">
+													@foreach (var _item in _ListaNumerica)
+													{
+														<option value="@_item">@_item</option>
+													}
+													 
+												</select>
+											</div>
+											<div class="col-lg-2 col-sm-2 col-md-2 col-xl-2">
+												<select class="form-control"  @bind="@_periodoNumeric">
+													<option value="AM">AM</option>
+													<option value="PM">PM</option>
+												</select>
+											</div>
+											<div class="col-lg-4 col-sm-4 col-md-4 col-xl-4">
+												<button type="button" class="btn btn-primary" @onclick="@calcularHorarios" >Calcular</button>
+											</div>											
+										</div>
+										<div class="col-12 col-lg-12 col-sm-12">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th>
+															Horario
+														</th>
+													</tr>
+												</thead>
+												<tbody>
+													@foreach(var item in _listarHorario)
+													{
+														<tr><td>@item</td></tr>
+													}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer text-center modal-footer-message">
+									<div class="text-center">
+										@if (@_readonlyval == "")
+										{
+											<button type="button" class="btn btn-success btn-modal" @onclick="@(()=>ConfirmarregistroKardex2(true))">
+												<i class="fa-regular fa-floppy-disk"></i>
+												<span> Registrar</span>
+											</button>
+										}
+																				
+
+										<button type="button" class="btn btn-normal btn-modal"  data-bs-dismiss="modal">
+											<i class="fa-solid fa-rotate-left"></i>
+											<span> Cancelar</span>
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+		
+		<!-- I.MODAL MESSAGE -->
+		@*==========================================0*@
+		<MessageModal IdMessage="msgModalConfirmacion"
+				  TitleModal="Información"
+				  TypeButton=MessageModal.typeButton.Ok
+				  IconMessage="MessageModal.iconMessage.Informacion"
+				  EscapeKey="true"
+				  OnClose="@Actualizarpagina"
+					  BodyMessage=@_MensajeBody>
+		</MessageModal>
+
+		<MessageModal IdMessage="msgModalConfirmacion2"
+				  TitleModal="Información"
+				  TypeButton=MessageModal.typeButton.Ok
+				  IconMessage="MessageModal.iconMessage.Informacion"
+				  EscapeKey="true"
+				BodyMessage=@_MensajeBody>
+		</MessageModal>
+
+		<MessageModal IdMessage="msgModalError"
+					  TitleModal="Error"
+					  IconMessage=MessageModal.iconMessage.Error
+					  TypeButton=MessageModal.typeButton.Ok
+					  EscapeKey="true"
+					  OnClose="@Actualizarpagina"
+					  BodyMessage=@_MensajeBody>
+		</MessageModal>
+
+		<MessageModal IdMessage="msgModalPregunta"
+					  TitleModal="Confirmación"
+					  BodyMessage=@_MensajeBody
+					  IconMessage=MessageModal.iconMessage.Question
+					  TypeButton=MessageModal.typeButton.OkCancel
+					  OnClose="@ConfirmarRegistroKardex">
+		</MessageModal>
+	</Authorized>
+	<NotAuthorized>
+		<h2>Debe identificarse para poder acceder a la aplicación</h2>
+	</NotAuthorized>
+</AuthorizeView>
+
