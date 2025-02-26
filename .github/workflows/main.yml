@@ -1,0 +1,56 @@
+name: Generate Commit Report
+
+on:
+  push:
+    branches:
+      - main
+      - QA/*
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Paso 1: Checkout del código del repositorio
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Paso 2: Configurar .NET
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0'  # Usa la versión de .NET que necesites
+
+      # Paso 3: Compilar el proyecto de C#
+      - name: Build CommitReportGenerator
+        run: |
+          cd CommitReportGenerator
+          dotnet build
+
+      # Paso 4: Extraer información de los commits
+      - name: Extract commit information
+        id: extract-commits
+        run: |
+          COMMIT_MESSAGES=$(git log --pretty=format:"%s" -n 5 | tr '\n' '|')
+          COMMIT_AUTHORS=$(git log --pretty=format:"%an" -n 5 | tr '\n' '|')
+          COMMIT_DATES=$(git log --pretty=format:"%ad" -n 5 | tr '\n' '|')
+          echo "messages=$COMMIT_MESSAGES" >> $GITHUB_OUTPUT
+          echo "authors=$COMMIT_AUTHORS" >> $GITHUB_OUTPUT
+          echo "dates=$COMMIT_DATES" >> $GITHUB_OUTPUT
+
+      # Paso 5: Ejecutar el script de C# para generar el informe
+      - name: Generate commit report
+        env:
+          GITHUB_COMMIT_MESSAGES: ${{ steps.extract-commits.outputs.messages }}
+          GITHUB_COMMIT_AUTHORS: ${{ steps.extract-commits.outputs.authors }}
+          GITHUB_COMMIT_DATES: ${{ steps.extract-commits.outputs.dates }}
+        run: |
+          cd CommitReportGenerator
+          dotnet run --project CommitReportGenerator.csproj
+
+      # Paso 6: Subir el informe generado como un artefacto
+      - name: Upload report
+        uses: actions/upload-artifact@v3
+        with:
+          name: commit_report.pdf
+          path: CommitReportGenerator/commit_report.pdf
