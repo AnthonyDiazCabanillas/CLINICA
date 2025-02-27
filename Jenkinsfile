@@ -111,6 +111,7 @@ pipeline {
                 bat 'dotnet build ./Api.Clinica/Api.Clinica.csproj --configuration Release'
                 bat 'dotnet build ./ApiWebClinicaMedico/ApiPaginaWebCSF.csproj --configuration Release'
                 bat 'dotnet build ./WebAppCitaAgenda/WebAppCitaAgenda.csproj --configuration Release'
+                bat 'dotnet build ./Web.Clinica/Web.Clinica.csproj --configuration Release'
                 echo 'All projects built successfully.'
             }
         }
@@ -123,6 +124,7 @@ pipeline {
                 bat 'dotnet test ./Api.Clinica/Api.Clinica.csproj'
                 bat 'dotnet test ./ApiWebClinicaMedico/ApiPaginaWebCSF.csproj'
                 bat 'dotnet test ./WebAppCitaAgenda/WebAppCitaAgenda.csproj'
+                bat 'dotnet test ./Web.Clinica/Web.Clinica.csproj'
                 echo 'Tests executed.'
             }
         }
@@ -135,6 +137,8 @@ pipeline {
                 bat "dotnet publish ./Api.Clinica/Api.Clinica.csproj --configuration Release --output ${PUBLISH_DIR}/Api.Clinica"
                 bat "dotnet publish ./ApiWebClinicaMedico/ApiPaginaWebCSF.csproj --configuration Release --output ${PUBLISH_DIR}/ApiWebClinicaMedico"
                 bat "dotnet publish ./WebAppCitaAgenda/WebAppCitaAgenda.csproj --configuration Release --output ${PUBLISH_DIR}/WebAppCitaAgenda"
+                bat "dotnet publish ./Web.Clinica/Web.Clinica.csproj --configuration Release --output ${PUBLISH_DIR}/WebClinica"
+                
                 echo 'All projects published.'
             }
         }
