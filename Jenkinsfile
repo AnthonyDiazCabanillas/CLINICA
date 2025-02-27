@@ -48,20 +48,14 @@ pipeline {
             steps {
                 // Despliega el proyecto (ejemplo para copiar archivos a un servidor)
                 script {
-                    /*echo 'Desplegando el proyecto...'
+                    echo 'Desplegando el proyecto...'
                     // Aquí puedes agregar comandos para copiar los archivos publicados a un servidor
                     // Por ejemplo, usando scp para Linux o Copy-Item para Windows
-                    bat 'scp -r ./publish localhost:8000'*/
-                 echo 'Desplegando el proyecto en la unidad D:...'
-            
-                 // Comando para copiar los archivos publicados a la unidad D:
-                 bat '''
+                    //bat 'scp -r ./publish usuario@servidor:/ruta/de/destino'
+                    bat '''
                 echo Copiando archivos a la unidad D:...
                 xcopy /E /I ./publish D:\\ruta
             '''
-
-
-
                 }
             }
         }
