@@ -144,10 +144,17 @@ pipeline {
             steps {
                 script {
                     echo 'Deploying projects...'
+                    def destinationDir = "D:\\DigitalizacionHC\\Prueba"
+                    bat """
+                        if not exist "${destinationDir}" (
+                        mkdir "${destinationDir}"
+                        )
+                    """
+
                     // Ejemplo: Copiar archivos a un servidor remoto usando SCP
                     bat """
                         if exist "${PUBLISH_DIR}" (
-                            scp -r ${PUBLISH_DIR} jdiaz@192.168.42.155:DigitalizacionHC/Prueba
+                                    robocopy "${PUBLISH_DIR}" "${destinationDir}" /E                        
                         )
                     """
                     echo 'Projects deployed.'
