@@ -5,7 +5,7 @@ pipeline {
         // Variables de entorno (opcional)
         DOTNET_VERSION = "6.0" // Versión de .NET
         BUILD_CONFIGURATION = "Release" // Configuración de compilación (Release o Debug)
-        SOLUTION_FILE = 'SanFelipe.sln // Nombre del archivo de solución'
+        SOLUTION_FILE = 'SanFelipe.sln' // Nombre del archivo de solución
     }
 
     stages {
