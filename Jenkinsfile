@@ -4,8 +4,8 @@ pipeline {
     environment {
         // Variables de entorno (opcional)
         DOTNET_VERSION = "6.0" // Versión de .NET
-        PROJECT_NAME = "MiProyecto"
-        BUILD_CONFIGURATION = "Release"
+        BUILD_CONFIGURATION = "Release" // Configuración de compilación (Release o Debug)
+        SOLUTION_FILE = "CLINICA.sln" // Nombre del archivo de solución
     }
 
     stages {
@@ -26,13 +26,13 @@ pipeline {
         stage('Build') {
             steps {
                 // Compila el proyecto
-                bat "dotnet build --configuration ${BUILD_CONFIGURATION}"
+                bat "dotnet build ${SOLUTION_FILE} --configuration ${BUILD_CONFIGURATION}"
             }
         }
 
         stage('Run Tests') {
             steps {
-                // Ejecuta las pruebas unitarias
+                // Ejecuta las pruebas unitarias (si hay un proyecto de pruebas)
                 bat 'dotnet test'
             }
         }
@@ -40,14 +40,19 @@ pipeline {
         stage('Publish') {
             steps {
                 // Publica el proyecto para despliegue
-                bat "dotnet publish --configuration ${BUILD_CONFIGURATION} --output ./publish"
+                bat "dotnet publish ${SOLUTION_FILE} --configuration ${BUILD_CONFIGURATION} --output ./publish"
             }
         }
 
         stage('Deploy') {
             steps {
                 // Despliega el proyecto (ejemplo para copiar archivos a un servidor)
-                bat 'scp -r ./publish usuario@servidor:/ruta/de/destino'
+                script {
+                    echo 'Desplegando el proyecto...'
+                    // Aquí puedes agregar comandos para copiar los archivos publicados a un servidor
+                    // Por ejemplo, usando scp para Linux o Copy-Item para Windows
+                    bat 'scp -r ./publish usuario@servidor:/ruta/de/destino'
+                }
             }
         }
     }
