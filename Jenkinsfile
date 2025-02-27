@@ -147,7 +147,7 @@ pipeline {
                     // Ejemplo: Copiar archivos a un servidor remoto usando SCP
                     bat """
                         if exist "${PUBLISH_DIR}" (
-                            scp -r ${PUBLISH_DIR} jdiaz@LIMJMDE2AGEN:DigitalizacionHC/Prueba
+                            scp -r ${PUBLISH_DIR} jdiaz@192.168.42.155:DigitalizacionHC/Prueba
                         )
                     """
                     echo 'Projects deployed.'
