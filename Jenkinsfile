@@ -52,7 +52,7 @@ pipeline {
                     // Aquí puedes agregar comandos para copiar los archivos publicados a un servidor
                     // Por ejemplo, usando scp para Linux o Copy-Item para Windows
                     //bat 'scp -r ./publish jdiaz@192.168.42.155:E:\ruta''
-                    bat 'xcopy /E /I C:\ProgramData\Jenkins\.jenkins\workspace\CLINICA\publish D:\\ruta'
+                    bat 'xcopy /E /I C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\CLINICA\\publish D:\\ruta'
                 }
             }
         }
