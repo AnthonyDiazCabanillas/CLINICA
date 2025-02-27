@@ -51,11 +51,7 @@ pipeline {
                     echo 'Desplegando el proyecto...'
                     // Aquí puedes agregar comandos para copiar los archivos publicados a un servidor
                     // Por ejemplo, usando scp para Linux o Copy-Item para Windows
-                    //bat 'scp -r ./publish usuario@servidor:/ruta/de/destino'
-                    bat '''
-                echo Copiando archivos a la unidad D:...
-                xcopy /E /I ./publish D:\\ruta
-            '''
+                    bat 'scp -r ./publish usuario@servidor:/ruta/de/destino'
                 }
             }
         }
