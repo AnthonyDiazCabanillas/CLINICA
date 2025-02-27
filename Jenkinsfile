@@ -5,7 +5,7 @@ pipeline {
         // Variables de entorno (opcional)
         DOTNET_VERSION = "6.0" // Versión de .NET
         BUILD_CONFIGURATION = "Release" // Configuración de compilación (Release o Debug)
-        SOLUTION_FILE = 'SanFelipe.sln' // Nombre del archivo de solución
+        SOLUTION_FILE = 'SanFelipe.sln // Nombre del archivo de solución'
     }
 
     stages {
@@ -51,7 +51,7 @@ pipeline {
                     echo 'Desplegando el proyecto...'
                     // Aquí puedes agregar comandos para copiar los archivos publicados a un servidor
                     // Por ejemplo, usando scp para Linux o Copy-Item para Windows
-                    bat 'scp -r ./publish jdiaz@LIMJMDE2AGEN:DigitalizacionHC/Prueba'
+                    bat 'scp -r ./publish usuario@servidor:/ruta/de/destino'
                 }
             }
         }
