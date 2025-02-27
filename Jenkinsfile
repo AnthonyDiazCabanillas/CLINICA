@@ -26,7 +26,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Compila el proyecto
-                bat "msbuild San Felipe.sln /p:Configuration=Release"
+                bat "dotnet build ${SOLUTION_FILE} --configuration ${BUILD_CONFIGURATION}"
             }
         }
 
