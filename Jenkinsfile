@@ -51,8 +51,7 @@ pipeline {
                     echo 'Desplegando el proyecto...'
                     // Aquí puedes agregar comandos para copiar los archivos publicados a un servidor
                     // Por ejemplo, usando scp para Linux o Copy-Item para Windows
-                    //bat 'scp -r ./publish jdiaz@192.168.42.155:E:\ruta''
-                    bat '''robocopy ./publish D:\\ruta\\destino /E'''
+                    bat 'scp -r ./publish jdiaz@LIMJMDE2AGEN:DigitalizacionHC/Prueba'
                 }
             }
         }
