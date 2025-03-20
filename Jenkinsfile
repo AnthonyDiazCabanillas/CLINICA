@@ -31,15 +31,15 @@ pipeline {
                 script {
                     // Configuración del análisis de SonarQube
                     withSonarQubeEnv('SonarQube Server') { // Nombre de la configuración del servidor de SonarQube en Jenkins
-                        bat """
-                            ${SONARQUBE_SCANNER_HOME}/bin/sonar-scanner \
-                            -Dsonar.projectKey=CLINICA \
-                            -Dsonar.projectName=CLINICA \
-                            -Dsonar.projectVersion=1.0 \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url=http://localhost:9000 \ // URL de tu servidor de SonarQube
-                            -Dsonar.login=squ_941fbdc8173333bd713354c95bb5398d2bd00e9b \ // Token de autenticación de SonarQube
-                            -Dsonar.dotnet.excludeProjectReferences=true
+                      bat """
+                                ${SONARQUBE_SCANNER_HOME}/bin/sonar-scanner \\
+                                -Dsonar.projectKey=CLINICA \\
+                                -Dsonar.projectName=CLINICA \\
+                                -Dsonar.projectVersion=1.0 \\
+                                -Dsonar.sources=. \\
+                                -Dsonar.host.url=http://localhost:9000 \\
+                                -Dsonar.login=your-sonarqube-token \\
+                                -Dsonar.dotnet.excludeProjectReferences=true
                         """
                     }
                 }
