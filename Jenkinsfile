@@ -19,10 +19,13 @@ pipeline {
         // Etapa 2: Clonar el repositorio
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/AnthonyDiazCabanillas/CLINICA.git' // Clona el repositorio
-                echo 'Repository cloned.'
+                git(
+                    url: 'https://github.com/AnthonyDiazCabanillas/CLINICA.git',
+                    branch: 'main'
+                )
             }
         }
+    
 
         // Etapa 3: Restaurar dependencias de .NET
         stage('Restore Dependencies') {
