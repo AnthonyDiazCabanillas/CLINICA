@@ -119,7 +119,7 @@ pipeline {
         PUBLISH_DIR = "${WORKSPACE}/publish" // Carpeta de publicación
         REMOTE_USER = 'SANFELIPE\\judiaz' // Usuario del servidor remoto
         REMOTE_HOST = '192.168.42.155' // Dirección del servidor remoto
-        REMOTE_DIR = '\\\\E$\\DigitalizacionHC\\Prueba' // Ruta de destino en el servidor remoto
+        REMOTE_DIR = "\\\\E$\\DigitalizacionHC\\Prueba"// Ruta de destino en el servidor remoto
         SSH_CREDENTIALS_ID = 'ssh-server-42-155' // ID de las credenciales SSH configuradas en Jenkins
     }
 
