@@ -80,7 +80,7 @@ pipeline {
             steps {
                 script {
                     echo 'Deploying projects...'
-                    def destinationDir = "D:\\DigitalizacionHC\\Prueba"
+                    def destinationDir = "192.168.42.155:E:\\DigitalizacionHC\\Prueba"
                     bat """
                         if not exist "${destinationDir}" (
                         mkdir "${destinationDir}"
