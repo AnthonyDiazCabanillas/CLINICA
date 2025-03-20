@@ -1,5 +1,5 @@
 
-/*pipeline {
+pipeline {
     agent any // Ejecuta en cualquier agente disponible
 
     environment {
@@ -111,7 +111,7 @@
             echo 'Pipeline failed. Check the logs for details.'
         }
     }
-}*/
+}/*
 pipeline {
     agent any // Ejecuta en cualquier agente disponible
 
@@ -223,4 +223,4 @@ pipeline {
             echo 'Pipeline failed. Check the logs for details.'
         }
     }
-}
+}*/
