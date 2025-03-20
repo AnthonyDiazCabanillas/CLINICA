@@ -1,4 +1,3 @@
-
 pipeline {
     agent any // Ejecuta en cualquier agente disponible
 
@@ -6,10 +5,7 @@ pipeline {
         // Define variables de entorno
         DOTNET_VERSION = '6.0' // Versión de .NET
         PUBLISH_DIR = "${WORKSPACE}/publish" // Carpeta de publicación
-        REMOTE_USER = 'SANFELIPE\\judiaz' // Usuario del servidor remoto
-        REMOTE_HOST = '192.168.42.155' // Dirección del servidor remoto
-        REMOTE_DIR = "\\\\E\\\$\\DigitalizacionHC\\Prueba" // Ruta de destino en el servidor remoto// Ruta de destino en el servidor remoto
-        SSH_CREDENTIALS_ID = 'ssh-server-42-155' // ID de las credenciales SSH configuradas en Jenkins
+        SONARQUBE_SCANNER_HOME = tool name: 'SonarScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation' // Ruta del SonarScanner
     }
 
     stages {
@@ -24,14 +20,34 @@ pipeline {
         // Etapa 2: Clonar el repositorio
         stage('Checkout') {
             steps {
-                git(
-                    url: 'https://github.com/AnthonyDiazCabanillas/CLINICA.git',
-                    branch: 'main'
-                )
+                git branch: 'main', url: 'https://github.com/AnthonyDiazCabanillas/CLINICA.git' // Clona el repositorio
+                echo 'Repository cloned.'
             }
         }
 
-        // Etapa 3: Restaurar dependencias de .NET
+        // Etapa 3: Configurar y ejecutar SonarQube
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    // Configuración del análisis de SonarQube
+                    withSonarQubeEnv('SonarQube Server') { // Nombre de la configuración del servidor de SonarQube en Jenkins
+                        bat """
+                            ${SONARQUBE_SCANNER_HOME}/bin/sonar-scanner \
+                            -Dsonar.projectKey=CLINICA \
+                            -Dsonar.projectName=CLINICA \
+                            -Dsonar.projectVersion=1.0 \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=http://localhost:9000 \ // URL de tu servidor de SonarQube
+                            -Dsonar.login=squ_941fbdc8173333bd713354c95bb5398d2bd00e9b \ // Token de autenticación de SonarQube
+                            -Dsonar.dotnet.excludeProjectReferences=true
+                        """
+                    }
+                }
+                echo 'SonarQube analysis completed.'
+            }
+        }
+
+        // Etapa 4: Restaurar dependencias de .NET
         stage('Restore Dependencies') {
             steps {
                 bat 'dotnet restore' // Restaura los paquetes NuGet para todos los proyectos
@@ -39,7 +55,7 @@ pipeline {
             }
         }
 
-        // Etapa 4: Compilar los proyectos
+        // Etapa 5: Compilar los proyectos
         stage('Build') {
             steps {
                 // Compila cada proyecto individualmente
@@ -52,8 +68,8 @@ pipeline {
             }
         }
 
-        // Etapa 5: Ejecutar pruebas (opcional)
-        stage('Run Tests') {
+        // Etapa 6: Ejecutar pruebas (opcional)
+       /* stage('Run Tests') {
             steps {
                 // Ejecuta pruebas unitarias para cada proyecto (si existen)
                 bat 'dotnet test ./WSAgenda/WSAgenda.csproj'
@@ -63,9 +79,9 @@ pipeline {
                 bat 'dotnet test ./Web.Clinica/Web.Clinica.csproj'
                 echo 'Tests executed.'
             }
-        }
+        }*/
 
-        // Etapa 6: Publicar los proyectos
+        // Etapa 7: Publicar los proyectos
         stage('Publish') {
             steps {
                 // Publica cada proyecto en la carpeta de publicación
@@ -79,24 +95,25 @@ pipeline {
             }
         }
 
-        // Etapa 7: Desplegar en servidor remoto
-        stage('Deploy to Remote Server') {
+        // Etapa 8: Desplegar (opcional)
+        stage('Deploy') {
             steps {
                 script {
-                    echo 'Deploying projects to remote server...'
-                    
-                    // Usar SCP para copiar los archivos al servidor remoto
-                    withCredentials([sshUserPrivateKey(
-                        credentialsId: "${SSH_CREDENTIALS_ID}",
-                        keyFileVariable: 'SSH_KEY',
-                        usernameVariable: 'SSH_USER'
-                    )]) {
-                        bat """
-                            scp -i "${SSH_KEY}" -r "${PUBLISH_DIR}" ${SSH_USER}@${REMOTE_HOST}:${REMOTE_DIR}
-                        """
-                    }
-                    
-                    echo 'Projects deployed to remote server.'
+                    echo 'Deploying projects...'
+                    def destinationDir = "D:\\DigitalizacionHC\\Prueba"
+                    bat """
+                        if not exist "${destinationDir}" (
+                        mkdir "${destinationDir}"
+                        )
+                    """
+
+                    // Ejemplo: Copiar archivos a un servidor remoto usando SCP
+                    bat """
+                        if exist "${PUBLISH_DIR}" (
+                                    robocopy "${PUBLISH_DIR}" "${destinationDir}" /E                        
+                        )
+                    """
+                    echo 'Projects deployed.'
                 }
             }
         }
@@ -111,7 +128,9 @@ pipeline {
             echo 'Pipeline failed. Check the logs for details.'
         }
     }
-}/*
+}
+
+/*
 pipeline {
     agent any // Ejecuta en cualquier agente disponible
 
