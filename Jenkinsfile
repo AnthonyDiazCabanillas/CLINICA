@@ -206,10 +206,10 @@ pipeline {
                 
                 echo 'All projects published.'
 
-                 /* Eliminar archivos innecesarios (ejemplo: .pdb, .xml)
+                // Eliminar archivos innecesarios (ejemplo: .pdb, .xml)
                 bat """
                 del /s /q "${PUBLISH_DIR}\\*.config"
-                """ */
+                """ 
             }
         }
 
