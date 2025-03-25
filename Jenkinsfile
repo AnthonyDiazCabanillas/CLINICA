@@ -1,4 +1,4 @@
-pipeline {
+/*pipeline {
     agent any // Ejecuta en cualquier agente disponible
 
     environment {
@@ -38,7 +38,7 @@ pipeline {
                                 -Dsonar.projectVersion=1.0 \\
                                 -Dsonar.sources=. \\
                                 -Dsonar.host.url=http://localhost:9000 \\
-                                -Dsonar.login=your-sonarqube-token \\
+                                -Dsonar.login=squ_941fbdc8173333bd713354c95bb5398d2bd00e9b \\
                                 -Dsonar.dotnet.excludeProjectReferences=true
                         """
                     }
@@ -79,7 +79,7 @@ pipeline {
                 bat 'dotnet test ./Web.Clinica/Web.Clinica.csproj'
                 echo 'Tests executed.'
             }
-        }*/
+        }
 
         // Etapa 7: Publicar los proyectos
         stage('Publish') {
@@ -128,9 +128,7 @@ pipeline {
             echo 'Pipeline failed. Check the logs for details.'
         }
     }
-}
-
-/*
+}*/
 pipeline {
     agent any // Ejecuta en cualquier agente disponible
 
@@ -242,4 +240,4 @@ pipeline {
             echo 'Pipeline failed. Check the logs for details.'
         }
     }
-}*/
+}
