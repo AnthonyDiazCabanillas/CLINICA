@@ -205,6 +205,11 @@ pipeline {
                 bat "dotnet publish ./Web.Clinica/Web.Clinica.csproj --configuration Release --output ${PUBLISH_DIR}/WebClinica"
                 
                 echo 'All projects published.'
+
+                 // Eliminar archivos innecesarios (ejemplo: .pdb, .xml)
+                bat """
+                del /s /q "${PUBLISH_DIR}\\*.config"
+                """
             }
         }
 
@@ -221,7 +226,8 @@ pipeline {
                         usernameVariable: 'SSH_USER'
                     )]) {
                         bat """
-                            scp -i "${SSH_KEY}" -r "${PUBLISH_DIR}" ${SSH_USER}@${REMOTE_HOST}:"${REMOTE_DIR}"
+                        scp -i "${SSH_KEY}" -r --exclude="*.config" "${PUBLISH_DIR}" ${SSH_USER}@${REMOTE_HOST}:"${REMOTE_DIR}" 
+
                         """
                     }
                     
