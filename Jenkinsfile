@@ -226,7 +226,7 @@ pipeline {
                         usernameVariable: 'SSH_USER'
                     )]) {
                         bat """
-                        scp -i "${SSH_KEY}" -r --exclude="*.config" "${PUBLISH_DIR}" ${SSH_USER}@${REMOTE_HOST}:"${REMOTE_DIR}" 
+                        scp -i "${SSH_KEY}" -r "${PUBLISH_DIR}" ${SSH_USER}@${REMOTE_HOST}:"${REMOTE_DIR}" 
 
                         """
                     }
