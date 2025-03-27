@@ -142,6 +142,15 @@ pipeline {
     }
 
     stages {
+
+        stage('Ejecutar Batch') {
+            steps {
+                bat '''
+                    pushd "C:\\Users\\jdiaz\\Desktop\\"
+                    call "incrementar version.bat"
+                    popd
+                    '''
+            }
         // Etapa 1: Limpiar el workspace
         stage('Clean Workspace') {
             steps {
