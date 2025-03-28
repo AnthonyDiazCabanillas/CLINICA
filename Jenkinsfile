@@ -139,6 +139,7 @@ pipeline {
         REMOTE_HOST = '192.168.42.155' // Dirección del servidor remoto
         REMOTE_DIR = 'E:\\DigitalizacionHC\\Prueba' // Ruta de destino en el servidor remoto (formato Windows)
         SSH_CREDENTIALS_ID = 'ssh-server-42-155' // ID de las credenciales SSH configuradas en Jenkins
+        REPO_DIR = 'O:\\Jenkins\\CLINICA' // Nueva ubicación para el repositorio clonado
     }
 
     stages {
@@ -170,7 +171,7 @@ pipeline {
             }
         }
 
-        // Etapa 3: Restaurar dependencias de .NET
+        // Etapa 4: Restaurar dependencias de .NET
         stage('Restore Dependencies') {
             steps {
                 bat 'dotnet restore' // Restaura los paquetes NuGet para todos los proyectos
@@ -178,7 +179,7 @@ pipeline {
             }
         }
 
-        // Etapa 4: Compilar los proyectos
+        // Etapa 5: Compilar los proyectos
         stage('Build') {
             steps {
                 // Compila cada proyecto individualmente
@@ -191,7 +192,7 @@ pipeline {
             }
         }
 
-        // Etapa 5: Ejecutar pruebas (opcional)
+        // Etapa 6: Ejecutar pruebas (opcional)
         stage('Run Tests') {
             steps {
                 // Ejecuta pruebas unitarias para cada proyecto (si existen)
@@ -204,7 +205,7 @@ pipeline {
             }
         }
 
-        // Etapa 6: Publicar los proyectos
+        // Etapa 7: Publicar los proyectos
         stage('Publish') {
             steps {
                 // Publica cada proyecto en la carpeta de publicación
@@ -223,7 +224,7 @@ pipeline {
             }
         }
 
-        // Etapa 7: Desplegar en servidor remoto (Windows)
+        // Etapa 8: Desplegar en servidor remoto (Windows)
         stage('Deploy to Remote Server') {
             steps {
                 script {
