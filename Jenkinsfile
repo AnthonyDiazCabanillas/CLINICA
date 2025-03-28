@@ -1,3 +1,8 @@
+
+//**************************************************************************************************************************** //
+//***************************************************** PIPELINE CON SONARQ  ************************************************** //
+//**************************************************************************************************************************** //
+
 /*pipeline {
     agent any // Ejecuta en cualquier agente disponible
 
@@ -129,6 +134,12 @@
         }
     }
 }*/
+
+//**************************************************************************************************************************** //
+//***************************************************** PIPELINE PARA SSH  ************************************************** //
+//**************************************************************************************************************************** //
+
+/*
 pipeline {
     agent any // Ejecuta en cualquier agente disponible
 
@@ -255,4 +266,103 @@ pipeline {
             echo 'Pipeline failed. Check the logs for details.'
         }
     }
+} */
+
+pipeline {
+    agent any
+
+    environment {
+        DOTNET_VERSION = '6.0'
+        PUBLISH_DIR = "${WORKSPACE}/publish"
+        REMOTE_HOST = '192.168.42.155'
+        REMOTE_DIR = 'E:\\DigitalizacionHC\\Prueba'
+        SSH_CREDENTIALS_ID = 'ssh-server-42-155'
+        // Usando la ruta UNC corregida
+        REPO_DIR = '\\\\192.168.22.39\\TONY\\JENKINS\\CLINICA'
+    }
+
+    stages {
+        stage('Ejecutar Batch') {
+            steps {
+                bat '''
+                    pushd "C:\\Users\\jdiaz\\Desktop\\"
+                    call "incrementar version.bat"
+                    popd
+                    '''
+            }
+        }
+
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+                echo 'Workspace cleaned.'
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                script {
+                    // Verificar acceso a la ruta de red
+                    bat """
+                    if not exist "${REPO_DIR}" (
+                        echo "Intentando crear directorio remoto..."
+                        mkdir "${REPO_DIR}"
+                    )
+                    """
+                    
+                    // Usar credenciales para acceder al recurso compartido
+                    withCredentials([usernamePassword(
+                        credentialsId: 'NETWORK_CREDS', // Crea estas credenciales en Jenkins
+                        usernameVariable: 'NET_USER',
+                        passwordVariable: 'NET_PASS'
+                    )]) {
+                        // Mapear unidad temporalmente
+                        bat """
+                        net use Z: "${REPO_DIR.substring(0, REPO_DIR.lastIndexOf('\\'))}" /user:${NET_USER} ${NET_PASS} /persistent:no
+                        """
+                        
+                        try {
+                            // Clonar el repositorio
+                            dir("${REPO_DIR}") {
+                                git(
+                                    url: 'https://github.com/AnthonyDiazCabanillas/CLINICA.git',
+                                    branch: 'main'
+                                )
+                            }
+                            
+                            // Crear enlace simbólico
+                            bat """
+                            mklink /J "${WORKSPACE}\\CLINICA" "${REPO_DIR}"
+                            """
+                        } finally {
+                            // Desmapear unidad
+                            bat "net use Z: /delete"
+                        }
+                    }
+                }
+            }
+        }
+
+        // Resto de tus stages permanecen igual...
+        stage('Restore Dependencies') {
+            steps {
+                dir("${WORKSPACE}/CLINICA") {
+                    bat 'dotnet restore'
+                }
+                echo 'Dependencies restored.'
+            }
+        }
+
+        // ... (otros stages)
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Check the logs for details.'
+        }
+    }
 }
+
