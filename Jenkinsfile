@@ -144,7 +144,7 @@ pipeline {
 
     stages {
 
-        stage('Ejecutar Batch') {
+        /*stage('Ejecutar Batch') {
             steps {
                 bat '''
                     pushd "C:\\Users\\jdiaz\\Desktop\\"
@@ -152,7 +152,7 @@ pipeline {
                     popd
                     '''
             }
-        }
+        }*/
         // Etapa 1: Limpiar el workspace
         stage('Clean Workspace') {
             steps {
