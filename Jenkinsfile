@@ -149,8 +149,9 @@ pipeline {
                     pushd "C:\\Users\\jdiaz\\Desktop\\"
                     call "incrementar version.bat"
                     popd
-                    '''
+                   '''
             }
+        }
         // Etapa 1: Limpiar el workspace
         stage('Clean Workspace') {
             steps {
@@ -158,7 +159,6 @@ pipeline {
                 echo 'Workspace cleaned.'
                 }
             }
-        }
         // Etapa 2: Clonar el repositorio
         stage('Checkout') {
             steps {
