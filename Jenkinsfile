@@ -139,7 +139,7 @@ pipeline {
         REMOTE_HOST = '192.168.42.155' // Dirección del servidor remoto
         REMOTE_DIR = 'E:\\DigitalizacionHC\\Prueba' // Ruta de destino en el servidor remoto (formato Windows)
         SSH_CREDENTIALS_ID = 'ssh-server-42-155' // ID de las credenciales SSH configuradas en Jenkins
-        REPO_DIR = 'O:\\Jenkins\\CLINICA' // Nueva ubicación para el repositorio clonado
+        REPO_DIR = '\\\\192.168.22.39\\Jenkins\\CLINICA'  // Usar ruta UNC en lugar de O: // Nueva ubicación para el repositorio clonado
     }
 
     stages {
