@@ -188,7 +188,7 @@ pipeline {
                     """
                 }
             }
-        
+        }
 
         // Etapa 4: Restaurar dependencias de .NET
         stage('Restore Dependencies') {
