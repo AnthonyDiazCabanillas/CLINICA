@@ -151,6 +151,7 @@ pipeline {
                     popd
                     '''
             }
+        }
         // Etapa 1: Limpiar el workspace
         stage('Clean Workspace') {
             steps {
