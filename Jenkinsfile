@@ -162,14 +162,33 @@ pipeline {
         }
 
         // Etapa 2: Clonar el repositorio
-        stage('Checkout') {
+            stage('Checkout') {
             steps {
-                git(
-                    url: 'https://github.com/AnthonyDiazCabanillas/CLINICA.git',
-                    branch: 'main'
-                )
+                script {
+                    // Verificar si el directorio existe, si no, crearlo
+                    bat """
+                    if not exist "${REPO_DIR}" (
+                        mkdir "${REPO_DIR}"
+                    )
+                    """
+                    
+                    // Clonar el repositorio directamente en la ubicación deseada
+                    dir("${REPO_DIR}") {
+                        git(
+                            url: 'https://github.com/AnthonyDiazCabanillas/CLINICA.git',
+                            branch: 'main',
+                            changelog: true,
+                            poll: true
+                        )
+                    }
+                    
+                    // Crear un enlace simbólico en el workspace para que el resto del pipeline funcione
+                    bat """
+                    mklink /J "${WORKSPACE}\\CLINICA" "${REPO_DIR}"
+                    """
+                }
             }
-        }
+        
 
         // Etapa 4: Restaurar dependencias de .NET
         stage('Restore Dependencies') {
