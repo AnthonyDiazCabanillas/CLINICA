@@ -278,7 +278,7 @@ pipeline {
         REMOTE_DIR = 'E:\\DigitalizacionHC\\Prueba'
         SSH_CREDENTIALS_ID = 'ssh-server-42-155'
         // Usando la ruta UNC corregida
-        REPO_DIR = '\\192.168.22.39\gruposistemas\TONY\JENKINS\\CLINICA'
+        REPO_DIR = '\\192.168.22.39\\gruposistemas\TONY\JENKINS\\CLINICA'
     }
 
     stages {
