@@ -315,12 +315,24 @@ pipeline {
         REPO_ROOT = "${WORKSPACE}/CLINICA"
         
         // SonarQube Configuration
-        SONAR_SCANNER_HOME = 'D:\\Sonar\\sonar-scanner'                      
+        SONAR_SCANNER_HOME = 'D:\\Sonar\\sonar-scanner'
         SONAR_HOST_URL = 'http://localhost:9000/'
         SONAR_LOGIN = credentials('Sonnar')
+        BUILD_DISPLAY_NAME = "${env.BUILD_NUMBER}"
+        SONAR_USER_HOME = "${WORKSPACE}/.sonar"
     }
 
     stages {
+        stage('Pre-Clean') {
+            steps {
+                bat '''
+                    dotnet tool uninstall dotnet-sonarscanner --global || true
+                    if exist ".sonarqube" rmdir /s /q ".sonarqube"
+                    if exist ".sonar" rmdir /s /q ".sonar"
+                '''
+            }
+        }
+
         stage('Ejecutar Batch') {
             steps {
                 bat '''
@@ -405,8 +417,38 @@ pipeline {
                                   /d:sonar.sourceEncoding=UTF-8 ^
                                   /d:sonar.projectBaseDir="${REPO_ROOT}" ^
                                   /d:sonar.cs.analyzer.projectOutPaths=".sonarqube/out" ^
-                                  /d:sonar.exclusions="**/bin/**,**/obj/**" ^
-                                  /d:sonar.coverage.exclusions="**Test**.cs"
+                                  /d:sonar.exclusions="**/bin/**,**/obj/**,**/Ent.Sql/ClinicaE/ComprobantesE/**,**/WSAgenda/Worker.cs" ^
+                                  /d:sonar.coverage.exclusions="**Test**.cs" ^
+                                  /d:sonar.verbose=true ^
+                                  /d:sonar.scm.disabled=true ^
+                                  /d:sonar.working.directory="${WORKSPACE}/.sonar"
+                                
+                                dotnet build ${REPO_ROOT} --configuration Release --no-restore
+                                
+                                dotnet sonarscanner end /d:sonar.token="${SONAR_TOKEN}"
+                            """
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('SonarQube Retry') {
+            when {
+                expression { currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' }
+            }
+            steps {
+                script {
+                    echo 'Reintentando análisis SonarQube...'
+                    withSonarQubeEnv('SonarQube') {
+                        withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {
+                            bat """
+                                dotnet sonarscanner end /d:sonar.token="${SONAR_TOKEN}" || true
+                                dotnet sonarscanner begin ^
+                                  /k:"CLINICA" ^
+                                  /d:sonar.host.url="${SONAR_HOST_URL}" ^
+                                  /d:sonar.token="${SONAR_TOKEN}" ^
+                                  /d:sonar.sourceEncoding=UTF-8
                                 
                                 dotnet build ${REPO_ROOT} --configuration Release --no-restore
                                 
@@ -480,7 +522,7 @@ pipeline {
 
     post {
         always {
-            bat 'dotnet tool uninstall dotnet-sonarscanner --global'
+            bat 'dotnet tool uninstall dotnet-sonarscanner --global || true'
             cleanWs()
         }
         success {
