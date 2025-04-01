@@ -382,24 +382,7 @@ pipeline {
                 echo 'All projects published.'
             }
         }
-
-        stage('Deploy to Remote Server') {
-            steps {
-                script {
-                    withCredentials([sshUserPrivateKey(
-                        credentialsId: "${SSH_CREDENTIALS_ID}",
-                        keyFileVariable: 'SSH_KEY',
-                        usernameVariable: 'SSH_USER'
-                    )]) {
-                        bat """
-                        scp -i "${SSH_KEY}" -r "${PUBLISH_DIR}" ${SSH_USER}@${REMOTE_HOST}:"${REMOTE_DIR}"
-                        """
-                    }
-                    echo 'Projects deployed to remote server.'
-                }
-            }
-        }
-
+        
         stage('Deploy to Network Share') {
             steps {
                 script {
@@ -417,6 +400,22 @@ pipeline {
                         net use Z: /delete
                         """
                     }
+                }
+            }
+        }
+        stage('Deploy to Remote Server') {
+            steps {
+                script {
+                    withCredentials([sshUserPrivateKey(
+                        credentialsId: "${SSH_CREDENTIALS_ID}",
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    )]) {
+                        bat """
+                        scp -i "${SSH_KEY}" -r "${PUBLISH_DIR}" ${SSH_USER}@${REMOTE_HOST}:"${REMOTE_DIR}"
+                        """
+                    }
+                    echo 'Projects deployed to remote server.'
                 }
             }
         }
