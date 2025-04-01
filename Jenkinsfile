@@ -277,8 +277,10 @@ pipeline {
         REMOTE_HOST = '192.168.42.155'
         REMOTE_DIR = 'E:\\DigitalizacionHC\\Prueba'
         SSH_CREDENTIALS_ID = 'ssh-server-42-155'
-        // Usando la ruta UNC corregida
-        REPO_DIR = '\\\\192.168.22.39\\temporal\\GLluncor\\___Desarrollo\\Jenkins'
+        // Usar solo la ruta del recurso compartido (no subcarpetas)
+        SHARE_PATH = '\\\\192.168.22.39\\temporal'
+        // Ruta relativa dentro del recurso compartido
+        SHARE_SUBDIR = 'GLluncor\\___Desarrollo\\Jenkins'
     }
 
     stages {
@@ -302,15 +304,6 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    // Verificar acceso a la ruta de red
-                    bat """
-                    if not exist "${REPO_DIR}" (
-                        echo "Intentando crear directorio remoto..."
-                        mkdir "${REPO_DIR}"
-                    )
-                    """
-                    
-                    // Usar credenciales para acceder al recurso compartido
                     withCredentials([usernamePassword(
                         credentialsId: 'REMOTO',
                         usernameVariable: 'NET_USER',
@@ -318,21 +311,25 @@ pipeline {
                     )]) {
                         // Mapear unidad temporalmente
                         bat """
-                        net use Z: "${REPO_DIR.substring(0, REPO_DIR.lastIndexOf('\\'))}" /user:${NET_USER} ${NET_PASS} /persistent:no
+                        net use Z: "${SHARE_PATH}" /user:${NET_USER} ${NET_PASS} /persistent:no
                         """
                         
                         try {
-                            // Clonar el repositorio
-                            dir("${REPO_DIR}") {
-                                git(
-                                    url: 'https://github.com/AnthonyDiazCabanillas/CLINICA.git',
-                                    branch: 'main'
-                                )
-                            }
-                            
-                            // Crear enlace simbólico
+                            // Verificar/crear directorio
                             bat """
-                            mklink /J "${WORKSPACE}\\CLINICA" "${REPO_DIR}"
+                            if not exist "Z:\\${SHARE_SUBDIR}" (
+                                mkdir "Z:\\${SHARE_SUBDIR}"
+                            )
+                            """
+                            
+                            // Clonar el repositorio
+                            bat """
+                            git clone https://github.com/AnthonyDiazCabanillas/CLINICA.git "Z:\\${SHARE_SUBDIR}\\CLINICA"
+                            """
+                            
+                            // Crear enlace simbólico en el workspace
+                            bat """
+                            mklink /J "${WORKSPACE}\\CLINICA" "Z:\\${SHARE_SUBDIR}\\CLINICA"
                             """
                         } finally {
                             // Desmapear unidad
@@ -343,7 +340,6 @@ pipeline {
             }
         }
 
-        // Resto de tus stages permanecen igual...
         stage('Restore Dependencies') {
             steps {
                 dir("${WORKSPACE}/CLINICA") {
@@ -352,8 +348,6 @@ pipeline {
                 echo 'Dependencies restored.'
             }
         }
-
-        // ... (otros stages)
     }
 
     post {
