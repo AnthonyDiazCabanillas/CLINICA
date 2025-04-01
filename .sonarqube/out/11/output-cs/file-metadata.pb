@@ -1,0 +1,10 @@
+Û
+ÁD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.SemaforoEmergencias\obj\Debug\net6.0-windows\System.Windows.Forms.Analyzers.CSharp\System.Windows.Forms.Generators.ApplicationConfigurationGenerator\ApplicationConfiguration.g.csutf-8ï
+âD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.SemaforoEmergencias\obj\Debug\net6.0-windows\App.SemaforoEmergencias.AssemblyInfo.csutf-8ú
+êD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.SemaforoEmergencias\obj\Debug\net6.0-windows\.NETCoreApp,Version=v6.0.AssemblyAttributes.csutf-8ó
+ãD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.SemaforoEmergencias\obj\Debug\net6.0-windows\App.SemaforoEmergencias.GlobalUsings.g.csutf-8h
+_D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.SemaforoEmergencias\RJControls\RJButton.csutf-8t
+iD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.SemaforoEmergencias\Properties\Resources.Designer.csutf-8\
+SD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.SemaforoEmergencias\Program.csutf-8k
+`D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.SemaforoEmergencias\frmSemaforo.Designer.csutf-8`
+WD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.SemaforoEmergencias\frmSemaforo.csutf-8

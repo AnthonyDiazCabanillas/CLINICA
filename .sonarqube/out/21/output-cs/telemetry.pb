@@ -1,0 +1,1 @@
+_RID:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\WSAgenda.csproj¢net6.0òCSharp10

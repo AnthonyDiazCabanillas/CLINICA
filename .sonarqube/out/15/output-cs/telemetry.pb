@@ -1,0 +1,1 @@
+}RgD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\WS.ContratoConsultorios.csproj¢net8.0òCSharp12

@@ -1,0 +1,13 @@
+﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\Controllers\DigitalizacionController.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\Controllers\UsuarioController.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\Controllers\UtilitarioController.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\Models\Jwt.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\Program.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\obj\Debug\net8.0\ApiDigitalizacion.GlobalUsings.g.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\obj\Debug\net8.0\ApiDigitalizacion.AssemblyInfo.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\obj\Debug\net8.0\ApiDigitalizacion.MvcApplicationPartsAssemblyInfo.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\appsettings.Development.json
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\appsettings.json
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\ApiDigitalizacion.http
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\Properties\launchSettings.json

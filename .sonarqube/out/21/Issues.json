@@ -1,0 +1,1113 @@
+{
+  "$schema": "http://json.schemastore.org/sarif-1.0.0",
+  "version": "1.0.0",
+  "runs": [
+    {
+      "tool": {
+        "name": "Compilador de Microsoft (R) Visual C#",
+        "version": "4.13.0.0",
+        "fileVersion": "4.13.0-3.25112.7 (afe5bc4a)",
+        "semanticVersion": "4.13.0",
+        "language": "es-MX"
+      },
+      "results": [
+        {
+          "ruleId": "CS8618",
+          "level": "warning",
+          "message": "El elemento propiedad \"LogName\" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required'\"o declarar el propiedad como un valor que acepta valores NULL.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 168,
+                  "startColumn": 19,
+                  "endLine": 168,
+                  "endColumn": 26
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 168,
+                  "startColumn": 19,
+                  "endLine": 168,
+                  "endColumn": 26
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8618",
+          "level": "warning",
+          "message": "El elemento propiedad \"SourceName\" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required'\"o declarar el propiedad como un valor que acepta valores NULL.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 169,
+                  "startColumn": 19,
+                  "endLine": 169,
+                  "endColumn": 29
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 169,
+                  "startColumn": 19,
+                  "endLine": 169,
+                  "endColumn": 29
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS1998",
+          "level": "warning",
+          "message": "El método asincrónico carece de operadores \"await\" y se ejecutará de forma sincrónica. Puede usar el operador 'await' para esperar llamadas API que no sean de bloqueo o 'await Task.Run(...)' para hacer tareas enlazadas a la CPU en un subproceso en segundo plano.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 54,
+                  "startColumn": 27,
+                  "endLine": 54,
+                  "endColumn": 44
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS1998",
+          "level": "warning",
+          "message": "El método asincrónico carece de operadores \"await\" y se ejecutará de forma sincrónica. Puede usar el operador 'await' para esperar llamadas API que no sean de bloqueo o 'await Task.Run(...)' para hacer tareas enlazadas a la CPU en un subproceso en segundo plano.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 57,
+                  "startColumn": 27,
+                  "endLine": 57,
+                  "endColumn": 44
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8600",
+          "level": "warning",
+          "message": "Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
+                "region": {
+                  "startLine": 16,
+                  "startColumn": 31,
+                  "endLine": 16,
+                  "endColumn": 94
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8601",
+          "level": "warning",
+          "message": "Posible asignación de referencia nula.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
+                "region": {
+                  "startLine": 24,
+                  "startColumn": 60,
+                  "endLine": 24,
+                  "endColumn": 117
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8601",
+          "level": "warning",
+          "message": "Posible asignación de referencia nula.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
+                "region": {
+                  "startLine": 25,
+                  "startColumn": 61,
+                  "endLine": 25,
+                  "endColumn": 120
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8601",
+          "level": "warning",
+          "message": "Posible asignación de referencia nula.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
+                "region": {
+                  "startLine": 26,
+                  "startColumn": 62,
+                  "endLine": 26,
+                  "endColumn": 115
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8601",
+          "level": "warning",
+          "message": "Posible asignación de referencia nula.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
+                "region": {
+                  "startLine": 28,
+                  "startColumn": 57,
+                  "endLine": 28,
+                  "endColumn": 111
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8601",
+          "level": "warning",
+          "message": "Posible asignación de referencia nula.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
+                "region": {
+                  "startLine": 29,
+                  "startColumn": 58,
+                  "endLine": 29,
+                  "endColumn": 110
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8602",
+          "level": "warning",
+          "message": "Desreferencia de una referencia posiblemente NULL.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
+                "region": {
+                  "startLine": 34,
+                  "startColumn": 65,
+                  "endLine": 34,
+                  "endColumn": 71
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8600",
+          "level": "warning",
+          "message": "Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
+                "region": {
+                  "startLine": 37,
+                  "startColumn": 25,
+                  "endLine": 37,
+                  "endColumn": 81
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8602",
+          "level": "warning",
+          "message": "Desreferencia de una referencia posiblemente NULL.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
+                "region": {
+                  "startLine": 57,
+                  "startColumn": 38,
+                  "endLine": 57,
+                  "endColumn": 48
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S125",
+          "level": "warning",
+          "message": "Remove this commented out code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
+                "region": {
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 8
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S125",
+          "level": "warning",
+          "message": "Remove this commented out code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
+                "region": {
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 114
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S125",
+          "level": "warning",
+          "message": "Remove this commented out code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
+                "region": {
+                  "startLine": 70,
+                  "startColumn": 1,
+                  "endLine": 70,
+                  "endColumn": 23
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CA1050",
+          "level": "note",
+          "message": "Declarar tipos en espacios de nombres",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 166,
+                  "startColumn": 14,
+                  "endLine": 166,
+                  "endColumn": 24
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S125",
+          "level": "warning",
+          "message": "Remove this commented out code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 30
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S125",
+          "level": "warning",
+          "message": "Remove this commented out code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 34
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S125",
+          "level": "warning",
+          "message": "Remove this commented out code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 41,
+                  "startColumn": 9,
+                  "endLine": 41,
+                  "endColumn": 12
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make 'oAdmisionHospitalaria' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 29,
+                  "startColumn": 32,
+                  "endLine": 29,
+                  "endColumn": 53
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S125",
+          "level": "warning",
+          "message": "Remove this commented out code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 62,
+                  "startColumn": 13,
+                  "endLine": 62,
+                  "endColumn": 70
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make 'oGenerales' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 30,
+                  "startColumn": 19,
+                  "endLine": 30,
+                  "endColumn": 29
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make 'objCorreoAgenda' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 31,
+                  "startColumn": 22,
+                  "endLine": 31,
+                  "endColumn": 37
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S125",
+          "level": "warning",
+          "message": "Remove this commented out code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 116,
+                  "startColumn": 17,
+                  "endLine": 116,
+                  "endColumn": 36
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S125",
+          "level": "warning",
+          "message": "Remove this commented out code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 147,
+                  "startColumn": 17,
+                  "endLine": 147,
+                  "endColumn": 35
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S4487",
+          "level": "warning",
+          "message": "Remove this unread private field '_logger' or refactor the code to use its value.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 33,
+                  "startColumn": 42,
+                  "endLine": 33,
+                  "endColumn": 49
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2068",
+          "level": "warning",
+          "message": "\"password\" detected here, make sure this is not a hard-coded credential.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/appsettings.json",
+                "region": {
+                  "startLine": 9,
+                  "startColumn": 20,
+                  "endLine": 9,
+                  "endColumn": 110
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2068",
+          "level": "warning",
+          "message": "\"password\" detected here, make sure this is not a hard-coded credential.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/appsettings.json",
+                "region": {
+                  "startLine": 10,
+                  "startColumn": 22,
+                  "endLine": 10,
+                  "endColumn": 114
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2068",
+          "level": "warning",
+          "message": "\"password\" detected here, make sure this is not a hard-coded credential.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/appsettings.json",
+                "region": {
+                  "startLine": 11,
+                  "startColumn": 22,
+                  "endLine": 11,
+                  "endColumn": 111
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S3903",
+          "level": "warning",
+          "message": "Move 'MiServicio' into a named namespace.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 166,
+                  "startColumn": 14,
+                  "endLine": 166,
+                  "endColumn": 24
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1192",
+          "level": "warning",
+          "message": "Define a constant instead of using this literal 'ProcesoServicio' 4 times.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 89,
+                  "startColumn": 70,
+                  "endLine": 89,
+                  "endColumn": 87
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 104,
+                  "startColumn": 70,
+                  "endLine": 104,
+                  "endColumn": 87
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 129,
+                  "startColumn": 70,
+                  "endLine": 129,
+                  "endColumn": 87
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 156,
+                  "startColumn": 70,
+                  "endLine": 156,
+                  "endColumn": 87
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1,
+            "customProperties": {
+              "0": null,
+              "1": null,
+              "2": null
+            }
+          }
+        },
+        {
+          "ruleId": "S6966",
+          "level": "warning",
+          "message": "Await ProcesoCreaCitaAsync instead.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 55,
+                  "startColumn": 11,
+                  "endLine": 55,
+                  "endColumn": 28
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6966",
+          "level": "warning",
+          "message": "Await ProcesoServicioAsync instead.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 58,
+                  "startColumn": 11,
+                  "endLine": 58,
+                  "endColumn": 28
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6966",
+          "level": "warning",
+          "message": "Await ProcesoCreaCitaAsync instead.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 71,
+                  "startColumn": 21,
+                  "endLine": 71,
+                  "endColumn": 38
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6966",
+          "level": "warning",
+          "message": "Await ProcesoServicioAsync instead.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 72,
+                  "startColumn": 21,
+                  "endLine": 72,
+                  "endColumn": 38
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "IL3000",
+          "level": "warning",
+          "message": "'System.Reflection.Assembly.Location' always returns an empty string for assemblies embedded in a single-file app. If the path to the app directory is needed, consider calling 'System.AppContext.BaseDirectory'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
+                "region": {
+                  "startLine": 16,
+                  "startColumn": 53,
+                  "endLine": 16,
+                  "endColumn": 93
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1481",
+          "level": "warning",
+          "message": "Remove the unused local variable 'CurrentDirectory'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
+                "region": {
+                  "startLine": 18,
+                  "startColumn": 5,
+                  "endLine": 18,
+                  "endColumn": 21
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        }
+      ],
+      "rules": {
+        "CA1050": {
+          "id": "CA1050",
+          "shortDescription": "Declarar tipos en espacios de nombres",
+          "fullDescription": "Los tipos se declaran en los espacios de nombres para evitar conflictos de nombre y como forma de organizar los tipos relacionados en una jerarquía de objetos.",
+          "defaultLevel": "note",
+          "helpUri": "https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1050",
+          "properties": {
+            "category": "Design",
+            "isEnabledByDefault": true,
+            "tags": [
+              "PortedFromFxCop",
+              "Telemetry",
+              "EnabledRuleInAggressiveMode"
+            ]
+          }
+        },
+        "CS1998": {
+          "id": "CS1998",
+          "shortDescription": "El método asincrónico carece de operadores \"await\" y se ejecutará de forma sincrónica",
+          "defaultLevel": "warning",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS1998)",
+          "properties": {
+            "category": "Compiler",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Compiler",
+              "Telemetry"
+            ]
+          }
+        },
+        "CS8600": {
+          "id": "CS8600",
+          "shortDescription": "Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL",
+          "defaultLevel": "warning",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS8600)",
+          "properties": {
+            "category": "Compiler",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Compiler",
+              "Telemetry"
+            ]
+          }
+        },
+        "CS8601": {
+          "id": "CS8601",
+          "shortDescription": "Posible asignación de referencia nula",
+          "defaultLevel": "warning",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS8601)",
+          "properties": {
+            "category": "Compiler",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Compiler",
+              "Telemetry"
+            ]
+          }
+        },
+        "CS8602": {
+          "id": "CS8602",
+          "shortDescription": "Desreferencia de una referencia posiblemente NULL.",
+          "defaultLevel": "warning",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS8602)",
+          "properties": {
+            "category": "Compiler",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Compiler",
+              "Telemetry"
+            ]
+          }
+        },
+        "CS8618": {
+          "id": "CS8618",
+          "shortDescription": "Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required\" o declararlo como un valor que acepta valores NULL.",
+          "defaultLevel": "warning",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS8618)",
+          "properties": {
+            "category": "Compiler",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Compiler",
+              "Telemetry"
+            ]
+          }
+        },
+        "IL3000": {
+          "id": "IL3000",
+          "shortDescription": "Avoid accessing Assembly file path when publishing as a single file",
+          "fullDescription": "https://docs.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/il3000",
+          "defaultLevel": "warning",
+          "properties": {
+            "category": "SingleFile",
+            "isEnabledByDefault": true
+          }
+        },
+        "S1192": {
+          "id": "S1192",
+          "shortDescription": "String literals should not be duplicated",
+          "fullDescription": "Duplicated string literals make the process of refactoring complex and error-prone, as any change would need to be propagated on all occurrences.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-1192",
+          "properties": {
+            "category": "Minor Code Smell",
+            "isEnabledByDefault": false,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S125": {
+          "id": "S125",
+          "shortDescription": "Sections of code should not be commented out",
+          "fullDescription": "Commented-out code distracts the focus from the actual executed code. It creates a noise that increases maintenance code. And because it is never executed, it quickly becomes out of date and invalid.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-125",
+          "properties": {
+            "category": "Major Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S1481": {
+          "id": "S1481",
+          "shortDescription": "Unused local variables should be removed",
+          "fullDescription": "An unused local variable is a variable that has been declared but is not used anywhere in the block of code where it is defined. It is dead code, contributing to unnecessary complexity and leading to confusion when reading the code. Therefore, it should be removed from your code to maintain clarity and efficiency.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-1481",
+          "properties": {
+            "category": "Minor Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S2068": {
+          "id": "S2068",
+          "shortDescription": "Hard-coded credentials are security-sensitive",
+          "fullDescription": "Because it is easy to extract strings from an application source code or binary, credentials should not be hard-coded. This is particularly true for applications that are distributed or that are open-source.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-2068",
+          "properties": {
+            "category": "Blocker Security Hotspot",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S2933": {
+          "id": "S2933",
+          "shortDescription": "Fields that are only assigned in the constructor should be \"readonly\"",
+          "fullDescription": "readonly fields can only be assigned in a class constructor. If a class has a field that’s not marked readonly but is only set in the constructor, it could cause confusion about the field’s intended use. To avoid confusion, such fields should be marked readonly to make their intended use explicit, and to prevent future maintainers from inadvertently changing their use.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-2933",
+          "properties": {
+            "category": "Major Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S3903": {
+          "id": "S3903",
+          "shortDescription": "Types should be defined in named namespaces",
+          "fullDescription": "Types are declared in namespaces in order to prevent name collisions and as a way to organize them into the object hierarchy. Types that are defined outside any named namespace are in a global namespace that cannot be referenced in code.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-3903",
+          "properties": {
+            "category": "Major Bug",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S4487": {
+          "id": "S4487",
+          "shortDescription": "Unread \"private\" fields should be removed",
+          "fullDescription": "Private fields which are written but never read are a case of \"dead store\". Changing the value of such a field is useless and most probably indicates an error in the code.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-4487",
+          "properties": {
+            "category": "Critical Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S6966": {
+          "id": "S6966",
+          "shortDescription": "Awaitable method should be used",
+          "fullDescription": "In an async method, any blocking operations should be avoided.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-6966",
+          "properties": {
+            "category": "Major Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

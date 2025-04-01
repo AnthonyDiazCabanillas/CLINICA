@@ -1,0 +1,2 @@
+﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.RisClinica\RisClinica\GeneralesRisCopyService.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.RisClinica\RisClinica\RisXmlEvents.cs

@@ -1,0 +1,1 @@
+]RGD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\Dat.Sql.csproj¢net6.0òCSharp10

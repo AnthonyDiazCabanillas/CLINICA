@@ -1,0 +1,1 @@
+cRMD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Oracle\Dat.Oracle.csproj¢net6.0òCSharp10

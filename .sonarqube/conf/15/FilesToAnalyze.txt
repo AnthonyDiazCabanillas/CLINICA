@@ -1,0 +1,9 @@
+﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\Controlller\ContratoConsultorio.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\Program.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\Worker.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\obj\Debug\net8.0\WS.ContratoConsultorios.GlobalUsings.g.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\obj\Debug\net8.0\WS.ContratoConsultorios.AssemblyInfo.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\appsettings.Development.json
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\appsettings.json
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\Properties\launchSettings.json

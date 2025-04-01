@@ -1,0 +1,12 @@
+﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\Cita\frmDatosReserva.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\Cita\frmDatosReserva.Designer.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\Cita\frmSiteds.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\Cita\frmSiteds.Designer.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\frmMain.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\frmMain.Designer.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\Program.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\Cita\frmDatosReserva.resx
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\Cita\frmSiteds.resx
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\frmMain.resx
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\Properties\Resources.resx
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\appsettings.json

@@ -1,0 +1,1 @@
+kRUD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.RisClinica\Bus.RisClinica.csproj¢net6.0òCSharp10

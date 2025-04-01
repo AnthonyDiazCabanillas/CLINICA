@@ -1,0 +1,13 @@
+﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WebAppCitaAgenda\Controllers\AgendaCitaController.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WebAppCitaAgenda\Controllers\ImagenRisPacsController.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WebAppCitaAgenda\Controllers\ResultadoROEController.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WebAppCitaAgenda\Controllers\UsuarioCitaController.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WebAppCitaAgenda\Models\Jwt.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WebAppCitaAgenda\Program.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WebAppCitaAgenda\obj\Debug\net6.0\WebAppCitaAgenda.GlobalUsings.g.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WebAppCitaAgenda\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WebAppCitaAgenda\obj\Debug\net6.0\WebAppCitaAgenda.AssemblyInfo.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WebAppCitaAgenda\obj\Debug\net6.0\WebAppCitaAgenda.MvcApplicationPartsAssemblyInfo.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WebAppCitaAgenda\appsettings.Development.json
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WebAppCitaAgenda\appsettings.json
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WebAppCitaAgenda\Properties\launchSettings.json

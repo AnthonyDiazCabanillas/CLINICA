@@ -1,0 +1,1 @@
+qR[D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\ApiDigitalizacion.csproj¢net8.0òCSharp12

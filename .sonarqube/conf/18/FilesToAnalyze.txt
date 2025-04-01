@@ -1,0 +1,12 @@
+﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\Controllers\UsuarioController.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\Controllers\WebClinicaController.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\Filters\ExceptionManagerFilter.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\Models\Jwt.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\Program.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\obj\Debug\net6.0\ApiPaginaWebCSF.GlobalUsings.g.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\obj\Debug\net6.0\ApiPaginaWebCSF.AssemblyInfo.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\obj\Debug\net6.0\ApiPaginaWebCSF.MvcApplicationPartsAssemblyInfo.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\appsettings.Development.json
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\appsettings.json
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\Properties\launchSettings.json

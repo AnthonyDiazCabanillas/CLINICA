@@ -1,0 +1,1 @@
+yR[D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WF.RisCopyService\WF.RisCopyService.csproj¢net6.0-windowsòCSharp10

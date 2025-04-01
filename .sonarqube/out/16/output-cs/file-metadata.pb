@@ -1,0 +1,10 @@
+”
+ˆD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\obj\Debug\net8.0\ApiDigitalizacion.MvcApplicationPartsAssemblyInfo.csutf-8€
+uD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\obj\Debug\net8.0\ApiDigitalizacion.AssemblyInfo.csutf-8Ž
+‚D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.csutf-8‚
+wD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\obj\Debug\net8.0\ApiDigitalizacion.GlobalUsings.g.csutf-8V
+MD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\Program.csutf-8Y
+PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\Models\Jwt.csutf-8o
+fD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\Controllers\UtilitarioController.csutf-8l
+cD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\Controllers\UsuarioController.csutf-8s
+jD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\Controllers\DigitalizacionController.csutf-8

@@ -1,0 +1,4 @@
+﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\GeneracionReporteDietas\FileLogger.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\GeneracionReporteDietas\FileLoggerProvider.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\GeneracionReporteDietas\Program.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\GeneracionReporteDietas\appsettings.json

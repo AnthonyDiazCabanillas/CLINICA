@@ -1,0 +1,4276 @@
+{
+  "$schema": "http://json.schemastore.org/sarif-1.0.0",
+  "version": "1.0.0",
+  "runs": [
+    {
+      "tool": {
+        "name": "Compilador de Microsoft (R) Visual C#",
+        "version": "4.13.0.0",
+        "fileVersion": "4.13.0-3.25112.7 (afe5bc4a)",
+        "semanticVersion": "4.13.0",
+        "language": "es-MX"
+      },
+      "results": [
+        {
+          "ruleId": "CS0168",
+          "level": "warning",
+          "message": "La variable 'ex' se ha declarado pero nunca se usa",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 42,
+                  "startColumn": 30,
+                  "endLine": 42,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 3
+          }
+        },
+        {
+          "ruleId": "CS0168",
+          "level": "warning",
+          "message": "La variable 'ex' se ha declarado pero nunca se usa",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/DatosWebController.cs",
+                "region": {
+                  "startLine": 76,
+                  "startColumn": 30,
+                  "endLine": 76,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 3
+          }
+        },
+        {
+          "ruleId": "CS0168",
+          "level": "warning",
+          "message": "La variable 'ex' se ha declarado pero nunca se usa",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 74,
+                  "startColumn": 30,
+                  "endLine": 74,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 3
+          }
+        },
+        {
+          "ruleId": "CS0168",
+          "level": "warning",
+          "message": "La variable 'ex' se ha declarado pero nunca se usa",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 38,
+                  "startColumn": 30,
+                  "endLine": 38,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 3
+          }
+        },
+        {
+          "ruleId": "CS0168",
+          "level": "warning",
+          "message": "La variable 'ex' se ha declarado pero nunca se usa",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 61,
+                  "startColumn": 30,
+                  "endLine": 61,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 3
+          }
+        },
+        {
+          "ruleId": "CS0168",
+          "level": "warning",
+          "message": "La variable 'ex' se ha declarado pero nunca se usa",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 84,
+                  "startColumn": 30,
+                  "endLine": 84,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 3
+          }
+        },
+        {
+          "ruleId": "CS0168",
+          "level": "warning",
+          "message": "La variable 'ex' se ha declarado pero nunca se usa",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 148,
+                  "startColumn": 30,
+                  "endLine": 148,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 3
+          }
+        },
+        {
+          "ruleId": "CS0168",
+          "level": "warning",
+          "message": "La variable 'ex' se ha declarado pero nunca se usa",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 105,
+                  "startColumn": 30,
+                  "endLine": 105,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 3
+          }
+        },
+        {
+          "ruleId": "CS0168",
+          "level": "warning",
+          "message": "La variable 'ex' se ha declarado pero nunca se usa",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 179,
+                  "startColumn": 30,
+                  "endLine": 179,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 3
+          }
+        },
+        {
+          "ruleId": "CS0162",
+          "level": "warning",
+          "message": "Se detectó código inaccesible",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/GestorColasController.cs",
+                "region": {
+                  "startLine": 127,
+                  "startColumn": 17,
+                  "endLine": 127,
+                  "endColumn": 23
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 2
+          }
+        },
+        {
+          "ruleId": "CS0168",
+          "level": "warning",
+          "message": "La variable 'ex' se ha declarado pero nunca se usa",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/GestorColasController.cs",
+                "region": {
+                  "startLine": 129,
+                  "startColumn": 30,
+                  "endLine": 129,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 3
+          }
+        },
+        {
+          "ruleId": "CS0168",
+          "level": "warning",
+          "message": "La variable 'ex' se ha declarado pero nunca se usa",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 129,
+                  "startColumn": 30,
+                  "endLine": 129,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 3
+          }
+        },
+        {
+          "ruleId": "CS8604",
+          "level": "warning",
+          "message": "Posible argumento de referencia nulo para el parámetro \"input\" en \"Match Regex.Match(string input, string pattern)\".",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 60,
+                  "startColumn": 56,
+                  "endLine": 60,
+                  "endColumn": 65
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8604",
+          "level": "warning",
+          "message": "Posible argumento de referencia nulo para el parámetro \"input\" en \"Match Regex.Match(string input, string pattern)\".",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 85,
+                  "startColumn": 58,
+                  "endLine": 85,
+                  "endColumn": 67
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8604",
+          "level": "warning",
+          "message": "Posible argumento de referencia nulo para el parámetro \"input\" en \"Match Regex.Match(string input, string pattern)\".",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 110,
+                  "startColumn": 58,
+                  "endLine": 110,
+                  "endColumn": 67
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8604",
+          "level": "warning",
+          "message": "Posible argumento de referencia nulo para el parámetro \"input\" en \"Match Regex.Match(string input, string pattern)\".",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 133,
+                  "startColumn": 55,
+                  "endLine": 133,
+                  "endColumn": 64
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8604",
+          "level": "warning",
+          "message": "Posible argumento de referencia nulo para el parámetro \"input\" en \"Match Regex.Match(string input, string pattern)\".",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 158,
+                  "startColumn": 58,
+                  "endLine": 158,
+                  "endColumn": 67
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS1998",
+          "level": "warning",
+          "message": "El método asincrónico carece de operadores \"await\" y se ejecutará de forma sincrónica. Puede usar el operador 'await' para esperar llamadas API que no sean de bloqueo o 'await Task.Run(...)' para hacer tareas enlazadas a la CPU en un subproceso en segundo plano.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 38,
+                  "startColumn": 42,
+                  "endLine": 38,
+                  "endColumn": 57
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS0168",
+          "level": "warning",
+          "message": "La variable 'ex' se ha declarado pero nunca se usa",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 195,
+                  "startColumn": 30,
+                  "endLine": 195,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 3
+          }
+        },
+        {
+          "ruleId": "CS0168",
+          "level": "warning",
+          "message": "La variable 'ex' se ha declarado pero nunca se usa",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 156,
+                  "startColumn": 30,
+                  "endLine": 156,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 3
+          }
+        },
+        {
+          "ruleId": "CS0168",
+          "level": "warning",
+          "message": "La variable 'ex' se ha declarado pero nunca se usa",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 213,
+                  "startColumn": 30,
+                  "endLine": 213,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 3
+          }
+        },
+        {
+          "ruleId": "CS0168",
+          "level": "warning",
+          "message": "La variable 'ex' se ha declarado pero nunca se usa",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 178,
+                  "startColumn": 30,
+                  "endLine": 178,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 3
+          }
+        },
+        {
+          "ruleId": "CS0168",
+          "level": "warning",
+          "message": "La variable 'ex' se ha declarado pero nunca se usa",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 210,
+                  "startColumn": 30,
+                  "endLine": 210,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 3
+          }
+        },
+        {
+          "ruleId": "CS0168",
+          "level": "warning",
+          "message": "La variable 'ex' se ha declarado pero nunca se usa",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 245,
+                  "startColumn": 30,
+                  "endLine": 245,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 3
+          }
+        },
+        {
+          "ruleId": "CS0168",
+          "level": "warning",
+          "message": "La variable 'ex' se ha declarado pero nunca se usa",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 280,
+                  "startColumn": 30,
+                  "endLine": 280,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 3
+          }
+        },
+        {
+          "ruleId": "S125",
+          "level": "warning",
+          "message": "Remove this commented out code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 98,
+                  "startColumn": 21,
+                  "endLine": 98,
+                  "endColumn": 43
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S125",
+          "level": "warning",
+          "message": "Remove this commented out code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/GestorColasController.cs",
+                "region": {
+                  "startLine": 27,
+                  "startColumn": 17,
+                  "endLine": 27,
+                  "endColumn": 48
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2068",
+          "level": "warning",
+          "message": "\"password\" detected here, make sure this is not a hard-coded credential.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/appsettings.json",
+                "region": {
+                  "startLine": 14,
+                  "startColumn": 20,
+                  "endLine": 14,
+                  "endColumn": 114
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2068",
+          "level": "warning",
+          "message": "\"password\" detected here, make sure this is not a hard-coded credential.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/appsettings.json",
+                "region": {
+                  "startLine": 15,
+                  "startColumn": 22,
+                  "endLine": 15,
+                  "endColumn": 118
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2068",
+          "level": "warning",
+          "message": "\"password\" detected here, make sure this is not a hard-coded credential.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/appsettings.json",
+                "region": {
+                  "startLine": 16,
+                  "startColumn": 22,
+                  "endLine": 16,
+                  "endColumn": 115
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2068",
+          "level": "warning",
+          "message": "\"password\" detected here, make sure this is not a hard-coded credential.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/appsettings.json",
+                "region": {
+                  "startLine": 17,
+                  "startColumn": 27,
+                  "endLine": 17,
+                  "endColumn": 130
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1104",
+          "level": "warning",
+          "message": "Make this field 'private' and encapsulate it in a 'public' property.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Data/Config.cs",
+                "region": {
+                  "startLine": 5,
+                  "startColumn": 18,
+                  "endLine": 5,
+                  "endColumn": 50
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1104",
+          "level": "warning",
+          "message": "Make this field 'private' and encapsulate it in a 'public' property.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Data/Config.cs",
+                "region": {
+                  "startLine": 6,
+                  "startColumn": 17,
+                  "endLine": 6,
+                  "endColumn": 60
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CA2211",
+          "level": "note",
+          "message": "Los campos no constantes no deben ser visibles",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Data/MetaGlobal.cs",
+                "region": {
+                  "startLine": 39,
+                  "startColumn": 30,
+                  "endLine": 39,
+                  "endColumn": 55
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CA2211",
+          "level": "note",
+          "message": "Los campos no constantes no deben ser visibles",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Data/MetaGlobal.cs",
+                "region": {
+                  "startLine": 32,
+                  "startColumn": 30,
+                  "endLine": 32,
+                  "endColumn": 41
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1104",
+          "level": "warning",
+          "message": "Make this field 'private' and encapsulate it in a 'public' property.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Data/MetaGlobal.cs",
+                "region": {
+                  "startLine": 39,
+                  "startColumn": 30,
+                  "endLine": 39,
+                  "endColumn": 60
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2223",
+          "level": "warning",
+          "message": "Change the visibility of 'IdeModuloSistemaPrincipal' or make it 'const' or 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Data/MetaGlobal.cs",
+                "region": {
+                  "startLine": 39,
+                  "startColumn": 30,
+                  "endLine": 39,
+                  "endColumn": 55
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1104",
+          "level": "warning",
+          "message": "Make this field 'private' and encapsulate it in a 'public' property.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Data/MetaGlobal.cs",
+                "region": {
+                  "startLine": 32,
+                  "startColumn": 30,
+                  "endLine": 32,
+                  "endColumn": 46
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2223",
+          "level": "warning",
+          "message": "Change the visibility of 'NameSistema' or make it 'const' or 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Data/MetaGlobal.cs",
+                "region": {
+                  "startLine": 32,
+                  "startColumn": 30,
+                  "endLine": 32,
+                  "endColumn": 41
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make '_config' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/DatosWebController.cs",
+                "region": {
+                  "startLine": 14,
+                  "startColumn": 16,
+                  "endLine": 14,
+                  "endColumn": 23
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make '_objCN' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 15,
+                  "startColumn": 29,
+                  "endLine": 15,
+                  "endColumn": 35
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make '_objEN' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 16,
+                  "startColumn": 30,
+                  "endLine": 16,
+                  "endColumn": 36
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make '_config' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 17,
+                  "startColumn": 16,
+                  "endLine": 17,
+                  "endColumn": 23
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1144",
+          "level": "warning",
+          "message": "Remove the unused private field '_objEN'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 16,
+                  "startColumn": 9,
+                  "endLine": 16,
+                  "endColumn": 66
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make '_objCN' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/GestorColasController.cs",
+                "region": {
+                  "startLine": 17,
+                  "startColumn": 22,
+                  "endLine": 17,
+                  "endColumn": 28
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make '_config' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/GestorColasController.cs",
+                "region": {
+                  "startLine": 18,
+                  "startColumn": 16,
+                  "endLine": 18,
+                  "endColumn": 23
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make '_config' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/PrestacionesClinicaController.cs",
+                "region": {
+                  "startLine": 14,
+                  "startColumn": 16,
+                  "endLine": 14,
+                  "endColumn": 23
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1192",
+          "level": "warning",
+          "message": "Define a constant instead of using this literal 'Authorization' 5 times.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 25,
+                  "startColumn": 104,
+                  "endLine": 25,
+                  "endColumn": 119
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 56,
+                  "startColumn": 104,
+                  "endLine": 56,
+                  "endColumn": 119
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 85,
+                  "startColumn": 66,
+                  "endLine": 85,
+                  "endColumn": 81
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 130,
+                  "startColumn": 104,
+                  "endLine": 130,
+                  "endColumn": 119
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 161,
+                  "startColumn": 104,
+                  "endLine": 161,
+                  "endColumn": 119
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1,
+            "customProperties": {
+              "0": null,
+              "1": null,
+              "2": null,
+              "3": null
+            }
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make '_bl' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/TCIController.cs",
+                "region": {
+                  "startLine": 30,
+                  "startColumn": 18,
+                  "endLine": 30,
+                  "endColumn": 21
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make '_config' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/TCIController.cs",
+                "region": {
+                  "startLine": 31,
+                  "startColumn": 16,
+                  "endLine": 31,
+                  "endColumn": 23
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CA2211",
+          "level": "note",
+          "message": "Los campos no constantes no deben ser visibles",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Data/MetaGlobal.cs",
+                "region": {
+                  "startLine": 18,
+                  "startColumn": 30,
+                  "endLine": 18,
+                  "endColumn": 39
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1104",
+          "level": "warning",
+          "message": "Make this field 'private' and encapsulate it in a 'public' property.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Data/MetaGlobal.cs",
+                "region": {
+                  "startLine": 18,
+                  "startColumn": 30,
+                  "endLine": 18,
+                  "endColumn": 44
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2223",
+          "level": "warning",
+          "message": "Change the visibility of 'PageTitle' or make it 'const' or 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Data/MetaGlobal.cs",
+                "region": {
+                  "startLine": 18,
+                  "startColumn": 30,
+                  "endLine": 18,
+                  "endColumn": 39
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1144",
+          "level": "warning",
+          "message": "Remove the unused private field '_bl'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/TCIController.cs",
+                "region": {
+                  "startLine": 30,
+                  "startColumn": 9,
+                  "endLine": 30,
+                  "endColumn": 39
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S101",
+          "level": "warning",
+          "message": "Rename class 'TCIController' to match pascal case naming rules, consider using 'TciController'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/TCIController.cs",
+                "region": {
+                  "startLine": 28,
+                  "startColumn": 18,
+                  "endLine": 28,
+                  "endColumn": 31
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1192",
+          "level": "warning",
+          "message": "Define a constant instead of using this literal 'Authorization' 4 times.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/PrestacionesClinicaController.cs",
+                "region": {
+                  "startLine": 24,
+                  "startColumn": 104,
+                  "endLine": 24,
+                  "endColumn": 119
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/PrestacionesClinicaController.cs",
+                "region": {
+                  "startLine": 53,
+                  "startColumn": 104,
+                  "endLine": 53,
+                  "endColumn": 119
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/PrestacionesClinicaController.cs",
+                "region": {
+                  "startLine": 84,
+                  "startColumn": 104,
+                  "endLine": 84,
+                  "endColumn": 119
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/PrestacionesClinicaController.cs",
+                "region": {
+                  "startLine": 113,
+                  "startColumn": 104,
+                  "endLine": 113,
+                  "endColumn": 119
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1,
+            "customProperties": {
+              "0": null,
+              "1": null,
+              "2": null
+            }
+          }
+        },
+        {
+          "ruleId": "S1192",
+          "level": "warning",
+          "message": "Define a constant instead of using this literal 'Error de acceso' 4 times.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/PrestacionesClinicaController.cs",
+                "region": {
+                  "startLine": 36,
+                  "startColumn": 39,
+                  "endLine": 36,
+                  "endColumn": 56
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/PrestacionesClinicaController.cs",
+                "region": {
+                  "startLine": 65,
+                  "startColumn": 39,
+                  "endLine": 65,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/PrestacionesClinicaController.cs",
+                "region": {
+                  "startLine": 96,
+                  "startColumn": 39,
+                  "endLine": 96,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/PrestacionesClinicaController.cs",
+                "region": {
+                  "startLine": 129,
+                  "startColumn": 39,
+                  "endLine": 129,
+                  "endColumn": 56
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1,
+            "customProperties": {
+              "0": null,
+              "1": null,
+              "2": null
+            }
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make '_bl' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 17,
+                  "startColumn": 18,
+                  "endLine": 17,
+                  "endColumn": 21
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make '_config' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 18,
+                  "startColumn": 16,
+                  "endLine": 18,
+                  "endColumn": 23
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CA2211",
+          "level": "note",
+          "message": "Los campos no constantes no deben ser visibles",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Data/MetaGlobal.cs",
+                "region": {
+                  "startLine": 25,
+                  "startColumn": 30,
+                  "endLine": 25,
+                  "endColumn": 48
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1104",
+          "level": "warning",
+          "message": "Make this field 'private' and encapsulate it in a 'public' property.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Data/MetaGlobal.cs",
+                "region": {
+                  "startLine": 25,
+                  "startColumn": 30,
+                  "endLine": 25,
+                  "endColumn": 53
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2223",
+          "level": "warning",
+          "message": "Change the visibility of 'VersionPublicacion' or make it 'const' or 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Data/MetaGlobal.cs",
+                "region": {
+                  "startLine": 25,
+                  "startColumn": 30,
+                  "endLine": 25,
+                  "endColumn": 48
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CA2211",
+          "level": "note",
+          "message": "Los campos no constantes no deben ser visibles",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Data/MetaGlobal.cs",
+                "region": {
+                  "startLine": 11,
+                  "startColumn": 30,
+                  "endLine": 11,
+                  "endColumn": 45
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1104",
+          "level": "warning",
+          "message": "Make this field 'private' and encapsulate it in a 'public' property.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Data/MetaGlobal.cs",
+                "region": {
+                  "startLine": 11,
+                  "startColumn": 30,
+                  "endLine": 11,
+                  "endColumn": 50
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2223",
+          "level": "warning",
+          "message": "Change the visibility of 'PageDescription' or make it 'const' or 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Data/MetaGlobal.cs",
+                "region": {
+                  "startLine": 11,
+                  "startColumn": 30,
+                  "endLine": 11,
+                  "endColumn": 45
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make '_bl' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 33,
+                  "startColumn": 29,
+                  "endLine": 33,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make '_config' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 34,
+                  "startColumn": 16,
+                  "endLine": 34,
+                  "endColumn": 23
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make '_config' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/TramasController.cs",
+                "region": {
+                  "startLine": 13,
+                  "startColumn": 16,
+                  "endLine": 13,
+                  "endColumn": 23
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1144",
+          "level": "warning",
+          "message": "Remove the unused private field '_config'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 34,
+                  "startColumn": 9,
+                  "endLine": 34,
+                  "endColumn": 39
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1192",
+          "level": "warning",
+          "message": "Define a constant instead of using this literal 'Authorization' 10 times.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 26,
+                  "startColumn": 104,
+                  "endLine": 26,
+                  "endColumn": 119
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 49,
+                  "startColumn": 104,
+                  "endLine": 49,
+                  "endColumn": 119
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 72,
+                  "startColumn": 104,
+                  "endLine": 72,
+                  "endColumn": 119
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 93,
+                  "startColumn": 104,
+                  "endLine": 93,
+                  "endColumn": 119
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 115,
+                  "startColumn": 104,
+                  "endLine": 115,
+                  "endColumn": 119
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 143,
+                  "startColumn": 104,
+                  "endLine": 143,
+                  "endColumn": 119
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 165,
+                  "startColumn": 104,
+                  "endLine": 165,
+                  "endColumn": 119
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 187,
+                  "startColumn": 66,
+                  "endLine": 187,
+                  "endColumn": 81
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 224,
+                  "startColumn": 66,
+                  "endLine": 224,
+                  "endColumn": 81
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 259,
+                  "startColumn": 66,
+                  "endLine": 259,
+                  "endColumn": 81
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1,
+            "customProperties": {
+              "0": null,
+              "1": null,
+              "2": null,
+              "3": null,
+              "4": null,
+              "5": null,
+              "6": null,
+              "7": null,
+              "8": null
+            }
+          }
+        },
+        {
+          "ruleId": "S1192",
+          "level": "warning",
+          "message": "Define a constant instead of using this literal 'Error de acceso, Acción denegada' 9 times.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 192,
+                  "startColumn": 38,
+                  "endLine": 192,
+                  "endColumn": 72
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 206,
+                  "startColumn": 38,
+                  "endLine": 206,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 214,
+                  "startColumn": 34,
+                  "endLine": 214,
+                  "endColumn": 68
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 229,
+                  "startColumn": 38,
+                  "endLine": 229,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 241,
+                  "startColumn": 38,
+                  "endLine": 241,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 248,
+                  "startColumn": 34,
+                  "endLine": 248,
+                  "endColumn": 68
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 264,
+                  "startColumn": 38,
+                  "endLine": 264,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 276,
+                  "startColumn": 38,
+                  "endLine": 276,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 284,
+                  "startColumn": 34,
+                  "endLine": 284,
+                  "endColumn": 68
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1,
+            "customProperties": {
+              "0": null,
+              "1": null,
+              "2": null,
+              "3": null,
+              "4": null,
+              "5": null,
+              "6": null,
+              "7": null
+            }
+          }
+        },
+        {
+          "ruleId": "S1192",
+          "level": "warning",
+          "message": "Define a constant instead of using this literal 'codigo' 5 times.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 54,
+                  "startColumn": 25,
+                  "endLine": 54,
+                  "endColumn": 33
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 79,
+                  "startColumn": 30,
+                  "endLine": 79,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 104,
+                  "startColumn": 30,
+                  "endLine": 104,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 129,
+                  "startColumn": 30,
+                  "endLine": 129,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 153,
+                  "startColumn": 30,
+                  "endLine": 153,
+                  "endColumn": 38
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1,
+            "customProperties": {
+              "0": null,
+              "1": null,
+              "2": null,
+              "3": null
+            }
+          }
+        },
+        {
+          "ruleId": "S1192",
+          "level": "warning",
+          "message": "Define a constant instead of using this literal 'estado' 5 times.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 54,
+                  "startColumn": 61,
+                  "endLine": 54,
+                  "endColumn": 69
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 79,
+                  "startColumn": 66,
+                  "endLine": 79,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 104,
+                  "startColumn": 66,
+                  "endLine": 104,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 129,
+                  "startColumn": 66,
+                  "endLine": 129,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 153,
+                  "startColumn": 66,
+                  "endLine": 153,
+                  "endColumn": 74
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1,
+            "customProperties": {
+              "0": null,
+              "1": null,
+              "2": null,
+              "3": null
+            }
+          }
+        },
+        {
+          "ruleId": "S1192",
+          "level": "warning",
+          "message": "Define a constant instead of using this literal 'valor' 5 times.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 56,
+                  "startColumn": 57,
+                  "endLine": 56,
+                  "endColumn": 64
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 81,
+                  "startColumn": 50,
+                  "endLine": 81,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 106,
+                  "startColumn": 50,
+                  "endLine": 106,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 131,
+                  "startColumn": 51,
+                  "endLine": 131,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 155,
+                  "startColumn": 53,
+                  "endLine": 155,
+                  "endColumn": 60
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1,
+            "customProperties": {
+              "0": null,
+              "1": null,
+              "2": null,
+              "3": null
+            }
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/TramasController.cs",
+                "region": {
+                  "startLine": 23,
+                  "startColumn": 84,
+                  "endLine": 23,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/DatosWebController.cs",
+                "region": {
+                  "startLine": 24,
+                  "startColumn": 84,
+                  "endLine": 24,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/TramasController.cs",
+                "region": {
+                  "startLine": 51,
+                  "startColumn": 84,
+                  "endLine": 51,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 25,
+                  "startColumn": 84,
+                  "endLine": 25,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1854",
+          "level": "warning",
+          "message": "Remove this useless assignment to local variable 'Lista'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 28,
+                  "startColumn": 48,
+                  "endLine": 28,
+                  "endColumn": 88
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/DatosWebController.cs",
+                "region": {
+                  "startLine": 62,
+                  "startColumn": 84,
+                  "endLine": 62,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 56,
+                  "startColumn": 84,
+                  "endLine": 56,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S112",
+          "level": "warning",
+          "message": "'System.Exception' should not be thrown by user code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/GestorColasController.cs",
+                "region": {
+                  "startLine": 40,
+                  "startColumn": 23,
+                  "endLine": 40,
+                  "endColumn": 48
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 26,
+                  "startColumn": 84,
+                  "endLine": 26,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1854",
+          "level": "warning",
+          "message": "Remove this useless assignment to local variable 'Lista'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 59,
+                  "startColumn": 57,
+                  "endLine": 59,
+                  "endColumn": 106
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S5122",
+          "level": "warning",
+          "message": "Make sure this permissive CORS policy is safe here.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Program.cs",
+                "region": {
+                  "startLine": 22,
+                  "startColumn": 69,
+                  "endLine": 22,
+                  "endColumn": 90
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/PrestacionesClinicaController.cs",
+                "region": {
+                  "startLine": 24,
+                  "startColumn": 84,
+                  "endLine": 24,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 85,
+                  "startColumn": 46,
+                  "endLine": 85,
+                  "endColumn": 51
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/TramasController.cs",
+                "region": {
+                  "startLine": 81,
+                  "startColumn": 84,
+                  "endLine": 81,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1854",
+          "level": "warning",
+          "message": "Remove this useless assignment to local variable '_Rjson'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 97,
+                  "startColumn": 36,
+                  "endLine": 97,
+                  "endColumn": 65
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1066",
+          "level": "warning",
+          "message": "Merge this if statement with the enclosing one.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/GestorColasController.cs",
+                "region": {
+                  "startLine": 53,
+                  "startColumn": 21,
+                  "endLine": 53,
+                  "endColumn": 23
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/GestorColasController.cs",
+                "region": {
+                  "startLine": 51,
+                  "startColumn": 17,
+                  "endLine": 51,
+                  "endColumn": 19
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1,
+            "customProperties": {
+              "0": "Merge this if statement with its nested one."
+            }
+          }
+        },
+        {
+          "ruleId": "S112",
+          "level": "warning",
+          "message": "'System.Exception' should not be thrown by user code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/GestorColasController.cs",
+                "region": {
+                  "startLine": 67,
+                  "startColumn": 23,
+                  "endLine": 67,
+                  "endColumn": 48
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S4423",
+          "level": "warning",
+          "message": "Change this code to use a stronger protocol.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/RoeController.cs",
+                "region": {
+                  "startLine": 42,
+                  "startColumn": 77,
+                  "endLine": 42,
+                  "endColumn": 82
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 49,
+                  "startColumn": 84,
+                  "endLine": 49,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/PrestacionesClinicaController.cs",
+                "region": {
+                  "startLine": 53,
+                  "startColumn": 84,
+                  "endLine": 53,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6966",
+          "level": "warning",
+          "message": "Await RunAsync instead.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Program.cs",
+                "region": {
+                  "startLine": 58,
+                  "startColumn": 1,
+                  "endLine": 58,
+                  "endColumn": 10
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 130,
+                  "startColumn": 84,
+                  "endLine": 130,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 72,
+                  "startColumn": 84,
+                  "endLine": 72,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/TCIController.cs",
+                "region": {
+                  "startLine": 41,
+                  "startColumn": 84,
+                  "endLine": 41,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/PrestacionesClinicaController.cs",
+                "region": {
+                  "startLine": 84,
+                  "startColumn": 84,
+                  "endLine": 84,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1854",
+          "level": "warning",
+          "message": "Remove this useless assignment to local variable 'Lista'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 133,
+                  "startColumn": 57,
+                  "endLine": 133,
+                  "endColumn": 106
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1854",
+          "level": "warning",
+          "message": "Remove this useless assignment to local variable 'oObtenerPDFResultado'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/TCIController.cs",
+                "region": {
+                  "startLine": 40,
+                  "startColumn": 37,
+                  "endLine": 40,
+                  "endColumn": 85
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6962",
+          "level": "warning",
+          "message": "Reuse HttpClient instances rather than create new ones with each controller action invocation.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/RoeController.cs",
+                "region": {
+                  "startLine": 43,
+                  "startColumn": 44,
+                  "endLine": 43,
+                  "endColumn": 60
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 93,
+                  "startColumn": 84,
+                  "endLine": 93,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 161,
+                  "startColumn": 84,
+                  "endLine": 161,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6961",
+          "level": "warning",
+          "message": "Inherit from ControllerBase instead of Controller.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/RoeController.cs",
+                "region": {
+                  "startLine": 29,
+                  "startColumn": 34,
+                  "endLine": 29,
+                  "endColumn": 44
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1854",
+          "level": "warning",
+          "message": "Remove this useless assignment to local variable 'Lista'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/EscalaEIndicacionesController.cs",
+                "region": {
+                  "startLine": 164,
+                  "startColumn": 65,
+                  "endLine": 164,
+                  "endColumn": 122
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/GestorColasController.cs",
+                "region": {
+                  "startLine": 79,
+                  "startColumn": 78,
+                  "endLine": 79,
+                  "endColumn": 83
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 115,
+                  "startColumn": 84,
+                  "endLine": 115,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S112",
+          "level": "warning",
+          "message": "'System.Exception' should not be thrown by user code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/TCIController.cs",
+                "region": {
+                  "startLine": 48,
+                  "startColumn": 42,
+                  "endLine": 48,
+                  "endColumn": 67
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 143,
+                  "startColumn": 84,
+                  "endLine": 143,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/PrestacionesClinicaController.cs",
+                "region": {
+                  "startLine": 113,
+                  "startColumn": 84,
+                  "endLine": 113,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/PrestacionesClinicaController.cs",
+                "region": {
+                  "startLine": 116,
+                  "startColumn": 102,
+                  "endLine": 116,
+                  "endColumn": 107
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 165,
+                  "startColumn": 84,
+                  "endLine": 165,
+                  "endColumn": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 224,
+                  "startColumn": 46,
+                  "endLine": 224,
+                  "endColumn": 51
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 187,
+                  "startColumn": 46,
+                  "endLine": 187,
+                  "endColumn": 51
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2971",
+          "level": "warning",
+          "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/KardexHospitalizacionController.cs",
+                "region": {
+                  "startLine": 259,
+                  "startColumn": 46,
+                  "endLine": 259,
+                  "endColumn": 51
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1125",
+          "level": "warning",
+          "message": "Remove the unnecessary Boolean literal(s).",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 62,
+                  "startColumn": 48,
+                  "endLine": 62,
+                  "endColumn": 56
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1125",
+          "level": "warning",
+          "message": "Remove the unnecessary Boolean literal(s).",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 70,
+                  "startColumn": 48,
+                  "endLine": 70,
+                  "endColumn": 56
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1125",
+          "level": "warning",
+          "message": "Remove the unnecessary Boolean literal(s).",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 87,
+                  "startColumn": 50,
+                  "endLine": 87,
+                  "endColumn": 58
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1125",
+          "level": "warning",
+          "message": "Remove the unnecessary Boolean literal(s).",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 96,
+                  "startColumn": 50,
+                  "endLine": 96,
+                  "endColumn": 58
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1125",
+          "level": "warning",
+          "message": "Remove the unnecessary Boolean literal(s).",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 112,
+                  "startColumn": 50,
+                  "endLine": 112,
+                  "endColumn": 58
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1125",
+          "level": "warning",
+          "message": "Remove the unnecessary Boolean literal(s).",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 120,
+                  "startColumn": 50,
+                  "endLine": 120,
+                  "endColumn": 58
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1125",
+          "level": "warning",
+          "message": "Remove the unnecessary Boolean literal(s).",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 135,
+                  "startColumn": 47,
+                  "endLine": 135,
+                  "endColumn": 55
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1125",
+          "level": "warning",
+          "message": "Remove the unnecessary Boolean literal(s).",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 144,
+                  "startColumn": 47,
+                  "endLine": 144,
+                  "endColumn": 55
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1125",
+          "level": "warning",
+          "message": "Remove the unnecessary Boolean literal(s).",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 160,
+                  "startColumn": 50,
+                  "endLine": 160,
+                  "endColumn": 58
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1125",
+          "level": "warning",
+          "message": "Remove the unnecessary Boolean literal(s).",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 168,
+                  "startColumn": 50,
+                  "endLine": 168,
+                  "endColumn": 58
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S3776",
+          "level": "warning",
+          "message": "Refactor this method to reduce its Cognitive Complexity from 42 to the 15 allowed.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 38,
+                  "startColumn": 42,
+                  "endLine": 38,
+                  "endColumn": 57
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 52,
+                  "startColumn": 13,
+                  "endLine": 52,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 54,
+                  "startColumn": 17,
+                  "endLine": 54,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 54,
+                  "startColumn": 54,
+                  "endLine": 54,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 62,
+                  "startColumn": 21,
+                  "endLine": 62,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 70,
+                  "startColumn": 21,
+                  "endLine": 70,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 79,
+                  "startColumn": 17,
+                  "endLine": 79,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 79,
+                  "startColumn": 59,
+                  "endLine": 79,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 87,
+                  "startColumn": 21,
+                  "endLine": 87,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 96,
+                  "startColumn": 21,
+                  "endLine": 96,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 104,
+                  "startColumn": 17,
+                  "endLine": 104,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 104,
+                  "startColumn": 59,
+                  "endLine": 104,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 112,
+                  "startColumn": 21,
+                  "endLine": 112,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 120,
+                  "startColumn": 21,
+                  "endLine": 120,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 129,
+                  "startColumn": 17,
+                  "endLine": 129,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 129,
+                  "startColumn": 59,
+                  "endLine": 129,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 135,
+                  "startColumn": 21,
+                  "endLine": 135,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 144,
+                  "startColumn": 21,
+                  "endLine": 144,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 153,
+                  "startColumn": 17,
+                  "endLine": 153,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 153,
+                  "startColumn": 59,
+                  "endLine": 153,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 160,
+                  "startColumn": 21,
+                  "endLine": 160,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 168,
+                  "startColumn": 21,
+                  "endLine": 168,
+                  "endColumn": 23
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1,
+            "customProperties": {
+              "0": "+1",
+              "1": "+2 (incl 1 for nesting)",
+              "10": "+1",
+              "11": "+3 (incl 2 for nesting)",
+              "12": "+3 (incl 2 for nesting)",
+              "13": "+1",
+              "14": "+1",
+              "15": "+3 (incl 2 for nesting)",
+              "16": "+3 (incl 2 for nesting)",
+              "17": "+1",
+              "18": "+1",
+              "19": "+3 (incl 2 for nesting)",
+              "2": "+1",
+              "20": "+3 (incl 2 for nesting)",
+              "3": "+3 (incl 2 for nesting)",
+              "4": "+3 (incl 2 for nesting)",
+              "5": "+1",
+              "6": "+1",
+              "7": "+3 (incl 2 for nesting)",
+              "8": "+3 (incl 2 for nesting)",
+              "9": "+1"
+            }
+          }
+        },
+        {
+          "ruleId": "S112",
+          "level": "warning",
+          "message": "'System.Exception' should not be thrown by user code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/GestorColasController.cs",
+                "region": {
+                  "startLine": 131,
+                  "startColumn": 23,
+                  "endLine": 131,
+                  "endColumn": 38
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1854",
+          "level": "warning",
+          "message": "Remove this useless assignment to local variable '_max_caracter'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 44,
+                  "startColumn": 17,
+                  "endLine": 44,
+                  "endColumn": 35
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1854",
+          "level": "warning",
+          "message": "Remove this useless assignment to local variable 'dt'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 40,
+                  "startColumn": 23,
+                  "endLine": 40,
+                  "endColumn": 43
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1854",
+          "level": "warning",
+          "message": "Remove this useless assignment to local variable '_minus'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 81,
+                  "startColumn": 21,
+                  "endLine": 81,
+                  "endColumn": 70
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1854",
+          "level": "warning",
+          "message": "Remove this useless assignment to local variable '_mayus'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 106,
+                  "startColumn": 21,
+                  "endLine": 106,
+                  "endColumn": 70
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1854",
+          "level": "warning",
+          "message": "Remove this useless assignment to local variable '_numero'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 131,
+                  "startColumn": 21,
+                  "endLine": 131,
+                  "endColumn": 71
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1854",
+          "level": "warning",
+          "message": "Remove this useless assignment to local variable '_especial'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 155,
+                  "startColumn": 21,
+                  "endLine": 155,
+                  "endColumn": 73
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1481",
+          "level": "warning",
+          "message": "Remove the unused local variable 'codError'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/GestorColasController.cs",
+                "region": {
+                  "startLine": 111,
+                  "startColumn": 33,
+                  "endLine": 111,
+                  "endColumn": 41
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6444",
+          "level": "warning",
+          "message": "Pass a timeout to limit the execution time.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 59,
+                  "startColumn": 44,
+                  "endLine": 59,
+                  "endColumn": 119
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6444",
+          "level": "warning",
+          "message": "Pass a timeout to limit the execution time.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 60,
+                  "startColumn": 44,
+                  "endLine": 60,
+                  "endColumn": 119
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6444",
+          "level": "warning",
+          "message": "Pass a timeout to limit the execution time.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 83,
+                  "startColumn": 46,
+                  "endLine": 83,
+                  "endColumn": 78
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6444",
+          "level": "warning",
+          "message": "Pass a timeout to limit the execution time.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 85,
+                  "startColumn": 46,
+                  "endLine": 85,
+                  "endColumn": 78
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6444",
+          "level": "warning",
+          "message": "Pass a timeout to limit the execution time.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 108,
+                  "startColumn": 46,
+                  "endLine": 108,
+                  "endColumn": 78
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6444",
+          "level": "warning",
+          "message": "Pass a timeout to limit the execution time.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 110,
+                  "startColumn": 46,
+                  "endLine": 110,
+                  "endColumn": 78
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6444",
+          "level": "warning",
+          "message": "Pass a timeout to limit the execution time.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 132,
+                  "startColumn": 43,
+                  "endLine": 132,
+                  "endColumn": 72
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6444",
+          "level": "warning",
+          "message": "Pass a timeout to limit the execution time.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 133,
+                  "startColumn": 43,
+                  "endLine": 133,
+                  "endColumn": 72
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6444",
+          "level": "warning",
+          "message": "Pass a timeout to limit the execution time.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 157,
+                  "startColumn": 46,
+                  "endLine": 157,
+                  "endColumn": 103
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6444",
+          "level": "warning",
+          "message": "Pass a timeout to limit the execution time.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 158,
+                  "startColumn": 46,
+                  "endLine": 158,
+                  "endColumn": 103
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6961",
+          "level": "warning",
+          "message": "Inherit from ControllerBase instead of Controller.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Api.Clinica/Controllers/SeguridadDePasswordController.cs",
+                "region": {
+                  "startLine": 31,
+                  "startColumn": 50,
+                  "endLine": 31,
+                  "endColumn": 60
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        }
+      ],
+      "rules": {
+        "CA2211": {
+          "id": "CA2211",
+          "shortDescription": "Los campos no constantes no deben ser visibles",
+          "fullDescription": "Los campos estáticos que no son constantes ni de solo lectura no son seguros para los subprocesos. El acceso a campos de este tipo se debe controlar atentamente y requiere técnicas de programación avanzadas para sincronizar el acceso al objeto de clase.",
+          "defaultLevel": "note",
+          "helpUri": "https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca2211",
+          "properties": {
+            "category": "Usage",
+            "isEnabledByDefault": true,
+            "tags": [
+              "PortedFromFxCop",
+              "Telemetry",
+              "EnabledRuleInAggressiveMode"
+            ]
+          }
+        },
+        "CS0162": {
+          "id": "CS0162",
+          "shortDescription": "Se detectó código inaccesible",
+          "defaultLevel": "warning",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS0162)",
+          "properties": {
+            "category": "Compiler",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Compiler",
+              "Telemetry"
+            ]
+          }
+        },
+        "CS0168": {
+          "id": "CS0168",
+          "shortDescription": "La variable está declarada pero nunca se usa",
+          "defaultLevel": "warning",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS0168)",
+          "properties": {
+            "category": "Compiler",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Compiler",
+              "Telemetry"
+            ]
+          }
+        },
+        "CS1998": {
+          "id": "CS1998",
+          "shortDescription": "El método asincrónico carece de operadores \"await\" y se ejecutará de forma sincrónica",
+          "defaultLevel": "warning",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS1998)",
+          "properties": {
+            "category": "Compiler",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Compiler",
+              "Telemetry"
+            ]
+          }
+        },
+        "CS8604": {
+          "id": "CS8604",
+          "shortDescription": "Posible argumento de referencia nulo",
+          "defaultLevel": "warning",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS8604)",
+          "properties": {
+            "category": "Compiler",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Compiler",
+              "Telemetry"
+            ]
+          }
+        },
+        "S101": {
+          "id": "S101",
+          "shortDescription": "Types should be named in PascalCase",
+          "fullDescription": "Shared naming conventions allow teams to collaborate efficiently.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-101",
+          "properties": {
+            "category": "Minor Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S1066": {
+          "id": "S1066",
+          "shortDescription": "Mergeable \"if\" statements should be combined",
+          "fullDescription": "Nested code - blocks of code inside blocks of code - is eventually necessary, but increases complexity. This is why keeping the code as flat as possible, by avoiding unnecessary nesting, is considered a good practice.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-1066",
+          "properties": {
+            "category": "Major Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S1104": {
+          "id": "S1104",
+          "shortDescription": "Fields should not have public accessibility",
+          "fullDescription": "Public fields in public classes do not respect the encapsulation principle and have three main disadvantages:",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-1104",
+          "properties": {
+            "category": "Minor Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S112": {
+          "id": "S112",
+          "shortDescription": "General or reserved exceptions should never be thrown",
+          "fullDescription": "This rule raises an issue when a general or reserved exception is thrown.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-112",
+          "properties": {
+            "category": "Major Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S1125": {
+          "id": "S1125",
+          "shortDescription": "Boolean literals should not be redundant",
+          "fullDescription": "A boolean literal can be represented in two different ways: true or false. They can be combined with logical operators (!, &&, ||, ==, !=) to produce logical expressions that represent truth values. However, comparing a boolean literal to a variable or expression that evaluates to a boolean value is unnecessary and can make the code harder to read and understand. The more complex a boolean expression is, the harder it will be for developers to understand its meaning and expected behavior, and it will favour the introduction of new bugs.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-1125",
+          "properties": {
+            "category": "Minor Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S1144": {
+          "id": "S1144",
+          "shortDescription": "Unused private types or members should be removed",
+          "fullDescription": "This rule raises an issue when a private/internal type or member is never referenced in the code.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-1144",
+          "properties": {
+            "category": "Major Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S1192": {
+          "id": "S1192",
+          "shortDescription": "String literals should not be duplicated",
+          "fullDescription": "Duplicated string literals make the process of refactoring complex and error-prone, as any change would need to be propagated on all occurrences.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-1192",
+          "properties": {
+            "category": "Minor Code Smell",
+            "isEnabledByDefault": false,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S125": {
+          "id": "S125",
+          "shortDescription": "Sections of code should not be commented out",
+          "fullDescription": "Commented-out code distracts the focus from the actual executed code. It creates a noise that increases maintenance code. And because it is never executed, it quickly becomes out of date and invalid.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-125",
+          "properties": {
+            "category": "Major Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S1481": {
+          "id": "S1481",
+          "shortDescription": "Unused local variables should be removed",
+          "fullDescription": "An unused local variable is a variable that has been declared but is not used anywhere in the block of code where it is defined. It is dead code, contributing to unnecessary complexity and leading to confusion when reading the code. Therefore, it should be removed from your code to maintain clarity and efficiency.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-1481",
+          "properties": {
+            "category": "Minor Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S1854": {
+          "id": "S1854",
+          "shortDescription": "Unused assignments should be removed",
+          "fullDescription": "Dead stores refer to assignments made to local variables that are subsequently never used or immediately overwritten. Such assignments are unnecessary and don’t contribute to the functionality or clarity of the code. They may even negatively impact performance. Removing them enhances code cleanliness and readability. Even if the unnecessary operations do not do any harm in terms of the program’s correctness, they are - at best - a waste of computing resources.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-1854",
+          "properties": {
+            "category": "Major Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S2068": {
+          "id": "S2068",
+          "shortDescription": "Hard-coded credentials are security-sensitive",
+          "fullDescription": "Because it is easy to extract strings from an application source code or binary, credentials should not be hard-coded. This is particularly true for applications that are distributed or that are open-source.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-2068",
+          "properties": {
+            "category": "Blocker Security Hotspot",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S2223": {
+          "id": "S2223",
+          "shortDescription": "Non-constant static fields should not be visible",
+          "fullDescription": "Unlike instance fields, which can only be accessed by code having a hold on the instance, static fields can be accessed by any code having visibility of the field and its type.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-2223",
+          "properties": {
+            "category": "Critical Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S2933": {
+          "id": "S2933",
+          "shortDescription": "Fields that are only assigned in the constructor should be \"readonly\"",
+          "fullDescription": "readonly fields can only be assigned in a class constructor. If a class has a field that’s not marked readonly but is only set in the constructor, it could cause confusion about the field’s intended use. To avoid confusion, such fields should be marked readonly to make their intended use explicit, and to prevent future maintainers from inadvertently changing their use.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-2933",
+          "properties": {
+            "category": "Major Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S2971": {
+          "id": "S2971",
+          "shortDescription": "LINQ expressions should be simplified",
+          "fullDescription": "In the interests of readability, code that can be simplified should be simplified. To that end, there are several ways IEnumerable language integrated queries (LINQ) can be simplified. This not only improves readabilty but can also lead to improved performance.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-2971",
+          "properties": {
+            "category": "Major Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S3776": {
+          "id": "S3776",
+          "shortDescription": "Cognitive Complexity of methods should not be too high",
+          "fullDescription": "This rule raises an issue when the code cognitive complexity of a function is above a certain threshold.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-3776",
+          "properties": {
+            "category": "Critical Code Smell",
+            "isEnabledByDefault": false,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S4423": {
+          "id": "S4423",
+          "shortDescription": "Weak SSL/TLS protocols should not be used",
+          "fullDescription": "This vulnerability exposes encrypted data to a number of attacks whose goal is to recover the plaintext.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-4423",
+          "properties": {
+            "category": "Critical Vulnerability",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S5122": {
+          "id": "S5122",
+          "shortDescription": "Having a permissive Cross-Origin Resource Sharing policy is security-sensitive",
+          "fullDescription": "Having a permissive Cross-Origin Resource Sharing policy is security-sensitive. It has led in the past to the following vulnerabilities:",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-5122",
+          "properties": {
+            "category": "Minor Security Hotspot",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S6444": {
+          "id": "S6444",
+          "shortDescription": "Not specifying a timeout for regular expressions is security-sensitive",
+          "fullDescription": "Not specifying a timeout for regular expressions can lead to a Denial-of-Service attack. Pass a timeout when using System.Text.RegularExpressions to process untrusted input because a malicious user might craft a value for which the evaluation lasts excessively long.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-6444",
+          "properties": {
+            "category": "Major Security Hotspot",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S6961": {
+          "id": "S6961",
+          "shortDescription": "API Controllers should derive from ControllerBase instead of Controller",
+          "fullDescription": "In ASP.NET Core, controllers usually inherit either from ControllerBase or Controller. If a controller does not use any View-specific functionality, it is recommended to inherit from ControllerBase.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-6961",
+          "properties": {
+            "category": "Major Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S6962": {
+          "id": "S6962",
+          "shortDescription": "You should pool HTTP connections with HttpClientFactory",
+          "fullDescription": "In frequently used code paths, such as controller actions, you should avoid using the HttpClient directly and opt for one of the IHttpClientFactory-based mechanisms instead. This way, you avoid wasting resources and creating performance overhead.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-6962",
+          "properties": {
+            "category": "Major Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S6966": {
+          "id": "S6966",
+          "shortDescription": "Awaitable method should be used",
+          "fullDescription": "In an async method, any blocking operations should be avoided.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-6966",
+          "properties": {
+            "category": "Major Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

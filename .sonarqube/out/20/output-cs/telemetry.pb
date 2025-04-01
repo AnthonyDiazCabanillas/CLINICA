@@ -1,0 +1,1 @@
+mROD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\App.Clinica.csproj¢net6.0-windowsòCSharp10

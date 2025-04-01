@@ -1,0 +1,1 @@
+eROD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Bus.Clinica.csproj¢net6.0òCSharp10

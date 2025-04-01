@@ -1,0 +1,1 @@
+{R]D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\App.EncriptarClave.csproj¢net6.0-windowsòCSharp10

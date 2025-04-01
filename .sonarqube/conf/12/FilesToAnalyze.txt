@@ -1,0 +1,5 @@
+﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WF.RisCopyService\Form1.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WF.RisCopyService\Form1.Designer.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WF.RisCopyService\Program.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WF.RisCopyService\Form1.resx
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WF.RisCopyService\App.config

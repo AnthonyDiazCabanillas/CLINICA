@@ -1,0 +1,1 @@
+eROD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Web.Clinica\Web.Clinica.csproj¢net6.0òCSharp10

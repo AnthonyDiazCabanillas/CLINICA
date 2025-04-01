@@ -1,0 +1,12 @@
+|
+qD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\obj\Debug\net6.0-windows\App.Clinica.AssemblyInfo.csutf-8ê
+ÑD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\obj\Debug\net6.0-windows\.NETCoreApp,Version=v6.0.AssemblyAttributes.csutf-8~
+sD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\obj\Debug\net6.0-windows\App.Clinica.GlobalUsings.g.csutf-8h
+]D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\Properties\Resources.Designer.csutf-8P
+GD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\Program.csutf-8[
+PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\frmMain.Designer.csutf-8P
+GD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\frmMain.csutf-8b
+WD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\Cita\frmSiteds.Designer.csutf-8W
+ND:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\Cita\frmSiteds.csutf-8h
+]D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\Cita\frmDatosReserva.Designer.csutf-8]
+TD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\Cita\frmDatosReserva.csutf-8

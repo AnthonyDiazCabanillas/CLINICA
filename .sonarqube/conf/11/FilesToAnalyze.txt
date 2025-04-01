@@ -1,0 +1,9 @@
+﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.SemaforoEmergencias\frmSemaforo.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.SemaforoEmergencias\frmSemaforo.Designer.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.SemaforoEmergencias\Program.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.SemaforoEmergencias\RJControls\RJButton.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.SemaforoEmergencias\semaforo.ico
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.SemaforoEmergencias\frmSemaforo.resx
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.SemaforoEmergencias\Properties\Resources.resx
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.SemaforoEmergencias\App.config
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.SemaforoEmergencias\Resources\MUÑECO TCUIDA.png

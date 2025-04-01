@@ -1,0 +1,1 @@
+…RgD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.SemaforoEmergencias\App.SemaforoEmergencias.csproj¢net6.0-windowsòCSharp10

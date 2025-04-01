@@ -1,0 +1,898 @@
+{
+  "$schema": "http://json.schemastore.org/sarif-1.0.0",
+  "version": "1.0.0",
+  "runs": [
+    {
+      "tool": {
+        "name": "Compilador de Microsoft (R) Visual C#",
+        "version": "4.13.0.0",
+        "fileVersion": "4.13.0-3.25112.7 (afe5bc4a)",
+        "semanticVersion": "4.13.0",
+        "language": "es-MX"
+      },
+      "results": [
+        {
+          "ruleId": "CS8618",
+          "level": "warning",
+          "message": "El elemento propiedad \"Key\" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required'\"o declarar el propiedad como un valor que acepta valores NULL.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Models/Jwt.cs",
+                "region": {
+                  "startLine": 13,
+                  "startColumn": 23,
+                  "endLine": 13,
+                  "endColumn": 26
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Models/Jwt.cs",
+                "region": {
+                  "startLine": 13,
+                  "startColumn": 23,
+                  "endLine": 13,
+                  "endColumn": 26
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8618",
+          "level": "warning",
+          "message": "El elemento propiedad \"Issuer\" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required'\"o declarar el propiedad como un valor que acepta valores NULL.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Models/Jwt.cs",
+                "region": {
+                  "startLine": 14,
+                  "startColumn": 23,
+                  "endLine": 14,
+                  "endColumn": 29
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Models/Jwt.cs",
+                "region": {
+                  "startLine": 14,
+                  "startColumn": 23,
+                  "endLine": 14,
+                  "endColumn": 29
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8618",
+          "level": "warning",
+          "message": "El elemento propiedad \"Audience\" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required'\"o declarar el propiedad como un valor que acepta valores NULL.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Models/Jwt.cs",
+                "region": {
+                  "startLine": 15,
+                  "startColumn": 23,
+                  "endLine": 15,
+                  "endColumn": 31
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Models/Jwt.cs",
+                "region": {
+                  "startLine": 15,
+                  "startColumn": 23,
+                  "endLine": 15,
+                  "endColumn": 31
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8618",
+          "level": "warning",
+          "message": "El elemento propiedad \"Subject\" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required'\"o declarar el propiedad como un valor que acepta valores NULL.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Models/Jwt.cs",
+                "region": {
+                  "startLine": 16,
+                  "startColumn": 23,
+                  "endLine": 16,
+                  "endColumn": 30
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Models/Jwt.cs",
+                "region": {
+                  "startLine": 16,
+                  "startColumn": 23,
+                  "endLine": 16,
+                  "endColumn": 30
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8604",
+          "level": "warning",
+          "message": "Posible argumento de referencia nulo para el parámetro \"identity\" en \"dynamic Jwt.validarToken(ClaimsIdentity identity)\".",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Controllers/UtilitarioController.cs",
+                "region": {
+                  "startLine": 42,
+                  "startColumn": 47,
+                  "endLine": 42,
+                  "endColumn": 55
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8604",
+          "level": "warning",
+          "message": "Posible argumento de referencia nulo para el parámetro \"identity\" en \"dynamic Jwt.validarToken(ClaimsIdentity identity)\".",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Controllers/DigitalizacionController.cs",
+                "region": {
+                  "startLine": 38,
+                  "startColumn": 47,
+                  "endLine": 38,
+                  "endColumn": 55
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8601",
+          "level": "warning",
+          "message": "Posible asignación de referencia nula.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Controllers/DigitalizacionController.cs",
+                "region": {
+                  "startLine": 42,
+                  "startColumn": 44,
+                  "endLine": 42,
+                  "endColumn": 56
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8601",
+          "level": "warning",
+          "message": "Posible asignación de referencia nula.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Controllers/DigitalizacionController.cs",
+                "region": {
+                  "startLine": 43,
+                  "startColumn": 47,
+                  "endLine": 43,
+                  "endColumn": 62
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8602",
+          "level": "warning",
+          "message": "Desreferencia de una referencia posiblemente NULL.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Controllers/UsuarioController.cs",
+                "region": {
+                  "startLine": 52,
+                  "startColumn": 60,
+                  "endLine": 52,
+                  "endColumn": 63
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8604",
+          "level": "warning",
+          "message": "Posible argumento de referencia nulo para el parámetro \"identity\" en \"dynamic Jwt.validarToken(ClaimsIdentity identity)\".",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Controllers/DigitalizacionController.cs",
+                "region": {
+                  "startLine": 66,
+                  "startColumn": 47,
+                  "endLine": 66,
+                  "endColumn": 55
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8601",
+          "level": "warning",
+          "message": "Posible asignación de referencia nula.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Controllers/DigitalizacionController.cs",
+                "region": {
+                  "startLine": 70,
+                  "startColumn": 42,
+                  "endLine": 70,
+                  "endColumn": 53
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8604",
+          "level": "warning",
+          "message": "Posible argumento de referencia nulo para el parámetro \"s\" en \"byte[] Encoding.GetBytes(string s)\".",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Program.cs",
+                "region": {
+                  "startLine": 74,
+                  "startColumn": 76,
+                  "endLine": 74,
+                  "endColumn": 108
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8602",
+          "level": "warning",
+          "message": "Desreferencia de una referencia posiblemente NULL.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Program.cs",
+                "region": {
+                  "startLine": 82,
+                  "startColumn": 65,
+                  "endLine": 82,
+                  "endColumn": 71
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2068",
+          "level": "warning",
+          "message": "\"password\" detected here, make sure this is not a hard-coded credential.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/appsettings.json",
+                "region": {
+                  "startLine": 10,
+                  "startColumn": 20,
+                  "endLine": 10,
+                  "endColumn": 110
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2068",
+          "level": "warning",
+          "message": "\"password\" detected here, make sure this is not a hard-coded credential.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/appsettings.json",
+                "region": {
+                  "startLine": 11,
+                  "startColumn": 22,
+                  "endLine": 11,
+                  "endColumn": 114
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2068",
+          "level": "warning",
+          "message": "\"password\" detected here, make sure this is not a hard-coded credential.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/appsettings.json",
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 22,
+                  "endLine": 12,
+                  "endColumn": 111
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1104",
+          "level": "warning",
+          "message": "Make this field 'private' and encapsulate it in a 'public' property.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Controllers/UsuarioController.cs",
+                "region": {
+                  "startLine": 28,
+                  "startColumn": 31,
+                  "endLine": 28,
+                  "endColumn": 45
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S4487",
+          "level": "warning",
+          "message": "Remove this unread private field 'environment' or refactor the code to use its value.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Controllers/DigitalizacionController.cs",
+                "region": {
+                  "startLine": 24,
+                  "startColumn": 46,
+                  "endLine": 24,
+                  "endColumn": 57
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S4487",
+          "level": "warning",
+          "message": "Remove this unread private field 'environment' or refactor the code to use its value.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Controllers/UtilitarioController.cs",
+                "region": {
+                  "startLine": 28,
+                  "startColumn": 46,
+                  "endLine": 28,
+                  "endColumn": 57
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1155",
+          "level": "warning",
+          "message": "Use '.Any()' to test whether this 'IEnumerable<System.Security.Claims.Claim>' is empty or not.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Models/Jwt.cs",
+                "region": {
+                  "startLine": 22,
+                  "startColumn": 36,
+                  "endLine": 22,
+                  "endColumn": 41
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CA1827",
+          "level": "note",
+          "message": "Se usa Count() donde podría usarse Any() para mejorar el rendimiento.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Models/Jwt.cs",
+                "region": {
+                  "startLine": 22,
+                  "startColumn": 20,
+                  "endLine": 22,
+                  "endColumn": 48
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1,
+            "customProperties": {
+              "OperationKey": "OperationBinaryLeft",
+              "ShouldNegateKey": null
+            }
+          }
+        },
+        {
+          "ruleId": "S1116",
+          "level": "warning",
+          "message": "Remove this empty statement.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Program.cs",
+                "region": {
+                  "startLine": 27,
+                  "startColumn": 16,
+                  "endLine": 27,
+                  "endColumn": 17
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S5122",
+          "level": "warning",
+          "message": "Make sure this permissive CORS policy is safe here.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Program.cs",
+                "region": {
+                  "startLine": 23,
+                  "startColumn": 9,
+                  "endLine": 24,
+                  "endColumn": 34
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CA1825",
+          "level": "note",
+          "message": "Evite las asignaciones de matriz de longitud cero innecesarias.  Use Array.Empty<string>() en su lugar.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Program.cs",
+                "region": {
+                  "startLine": 59,
+                  "startColumn": 12,
+                  "endLine": 59,
+                  "endColumn": 27
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CA1861",
+          "level": "note",
+          "message": "Preferir campos \"static readonly\" frente a argumentos de matriz constantes si se llama repetidamente al método llamado y no muta la matriz pasada",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Program.cs",
+                "region": {
+                  "startLine": 59,
+                  "startColumn": 12,
+                  "endLine": 59,
+                  "endColumn": 27
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1,
+            "customProperties": {
+              "paramName": "value"
+            }
+          }
+        },
+        {
+          "ruleId": "S6966",
+          "level": "warning",
+          "message": "Await RunAsync instead.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Program.cs",
+                "region": {
+                  "startLine": 103,
+                  "startColumn": 1,
+                  "endLine": 103,
+                  "endColumn": 10
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6961",
+          "level": "warning",
+          "message": "Inherit from ControllerBase instead of Controller.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Controllers/UtilitarioController.cs",
+                "region": {
+                  "startLine": 26,
+                  "startColumn": 41,
+                  "endLine": 26,
+                  "endColumn": 51
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6961",
+          "level": "warning",
+          "message": "Inherit from ControllerBase instead of Controller.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Controllers/DigitalizacionController.cs",
+                "region": {
+                  "startLine": 22,
+                  "startColumn": 45,
+                  "endLine": 22,
+                  "endColumn": 55
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        }
+      ],
+      "rules": {
+        "CA1825": {
+          "id": "CA1825",
+          "shortDescription": "Evite las asignaciones de matriz de longitud cero",
+          "defaultLevel": "note",
+          "helpUri": "https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1825",
+          "properties": {
+            "category": "Performance",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Telemetry",
+              "EnabledRuleInAggressiveMode"
+            ]
+          }
+        },
+        "CA1827": {
+          "id": "CA1827",
+          "shortDescription": "No usar Count() ni LongCount() si se puede usar Any()",
+          "fullDescription": "Para colecciones no vacías, Count() y LongCount() enumeran la secuencia completa, mientras que Any() se detiene en el primer elemento o en el primer elemento que satisface una condición.",
+          "defaultLevel": "note",
+          "helpUri": "https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1827",
+          "properties": {
+            "category": "Performance",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Telemetry",
+              "EnabledRuleInAggressiveMode"
+            ]
+          }
+        },
+        "CA1861": {
+          "id": "CA1861",
+          "shortDescription": "Evitar matrices constantes como argumentos",
+          "fullDescription": "Las matrices constantes pasadas como argumentos no se reutilizan cuando se llaman repetidamente, lo que implica que se cree una nueva matriz cada vez. Considere la posibilidad de extraerlas a campos \"static readonly\" para mejorar el rendimiento si la matriz pasada no se muta dentro del método llamado.",
+          "defaultLevel": "note",
+          "helpUri": "https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1861",
+          "properties": {
+            "category": "Performance",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Telemetry",
+              "EnabledRuleInAggressiveMode"
+            ]
+          }
+        },
+        "CS8601": {
+          "id": "CS8601",
+          "shortDescription": "Posible asignación de referencia nula",
+          "defaultLevel": "warning",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS8601)",
+          "properties": {
+            "category": "Compiler",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Compiler",
+              "Telemetry"
+            ]
+          }
+        },
+        "CS8602": {
+          "id": "CS8602",
+          "shortDescription": "Desreferencia de una referencia posiblemente NULL.",
+          "defaultLevel": "warning",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS8602)",
+          "properties": {
+            "category": "Compiler",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Compiler",
+              "Telemetry"
+            ]
+          }
+        },
+        "CS8604": {
+          "id": "CS8604",
+          "shortDescription": "Posible argumento de referencia nulo",
+          "defaultLevel": "warning",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS8604)",
+          "properties": {
+            "category": "Compiler",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Compiler",
+              "Telemetry"
+            ]
+          }
+        },
+        "CS8618": {
+          "id": "CS8618",
+          "shortDescription": "Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required\" o declararlo como un valor que acepta valores NULL.",
+          "defaultLevel": "warning",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS8618)",
+          "properties": {
+            "category": "Compiler",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Compiler",
+              "Telemetry"
+            ]
+          }
+        },
+        "S1104": {
+          "id": "S1104",
+          "shortDescription": "Fields should not have public accessibility",
+          "fullDescription": "Public fields in public classes do not respect the encapsulation principle and have three main disadvantages:",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-1104",
+          "properties": {
+            "category": "Minor Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S1116": {
+          "id": "S1116",
+          "shortDescription": "Empty statements should be removed",
+          "fullDescription": "Empty statements represented by a semicolon ; are statements that do not perform any operation. They are often the result of a typo or a misunderstanding of the language syntax. It is a good practice to remove empty statements since they don’t add value and lead to confusion and errors.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-1116",
+          "properties": {
+            "category": "Minor Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S1155": {
+          "id": "S1155",
+          "shortDescription": "\"Any()\" should be used to test for emptiness",
+          "fullDescription": "When you call Any(), it clearly communicates the code’s intention, which is to check if the collection is empty. Using Count() == 0 for this purpose is less direct and makes the code slightly more complex. However, there are some cases where special attention should be paid:",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-1155",
+          "properties": {
+            "category": "Minor Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S2068": {
+          "id": "S2068",
+          "shortDescription": "Hard-coded credentials are security-sensitive",
+          "fullDescription": "Because it is easy to extract strings from an application source code or binary, credentials should not be hard-coded. This is particularly true for applications that are distributed or that are open-source.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-2068",
+          "properties": {
+            "category": "Blocker Security Hotspot",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S4487": {
+          "id": "S4487",
+          "shortDescription": "Unread \"private\" fields should be removed",
+          "fullDescription": "Private fields which are written but never read are a case of \"dead store\". Changing the value of such a field is useless and most probably indicates an error in the code.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-4487",
+          "properties": {
+            "category": "Critical Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S5122": {
+          "id": "S5122",
+          "shortDescription": "Having a permissive Cross-Origin Resource Sharing policy is security-sensitive",
+          "fullDescription": "Having a permissive Cross-Origin Resource Sharing policy is security-sensitive. It has led in the past to the following vulnerabilities:",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-5122",
+          "properties": {
+            "category": "Minor Security Hotspot",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S6961": {
+          "id": "S6961",
+          "shortDescription": "API Controllers should derive from ControllerBase instead of Controller",
+          "fullDescription": "In ASP.NET Core, controllers usually inherit either from ControllerBase or Controller. If a controller does not use any View-specific functionality, it is recommended to inherit from ControllerBase.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-6961",
+          "properties": {
+            "category": "Major Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S6966": {
+          "id": "S6966",
+          "shortDescription": "Awaitable method should be used",
+          "fullDescription": "In an async method, any blocking operations should be avoided.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-6966",
+          "properties": {
+            "category": "Major Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "TestSourceScope",
+              "SonarWay"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

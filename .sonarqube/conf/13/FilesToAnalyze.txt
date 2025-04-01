@@ -1,0 +1,13 @@
+﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.AgendaClinica\Clinica\AdmisionHospitalariaWs.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.AgendaClinica\Clinica\AgendaCitas.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.AgendaClinica\Clinica\CorreoAgenda.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.AgendaClinica\Clinica\Generales.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.AgendaClinica\Clinica\SitedsWs.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.AgendaClinica\Clinica\SynapsisWS.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.AgendaClinica\Connected Services\WsReservaWebTisal\Reference.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.AgendaClinica\Connected Services\WsTciComprobantes\Reference.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.AgendaClinica\GestorColas\CitasDisplay.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.AgendaClinica\Proveedores\ResultadosROE.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.AgendaClinica\VariablesGlobales.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.AgendaClinica\Connected Services\WsReservaWebTisal\ConnectedService.json
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.AgendaClinica\Connected Services\WsTciComprobantes\ConnectedService.json

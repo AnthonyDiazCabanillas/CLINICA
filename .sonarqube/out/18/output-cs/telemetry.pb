@@ -1,0 +1,1 @@
+qR[D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\ApiPaginaWebCSF.csproj¢net6.0òCSharp10

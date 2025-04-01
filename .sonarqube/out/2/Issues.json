@@ -1,0 +1,193 @@
+{
+  "$schema": "http://json.schemastore.org/sarif-1.0.0",
+  "version": "1.0.0",
+  "runs": [
+    {
+      "tool": {
+        "name": "Compilador de Microsoft (R) Visual C#",
+        "version": "4.13.0.0",
+        "fileVersion": "4.13.0-3.25112.7 (afe5bc4a)",
+        "semanticVersion": "4.13.0",
+        "language": "es-MX"
+      },
+      "results": [
+        {
+          "ruleId": "CA2211",
+          "level": "note",
+          "message": "Los campos no constantes no deben ser visibles",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.EncriptarClave/GlobalVariables.cs",
+                "region": {
+                  "startLine": 20,
+                  "startColumn": 30,
+                  "endLine": 20,
+                  "endColumn": 39
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1104",
+          "level": "warning",
+          "message": "Make this field 'private' and encapsulate it in a 'public' property.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.EncriptarClave/GlobalVariables.cs",
+                "region": {
+                  "startLine": 20,
+                  "startColumn": 30,
+                  "endLine": 20,
+                  "endColumn": 44
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2223",
+          "level": "warning",
+          "message": "Change the visibility of 'CnnOracle' or make it 'const' or 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.EncriptarClave/GlobalVariables.cs",
+                "region": {
+                  "startLine": 20,
+                  "startColumn": 30,
+                  "endLine": 20,
+                  "endColumn": 39
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CA2211",
+          "level": "note",
+          "message": "Los campos no constantes no deben ser visibles",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.EncriptarClave/GlobalVariables.cs",
+                "region": {
+                  "startLine": 13,
+                  "startColumn": 30,
+                  "endLine": 13,
+                  "endColumn": 42
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1104",
+          "level": "warning",
+          "message": "Make this field 'private' and encapsulate it in a 'public' property.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.EncriptarClave/GlobalVariables.cs",
+                "region": {
+                  "startLine": 13,
+                  "startColumn": 30,
+                  "endLine": 13,
+                  "endColumn": 47
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2223",
+          "level": "warning",
+          "message": "Change the visibility of 'CnnMasterSQL' or make it 'const' or 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.EncriptarClave/GlobalVariables.cs",
+                "region": {
+                  "startLine": 13,
+                  "startColumn": 30,
+                  "endLine": 13,
+                  "endColumn": 42
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        }
+      ],
+      "rules": {
+        "CA2211": {
+          "id": "CA2211",
+          "shortDescription": "Los campos no constantes no deben ser visibles",
+          "fullDescription": "Los campos estáticos que no son constantes ni de solo lectura no son seguros para los subprocesos. El acceso a campos de este tipo se debe controlar atentamente y requiere técnicas de programación avanzadas para sincronizar el acceso al objeto de clase.",
+          "defaultLevel": "note",
+          "helpUri": "https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca2211",
+          "properties": {
+            "category": "Usage",
+            "isEnabledByDefault": true,
+            "tags": [
+              "PortedFromFxCop",
+              "Telemetry",
+              "EnabledRuleInAggressiveMode"
+            ]
+          }
+        },
+        "S1104": {
+          "id": "S1104",
+          "shortDescription": "Fields should not have public accessibility",
+          "fullDescription": "Public fields in public classes do not respect the encapsulation principle and have three main disadvantages:",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-1104",
+          "properties": {
+            "category": "Minor Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "SonarWay"
+            ]
+          }
+        },
+        "S2223": {
+          "id": "S2223",
+          "shortDescription": "Non-constant static fields should not be visible",
+          "fullDescription": "Unlike instance fields, which can only be accessed by code having a hold on the instance, static fields can be accessed by any code having visibility of the field and its type.",
+          "defaultLevel": "warning",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-2223",
+          "properties": {
+            "category": "Critical Code Smell",
+            "isEnabledByDefault": true,
+            "tags": [
+              "C#",
+              "MainSourceScope",
+              "SonarWay"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

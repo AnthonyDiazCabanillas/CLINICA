@@ -1,0 +1,8 @@
+﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\Program.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\Worker.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\obj\Debug\net6.0\WSAgenda.GlobalUsings.g.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\obj\Debug\net6.0\WSAgenda.AssemblyInfo.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\appsettings.Development.json
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\appsettings.json
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\Properties\launchSettings.json

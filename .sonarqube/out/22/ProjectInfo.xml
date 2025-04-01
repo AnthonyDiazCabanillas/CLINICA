@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProjectInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.sonarsource.com/msbuild/integration/2015/1">
+  <ProjectName>Web.Clinica</ProjectName>
+  <ProjectLanguage>C#</ProjectLanguage>
+  <ProjectType>Product</ProjectType>
+  <ProjectGuid>38e7a397-1a34-4d94-bf8e-f4ab0dd1ba29</ProjectGuid>
+  <FullPath>D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Web.Clinica\Web.Clinica.csproj</FullPath>
+  <IsExcluded>false</IsExcluded>
+  <AnalysisResults>
+    <AnalysisResult Id="FilesToAnalyze" Location="D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\.sonarqube\conf\22\FilesToAnalyze.txt" />
+  </AnalysisResults>
+  <AnalysisSettings>
+    <Property Name="sonar.cs.roslyn.reportFilePaths">D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\.sonarqube\out\22\Issues.json</Property>
+    <Property Name="sonar.cs.analyzer.projectOutPaths">D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\.sonarqube\out\22</Property>
+  </AnalysisSettings>
+  <Configuration>Debug</Configuration>
+  <Platform>AnyCPU</Platform>
+  <TargetFramework>net6.0</TargetFramework>
+</ProjectInfo>

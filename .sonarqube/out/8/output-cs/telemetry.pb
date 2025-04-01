@@ -1,0 +1,1 @@
+“RuD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\WsEnvioDocumentoDigitalizacion.csproj¢net8.0-windowsòCSharp12

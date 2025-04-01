@@ -1,0 +1,5 @@
+﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Oracle\MedisynAD\CorreosAD\GenEnvioMailAD.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Oracle\MedisynAD\HisADTAD\HisADTAD.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Oracle\MedisynAD\PacientesAD\TabPacientesAD.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Oracle\MedisynAD\ReservasAD\AmReservaAD.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Oracle\VariablesGlobales.cs

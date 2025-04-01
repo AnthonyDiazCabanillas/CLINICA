@@ -1,0 +1,10 @@
+î
+àD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\obj\Debug\net6.0\ApiPaginaWebCSF.MvcApplicationPartsAssemblyInfo.csutf-8Ä
+uD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\obj\Debug\net6.0\ApiPaginaWebCSF.AssemblyInfo.csutf-8ê
+ÑD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.csutf-8X
+OD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\Program.csutf-8Ç
+wD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\obj\Debug\net6.0\ApiPaginaWebCSF.GlobalUsings.g.csutf-8[
+RD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\Models\Jwt.csutf-8o
+fD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\Filters\ExceptionManagerFilter.csutf-8q
+hD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\Controllers\WebClinicaController.csutf-8n
+eD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\Controllers\UsuarioController.csutf-8

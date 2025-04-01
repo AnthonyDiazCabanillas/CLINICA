@@ -1,0 +1,10 @@
+£
+—D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\obj\Debug\net8.0-windows\WsEnvioDocumentoDigitalizacion.AssemblyInfo.csutf-8£
+—D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\obj\Debug\net8.0-windows\.NETCoreApp,Version=v8.0.AssemblyAttributes.csutf-8¥
+™D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\obj\Debug\net8.0-windows\WsEnvioDocumentoDigitalizacion.GlobalUsings.g.csutf-8j
+ZD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\Program.cswindows-1252n
+eD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\FileLoggerProvider.csutf-8f
+]D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\FileLogger.csutf-8p
+gD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\Clases\TokenResponse.csutf-8o
+fD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\Clases\TokenRequest.csutf-8q
+hD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\Clases\ResultadoEnvio.csutf-8

@@ -1,0 +1,1 @@
+iRSD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Utilities\Bus.Utilities.csproj¢net6.0òCSharp10

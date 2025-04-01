@@ -1,0 +1,5 @@
+﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.General\Form1.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.General\Form1.Designer.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.General\Program.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.General\UtilWinForm.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.General\Form1.resx

@@ -1,0 +1,9 @@
+Á
+€D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.General\obj\Debug\net6.0-windows\System.Windows.Forms.Analyzers.CSharp\System.Windows.Forms.Generators.ApplicationConfigurationGenerator\ApplicationConfiguration.g.csutf-8~
+sD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.General\obj\Debug\net6.0-windows\App.General.GlobalUsings.g.csutf-8|
+qD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.General\obj\Debug\net6.0-windows\App.General.AssemblyInfo.csutf-8ê
+ÑD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.General\obj\Debug\net6.0-windows\.NETCoreApp,Version=v6.0.AssemblyAttributes.csutf-8T
+KD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.General\UtilWinForm.csutf-8P
+GD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.General\Program.csutf-8Y
+ND:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.General\Form1.Designer.csutf-8N
+ED:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.General\Form1.csutf-8

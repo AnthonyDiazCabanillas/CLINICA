@@ -1,0 +1,7 @@
+﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\Clases\ResultadoEnvio.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\Clases\TokenRequest.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\Clases\TokenResponse.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\FileLogger.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\FileLoggerProvider.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\Program.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\appsettings.json

@@ -1,0 +1,11 @@
+Ó
+‚D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\obj\Debug\net6.0-windows\System.Windows.Forms.Analyzers.CSharp\System.Windows.Forms.Generators.ApplicationConfigurationGenerator\ApplicationConfiguration.g.csutf-8ä
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\obj\Debug\net6.0-windows\App.EncriptarClave.AssemblyInfo.csutf-8ó
+ãD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\obj\Debug\net6.0-windows\.NETCoreApp,Version=v6.0.AssemblyAttributes.csutf-8ç
+ÅD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\obj\Debug\net6.0-windows\App.EncriptarClave.GlobalUsings.g.csutf-8W
+ND:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\Program.csutf-8_
+VD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\GlobalVariables.csutf-8b
+WD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\FrmMain.Designer.csutf-8W
+ND:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\FrmMain.csutf-8i
+^D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\frmCrearApiKey.Designer.csutf-8^
+UD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\frmCrearApiKey.csutf-8
