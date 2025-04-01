@@ -302,40 +302,47 @@ pipeline {
         }
 
         stage('Checkout') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(
-                        credentialsId: 'REMOTO',
-                        usernameVariable: 'NET_USER',
-                        passwordVariable: 'NET_PASS'
-                    )]) {
-                        // Mapear unidad temporalmente
-                        bat """
-                        net use Z: "${SHARE_PATH}" /user:${NET_USER} ${NET_PASS} /persistent:no
-                        """
-                        
-                        try {
-                            // Verificar/crear directorio
-                            bat """
-                            if not exist "Z:\\${SHARE_SUBDIR}" (
-                                mkdir "Z:\\${SHARE_SUBDIR}"
-                            )
-                            """
-                            
-                            // Clonar el repositorio
-                            bat """
-                            git clone https://github.com/AnthonyDiazCabanillas/CLINICA.git "Z:\\${SHARE_SUBDIR}\\CLINICA"
-                            """
-                            
-                        } finally {
-                            // Desmapear unidad
-                            
-                        }
-                    }
+    steps {
+        script {
+            withCredentials([usernamePassword(
+                credentialsId: 'REMOTO',
+                usernameVariable: 'NET_USER',
+                passwordVariable: 'NET_PASS'
+            )]) {
+                // Mapear unidad temporal
+                bat """
+                net use Z: "${SHARE_PATH}" /user:${NET_USER} ${NET_PASS} /persistent:no
+                """
+                
+                try {
+                    // Verificar/crear directorio remoto
+                    bat """
+                    if not exist "Z:\\${SHARE_SUBDIR}\\CLINICA" (
+                        mkdir "Z:\\${SHARE_SUBDIR}\\CLINICA"
+                    )
+                    """
+                    
+                    // Clonar o actualizar repositorio en la red
+                    bat """
+                    if not exist "Z:\\${SHARE_SUBDIR}\\CLINICA\\.git" (
+                        git clone https://github.com/AnthonyDiazCabanillas/CLINICA.git "Z:\\${SHARE_SUBDIR}\\CLINICA"
+                    ) else (
+                        cd "Z:\\${SHARE_SUBDIR}\\CLINICA" && git pull
+                    )
+                    """
+                    
+                    // Copiar archivos al workspace (en lugar de mklink)
+                    bat """
+                    robocopy "Z:\\${SHARE_SUBDIR}\\CLINICA" "${WORKSPACE}\\CLINICA" /MIR /NJH /NJS /NP
+                    """
+                } finally {
+                    // Desmapear unidad
+                    bat "net use Z: /delete"
                 }
             }
         }
-
+    }
+}
         stage('Restore Dependencies') {
             steps {
                 dir("${WORKSPACE}/CLINICA") {
