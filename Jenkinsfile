@@ -320,6 +320,11 @@ pipeline {
         SONAR_LOGIN = credentials('Sonnar') // SonarQube token stored in Jenkins
     }
 
+    tools {
+        msbuild 'Default MSBuild'
+        sonarScanner 'SonarScanner for .NET'
+    }
+
     stages {
         stage('Ejecutar Batch') {
             steps {
@@ -373,17 +378,19 @@ pipeline {
             }
         }
 
-    
         stage('SonarQube Analysis') {
-                def msbuildHome = tool 'Default MSBuild'
-                def scannerHome = tool 'SonarScanner for .NET'
-                withSonarQubeEnv() {
-                bat "\"${scannerHome}\\SonarScanner.MSBuild.exe\" begin /k:\"CLINICA\""
-                bat "\"${msbuildHome}\\MSBuild.exe\" /t:Rebuild"
-                bat "\"${scannerHome}\\SonarScanner.MSBuild.exe\" end"
+            steps {
+                script {
+                    withSonarQubeEnv('SonarQube') {
+                        bat """
+                            dotnet sonarscanner begin /k:"CLINICA" /d:sonar.host.url="${SONAR_HOST_URL}" /d:sonar.login="${SONAR_LOGIN}"
+                            dotnet build ${REPO_ROOT} --configuration Release
+                            dotnet sonarscanner end /d:sonar.login="${SONAR_LOGIN}"
+                        """
+                    }
                 }
             }
-    
+        }
 
         stage('Restore Dependencies') {
             steps {
@@ -468,4 +475,4 @@ pipeline {
             echo 'Pipeline failed. Check the logs for details.'
         }
     }
-} 
+}
