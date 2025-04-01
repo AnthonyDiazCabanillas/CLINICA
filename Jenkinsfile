@@ -327,13 +327,9 @@ pipeline {
                             git clone https://github.com/AnthonyDiazCabanillas/CLINICA.git "Z:\\${SHARE_SUBDIR}\\CLINICA"
                             """
                             
-                            // Crear enlace simbólico en el workspace
-                            bat """
-                            mklink /J "${WORKSPACE}\\CLINICA" "Z:\\${SHARE_SUBDIR}\\CLINICA"
-                            """
                         } finally {
                             // Desmapear unidad
-                            bat "net use Z: /delete"
+                            
                         }
                     }
                 }
