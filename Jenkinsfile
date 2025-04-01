@@ -377,7 +377,7 @@ pipeline {
     steps {
         script {
             withSonarQubeEnv('SonarQube') {
-                withCredentials([string(credentialsId: 'SONAR_LOGIN', variable: 'SONAR_TOKEN')]) {
+                withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {
                     bat """
                         dotnet tool install --global dotnet-sonarscanner
                         dotnet sonarscanner begin ^
