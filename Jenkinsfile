@@ -282,6 +282,8 @@ pipeline {
     }
 
     stages {
+
+        // Etapa 1: Ejecutar bash
         stage('Ejecutar Batch') {
             steps {
                 bat '''
@@ -292,13 +294,16 @@ pipeline {
             }
         }
 
+
+         // Etapa 2: Limpiar Workspace
+
         stage('Clean Workspace') {
             steps {
                 cleanWs()
                 echo 'Workspace cleaned.'
             }
         }
-
+         // Etapa 3: Checkout
         stage('Checkout') {
             steps {
                 script {
@@ -318,6 +323,73 @@ pipeline {
                     bat 'dotnet restore'
                 }
                 echo 'Dependencies restored.'
+            }
+        }
+            // Etapa 4: Compilar los proyectos
+        stage('Build') {
+            steps {
+                // Compila cada proyecto individualmente
+                bat 'dotnet build ./WSAgenda/WSAgenda.csproj --configuration Release'
+                bat 'dotnet build ./Api.Clinica/Api.Clinica.csproj --configuration Release'
+                bat 'dotnet build ./ApiWebClinicaMedico/ApiPaginaWebCSF.csproj --configuration Release'
+                bat 'dotnet build ./WebAppCitaAgenda/WebAppCitaAgenda.csproj --configuration Release'
+                bat 'dotnet build ./Web.Clinica/Web.Clinica.csproj --configuration Release'
+                echo 'All projects built successfully.'
+            }
+        }
+
+        // Etapa 5: Ejecutar pruebas (opcional)
+        stage('Run Tests') {
+            steps {
+                // Ejecuta pruebas unitarias para cada proyecto (si existen)
+                bat 'dotnet test ./WSAgenda/WSAgenda.csproj'
+                bat 'dotnet test ./Api.Clinica/Api.Clinica.csproj'
+                bat 'dotnet test ./ApiWebClinicaMedico/ApiPaginaWebCSF.csproj'
+                bat 'dotnet test ./WebAppCitaAgenda/WebAppCitaAgenda.csproj'
+                bat 'dotnet test ./Web.Clinica/Web.Clinica.csproj'
+                echo 'Tests executed.'
+            }
+        }
+
+        // Etapa 6: Publicar los proyectos
+        stage('Publish') {
+            steps {
+                // Publica cada proyecto en la carpeta de publicación
+                bat "dotnet publish ./WSAgenda/WSAgenda.csproj --configuration Release --output ${PUBLISH_DIR}/WSAgenda"
+                bat "dotnet publish ./Api.Clinica/Api.Clinica.csproj --configuration Release --output ${PUBLISH_DIR}/Api.Clinica"
+                bat "dotnet publish ./ApiWebClinicaMedico/ApiPaginaWebCSF.csproj --configuration Release --output ${PUBLISH_DIR}/ApiWebClinicaMedico"
+                bat "dotnet publish ./WebAppCitaAgenda/WebAppCitaAgenda.csproj --configuration Release --output ${PUBLISH_DIR}/WebAppCitaAgenda"
+                bat "dotnet publish ./Web.Clinica/Web.Clinica.csproj --configuration Release --output ${PUBLISH_DIR}/WebClinica"
+                
+                echo 'All projects published.'
+
+                // Eliminar archivos innecesarios (ejemplo: .pdb, .xml)
+                bat """
+                del /s /q "${PUBLISH_DIR}\\*.config"
+                """ 
+            }
+        }
+
+        // Etapa 7: Desplegar en servidor remoto (Windows)
+        stage('Deploy to Remote Server') {
+            steps {
+                script {
+                    echo 'Deploying projects to remote server...'
+                    
+                    // Usar SCP para copiar los archivos al servidor remoto (Windows)
+                    withCredentials([sshUserPrivateKey(
+                        credentialsId: "${SSH_CREDENTIALS_ID}",
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    )]) {
+                        bat """
+                        scp -i "${SSH_KEY}" -r "${PUBLISH_DIR}" ${SSH_USER}@${REMOTE_HOST}:"${REMOTE_DIR}" 
+
+                        """
+                    }
+                    
+                    echo 'Projects deployed to remote server.'
+                }
             }
         }
 
