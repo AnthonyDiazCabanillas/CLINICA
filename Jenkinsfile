@@ -320,11 +320,6 @@ pipeline {
         SONAR_LOGIN = credentials('Sonnar') // SonarQube token stored in Jenkins
     }
 
-    tools {
-        msbuild 'Default MSBuild'
-        sonarScanner 'SonarScanner for .NET'
-    }
-
     stages {
         stage('Ejecutar Batch') {
             steps {
@@ -380,12 +375,18 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                script {
-                    withSonarQubeEnv('SonarQube') {
+                withSonarQubeEnv('SonarQube') {
+                    withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {
                         bat """
-                            dotnet sonarscanner begin /k:"CLINICA" /d:sonar.host.url="${SONAR_HOST_URL}" /d:sonar.login="${SONAR_LOGIN}"
-                            dotnet build ${REPO_ROOT} --configuration Release
-                            dotnet sonarscanner end /d:sonar.login="${SONAR_LOGIN}"
+                            "%SONAR_SCANNER_HOME%\\bin\\sonar-scanner.bat" ^
+                            -Dsonar.projectKey=CLINICA ^
+                            -Dsonar.projectName=CLINICA ^
+                            -Dsonar.projectVersion=1.0 ^
+                            -Dsonar.sources=. ^
+                            -Dsonar.host.url=http://localhost:9000 ^
+                            -Dsonar.token=%SONAR_TOKEN% ^
+                            -Dsonar.dotnet.excludeTestProjects=true ^
+                            -Dsonar.coverage.exclusions=**/*Test*/**
                         """
                     }
                 }
@@ -475,4 +476,4 @@ pipeline {
             echo 'Pipeline failed. Check the logs for details.'
         }
     }
-}
+} 
