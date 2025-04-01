@@ -376,7 +376,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                    withCredentials([string(credentialsId: 'SONARQUBE_TOKEN', variable: 'SONAR_TOKEN')]) {
                         bat """
                             "%SONAR_SCANNER_HOME%\\bin\\sonar-scanner.bat" ^
                             -Dsonar.projectKey=CLINICA ^
@@ -392,7 +392,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Restore Dependencies') {
             steps {
                 dir("${REPO_ROOT}") {
