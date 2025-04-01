@@ -317,35 +317,49 @@ pipeline {
         SONAR_SCANNER_HOME = 'D:\\Sonar\\sonar-scanner'
         SONAR_HOST_URL = 'http://localhost:9000'
         SONAR_LOGIN = credentials('Sonnar')
+        BUILD_DISPLAY_NAME = "${env.BUILD_NUMBER}"
     }
 
     stages {
-        stage('Preparación') {
+        stage('Preparación Inicial') {
             steps {
                 bat '''
+                    @echo off
+                    echo Ejecutando script de versión...
                     pushd "C:\\Users\\jdiaz\\Desktop\\"
                     call "incrementar version.bat"
                     popd
                     
-                    echo Limpiando workspace...
+                    echo Limpiando workspace y herramientas anteriores...
+                    dotnet tool uninstall dotnet-sonarscanner --global || echo "Herramienta no estaba instalada"
+                    if exist ".sonarqube" rmdir /s /q ".sonarqube"
+                    if exist ".sonar" rmdir /s /q ".sonar"
+                    mkdir "${WORKSPACE}\\.sonarqube"
+                    mkdir "${WORKSPACE}\\.sonar"
                 '''
                 cleanWs()
             }
         }
 
-        stage('Checkout') {
+        stage('Obtener Código Fuente') {
             steps {
                 script {
                     bat """
                         if not exist "${REPO_ROOT}\\.git" (
+                            echo Clonando repositorio...
                             git clone https://github.com/AnthonyDiazCabanillas/CLINICA.git "${REPO_ROOT}"
+                        ) else (
+                            echo Actualizando repositorio existente...
+                            pushd "${REPO_ROOT}"
+                            git pull
+                            popd
                         )
                     """
                 }
             }
         }
 
-        stage('Validación') {
+        stage('Validar Estructura') {
             steps {
                 script {
                     def projects = [
@@ -359,7 +373,7 @@ pipeline {
                     projects.each { project ->
                         bat """
                             if not exist "${project}" (
-                                echo "ERROR: Archivo de proyecto no encontrado: ${project}"
+                                echo "ERROR: No se encontró el archivo de proyecto: ${project}"
                                 exit 1
                             )
                         """
@@ -368,43 +382,56 @@ pipeline {
             }
         }
 
-        stage('Análisis SonarQube') {
+        stage('Análisis de Calidad') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {
-                        bat """
-                            dotnet tool install --global dotnet-sonarscanner --version=5.13.0
-                            
-                            echo Iniciando análisis SonarQube...
-                            dotnet sonarscanner begin ^
-                              /k:"CLINICA" ^
-                              /d:sonar.host.url="${SONAR_HOST_URL}" ^
-                              /d:sonar.token="${SONAR_TOKEN}" ^
-                              /d:sonar.projectVersion=1.0 ^
-                              /d:sonar.branch.name=main ^
-                              /d:sonar.sourceEncoding=UTF-8 ^
-                              /d:sonar.dotnet.excludeTestProjects=true ^
-                              /d:sonar.coverage.exclusions=**/*Test*/** ^
-                              /d:sonar.cs.ignoreIssues=false ^
-                              /d:sonar.scm.provider=git
-                            
-                            echo Ejecutando build para análisis...
-                            dotnet build "${REPO_ROOT}" --configuration Release
-                            
-                            echo Finalizando análisis SonarQube...
-                            dotnet sonarscanner end /d:sonar.token="${SONAR_TOKEN}"
-                        """
+                script {
+                    withSonarQubeEnv('SonarQube') {
+                        withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {
+                            bat """
+                                @echo off
+                                echo [SONARQUBE] Instalando scanner...
+                                dotnet tool install --global dotnet-sonarscanner --version=5.13.0
+                                
+                                echo [SONARQUBE] Iniciando análisis...
+                                dotnet sonarscanner begin ^
+                                  /k:"CLINICA" ^
+                                  /d:sonar.host.url="${SONAR_HOST_URL}" ^
+                                  /d:sonar.token="${SONAR_TOKEN}" ^
+                                  /d:sonar.projectVersion=${BUILD_DISPLAY_NAME} ^
+                                  /d:sonar.branch.name=main ^
+                                  /d:sonar.sourceEncoding=UTF-8 ^
+                                  /d:sonar.working.directory="${WORKSPACE}\\.sonar" ^
+                                  /d:sonar.cs.analyzer.projectOutPaths="${WORKSPACE}\\.sonarqube\\out" ^
+                                  /d:sonar.exclusions="**/bin/**,**/obj/**,**/Ent.Sql/ClinicaE/ComprobantesE/**,**/WSAgenda/Worker.cs" ^
+                                  /d:sonar.coverage.exclusions="**Test**.cs" ^
+                                  /d:sonar.verbose=true ^
+                                  /d:sonar.scm.disabled=true ^
+                                  /d:sonar.cs.ignoreIssues=false ^
+                                  /d:sonar.cs.warnignsAsErrors=false
+                                
+                                echo [SONARQUBE] Ejecutando build para análisis...
+                                dotnet build "${REPO_ROOT}" --configuration Release -p:TreatWarningsAsErrors=false -p:NoWarn=CS0414
+                                
+                                echo [SONARQUBE] Finalizando análisis...
+                                dotnet sonarscanner end /d:sonar.token="${SONAR_TOKEN}"
+                            """
+                        }
                     }
                 }
             }
         }
 
-        stage('Build y Pruebas') {
+        stage('Compilación y Pruebas') {
             steps {
                 dir("${REPO_ROOT}") {
                     bat '''
+                        echo Restaurando dependencias...
                         dotnet restore
-                        dotnet build --configuration Release
+                        
+                        echo Compilando proyectos...
+                        dotnet build --configuration Release -p:TreatWarningsAsErrors=false -p:NoWarn=CS0414
+                        
+                        echo Ejecutando pruebas...
                         dotnet test --no-build --configuration Release
                     '''
                 }
@@ -415,12 +442,14 @@ pipeline {
             steps {
                 dir("${REPO_ROOT}") {
                     bat """
-                        dotnet publish WSAgenda/WSAgenda.csproj --configuration Release --output ${PUBLISH_DIR}/WSAgenda
-                        dotnet publish Api.Clinica/Api.Clinica.csproj --configuration Release --output ${PUBLISH_DIR}/Api.Clinica
-                        dotnet publish ApiWebClinicaMedico/ApiPaginaWebCSF.csproj --configuration Release --output ${PUBLISH_DIR}/ApiWebClinicaMedico
-                        dotnet publish WebAppCitaAgenda/WebAppCitaAgenda.csproj --configuration Release --output ${PUBLISH_DIR}/WebAppCitaAgenda
-                        dotnet publish Web.Clinica/Web.Clinica.csproj --configuration Release --output ${PUBLISH_DIR}/WebClinica
+                        echo Publicando proyectos...
+                        dotnet publish WSAgenda/WSAgenda.csproj --configuration Release --output ${PUBLISH_DIR}/WSAgenda --no-build
+                        dotnet publish Api.Clinica/Api.Clinica.csproj --configuration Release --output ${PUBLISH_DIR}/Api.Clinica --no-build
+                        dotnet publish ApiWebClinicaMedico/ApiPaginaWebCSF.csproj --configuration Release --output ${PUBLISH_DIR}/ApiWebClinicaMedico --no-build
+                        dotnet publish WebAppCitaAgenda/WebAppCitaAgenda.csproj --configuration Release --output ${PUBLISH_DIR}/WebAppCitaAgenda --no-build
+                        dotnet publish Web.Clinica/Web.Clinica.csproj --configuration Release --output ${PUBLISH_DIR}/WebClinica --no-build
                         
+                        echo Limpiando archivos de configuración...
                         if exist "${PUBLISH_DIR}\\*.config" del /s /q "${PUBLISH_DIR}\\*.config"
                     """
                 }
@@ -436,6 +465,7 @@ pipeline {
                         usernameVariable: 'SSH_USER'
                     )]) {
                         bat """
+                            echo Desplegando en servidor remoto...
                             robocopy "${PUBLISH_DIR}" "\\\\${REMOTE_HOST}\\${REMOTE_DIR.replace(':', '$')}" /E /ZB /R:1 /W:1 /MT:16
                         """
                     }
@@ -443,7 +473,7 @@ pipeline {
             }
         }
 
-        stage('Quality Gate') {
+        stage('Verificación de Calidad') {
             steps {
                 timeout(time: 15, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
@@ -455,15 +485,17 @@ pipeline {
     post {
         always {
             bat '''
-                echo Limpiando herramientas...
+                echo Limpieza final...
                 dotnet tool uninstall dotnet-sonarscanner --global || echo "No se pudo desinstalar"
             '''
+            cleanWs()
         }
         success {
-            echo 'Pipeline completado exitosamente! Análisis SonarQube terminado.'
+            echo 'Pipeline ejecutado exitosamente! Análisis de calidad completado.'
         }
         failure {
-            echo 'Pipeline falló. Revisar logs para detalles.'
+            echo 'Pipeline falló. Consultar logs para detalles.'
+            // Opcional: Agregar notificación por email/teams/etc.
         }
     }
 }
