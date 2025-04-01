@@ -375,24 +375,24 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                dir("${REPO_ROOT}") {
-                    withSonarQubeEnv('SonarQube') { // Configured in Jenkins Global Settings
+                withSonarQubeEnv('SonarQube') {
+                    withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                         bat """
-                        ${SONAR_SCANNER_HOME}\\bin\\sonar-scanner.bat ^
-                            -D"sonar.projectKey=CLINICA" ^
-                            -D"sonar.projectName=CLINICA" ^
-                            -D"sonar.projectVersion=1.0" ^
-                            -D"sonar.sources=." ^
-                            -D"sonar.host.url=${SONAR_HOST_URL}" ^
-                            -D"sonar.login=${SONAR_LOGIN}" ^
-                            -D"sonar.dotnet.excludeTestProjects=true" ^
-                            -D"sonar.coverage.exclusions=**/*Test*/**"
+                            "%SONAR_SCANNER_HOME%\\bin\\sonar-scanner.bat" ^
+                            -Dsonar.projectKey=CLINICA ^
+                            -Dsonar.projectName=CLINICA ^
+                            -Dsonar.projectVersion=1.0 ^
+                            -Dsonar.sources=. ^
+                            -Dsonar.host.url=http://localhost:9000 ^
+                            -Dsonar.token=%SONAR_TOKEN% ^
+                            -Dsonar.dotnet.excludeTestProjects=true ^
+                            -Dsonar.coverage.exclusions=**/*Test*/**
                         """
                     }
                 }
             }
         }
-
+        
         stage('Restore Dependencies') {
             steps {
                 dir("${REPO_ROOT}") {
