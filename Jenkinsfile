@@ -328,6 +328,7 @@ pipeline {
                 }
             }
         }
+
         stage('Validate Project Structure') {
             steps {
                 script {
