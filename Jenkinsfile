@@ -363,7 +363,7 @@ pipeline {
                 
                 echo 'All projects published.'
 
-                // Eliminar archivos innecesarios (ejemplo: .pdb, .xml)
+                // Eliminar archivos que no se copiaran .config
                 bat """
                 del /s /q "${PUBLISH_DIR}\\*.config"
                 """ 
@@ -392,7 +392,7 @@ pipeline {
                 }
             }
         }
-
+        // ETAPA 8 - COPIADO DE REPOSITORIO
         stage('Deploy to Network Share') {
             steps {
                 script {
