@@ -277,10 +277,8 @@ pipeline {
         REMOTE_HOST = '192.168.42.155'
         REMOTE_DIR = 'E:\\DigitalizacionHC\\Prueba'
         SSH_CREDENTIALS_ID = 'ssh-server-42-155'
-        // Usar solo la ruta del recurso compartido (no subcarpetas)
-        SHARE_PATH = '\\\\192.168.42.252        \\temporal'
-        // Ruta relativa dentro del recurso compartido
-        SHARE_SUBDIR = 'GLluncor\\___Desarrollo\\Jenkins'
+        // Ruta UNC de destino final
+        TARGET_SHARE = '\\\\192.168.42.252\\Temporal\\GLluncor\\___Desarrollo\\Jenkins'
     }
 
     stages {
@@ -290,7 +288,7 @@ pipeline {
                     pushd "C:\\Users\\jdiaz\\Desktop\\"
                     call "incrementar version.bat"
                     popd
-                    '''
+                '''
             }
         }
 
@@ -302,47 +300,18 @@ pipeline {
         }
 
         stage('Checkout') {
-    steps {
-        script {
-            withCredentials([usernamePassword(
-                credentialsId: 'REMOTO',
-                usernameVariable: 'NET_USER',
-                passwordVariable: 'NET_PASS'
-            )]) {
-                // Mapear unidad temporal
-                bat """
-                net use Z: "${SHARE_PATH}" /user:${NET_USER} ${NET_PASS} /persistent:no
-                """
-                
-                try {
-                    // Verificar/crear directorio remoto
+            steps {
+                script {
+                    // Clonar el repositorio directamente en el workspace local
                     bat """
-                    if not exist "Z:\\${SHARE_SUBDIR}\\CLINICA" (
-                        mkdir "Z:\\${SHARE_SUBDIR}\\CLINICA"
+                    if not exist "${WORKSPACE}\\CLINICA\\.git" (
+                        git clone https://github.com/AnthonyDiazCabanillas/CLINICA.git "${WORKSPACE}\\CLINICA"
                     )
                     """
-                    
-                    // Clonar o actualizar repositorio en la red
-                    bat """
-                    if not exist "Z:\\${SHARE_SUBDIR}\\CLINICA\\.git" (
-                        git clone https://github.com/AnthonyDiazCabanillas/CLINICA.git "Z:\\${SHARE_SUBDIR}\\CLINICA"
-                    ) else (
-                        cd "Z:\\${SHARE_SUBDIR}\\CLINICA" && git pull
-                    )
-                    """
-                    
-                    // Copiar archivos al workspace (en lugar de mklink)
-                    bat """
-                    robocopy "Z:\\${SHARE_SUBDIR}\\CLINICA" "${WORKSPACE}\\CLINICA" /MIR /NJH /NJS /NP
-                    """
-                } finally {
-                    // Desmapear unidad
-                    bat "net use Z: /delete"
                 }
             }
         }
-    }
-}
+
         stage('Restore Dependencies') {
             steps {
                 dir("${WORKSPACE}/CLINICA") {
@@ -351,15 +320,48 @@ pipeline {
                 echo 'Dependencies restored.'
             }
         }
+
+        stage('Deploy to Network Share') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(
+                        credentialsId: 'REMOTO',
+                        usernameVariable: 'NET_USER',
+                        passwordVariable: 'NET_PASS'
+                    )]) {
+                        // Mapear unidad temporal (Z:) a la ruta de red
+                        bat """
+                        net use Z: "\\\\192.168.42.252\\Temporal" /user:%NET_USER% %NET_PASS% /persistent:no
+                        """
+
+                        try {
+                            // Verificar/Crear directorio destino
+                            bat """
+                            if not exist "Z:\\GLluncor\\___Desarrollo\\Jenkins" (
+                                mkdir "Z:\\GLluncor\\___Desarrollo\\Jenkins"
+                            )
+                            """
+
+                            // Copiar contenido al recurso compartido
+                            bat """
+                            robocopy "${WORKSPACE}\\CLINICA" "Z:\\GLluncor\\___Desarrollo\\Jenkins\\CLINICA" /MIR /NJH /NJS /NP
+                            """
+                        } finally {
+                            // Desmapear unidad
+                            bat "net use Z: /delete"
+                        }
+                    }
+                }
+            }
+        }
     }
 
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'Pipeline completed successfully! Files deployed to network share.'
         }
         failure {
             echo 'Pipeline failed. Check the logs for details.'
         }
     }
 }
-
