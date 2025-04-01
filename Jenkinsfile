@@ -311,7 +311,6 @@ pipeline {
         REMOTE_HOST = '192.168.42.155'
         REMOTE_DIR = 'E:\\DigitalizacionHC\\Prueba'
         SSH_CREDENTIALS_ID = 'ssh-server-42-155'
-        TARGET_SHARE = '\\\\192.168.42.252\\Temporal\\GLluncor\\___Desarrollo\\Jenkins'
         REPO_ROOT = "${WORKSPACE}/CLINICA"
         
         // SonarQube Configuration
@@ -379,8 +378,8 @@ pipeline {
                     withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {
                         bat """
                             "%SONAR_SCANNER_HOME%\\bin\\sonar-scanner.bat" ^
-                            -Dsonar.projectKey=CLINICA ^
-                            -Dsonar.projectName=CLINICA ^
+                            -Dsonar.projectKey=Prueba2^
+                            -Dsonar.projectName=Prueba2 ^
                             -Dsonar.projectVersion=1.0 ^
                             -Dsonar.sources=. ^
                             -Dsonar.host.url=http://localhost:9000 ^
