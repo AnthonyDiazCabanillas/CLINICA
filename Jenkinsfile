@@ -317,7 +317,7 @@ pipeline {
         // SonarQube Configuration
         SONAR_SCANNER_HOME = 'D:\\Sonar\\sonar-scanner' // Path to SonarScanner on Jenkins agent                       
         SONAR_HOST_URL = 'http://localhost:9000/' // SonarQube server URL
-        SONAR_LOGIN = credentials('SONARQUBE_TOKEN') // SonarQube token stored in Jenkins
+        SONAR_LOGIN = credentials('Sonnar') // SonarQube token stored in Jenkins
     }
 
     stages {
