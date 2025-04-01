@@ -278,7 +278,6 @@ pipeline {
         REMOTE_DIR = 'E:\\DigitalizacionHC\\Prueba'
         SSH_CREDENTIALS_ID = 'ssh-server-42-155'
         TARGET_SHARE = '\\\\192.168.42.252\\Temporal\\GLluncor\\___Desarrollo\\Jenkins'
-        // Ruta base del repositorio clonado
         REPO_ROOT = "${WORKSPACE}/CLINICA"
     }
 
@@ -312,27 +311,9 @@ pipeline {
             }
         }
 
-    stage('Deploy to Remote Server') {
-            steps {
-                script {
-                    withCredentials([sshUserPrivateKey(
-                        credentialsId: "${SSH_CREDENTIALS_ID}",
-                        keyFileVariable: 'SSH_KEY',
-                        usernameVariable: 'SSH_USER'
-                    )]) {
-                        bat """
-                        scp -i "${SSH_KEY}" -r "${PUBLISH_DIR}" ${SSH_USER}@${REMOTE_HOST}:"${REMOTE_DIR}"
-                        """
-                    }
-                    echo 'Projects deployed to remote server.'
-                }
-            }
-        }
-
         stage('Validate Project Structure') {
             steps {
                 script {
-                    // Verificar existencia de los proyectos
                     def projects = [
                         "${REPO_ROOT}/WSAgenda/WSAgenda.csproj",
                         "${REPO_ROOT}/Api.Clinica/Api.Clinica.csproj",
@@ -361,28 +342,6 @@ pipeline {
                 echo 'Dependencies restored.'
             }
         }
-
-        stage('Deploy to Network Share') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(
-                        credentialsId: 'REMOTO',
-                        usernameVariable: 'NET_USER',
-                        passwordVariable: 'NET_PASS'
-                    )]) {
-                        bat """
-                        net use Z: "\\\\192.168.42.252\\Temporal" /user:%NET_USER% %NET_PASS% /persistent:no
-                        if not exist "Z:\\GLluncor\\___Desarrollo\\Jenkins" (
-                            mkdir "Z:\\GLluncor\\___Desarrollo\\Jenkins"
-                        )
-                        robocopy "${REPO_ROOT}" "Z:\\GLluncor\\___Desarrollo\\Jenkins\\CLINICA" /MIR /NJH /NJS /NP
-                        net use Z: /delete
-                        """
-                    }
-                }
-            }
-        }
-    }
 
         stage('Build') {
             steps {
@@ -423,6 +382,45 @@ pipeline {
                 echo 'All projects published.'
             }
         }
+
+        stage('Deploy to Remote Server') {
+            steps {
+                script {
+                    withCredentials([sshUserPrivateKey(
+                        credentialsId: "${SSH_CREDENTIALS_ID}",
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    )]) {
+                        bat """
+                        scp -i "${SSH_KEY}" -r "${PUBLISH_DIR}" ${SSH_USER}@${REMOTE_HOST}:"${REMOTE_DIR}"
+                        """
+                    }
+                    echo 'Projects deployed to remote server.'
+                }
+            }
+        }
+
+        stage('Deploy to Network Share') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(
+                        credentialsId: 'REMOTO',
+                        usernameVariable: 'NET_USER',
+                        passwordVariable: 'NET_PASS'
+                    )]) {
+                        bat """
+                        net use Z: "\\\\192.168.42.252\\Temporal" /user:%NET_USER% %NET_PASS% /persistent:no
+                        if not exist "Z:\\GLluncor\\___Desarrollo\\Jenkins" (
+                            mkdir "Z:\\GLluncor\\___Desarrollo\\Jenkins"
+                        )
+                        robocopy "${REPO_ROOT}" "Z:\\GLluncor\\___Desarrollo\\Jenkins\\CLINICA" /MIR /NJH /NJS /NP
+                        net use Z: /delete
+                        """
+                    }
+                }
+            }
+        }
+    }
 
     post {
         success {
