@@ -373,25 +373,20 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {
-                        bat """
-                            "%SONAR_SCANNER_HOME%\\bin\\sonar-scanner.bat" ^
-                            -Dsonar.projectKey=CLINICA ^
-                            -Dsonar.projectName=CLINICA ^
-                            -Dsonar.projectVersion=1.0 ^
-                            -Dsonar.sources=. ^
-                            -Dsonar.host.url=http://localhost:9000 ^
-                            -Dsonar.token=%SONAR_TOKEN% ^
-                            -Dsonar.dotnet.excludeTestProjects=true ^
-                            -Dsonar.coverage.exclusions=**/*Test*/**
-                        """
-                    }
-                }
+       node {
+             stage('SCM') {
+                checkout scm
             }
-        }
+    stage('SonarQube Analysis') {
+    def msbuildHome = tool 'Default MSBuild'
+    def scannerHome = tool 'SonarScanner for .NET'
+    withSonarQubeEnv() {
+      bat "\"${scannerHome}\\SonarScanner.MSBuild.exe\" begin /k:\"CLINICA\""
+      bat "\"${msbuildHome}\\MSBuild.exe\" /t:Rebuild"
+      bat "\"${scannerHome}\\SonarScanner.MSBuild.exe\" end"
+            }
+            }
+    }
 
         stage('Restore Dependencies') {
             steps {
