@@ -307,33 +307,29 @@ pipeline {
 
     environment {
         DOTNET_VERSION = '6.0'
-        PUBLISH_DIR = "${WORKSPACE}/publish"
+        PUBLISH_DIR = "${WORKSPACE}\\publish"
         REMOTE_HOST = '192.168.42.155'
         REMOTE_DIR = 'E:\\DigitalizacionHC\\Prueba'
         SSH_CREDENTIALS_ID = 'ssh-server-42-155'
-        REPO_ROOT = "${WORKSPACE}/CLINICA"
+        REPO_ROOT = "${WORKSPACE}\\CLINICA"
         
         // SonarQube Configuration
-        SONAR_SCANNER_HOME = 'D:\\Sonar\\sonar-scanner' // Path to SonarScanner on Jenkins agent                       
-        SONAR_HOST_URL = 'http://localhost:9000/' // SonarQube server URL
-        SONAR_LOGIN = credentials('Sonnar') // SonarQube token stored in Jenkins
+        SONAR_SCANNER_HOME = 'D:\\Sonar\\sonar-scanner'
+        SONAR_HOST_URL = 'http://localhost:9000'
+        SONAR_LOGIN = credentials('Sonnar')
     }
 
     stages {
-        stage('Ejecutar Batch') {
+        stage('Preparación') {
             steps {
                 bat '''
                     pushd "C:\\Users\\jdiaz\\Desktop\\"
                     call "incrementar version.bat"
                     popd
+                    
+                    echo Limpiando workspace...
                 '''
-            }
-        }
-
-        stage('Clean Workspace') {
-            steps {
                 cleanWs()
-                echo 'Workspace cleaned.'
             }
         }
 
@@ -341,107 +337,97 @@ pipeline {
             steps {
                 script {
                     bat """
-                    if not exist "${REPO_ROOT}\\.git" (
-                        git clone https://github.com/AnthonyDiazCabanillas/CLINICA.git "${REPO_ROOT}"
-                    )
+                        if not exist "${REPO_ROOT}\\.git" (
+                            git clone https://github.com/AnthonyDiazCabanillas/CLINICA.git "${REPO_ROOT}"
+                        )
                     """
                 }
             }
         }
 
-        stage('Validate Project Structure') {
+        stage('Validación') {
             steps {
                 script {
                     def projects = [
-                        "${REPO_ROOT}/WSAgenda/WSAgenda.csproj",
-                        "${REPO_ROOT}/Api.Clinica/Api.Clinica.csproj",
-                        "${REPO_ROOT}/ApiWebClinicaMedico/ApiPaginaWebCSF.csproj",
-                        "${REPO_ROOT}/WebAppCitaAgenda/WebAppCitaAgenda.csproj",
-                        "${REPO_ROOT}/Web.Clinica/Web.Clinica.csproj"
+                        "${REPO_ROOT}\\WSAgenda\\WSAgenda.csproj",
+                        "${REPO_ROOT}\\Api.Clinica\\Api.Clinica.csproj",
+                        "${REPO_ROOT}\\ApiWebClinicaMedico\\ApiPaginaWebCSF.csproj",
+                        "${REPO_ROOT}\\WebAppCitaAgenda\\WebAppCitaAgenda.csproj",
+                        "${REPO_ROOT}\\Web.Clinica\\Web.Clinica.csproj"
                     ]
 
                     projects.each { project ->
                         bat """
-                        if not exist "${project}" (
-                            echo "ERROR: Project file not found: ${project}"
-                            exit 1
-                        )
+                            if not exist "${project}" (
+                                echo "ERROR: Archivo de proyecto no encontrado: ${project}"
+                                exit 1
+                            )
                         """
                     }
                 }
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage('Análisis SonarQube') {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {
                         bat """
-                            "%SONAR_SCANNER_HOME%\\bin\\sonar-scanner.bat" ^
-                            -Dsonar.projectKey=Prueba2^
-                            -Dsonar.projectName=Prueba2 ^
-                            -Dsonar.projectVersion=1.0 ^
-                            -Dsonar.sources=. ^
-                            -Dsonar.host.url=http://localhost:9000 ^
-                            -Dsonar.token=%SONAR_TOKEN% ^
-                            -Dsonar.dotnet.excludeTestProjects=true ^
-                            -Dsonar.coverage.exclusions=**/*Test*/**
+                            dotnet tool install --global dotnet-sonarscanner --version=5.13.0
+                            
+                            echo Iniciando análisis SonarQube...
+                            dotnet sonarscanner begin ^
+                              /k:"CLINICA" ^
+                              /d:sonar.host.url="${SONAR_HOST_URL}" ^
+                              /d:sonar.token="${SONAR_TOKEN}" ^
+                              /d:sonar.projectVersion=1.0 ^
+                              /d:sonar.branch.name=main ^
+                              /d:sonar.sourceEncoding=UTF-8 ^
+                              /d:sonar.dotnet.excludeTestProjects=true ^
+                              /d:sonar.coverage.exclusions=**/*Test*/** ^
+                              /d:sonar.cs.ignoreIssues=false ^
+                              /d:sonar.scm.provider=git
+                            
+                            echo Ejecutando build para análisis...
+                            dotnet build "${REPO_ROOT}" --configuration Release
+                            
+                            echo Finalizando análisis SonarQube...
+                            dotnet sonarscanner end /d:sonar.token="${SONAR_TOKEN}"
                         """
                     }
                 }
             }
         }
-        
-        stage('Restore Dependencies') {
+
+        stage('Build y Pruebas') {
             steps {
                 dir("${REPO_ROOT}") {
-                    bat 'dotnet restore'
+                    bat '''
+                        dotnet restore
+                        dotnet build --configuration Release
+                        dotnet test --no-build --configuration Release
+                    '''
                 }
-                echo 'Dependencies restored.'
             }
         }
 
-        stage('Build') {
+        stage('Publicación') {
             steps {
                 dir("${REPO_ROOT}") {
-                    bat 'dotnet build WSAgenda/WSAgenda.csproj --configuration Release'
-                    bat 'dotnet build Api.Clinica/Api.Clinica.csproj --configuration Release'
-                    bat 'dotnet build ApiWebClinicaMedico/ApiPaginaWebCSF.csproj --configuration Release'
-                    bat 'dotnet build WebAppCitaAgenda/WebAppCitaAgenda.csproj --configuration Release'
-                    bat 'dotnet build Web.Clinica/Web.Clinica.csproj --configuration Release'
+                    bat """
+                        dotnet publish WSAgenda/WSAgenda.csproj --configuration Release --output ${PUBLISH_DIR}/WSAgenda
+                        dotnet publish Api.Clinica/Api.Clinica.csproj --configuration Release --output ${PUBLISH_DIR}/Api.Clinica
+                        dotnet publish ApiWebClinicaMedico/ApiPaginaWebCSF.csproj --configuration Release --output ${PUBLISH_DIR}/ApiWebClinicaMedico
+                        dotnet publish WebAppCitaAgenda/WebAppCitaAgenda.csproj --configuration Release --output ${PUBLISH_DIR}/WebAppCitaAgenda
+                        dotnet publish Web.Clinica/Web.Clinica.csproj --configuration Release --output ${PUBLISH_DIR}/WebClinica
+                        
+                        if exist "${PUBLISH_DIR}\\*.config" del /s /q "${PUBLISH_DIR}\\*.config"
+                    """
                 }
-                echo 'All projects built successfully.'
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                dir("${REPO_ROOT}") {
-                    bat 'dotnet test WSAgenda/WSAgenda.csproj'
-                    bat 'dotnet test Api.Clinica/Api.Clinica.csproj'
-                    bat 'dotnet test ApiWebClinicaMedico/ApiPaginaWebCSF.csproj'
-                    bat 'dotnet test WebAppCitaAgenda/WebAppCitaAgenda.csproj'
-                    bat 'dotnet test Web.Clinica/Web.Clinica.csproj'
-                }
-                echo 'Tests executed.'
-            }
-        }
-
-        stage('Publish') {
-            steps {
-                dir("${REPO_ROOT}") {
-                    bat "dotnet publish WSAgenda/WSAgenda.csproj --configuration Release --output ${PUBLISH_DIR}/WSAgenda"
-                    bat "dotnet publish Api.Clinica/Api.Clinica.csproj --configuration Release --output ${PUBLISH_DIR}/Api.Clinica"
-                    bat "dotnet publish ApiWebClinicaMedico/ApiPaginaWebCSF.csproj --configuration Release --output ${PUBLISH_DIR}/ApiWebClinicaMedico"
-                    bat "dotnet publish WebAppCitaAgenda/WebAppCitaAgenda.csproj --configuration Release --output ${PUBLISH_DIR}/WebAppCitaAgenda"
-                    bat "dotnet publish Web.Clinica/Web.Clinica.csproj --configuration Release --output ${PUBLISH_DIR}/WebClinica"
-                }
-                bat "del /s /q \"${PUBLISH_DIR}\\*.config\""
-                echo 'All projects published.'
-            }
-        }
-
-        stage('Deploy to Remote Server') {
+        stage('Despliegue') {
             steps {
                 script {
                     withCredentials([sshUserPrivateKey(
@@ -450,15 +436,14 @@ pipeline {
                         usernameVariable: 'SSH_USER'
                     )]) {
                         bat """
-                        scp -i "${SSH_KEY}" -r "${PUBLISH_DIR}" ${SSH_USER}@${REMOTE_HOST}:"${REMOTE_DIR}"
+                            robocopy "${PUBLISH_DIR}" "\\\\${REMOTE_HOST}\\${REMOTE_DIR.replace(':', '$')}" /E /ZB /R:1 /W:1 /MT:16
                         """
                     }
-                    echo 'Projects deployed to remote server.'
                 }
             }
         }
 
-        stage('Quality Gate Check') {
+        stage('Quality Gate') {
             steps {
                 timeout(time: 15, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
@@ -468,11 +453,17 @@ pipeline {
     }
 
     post {
+        always {
+            bat '''
+                echo Limpiando herramientas...
+                dotnet tool uninstall dotnet-sonarscanner --global || echo "No se pudo desinstalar"
+            '''
+        }
         success {
-            echo 'Pipeline completed successfully! SonarQube analysis completed.'
+            echo 'Pipeline completado exitosamente! Análisis SonarQube terminado.'
         }
         failure {
-            echo 'Pipeline failed. Check the logs for details.'
+            echo 'Pipeline falló. Revisar logs para detalles.'
         }
     }
-} 
+}
