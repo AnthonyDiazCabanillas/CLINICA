@@ -139,7 +139,6 @@
 //***************************************************** PIPELINE PARA COPIADO EN UNA CARPETA  ************************************************** //
 //**************************************************************************************************************************** //
 
-/*
 pipeline {
     agent any
 
@@ -301,7 +300,9 @@ pipeline {
             echo 'Pipeline failed. Check the logs for details.'
         }
     }
-}*/
+}
+
+/*
 pipeline {
     agent any
 
@@ -315,7 +316,7 @@ pipeline {
         REPO_ROOT = "${WORKSPACE}/CLINICA"
         
         // SonarQube Configuration
-        SONAR_SCANNER_HOME = 'C:\\sonar-scanner' // Path to SonarScanner on Jenkins agent
+        SONAR_SCANNER_HOME = 'D:\\Sonar\\sonar-scanner' // Path to SonarScanner on Jenkins agent                       
         SONAR_HOST_URL = 'http://your-sonarqube-server:9000' // SonarQube server URL
         SONAR_LOGIN = credentials('SONARQUBE_TOKEN') // SonarQube token stored in Jenkins
     }
@@ -497,4 +498,4 @@ pipeline {
             echo 'Pipeline failed. Check the logs for details.'
         }
     }
-}
+} */
