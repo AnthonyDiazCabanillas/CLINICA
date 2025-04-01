@@ -278,7 +278,7 @@ pipeline {
         REMOTE_DIR = 'E:\\DigitalizacionHC\\Prueba'
         SSH_CREDENTIALS_ID = 'ssh-server-42-155'
         // Usar solo la ruta del recurso compartido (no subcarpetas)
-        SHARE_PATH = '\\\\192.168.22.39\\temporal'
+        SHARE_PATH = '\\\\192.168.42.252\\temporal'
         // Ruta relativa dentro del recurso compartido
         SHARE_SUBDIR = 'GLluncor\\___Desarrollo\\Jenkins'
     }
