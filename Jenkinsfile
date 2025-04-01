@@ -378,8 +378,8 @@ pipeline {
                     withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {
                         bat """
                             "%SONAR_SCANNER_HOME%\\bin\\sonar-scanner.bat" ^
-                            -Dsonar.projectKey=FINAL^
-                            -Dsonar.projectName=FINAL ^
+                            -Dsonar.projectKey=Prueba2^
+                            -Dsonar.projectName=Prueba2 ^
                             -Dsonar.projectVersion=1.0 ^
                             -Dsonar.sources=. ^
                             -Dsonar.host.url=http://localhost:9000 ^
@@ -466,13 +466,3 @@ pipeline {
             }
         }
     }
-
-    post {
-        success {
-            echo 'Pipeline completed successfully! SonarQube analysis completed.'
-        }
-        failure {
-            echo 'Pipeline failed. Check the logs for details.'
-        }
-    }
-} 
