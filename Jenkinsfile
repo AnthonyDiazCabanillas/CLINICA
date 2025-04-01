@@ -277,13 +277,12 @@ pipeline {
         REMOTE_HOST = '192.168.42.155'
         REMOTE_DIR = 'E:\\DigitalizacionHC\\Prueba'
         SSH_CREDENTIALS_ID = 'ssh-server-42-155'
-        // Ruta UNC de destino final
         TARGET_SHARE = '\\\\192.168.42.252\\Temporal\\GLluncor\\___Desarrollo\\Jenkins'
+        // Ruta base del repositorio clonado
+        REPO_ROOT = "${WORKSPACE}/CLINICA"
     }
 
     stages {
-
-        // Etapa 1: Ejecutar bash
         stage('Ejecutar Batch') {
             steps {
                 bat '''
@@ -294,105 +293,74 @@ pipeline {
             }
         }
 
-
-         // Etapa 2: Limpiar Workspace
-
         stage('Clean Workspace') {
             steps {
                 cleanWs()
                 echo 'Workspace cleaned.'
             }
         }
-         // Etapa 3: Checkout
+
         stage('Checkout') {
             steps {
                 script {
-                    // Clonar el repositorio directamente en el workspace local
                     bat """
-                    if not exist "${WORKSPACE}\\CLINICA\\.git" (
-                        git clone https://github.com/AnthonyDiazCabanillas/CLINICA.git "${WORKSPACE}\\CLINICA"
+                    if not exist "${REPO_ROOT}\\.git" (
+                        git clone https://github.com/AnthonyDiazCabanillas/CLINICA.git "${REPO_ROOT}"
                     )
                     """
                 }
             }
         }
 
-        stage('Restore Dependencies') {
-            steps {
-                dir("${WORKSPACE}/CLINICA") {
-                    bat 'dotnet restore'
-                }
-                echo 'Dependencies restored.'
-            }
-        }
-            // Etapa 4: Compilar los proyectos
-        stage('Build') {
-            steps {
-                // Compila cada proyecto individualmente
-                bat 'dotnet build ./WSAgenda/WSAgenda.csproj --configuration Release'
-                bat 'dotnet build ./Api.Clinica/Api.Clinica.csproj --configuration Release'
-                bat 'dotnet build ./ApiWebClinicaMedico/ApiPaginaWebCSF.csproj --configuration Release'
-                bat 'dotnet build ./WebAppCitaAgenda/WebAppCitaAgenda.csproj --configuration Release'
-                bat 'dotnet build ./Web.Clinica/Web.Clinica.csproj --configuration Release'
-                echo 'All projects built successfully.'
-            }
-        }
-
-        // Etapa 5: Ejecutar pruebas (opcional)
-        stage('Run Tests') {
-            steps {
-                // Ejecuta pruebas unitarias para cada proyecto (si existen)
-                bat 'dotnet test ./WSAgenda/WSAgenda.csproj'
-                bat 'dotnet test ./Api.Clinica/Api.Clinica.csproj'
-                bat 'dotnet test ./ApiWebClinicaMedico/ApiPaginaWebCSF.csproj'
-                bat 'dotnet test ./WebAppCitaAgenda/WebAppCitaAgenda.csproj'
-                bat 'dotnet test ./Web.Clinica/Web.Clinica.csproj'
-                echo 'Tests executed.'
-            }
-        }
-
-        // Etapa 6: Publicar los proyectos
-        stage('Publish') {
-            steps {
-                // Publica cada proyecto en la carpeta de publicación
-                bat "dotnet publish ./WSAgenda/WSAgenda.csproj --configuration Release --output ${PUBLISH_DIR}/WSAgenda"
-                bat "dotnet publish ./Api.Clinica/Api.Clinica.csproj --configuration Release --output ${PUBLISH_DIR}/Api.Clinica"
-                bat "dotnet publish ./ApiWebClinicaMedico/ApiPaginaWebCSF.csproj --configuration Release --output ${PUBLISH_DIR}/ApiWebClinicaMedico"
-                bat "dotnet publish ./WebAppCitaAgenda/WebAppCitaAgenda.csproj --configuration Release --output ${PUBLISH_DIR}/WebAppCitaAgenda"
-                bat "dotnet publish ./Web.Clinica/Web.Clinica.csproj --configuration Release --output ${PUBLISH_DIR}/WebClinica"
-                
-                echo 'All projects published.'
-
-                // Eliminar archivos que no se copiaran .config
-                bat """
-                del /s /q "${PUBLISH_DIR}\\*.config"
-                """ 
-            }
-        }
-
-        // Etapa 7: Desplegar en servidor remoto (Windows)
-        stage('Deploy to Remote Server') {
+    stage('Deploy to Remote Server') {
             steps {
                 script {
-                    echo 'Deploying projects to remote server...'
-                    
-                    // Usar SCP para copiar los archivos al servidor remoto (Windows)
                     withCredentials([sshUserPrivateKey(
                         credentialsId: "${SSH_CREDENTIALS_ID}",
                         keyFileVariable: 'SSH_KEY',
                         usernameVariable: 'SSH_USER'
                     )]) {
                         bat """
-                        scp -i "${SSH_KEY}" -r "${PUBLISH_DIR}" ${SSH_USER}@${REMOTE_HOST}:"${REMOTE_DIR}" 
-
+                        scp -i "${SSH_KEY}" -r "${PUBLISH_DIR}" ${SSH_USER}@${REMOTE_HOST}:"${REMOTE_DIR}"
                         """
                     }
-                    
                     echo 'Projects deployed to remote server.'
                 }
             }
         }
-        // ETAPA 8 - COPIADO DE REPOSITORIO
+        stage('Validate Project Structure') {
+            steps {
+                script {
+                    // Verificar existencia de los proyectos
+                    def projects = [
+                        "${REPO_ROOT}/WSAgenda/WSAgenda.csproj",
+                        "${REPO_ROOT}/Api.Clinica/Api.Clinica.csproj",
+                        "${REPO_ROOT}/ApiWebClinicaMedico/ApiPaginaWebCSF.csproj",
+                        "${REPO_ROOT}/WebAppCitaAgenda/WebAppCitaAgenda.csproj",
+                        "${REPO_ROOT}/Web.Clinica/Web.Clinica.csproj"
+                    ]
+
+                    projects.each { project ->
+                        bat """
+                        if not exist "${project}" (
+                            echo "ERROR: Project file not found: ${project}"
+                            exit 1
+                        )
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Restore Dependencies') {
+            steps {
+                dir("${REPO_ROOT}") {
+                    bat 'dotnet restore'
+                }
+                echo 'Dependencies restored.'
+            }
+        }
+
         stage('Deploy to Network Share') {
             steps {
                 script {
@@ -401,36 +369,63 @@ pipeline {
                         usernameVariable: 'NET_USER',
                         passwordVariable: 'NET_PASS'
                     )]) {
-                        // Mapear unidad temporal (Z:) a la ruta de red
                         bat """
                         net use Z: "\\\\192.168.42.252\\Temporal" /user:%NET_USER% %NET_PASS% /persistent:no
+                        if not exist "Z:\\GLluncor\\___Desarrollo\\Jenkins" (
+                            mkdir "Z:\\GLluncor\\___Desarrollo\\Jenkins"
+                        )
+                        robocopy "${REPO_ROOT}" "Z:\\GLluncor\\___Desarrollo\\Jenkins\\CLINICA" /MIR /NJH /NJS /NP
+                        net use Z: /delete
                         """
-
-                        try {
-                            // Verificar/Crear directorio destino
-                            bat """
-                            if not exist "Z:\\GLluncor\\___Desarrollo\\Jenkins" (
-                                mkdir "Z:\\GLluncor\\___Desarrollo\\Jenkins"
-                            )
-                            """
-
-                            // Copiar contenido al recurso compartido
-                            bat """
-                            robocopy "${WORKSPACE}\\CLINICA" "Z:\\GLluncor\\___Desarrollo\\Jenkins\\CLINICA" /MIR /NJH /NJS /NP
-                            """
-                        } finally {
-                            // Desmapear unidad
-                            bat "net use Z: /delete"
-                        }
                     }
                 }
             }
         }
     }
 
+        stage('Build') {
+            steps {
+                dir("${REPO_ROOT}") {
+                    bat 'dotnet build WSAgenda/WSAgenda.csproj --configuration Release'
+                    bat 'dotnet build Api.Clinica/Api.Clinica.csproj --configuration Release'
+                    bat 'dotnet build ApiWebClinicaMedico/ApiPaginaWebCSF.csproj --configuration Release'
+                    bat 'dotnet build WebAppCitaAgenda/WebAppCitaAgenda.csproj --configuration Release'
+                    bat 'dotnet build Web.Clinica/Web.Clinica.csproj --configuration Release'
+                }
+                echo 'All projects built successfully.'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                dir("${REPO_ROOT}") {
+                    bat 'dotnet test WSAgenda/WSAgenda.csproj'
+                    bat 'dotnet test Api.Clinica/Api.Clinica.csproj'
+                    bat 'dotnet test ApiWebClinicaMedico/ApiPaginaWebCSF.csproj'
+                    bat 'dotnet test WebAppCitaAgenda/WebAppCitaAgenda.csproj'
+                    bat 'dotnet test Web.Clinica/Web.Clinica.csproj'
+                }
+                echo 'Tests executed.'
+            }
+        }
+
+        stage('Publish') {
+            steps {
+                dir("${REPO_ROOT}") {
+                    bat "dotnet publish WSAgenda/WSAgenda.csproj --configuration Release --output ${PUBLISH_DIR}/WSAgenda"
+                    bat "dotnet publish Api.Clinica/Api.Clinica.csproj --configuration Release --output ${PUBLISH_DIR}/Api.Clinica"
+                    bat "dotnet publish ApiWebClinicaMedico/ApiPaginaWebCSF.csproj --configuration Release --output ${PUBLISH_DIR}/ApiWebClinicaMedico"
+                    bat "dotnet publish WebAppCitaAgenda/WebAppCitaAgenda.csproj --configuration Release --output ${PUBLISH_DIR}/WebAppCitaAgenda"
+                    bat "dotnet publish Web.Clinica/Web.Clinica.csproj --configuration Release --output ${PUBLISH_DIR}/WebClinica"
+                }
+                bat "del /s /q \"${PUBLISH_DIR}\\*.config\""
+                echo 'All projects published.'
+            }
+        }
+
     post {
         success {
-            echo 'Pipeline completed successfully! Files deployed to network share.'
+            echo 'Pipeline completed successfully!'
         }
         failure {
             echo 'Pipeline failed. Check the logs for details.'
