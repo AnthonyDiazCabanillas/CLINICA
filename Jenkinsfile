@@ -373,25 +373,30 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {
-                        bat """
-                            "%SONAR_SCANNER_HOME%\\bin\\sonar-scanner.bat" ^
-                            -Dsonar.projectKey=CLINICA ^
-                            -Dsonar.projectName=CLINICA ^
-                            -Dsonar.projectVersion=1.0 ^
-                            -Dsonar.sources=. ^
-                            -Dsonar.host.url=http://localhost:9000 ^
-                            -Dsonar.token=%SONAR_TOKEN% ^
-                            -Dsonar.dotnet.excludeTestProjects=true ^
-                            -Dsonar.coverage.exclusions=**/*Test*/**
-                        """
-                    }
+       stage('SonarQube Analysis') {
+    steps {
+        script {
+            withSonarQubeEnv('SonarQube') {
+                withCredentials([string(credentialsId: 'SONAR_LOGIN', variable: 'SONAR_TOKEN')]) {
+                    bat """
+                        dotnet tool install --global dotnet-sonarscanner
+                        dotnet sonarscanner begin ^
+                          /k:"CLINICA" ^
+                          /d:sonar.host.url="${SONAR_HOST_URL}" ^
+                          /d:sonar.token="${SONAR_TOKEN}" ^
+                          /d:sonar.sourceEncoding=UTF-8 ^
+                          /d:sonar.projectBaseDir="${REPO_ROOT}" ^
+                          /d:sonar.cs.analyzer.projectOutPaths=".sonarqube/out"
+                        
+                        dotnet build ${REPO_ROOT} --configuration Release --no-restore
+                        
+                        dotnet sonarscanner end /d:sonar.token="${SONAR_TOKEN}"
+                    """
                 }
             }
         }
+    }
+}
 
         stage('Restore Dependencies') {
             steps {
