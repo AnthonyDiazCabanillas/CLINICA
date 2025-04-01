@@ -403,10 +403,13 @@ pipeline {
             }
         }
 
-        stage('Build for SonarQube') {
+        stage('SonarQube Preparation') {
             steps {
-                dir("${REPO_ROOT}") {
-                    bat 'dotnet build --configuration Release --no-restore'
+                script {
+                    bat """
+                        mkdir "${WORKSPACE}\\.sonarqube" || echo "Directory already exists"
+                        mkdir "${WORKSPACE}\\.sonar" || echo "Directory already exists"
+                    """
                 }
             }
         }
@@ -417,9 +420,6 @@ pipeline {
                     withSonarQubeEnv('SonarQube') {
                         withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {
                             bat """
-                                if not exist ".sonarqube" mkdir ".sonarqube"
-                                if not exist ".sonar" mkdir ".sonar"
-                                
                                 dotnet tool install --global dotnet-sonarscanner --version=5.13.0
                                 
                                 echo "Iniciando análisis SonarQube..."
@@ -429,17 +429,16 @@ pipeline {
                                   /d:sonar.token="${SONAR_TOKEN}" ^
                                   /d:sonar.sourceEncoding=UTF-8 ^
                                   /d:sonar.projectBaseDir="${REPO_ROOT}" ^
-                                  /d:sonar.cs.analyzer.projectOutPaths=".sonarqube/out" ^
+                                  /d:sonar.cs.analyzer.projectOutPaths="${WORKSPACE}\\.sonarqube\\out" ^
                                   /d:sonar.exclusions="**/bin/**,**/obj/**,**/Ent.Sql/ClinicaE/ComprobantesE/**,**/WSAgenda/Worker.cs" ^
                                   /d:sonar.coverage.exclusions="**Test**.cs" ^
                                   /d:sonar.verbose=true ^
                                   /d:sonar.scm.disabled=true ^
-                                  /d:sonar.working.directory="${WORKSPACE}/.sonar" ^
                                   /d:sonar.cs.ignoreIssues="false" ^
                                   /d:sonar.cs.warnignsAsErrors="false"
                                 
                                 echo "Ejecutando build para análisis..."
-                                dotnet build ${REPO_ROOT} --configuration Release --no-restore
+                                dotnet build "${REPO_ROOT}" --configuration Release --no-restore
                                 
                                 echo "Finalizando análisis SonarQube..."
                                 dotnet sonarscanner end /d:sonar.token="${SONAR_TOKEN}"
@@ -461,19 +460,15 @@ pipeline {
                         withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {
                             bat """
                                 dotnet sonarscanner end /d:sonar.token="${SONAR_TOKEN}" || true
-                                if not exist ".sonarqube" mkdir ".sonarqube"
-                                if not exist ".sonar" mkdir ".sonar"
-                                
                                 dotnet sonarscanner begin ^
                                   /k:"CLINICA" ^
                                   /d:sonar.host.url="${SONAR_HOST_URL}" ^
                                   /d:sonar.token="${SONAR_TOKEN}" ^
                                   /d:sonar.sourceEncoding=UTF-8 ^
                                   /d:sonar.projectBaseDir="${REPO_ROOT}" ^
-                                  /d:sonar.cs.analyzer.projectOutPaths=".sonarqube/out" ^
-                                  /d:sonar.working.directory="${WORKSPACE}/.sonar"
+                                  /d:sonar.cs.analyzer.projectOutPaths="${WORKSPACE}\\.sonarqube\\out"
                                 
-                                dotnet build ${REPO_ROOT} --configuration Release --no-restore
+                                dotnet build "${REPO_ROOT}" --configuration Release --no-restore
                                 
                                 dotnet sonarscanner end /d:sonar.token="${SONAR_TOKEN}"
                             """
