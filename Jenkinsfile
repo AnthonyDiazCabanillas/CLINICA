@@ -442,21 +442,36 @@ pipeline {
         }
     
       stage('Deploy to Remote Server') {
-            steps {
-                    script {
-                withCredentials([usernamePassword(
+    steps {
+        script {
+            withCredentials([usernamePassword(
                 credentialsId: 'windows-server-creds',
                 usernameVariable: 'REMOTE_USER',
                 passwordVariable: 'REMOTE_PASS'
-                 )]) {
+            )]) {
                 bat """
-                robocopy "${PUBLISH_DIR}" "\\\\${REMOTE_HOST}\\\\D$\\Jenkins\\Prueba" /MIR /Z /W:5 /NP /NFL /NDL /E /LOG+:robocopy.log
-                if %errorlevel% GTR 1 exit 1
+                    net use Z: "\\\\${REMOTE_HOST}\\D\\$" /user:%REMOTE_USER% %REMOTE_PASS% /persistent:no
+                    if %errorlevel% neq 0 (
+                        echo Error al mapear unidad de red
+                        exit 1
+                    )
+                    
+                    robocopy "${PUBLISH_DIR}" "Z:\\Jenkins\\Prueba" /MIR /Z /W:5 /NP /NFL /NDL
+                    set robocopy_result=%errorlevel%
+                    
+                    net use Z: /delete
+                    
+                    if %robocopy_result% gtr 1 (
+                        echo Error durante robocopy. Código: %robocopy_result%
+                        exit 1
+                    ) else (
+                        echo Copia completada exitosamente
+                    )
                 """
-                    }
-                }
             }
         }
+    }
+}
 
         /*stage('Quality Gate Check') {
             steps {
