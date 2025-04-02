@@ -309,7 +309,7 @@ pipeline {
         DOTNET_VERSION = '6.0'
         PUBLISH_DIR = "${WORKSPACE}/publish"
         REMOTE_HOST = '192.168.42.155'
-        REMOTE_DIR = 'E:\\DigitalizacionHC\\Prueba'
+        REMOTE_DIR = 'D:\\Jenkins\\Prueba'
         SSH_CREDENTIALS_ID = 'ssh-server-42-155'
         REPO_ROOT = "${WORKSPACE}/CLINICA"
         
