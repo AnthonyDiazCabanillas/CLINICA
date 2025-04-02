@@ -441,7 +441,7 @@ pipeline {
             }
         }
     
-       stage('Deploy to Remote Server') {
+     /*  stage('Deploy to Remote Server') {
     steps {
         bat """
         robocopy "${PUBLISH_DIR}" "\\\\${REMOTE_HOST}\\Jenkins\\Prueba" /MIR /Z /W:5 /NP /NFL /NDL
@@ -449,7 +449,45 @@ pipeline {
         
         """
             }
+        }*/
+
+    stage('Deploy to Remote Server') {
+    steps {
+        script {
+            withCredentials([usernamePassword(
+                credentialsId: 'windows-server-creds',
+                usernameVariable: 'REMOTE_USER',
+                passwordVariable: 'REMOTE_PASS'
+            )]) {
+                bat """
+                    @echo off
+                    echo Intentando mapear unidad de red...
+                    net use Z: "\\\\${REMOTE_HOST}\\D\$" /user:%REMOTE_USER% %REMOTE_PASS% /persistent:no
+                    if %errorlevel% neq 0 (
+                        echo ERROR: Fallo al mapear unidad de red
+                        exit /b 1
+                    )
+                    
+                    echo Copiando archivos...
+                    robocopy "${PUBLISH_DIR}" "Z:\\Jenkins\\Prueba" /MIR /Z /W:5 /NP /NFL /NDL
+                    set robocopy_result=%errorlevel%
+                    
+                    echo Desmapeando unidad...
+                    net use Z: /delete /y
+                    
+                    if %robocopy_result% gtr 1 (
+                        echo ERROR en robocopy. Código: %robocopy_result%
+                        exit /b 1
+                    ) else (
+                        echo Copia completada exitosamente
+                    )
+                """
+            }
         }
+    }
+}
+
+
 
         /*stage('Quality Gate Check') {
             steps {
