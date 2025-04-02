@@ -1,7 +1,6 @@
 //**************************************************************************************************************************** //
 //***************************************************** PIPELINE SSH LISTO  ************************************************** //
 //**************************************************************************************************************************** //
-/*
 pipeline {
     agent any
 
@@ -75,7 +74,7 @@ pipeline {
        /* stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {*/
+                    withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {
                      //   bat """
                        //     "%SONAR_SCANNER_HOME%\\bin\\sonar-scanner.bat" ^
                          //   -Dsonar.projectKey=Integracion^
@@ -87,10 +86,10 @@ pipeline {
                      //       -Dsonar.dotnet.excludeTestProjects=true ^
                      //       -Dsonar.coverage.exclusions=**/*Test*/**
                      //   """
-                  /*  }
+                   }
                 }
             
-        }
+        }*/
         
         stage('Restore Dependencies') {
             steps {
@@ -186,13 +185,13 @@ pipeline {
                 }
             }
         }
-    }
-} */
+    }*/
+} 
 
 //**************************************************************************************************************************** //
 //***************************************************** PIPELINE SSH + SONARQ  ************************************************** //
 //**************************************************************************************************************************** //
-
+/*
 pipeline {
     agent any
 
@@ -266,7 +265,7 @@ pipeline {
        stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {*/
+                    withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {
                        bat """
                            "%SONAR_SCANNER_HOME%\\bin\\sonar-scanner.bat" ^
                           -Dsonar.projectKey=Integracion^
@@ -377,3 +376,4 @@ pipeline {
         }
     }
 }
+*/
