@@ -450,7 +450,7 @@ pipeline {
                 passwordVariable: 'REMOTE_PASS'
                  )]) {
                 bat """
-                robocopy "${PUBLISH_DIR}" "\\\\${REMOTE_HOST}\\D$\\Jenkins\\Prueba" /MIR /Z /W:5 /NP /NFL /NDL /E /LOG+:robocopy.log
+                robocopy "${PUBLISH_DIR}" "\\\\${REMOTE_HOST}\\\\D$\\Jenkins\\Prueba" /MIR /Z /W:5 /NP /NFL /NDL /E /LOG+:robocopy.log
                 if %errorlevel% GTR 1 exit 1
                 """
                     }
