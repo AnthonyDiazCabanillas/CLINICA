@@ -68,25 +68,25 @@ pipeline {
             }
         }
 
-       /* stage('SonarQube Analysis') {
+       stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {*/
-                     //   bat """
-                       //     "%SONAR_SCANNER_HOME%\\bin\\sonar-scanner.bat" ^
-                         //   -Dsonar.projectKey=Prueba2^
-                          //  -Dsonar.projectName=Prueba2 ^
-                            //-Dsonar.projectVersion=1.0 ^
-                     //       -Dsonar.sources=. ^
-                     //       -Dsonar.host.url=http://localhost:9000 ^
-                    //        -Dsonar.token=%SONAR_TOKEN% ^
-                     //       -Dsonar.dotnet.excludeTestProjects=true ^
-                     //       -Dsonar.coverage.exclusions=**/*Test*/**
-                     //   """
-                  /*  }
+                    withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {
+                      bat """
+                            "%SONAR_SCANNER_HOME%\\bin\\sonar-scanner.bat" ^
+                            -Dsonar.projectKey=Prueba2^
+                            -Dsonar.projectName=Prueba2 ^
+                            -Dsonar.projectVersion=1.0 ^
+                            -Dsonar.sources=. ^
+                            -Dsonar.host.url=http://localhost:9000 ^
+                            -Dsonar.token=%SONAR_TOKEN% ^
+                            -Dsonar.dotnet.excludeTestProjects=true ^
+                            -Dsonar.coverage.exclusions=**/*Test*/**
+                        """
+                    }
                 }
-            
-        }*/
+            }
+        }
         
         stage('Restore Dependencies') {
             steps {
@@ -136,20 +136,10 @@ pipeline {
                 echo 'All projects published.'
             }
         }
-    
-     /*  stage('Deploy to Remote Server') {
-    steps {
-        bat """
-        robocopy "${PUBLISH_DIR}" "\\\\${REMOTE_HOST}\\Jenkins\\Prueba" /MIR /Z /W:5 /NP /NFL /NDL
-
-        
-        """
-            }
-        }*/
 
     stage('Deploy to Remote Server') {
-    steps {
-        script {
+        steps {
+            script {
             withCredentials([usernamePassword(
                 credentialsId: 'windows-server-creds',
                 usernameVariable: 'REMOTE_USER',
@@ -182,15 +172,12 @@ pipeline {
         }
     }
 }
-
-
-
-        /*stage('Quality Gate Check') {
+        stage('Quality Gate Check') {
             steps {
                 timeout(time: 15, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
             }
-        }*/
+        }
     }
 }
