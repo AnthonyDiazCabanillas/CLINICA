@@ -71,25 +71,6 @@ pipeline {
             }
         }
 
-       /* stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {
-                     //   bat """
-                       //     "%SONAR_SCANNER_HOME%\\bin\\sonar-scanner.bat" ^
-                         //   -Dsonar.projectKey=Integracion^
-                          //  -Dsonar.projectName=Integracion^
-                            //-Dsonar.projectVersion=1.0 ^
-                     //       -Dsonar.sources=. ^
-                     //       -Dsonar.host.url=http://localhost:9000 ^
-                    //        -Dsonar.token=%SONAR_TOKEN% ^
-                     //       -Dsonar.dotnet.excludeTestProjects=true ^
-                     //       -Dsonar.coverage.exclusions=**/*Test*/**
-                     //   """
-                   }
-                }
-            
-        }*/
         
         stage('Restore Dependencies') {
             steps {
@@ -176,16 +157,6 @@ pipeline {
     }
 }
 
-
-
-        /*stage('Quality Gate Check') {
-            steps {
-                timeout(time: 15, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
-    }*/
 } 
 
 //**************************************************************************************************************************** //
