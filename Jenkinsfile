@@ -375,19 +375,19 @@ pipeline {
        /* stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {
-                        bat """
-                            "%SONAR_SCANNER_HOME%\\bin\\sonar-scanner.bat" ^
-                            -Dsonar.projectKey=Prueba2^
-                            -Dsonar.projectName=Prueba2 ^
-                            -Dsonar.projectVersion=1.0 ^
-                            -Dsonar.sources=. ^
-                            -Dsonar.host.url=http://localhost:9000 ^
-                            -Dsonar.token=%SONAR_TOKEN% ^
-                            -Dsonar.dotnet.excludeTestProjects=true ^
-                            -Dsonar.coverage.exclusions=**/*Test*/**
-                        """
-                    }
+                    withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {*/
+                     //   bat """
+                       //     "%SONAR_SCANNER_HOME%\\bin\\sonar-scanner.bat" ^
+                         //   -Dsonar.projectKey=Prueba2^
+                          //  -Dsonar.projectName=Prueba2 ^
+                            //-Dsonar.projectVersion=1.0 ^
+                     //       -Dsonar.sources=. ^
+                     //       -Dsonar.host.url=http://localhost:9000 ^
+                    //        -Dsonar.token=%SONAR_TOKEN% ^
+                     //       -Dsonar.dotnet.excludeTestProjects=true ^
+                     //       -Dsonar.coverage.exclusions=**/*Test*/**
+                     //   """
+                  /*  }
                 }
             
         }*/
