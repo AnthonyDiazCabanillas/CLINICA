@@ -441,14 +441,24 @@ pipeline {
             }
         }
 
-       stage('Deploy to Remote Server') {
-    steps {
-        bat """
-        robocopy "${PUBLISH_DIR}" "\\\\${REMOTE_HOST}\\JenkinsPrueba" /MIR /Z /W:5 /NP /NFL /NDL
-        """
-    }
+    stage('Deploy to Remote Server') {
+            steps {
+            script {
+            withCredentials([usernamePassword(
+                credentialsId: 'windows-server-creds',
+                usernameVariable: 'REMOTE_USER',
+                passwordVariable: 'REMOTE_PASS'
+            )]) {
+                powershell """
+                $Source = "${PUBLISH_DIR}"
+                $Dest = "\\\\${REMOTE_HOST}\\D\$\\Jenkins\\Prueba"
+                $Cred = New-Object System.Management.Automation.PSCredential("${REMOTE_USER}", (ConvertTo-SecureString "${REMOTE_PASS}" -AsPlainText -Force))
+                Copy-Item -Path $Source -Destination $Dest -Recurse -Force -Credential $Cred
+                """
+                 }
+                }
+            }
         }
-
         /*stage('Quality Gate Check') {
             steps {
                 timeout(time: 15, unit: 'MINUTES') {
