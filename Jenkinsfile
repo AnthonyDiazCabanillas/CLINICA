@@ -11,7 +11,11 @@ pipeline {
         REMOTE_DIR = '\\Jenkins\\Prueba'
         SSH_CREDENTIALS_ID = 'ssh-server-42-155'
         REPO_ROOT = "${WORKSPACE}/CLINICA"
-
+        
+        // SonarQube Configuration
+        SONAR_SCANNER_HOME = 'D:\\Sonar\\sonar-scanner' // Path to SonarScanner on Jenkins agent                       
+        SONAR_HOST_URL = 'http://localhost:9000/' // SonarQube server URL
+        SONAR_LOGIN = credentials('Sonnar') // SonarQube token stored in Jenkins
     }
 
     stages {
@@ -67,6 +71,25 @@ pipeline {
             }
         }
 
+       /* stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {*/
+                     //   bat """
+                       //     "%SONAR_SCANNER_HOME%\\bin\\sonar-scanner.bat" ^
+                         //   -Dsonar.projectKey=Prueba2^
+                          //  -Dsonar.projectName=Prueba2 ^
+                            //-Dsonar.projectVersion=1.0 ^
+                     //       -Dsonar.sources=. ^
+                     //       -Dsonar.host.url=http://localhost:9000 ^
+                    //        -Dsonar.token=%SONAR_TOKEN% ^
+                     //       -Dsonar.dotnet.excludeTestProjects=true ^
+                     //       -Dsonar.coverage.exclusions=**/*Test*/**
+                     //   """
+                  /*  }
+                }
+            
+        }*/
         
         stage('Restore Dependencies') {
             steps {
@@ -116,45 +139,48 @@ pipeline {
                 echo 'All projects published.'
             }
         }
-
-    stage('Deploy to Remote Server') {
-    steps {
-        script {
-            withCredentials([usernamePassword(
+    
+      stage('Deploy to Remote Server') {
+            steps {
+                    script {
+                withCredentials([usernamePassword(
                 credentialsId: 'windows-server-creds',
                 usernameVariable: 'REMOTE_USER',
                 passwordVariable: 'REMOTE_PASS'
-            )]) {
+                 )]) {
                 bat """
-                    @echo off
-                    echo Intentando mapear unidad de red...
-                    net use Z: "\\\\${REMOTE_HOST}\\D\$" /user:%REMOTE_USER% %REMOTE_PASS% /persistent:no
+                    net use Z: "\\\\${REMOTE_HOST}" /user:%REMOTE_USER% %REMOTE_PASS% /persistent:no
                     if %errorlevel% neq 0 (
-                        echo ERROR: Fallo al mapear unidad de red
-                        exit /b 1
+                        echo Error al mapear unidad de red
+                        exit 1
                     )
                     
-                    echo Copiando archivos...
                     robocopy "${PUBLISH_DIR}" "Z:\\Jenkins\\Prueba" /MIR /Z /W:5 /NP /NFL /NDL
                     set robocopy_result=%errorlevel%
                     
-                    echo Desmapeando unidad...
-                    net use Z: /delete /y
+                    net use Z: /delete
                     
                     if %robocopy_result% gtr 1 (
-                        echo ERROR en robocopy. Código: %robocopy_result%
-                        exit /b 1
+                        echo Error durante robocopy. Código: %robocopy_result%
+                        exit 1
                     ) else (
                         echo Copia completada exitosamente
                     )
                 """
-                        }
                     }
-             }
-        }   
+                }
+            }
+        }
+
+        /*stage('Quality Gate Check') {
+            steps {
+                timeout(time: 15, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }*/
     }
 }
-
 
 //**************************************************************************************************************************** //
 //***************************************************** PIPELINE SSH + SONARQ  ************************************************** //
