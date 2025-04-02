@@ -11,11 +11,7 @@ pipeline {
         REMOTE_DIR = '\\Jenkins\\Prueba'
         SSH_CREDENTIALS_ID = 'ssh-server-42-155'
         REPO_ROOT = "${WORKSPACE}/CLINICA"
-        
-        // SonarQube Configuration
-        SONAR_SCANNER_HOME = 'D:\\Sonar\\sonar-scanner' // Path to SonarScanner on Jenkins agent                       
-        SONAR_HOST_URL = 'http://localhost:9000/' // SonarQube server URL
-        SONAR_LOGIN = credentials('Sonnar') // SonarQube token stored in Jenkins
+
     }
 
     stages {
@@ -152,12 +148,13 @@ pipeline {
                         echo Copia completada exitosamente
                     )
                 """
-            }
-        }
+                        }
+                    }
+             }
+        }   
     }
 }
 
-} 
 
 //**************************************************************************************************************************** //
 //***************************************************** PIPELINE SSH + SONARQ  ************************************************** //
