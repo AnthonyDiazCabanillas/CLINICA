@@ -1805,9 +1805,30 @@
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/RisXmlEvents.cs",
                 "region": {
-                  "startLine": 34,
+                  "startLine": 18,
                   "startColumn": 21,
-                  "endLine": 34,
+                  "endLine": 18,
+                  "endColumn": 49
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1854",
+          "level": "warning",
+          "message": "Remove this useless assignment to local variable 'e'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/RisXmlEvents.cs",
+                "region": {
+                  "startLine": 26,
+                  "startColumn": 21,
+                  "endLine": 26,
                   "endColumn": 49
                 }
               }
@@ -1847,72 +1868,9 @@
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/RisXmlEvents.cs",
                 "region": {
-                  "startLine": 52,
+                  "startLine": 34,
                   "startColumn": 21,
-                  "endLine": 52,
-                  "endColumn": 49
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1854",
-          "level": "warning",
-          "message": "Remove this useless assignment to local variable 'e'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/RisXmlEvents.cs",
-                "region": {
-                  "startLine": 18,
-                  "startColumn": 21,
-                  "endLine": 18,
-                  "endColumn": 49
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1854",
-          "level": "warning",
-          "message": "Remove this useless assignment to local variable 'e'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/RisXmlEvents.cs",
-                "region": {
-                  "startLine": 26,
-                  "startColumn": 21,
-                  "endLine": 26,
-                  "endColumn": 49
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S2325",
-          "level": "warning",
-          "message": "Make 'Sp_RISXMLEVENTS_UpdatexCampo' a static method.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/RisXmlEvents.cs",
-                "region": {
-                  "startLine": 45,
-                  "startColumn": 21,
-                  "endLine": 45,
+                  "endLine": 34,
                   "endColumn": 49
                 }
               }
@@ -1944,18 +1902,39 @@
           }
         },
         {
-          "ruleId": "S125",
+          "ruleId": "S2325",
           "level": "warning",
-          "message": "Remove this commented out code.",
+          "message": "Make 'GrabarDatos' a static method.",
           "locations": [
             {
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/RisXmlEvents.cs",
                 "region": {
-                  "startLine": 48,
-                  "startColumn": 15,
-                  "endLine": 48,
-                  "endColumn": 92
+                  "startLine": 21,
+                  "startColumn": 21,
+                  "endLine": 21,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1854",
+          "level": "warning",
+          "message": "Remove this useless assignment to local variable 'e'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/RisXmlEvents.cs",
+                "region": {
+                  "startLine": 52,
+                  "startColumn": 21,
+                  "endLine": 52,
+                  "endColumn": 49
                 }
               }
             }
@@ -1988,16 +1967,37 @@
         {
           "ruleId": "S2325",
           "level": "warning",
-          "message": "Make 'GrabarDatos' a static method.",
+          "message": "Make 'Sp_RISXMLEVENTS_Update' a static method.",
           "locations": [
             {
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/RisXmlEvents.cs",
                 "region": {
-                  "startLine": 21,
+                  "startLine": 37,
                   "startColumn": 21,
-                  "endLine": 21,
-                  "endColumn": 32
+                  "endLine": 37,
+                  "endColumn": 43
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S125",
+          "level": "warning",
+          "message": "Remove this commented out code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/RisXmlEvents.cs",
+                "region": {
+                  "startLine": 48,
+                  "startColumn": 15,
+                  "endLine": 48,
+                  "endColumn": 92
                 }
               }
             }
@@ -2009,16 +2009,16 @@
         {
           "ruleId": "S2325",
           "level": "warning",
-          "message": "Make 'Sp_RISXMLEVENTS_Update' a static method.",
+          "message": "Make 'Sp_RISXMLEVENTS_UpdatexCampo' a static method.",
           "locations": [
             {
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/RisXmlEvents.cs",
                 "region": {
-                  "startLine": 37,
+                  "startLine": 45,
                   "startColumn": 21,
-                  "endLine": 37,
-                  "endColumn": 43
+                  "endLine": 45,
+                  "endColumn": 49
                 }
               }
             }
@@ -2040,48 +2040,6 @@
                   "startColumn": 21,
                   "endLine": 62,
                   "endColumn": 27
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CA1822",
-          "level": "note",
-          "message": "El miembro \"Sp_RISXMLEVENTS_Consulta\" no tiene acceso a los datos de la instancia y se puede marcar como static.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/RisXmlEvents.cs",
-                "region": {
-                  "startLine": 13,
-                  "startColumn": 36,
-                  "endLine": 13,
-                  "endColumn": 60
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CA1822",
-          "level": "note",
-          "message": "El miembro \"Sp_RISXMLEVENTS_UpdatexCampo\" no tiene acceso a los datos de la instancia y se puede marcar como static.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/RisXmlEvents.cs",
-                "region": {
-                  "startLine": 45,
-                  "startColumn": 21,
-                  "endLine": 45,
-                  "endColumn": 49
                 }
               }
             }
@@ -2114,15 +2072,36 @@
         {
           "ruleId": "CA1822",
           "level": "note",
-          "message": "El miembro \"Sp_RISXMLEVENTS_Insert\" no tiene acceso a los datos de la instancia y se puede marcar como static.",
+          "message": "El miembro \"Sp_RISXMLEVENTS_Consulta\" no tiene acceso a los datos de la instancia y se puede marcar como static.",
           "locations": [
             {
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/RisXmlEvents.cs",
                 "region": {
-                  "startLine": 29,
+                  "startLine": 13,
+                  "startColumn": 36,
+                  "endLine": 13,
+                  "endColumn": 60
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CA1822",
+          "level": "note",
+          "message": "El miembro \"Sp_RISXMLEVENTS_Update\" no tiene acceso a los datos de la instancia y se puede marcar como static.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/RisXmlEvents.cs",
+                "region": {
+                  "startLine": 37,
                   "startColumn": 21,
-                  "endLine": 29,
+                  "endLine": 37,
                   "endColumn": 43
                 }
               }
@@ -2156,16 +2135,37 @@
         {
           "ruleId": "CA1822",
           "level": "note",
-          "message": "El miembro \"Sp_RISXMLEVENTS_Update\" no tiene acceso a los datos de la instancia y se puede marcar como static.",
+          "message": "El miembro \"Sp_RISXMLEVENTS_Insert\" no tiene acceso a los datos de la instancia y se puede marcar como static.",
           "locations": [
             {
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/RisXmlEvents.cs",
                 "region": {
-                  "startLine": 37,
+                  "startLine": 29,
                   "startColumn": 21,
-                  "endLine": 37,
+                  "endLine": 29,
                   "endColumn": 43
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CA1822",
+          "level": "note",
+          "message": "El miembro \"Sp_RISXMLEVENTS_UpdatexCampo\" no tiene acceso a los datos de la instancia y se puede marcar como static.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/RisXmlEvents.cs",
+                "region": {
+                  "startLine": 45,
+                  "startColumn": 21,
+                  "endLine": 45,
+                  "endColumn": 49
                 }
               }
             }
@@ -2377,6 +2377,188 @@
           }
         },
         {
+          "ruleId": "S1066",
+          "level": "warning",
+          "message": "Merge this if statement with the enclosing one.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 148,
+                  "startColumn": 33,
+                  "endLine": 148,
+                  "endColumn": 35
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 146,
+                  "startColumn": 29,
+                  "endLine": 146,
+                  "endColumn": 31
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1,
+            "customProperties": {
+              "0": "Merge this if statement with its nested one."
+            }
+          }
+        },
+        {
+          "ruleId": "S3776",
+          "level": "warning",
+          "message": "Refactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 338,
+                  "startColumn": 21,
+                  "endLine": 338,
+                  "endColumn": 30
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 344,
+                  "startColumn": 17,
+                  "endLine": 344,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 352,
+                  "startColumn": 21,
+                  "endLine": 352,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 352,
+                  "startColumn": 50,
+                  "endLine": 352,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 375,
+                  "startColumn": 25,
+                  "endLine": 375,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 380,
+                  "startColumn": 25,
+                  "endLine": 380,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 388,
+                  "startColumn": 29,
+                  "endLine": 388,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 396,
+                  "startColumn": 21,
+                  "endLine": 396,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 398,
+                  "startColumn": 25,
+                  "endLine": 398,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 404,
+                  "startColumn": 25,
+                  "endLine": 404,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 411,
+                  "startColumn": 13,
+                  "endLine": 411,
+                  "endColumn": 18
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1,
+            "customProperties": {
+              "0": "+1",
+              "1": "+2 (incl 1 for nesting)",
+              "2": "+1",
+              "3": "+3 (incl 2 for nesting)",
+              "4": "+3 (incl 2 for nesting)",
+              "5": "+4 (incl 3 for nesting)",
+              "6": "+1",
+              "7": "+3 (incl 2 for nesting)",
+              "8": "+1",
+              "9": "+1"
+            }
+          }
+        },
+        {
           "ruleId": "S3776",
           "level": "warning",
           "message": "Refactor this method to reduce its Cognitive Complexity from 27 to the 15 allowed.",
@@ -2570,148 +2752,24 @@
           }
         },
         {
-          "ruleId": "S3776",
+          "ruleId": "S1854",
           "level": "warning",
-          "message": "Refactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.",
+          "message": "Remove this useless assignment to local variable 'TotalRegistros'.",
           "locations": [
             {
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
                 "region": {
-                  "startLine": 338,
-                  "startColumn": 21,
-                  "endLine": 338,
-                  "endColumn": 30
-                }
-              }
-            }
-          ],
-          "relatedLocations": [
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 344,
+                  "startLine": 474,
                   "startColumn": 17,
-                  "endLine": 344,
-                  "endColumn": 20
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 352,
-                  "startColumn": 21,
-                  "endLine": 352,
-                  "endColumn": 23
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 352,
-                  "startColumn": 50,
-                  "endLine": 352,
-                  "endColumn": 52
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 375,
-                  "startColumn": 25,
-                  "endLine": 375,
-                  "endColumn": 30
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 380,
-                  "startColumn": 25,
-                  "endLine": 380,
-                  "endColumn": 27
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 388,
-                  "startColumn": 29,
-                  "endLine": 388,
-                  "endColumn": 34
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 396,
-                  "startColumn": 21,
-                  "endLine": 396,
-                  "endColumn": 25
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 398,
-                  "startColumn": 25,
-                  "endLine": 398,
-                  "endColumn": 27
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 404,
-                  "startColumn": 25,
-                  "endLine": 404,
-                  "endColumn": 29
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 411,
-                  "startColumn": 13,
-                  "endLine": 411,
-                  "endColumn": 18
+                  "endLine": 474,
+                  "endColumn": 58
                 }
               }
             }
           ],
           "properties": {
-            "warningLevel": 1,
-            "customProperties": {
-              "0": "+1",
-              "1": "+2 (incl 1 for nesting)",
-              "2": "+1",
-              "3": "+3 (incl 2 for nesting)",
-              "4": "+3 (incl 2 for nesting)",
-              "5": "+4 (incl 3 for nesting)",
-              "6": "+1",
-              "7": "+3 (incl 2 for nesting)",
-              "8": "+1",
-              "9": "+1"
-            }
+            "warningLevel": 1
           }
         },
         {
@@ -2920,235 +2978,18 @@
           }
         },
         {
-          "ruleId": "S3776",
+          "ruleId": "S1854",
           "level": "warning",
-          "message": "Refactor this method to reduce its Cognitive Complexity from 30 to the 15 allowed.",
+          "message": "Remove this useless assignment to local variable 'TotalRegistros'.",
           "locations": [
             {
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
                 "region": {
-                  "startLine": 859,
-                  "startColumn": 21,
-                  "endLine": 859,
-                  "endColumn": 37
-                }
-              }
-            }
-          ],
-          "relatedLocations": [
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 904,
+                  "startLine": 592,
                   "startColumn": 17,
-                  "endLine": 904,
-                  "endColumn": 24
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 906,
-                  "startColumn": 21,
-                  "endLine": 906,
-                  "endColumn": 28
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 916,
-                  "startColumn": 17,
-                  "endLine": 916,
-                  "endColumn": 24
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 918,
-                  "startColumn": 21,
-                  "endLine": 918,
-                  "endColumn": 28
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 927,
-                  "startColumn": 17,
-                  "endLine": 927,
-                  "endColumn": 24
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 929,
-                  "startColumn": 21,
-                  "endLine": 929,
-                  "endColumn": 28
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 935,
-                  "startColumn": 17,
-                  "endLine": 935,
-                  "endColumn": 24
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 937,
-                  "startColumn": 21,
-                  "endLine": 937,
-                  "endColumn": 28
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 940,
-                  "startColumn": 25,
-                  "endLine": 940,
-                  "endColumn": 27
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 945,
-                  "startColumn": 25,
-                  "endLine": 945,
-                  "endColumn": 27
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 947,
-                  "startColumn": 25,
-                  "endLine": 947,
-                  "endColumn": 27
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 949,
-                  "startColumn": 25,
-                  "endLine": 949,
-                  "endColumn": 27
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 951,
-                  "startColumn": 25,
-                  "endLine": 951,
-                  "endColumn": 27
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 967,
-                  "startColumn": 21,
-                  "endLine": 967,
-                  "endColumn": 23
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 972,
-                  "startColumn": 17,
-                  "endLine": 972,
-                  "endColumn": 22
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 979,
-                  "startColumn": 13,
-                  "endLine": 979,
-                  "endColumn": 18
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1,
-            "customProperties": {
-              "0": "+1",
-              "1": "+2 (incl 1 for nesting)",
-              "10": "+3 (incl 2 for nesting)",
-              "11": "+3 (incl 2 for nesting)",
-              "12": "+3 (incl 2 for nesting)",
-              "13": "+1",
-              "14": "+1",
-              "15": "+1",
-              "2": "+1",
-              "3": "+2 (incl 1 for nesting)",
-              "4": "+1",
-              "5": "+2 (incl 1 for nesting)",
-              "6": "+1",
-              "7": "+2 (incl 1 for nesting)",
-              "8": "+3 (incl 2 for nesting)",
-              "9": "+3 (incl 2 for nesting)"
-            }
-          }
-        },
-        {
-          "ruleId": "S2933",
-          "level": "warning",
-          "message": "Make 'Result' 'readonly'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 28,
-                  "startColumn": 14,
-                  "endLine": 28,
-                  "endColumn": 20
+                  "endLine": 592,
+                  "endColumn": 58
                 }
               }
             }
@@ -3158,18 +2999,18 @@
           }
         },
         {
-          "ruleId": "S2933",
+          "ruleId": "S1854",
           "level": "warning",
-          "message": "Make 'oRisXmlEvents' 'readonly'.",
+          "message": "Remove this useless assignment to local variable 'Version'.",
           "locations": [
             {
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
                 "region": {
-                  "startLine": 29,
+                  "startLine": 623,
                   "startColumn": 23,
-                  "endLine": 29,
-                  "endColumn": 36
+                  "endLine": 623,
+                  "endColumn": 59
                 }
               }
             }
@@ -3179,18 +3020,18 @@
           }
         },
         {
-          "ruleId": "S2933",
+          "ruleId": "S1854",
           "level": "warning",
-          "message": "Make 'oRisOracleRisXmlEvents' 'readonly'.",
+          "message": "Remove this useless assignment to local variable 'Cprestacion'.",
           "locations": [
             {
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
                 "region": {
-                  "startLine": 32,
-                  "startColumn": 32,
-                  "endLine": 32,
-                  "endColumn": 54
+                  "startLine": 643,
+                  "startColumn": 27,
+                  "endLine": 643,
+                  "endColumn": 67
                 }
               }
             }
@@ -3200,18 +3041,18 @@
           }
         },
         {
-          "ruleId": "S2933",
+          "ruleId": "S1481",
           "level": "warning",
-          "message": "Make 'oListRisOracleRisXmlEvents' 'readonly'.",
+          "message": "Remove the unused local variable 'cont'.",
           "locations": [
             {
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
                 "region": {
-                  "startLine": 33,
-                  "startColumn": 38,
-                  "endLine": 33,
-                  "endColumn": 64
+                  "startLine": 79,
+                  "startColumn": 17,
+                  "endLine": 79,
+                  "endColumn": 21
                 }
               }
             }
@@ -3221,18 +3062,18 @@
           }
         },
         {
-          "ruleId": "S2933",
+          "ruleId": "S1481",
           "level": "warning",
-          "message": "Make 'oRisAgendamientoAmbulatorio' 'readonly'.",
+          "message": "Remove the unused local variable 'cont1'.",
           "locations": [
             {
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
                 "region": {
-                  "startLine": 35,
-                  "startColumn": 37,
-                  "endLine": 35,
-                  "endColumn": 64
+                  "startLine": 79,
+                  "startColumn": 27,
+                  "endLine": 79,
+                  "endColumn": 32
                 }
               }
             }
@@ -3242,18 +3083,18 @@
           }
         },
         {
-          "ruleId": "S2933",
+          "ruleId": "S1481",
           "level": "warning",
-          "message": "Make 'oPacientes' 'readonly'.",
+          "message": "Remove the unused local variable 'cont'.",
           "locations": [
             {
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
                 "region": {
-                  "startLine": 38,
-                  "startColumn": 20,
-                  "endLine": 38,
-                  "endColumn": 30
+                  "startLine": 340,
+                  "startColumn": 17,
+                  "endLine": 340,
+                  "endColumn": 21
                 }
               }
             }
@@ -3263,18 +3104,18 @@
           }
         },
         {
-          "ruleId": "S2933",
+          "ruleId": "S1481",
           "level": "warning",
-          "message": "Make 'oRisOracleRisXmlEventsAmbulatorio' 'readonly'.",
+          "message": "Remove the unused local variable 'cont1'.",
           "locations": [
             {
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
                 "region": {
-                  "startLine": 41,
-                  "startColumn": 43,
-                  "endLine": 41,
-                  "endColumn": 76
+                  "startLine": 431,
+                  "startColumn": 27,
+                  "endLine": 431,
+                  "endColumn": 32
                 }
               }
             }
@@ -3284,144 +3125,18 @@
           }
         },
         {
-          "ruleId": "S2933",
+          "ruleId": "S1481",
           "level": "warning",
-          "message": "Make 'oRisPrestacionVsSalas' 'readonly'.",
+          "message": "Remove the unused local variable 'xStatus'.",
           "locations": [
             {
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
                 "region": {
-                  "startLine": 44,
-                  "startColumn": 31,
-                  "endLine": 44,
-                  "endColumn": 52
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S2933",
-          "level": "warning",
-          "message": "Make 'oRisOracleRisXmlEventsCompletado' 'readonly'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 47,
-                  "startColumn": 42,
-                  "endLine": 47,
-                  "endColumn": 74
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S2933",
-          "level": "warning",
-          "message": "Make 'oPresotor' 'readonly'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 50,
-                  "startColumn": 19,
-                  "endLine": 50,
-                  "endColumn": 28
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S2933",
-          "level": "warning",
-          "message": "Make 'oRisExamenCompletado' 'readonly'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 53,
-                  "startColumn": 30,
-                  "endLine": 53,
-                  "endColumn": 50
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S2933",
-          "level": "warning",
-          "message": "Make 'oListRisExamenCompletado' 'readonly'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 54,
-                  "startColumn": 36,
-                  "endLine": 54,
-                  "endColumn": 60
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S2933",
-          "level": "warning",
-          "message": "Make 'oPdfDocumentE' 'readonly'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 56,
-                  "startColumn": 22,
-                  "endLine": 56,
-                  "endColumn": 35
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S2933",
-          "level": "warning",
-          "message": "Make 'oRisOraclePDFDocument' 'readonly'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 59,
-                  "startColumn": 31,
-                  "endLine": 59,
-                  "endColumn": 52
+                  "startLine": 432,
+                  "startColumn": 59,
+                  "endLine": 432,
+                  "endColumn": 66
                 }
               }
             }
@@ -3768,18 +3483,291 @@
           }
         },
         {
-          "ruleId": "S1854",
+          "ruleId": "S2933",
           "level": "warning",
-          "message": "Remove this useless assignment to local variable 'TotalRegistros'.",
+          "message": "Make 'Result' 'readonly'.",
           "locations": [
             {
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
                 "region": {
-                  "startLine": 474,
-                  "startColumn": 17,
-                  "endLine": 474,
-                  "endColumn": 58
+                  "startLine": 28,
+                  "startColumn": 14,
+                  "endLine": 28,
+                  "endColumn": 20
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make 'oRisXmlEvents' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 29,
+                  "startColumn": 23,
+                  "endLine": 29,
+                  "endColumn": 36
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make 'oRisOracleRisXmlEvents' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 32,
+                  "startColumn": 32,
+                  "endLine": 32,
+                  "endColumn": 54
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make 'oListRisOracleRisXmlEvents' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 33,
+                  "startColumn": 38,
+                  "endLine": 33,
+                  "endColumn": 64
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make 'oRisAgendamientoAmbulatorio' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 35,
+                  "startColumn": 37,
+                  "endLine": 35,
+                  "endColumn": 64
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make 'oPacientes' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 38,
+                  "startColumn": 20,
+                  "endLine": 38,
+                  "endColumn": 30
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make 'oRisOracleRisXmlEventsAmbulatorio' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 41,
+                  "startColumn": 43,
+                  "endLine": 41,
+                  "endColumn": 76
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make 'oRisPrestacionVsSalas' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 44,
+                  "startColumn": 31,
+                  "endLine": 44,
+                  "endColumn": 52
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make 'oRisOracleRisXmlEventsCompletado' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 47,
+                  "startColumn": 42,
+                  "endLine": 47,
+                  "endColumn": 74
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make 'oPresotor' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 50,
+                  "startColumn": 19,
+                  "endLine": 50,
+                  "endColumn": 28
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make 'oRisExamenCompletado' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 53,
+                  "startColumn": 30,
+                  "endLine": 53,
+                  "endColumn": 50
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make 'oListRisExamenCompletado' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 54,
+                  "startColumn": 36,
+                  "endLine": 54,
+                  "endColumn": 60
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make 'oPdfDocumentE' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 56,
+                  "startColumn": 22,
+                  "endLine": 56,
+                  "endColumn": 35
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2933",
+          "level": "warning",
+          "message": "Make 'oRisOraclePDFDocument' 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 59,
+                  "startColumn": 31,
+                  "endLine": 59,
+                  "endColumn": 52
                 }
               }
             }
@@ -3944,9 +3932,9 @@
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
                 "region": {
-                  "startLine": 592,
+                  "startLine": 716,
                   "startColumn": 17,
-                  "endLine": 592,
+                  "endLine": 716,
                   "endColumn": 58
                 }
               }
@@ -3965,9 +3953,9 @@
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
                 "region": {
-                  "startLine": 623,
+                  "startLine": 739,
                   "startColumn": 23,
-                  "endLine": 623,
+                  "endLine": 739,
                   "endColumn": 59
                 }
               }
@@ -3978,24 +3966,220 @@
           }
         },
         {
-          "ruleId": "S1854",
+          "ruleId": "S3776",
           "level": "warning",
-          "message": "Remove this useless assignment to local variable 'Cprestacion'.",
+          "message": "Refactor this method to reduce its Cognitive Complexity from 30 to the 15 allowed.",
           "locations": [
             {
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
                 "region": {
-                  "startLine": 643,
-                  "startColumn": 27,
-                  "endLine": 643,
-                  "endColumn": 67
+                  "startLine": 859,
+                  "startColumn": 21,
+                  "endLine": 859,
+                  "endColumn": 37
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 904,
+                  "startColumn": 17,
+                  "endLine": 904,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 906,
+                  "startColumn": 21,
+                  "endLine": 906,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 916,
+                  "startColumn": 17,
+                  "endLine": 916,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 918,
+                  "startColumn": 21,
+                  "endLine": 918,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 927,
+                  "startColumn": 17,
+                  "endLine": 927,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 929,
+                  "startColumn": 21,
+                  "endLine": 929,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 935,
+                  "startColumn": 17,
+                  "endLine": 935,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 937,
+                  "startColumn": 21,
+                  "endLine": 937,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 940,
+                  "startColumn": 25,
+                  "endLine": 940,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 945,
+                  "startColumn": 25,
+                  "endLine": 945,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 947,
+                  "startColumn": 25,
+                  "endLine": 947,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 949,
+                  "startColumn": 25,
+                  "endLine": 949,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 951,
+                  "startColumn": 25,
+                  "endLine": 951,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 967,
+                  "startColumn": 21,
+                  "endLine": 967,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 972,
+                  "startColumn": 17,
+                  "endLine": 972,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 979,
+                  "startColumn": 13,
+                  "endLine": 979,
+                  "endColumn": 18
                 }
               }
             }
           ],
           "properties": {
-            "warningLevel": 1
+            "warningLevel": 1,
+            "customProperties": {
+              "0": "+1",
+              "1": "+2 (incl 1 for nesting)",
+              "10": "+3 (incl 2 for nesting)",
+              "11": "+3 (incl 2 for nesting)",
+              "12": "+3 (incl 2 for nesting)",
+              "13": "+1",
+              "14": "+1",
+              "15": "+1",
+              "2": "+1",
+              "3": "+2 (incl 1 for nesting)",
+              "4": "+1",
+              "5": "+2 (incl 1 for nesting)",
+              "6": "+1",
+              "7": "+2 (incl 1 for nesting)",
+              "8": "+3 (incl 2 for nesting)",
+              "9": "+3 (incl 2 for nesting)"
+            }
           }
         },
         {
@@ -4041,48 +4225,6 @@
           }
         },
         {
-          "ruleId": "S1854",
-          "level": "warning",
-          "message": "Remove this useless assignment to local variable 'TotalRegistros'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 716,
-                  "startColumn": 17,
-                  "endLine": 716,
-                  "endColumn": 58
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1854",
-          "level": "warning",
-          "message": "Remove this useless assignment to local variable 'Version'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 739,
-                  "startColumn": 23,
-                  "endLine": 739,
-                  "endColumn": 59
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
           "ruleId": "S1450",
           "level": "warning",
           "message": "Remove the field 'oListRisOracleRisXmlEventsCompletado' and declare it as a local variable in the relevant methods.",
@@ -4095,6 +4237,27 @@
                   "startColumn": 48,
                   "endLine": 48,
                   "endColumn": 131
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2486",
+          "level": "warning",
+          "message": "Handle the exception or explain in a comment why it can be ignored.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
+                "region": {
+                  "startLine": 1126,
+                  "startColumn": 13,
+                  "endLine": 1126,
+                  "endColumn": 37
                 }
               }
             }
@@ -4348,27 +4511,6 @@
           }
         },
         {
-          "ruleId": "S2486",
-          "level": "warning",
-          "message": "Handle the exception or explain in a comment why it can be ignored.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 1126,
-                  "startColumn": 13,
-                  "endLine": 1126,
-                  "endColumn": 37
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
           "ruleId": "S108",
           "level": "warning",
           "message": "Either remove or fill this block of code.",
@@ -4444,148 +4586,6 @@
                   "startColumn": 21,
                   "endLine": 1110,
                   "endColumn": 30
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1066",
-          "level": "warning",
-          "message": "Merge this if statement with the enclosing one.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 148,
-                  "startColumn": 33,
-                  "endLine": 148,
-                  "endColumn": 35
-                }
-              }
-            }
-          ],
-          "relatedLocations": [
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 146,
-                  "startColumn": 29,
-                  "endLine": 146,
-                  "endColumn": 31
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1,
-            "customProperties": {
-              "0": "Merge this if statement with its nested one."
-            }
-          }
-        },
-        {
-          "ruleId": "S1481",
-          "level": "warning",
-          "message": "Remove the unused local variable 'cont1'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 431,
-                  "startColumn": 27,
-                  "endLine": 431,
-                  "endColumn": 32
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1481",
-          "level": "warning",
-          "message": "Remove the unused local variable 'xStatus'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 432,
-                  "startColumn": 59,
-                  "endLine": 432,
-                  "endColumn": 66
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1481",
-          "level": "warning",
-          "message": "Remove the unused local variable 'cont'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 340,
-                  "startColumn": 17,
-                  "endLine": 340,
-                  "endColumn": 21
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1481",
-          "level": "warning",
-          "message": "Remove the unused local variable 'cont'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 79,
-                  "startColumn": 17,
-                  "endLine": 79,
-                  "endColumn": 21
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1481",
-          "level": "warning",
-          "message": "Remove the unused local variable 'cont1'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Bus.RisClinica/RisClinica/GeneralesRisCopyService.cs",
-                "region": {
-                  "startLine": 79,
-                  "startColumn": 27,
-                  "endLine": 79,
-                  "endColumn": 32
                 }
               }
             }

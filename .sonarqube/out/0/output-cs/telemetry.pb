@@ -1,1 +1,1 @@
-]RGD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Ent.Sql\Ent.Sql.csproj¢net6.0òCSharp10
+{R]D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\App.EncriptarClave.csproj¢net6.0-windowsòCSharp10

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ProjectInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.sonarsource.com/msbuild/integration/2015/1">
-  <ProjectName>Ent.Oracle</ProjectName>
+  <ProjectName>GeneracionReporteDietas</ProjectName>
   <ProjectLanguage>C#</ProjectLanguage>
   <ProjectType>Product</ProjectType>
-  <ProjectGuid>19233c0a-bf8b-4d08-8bc4-910538444dff</ProjectGuid>
-  <FullPath>D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Ent.Oracle\Ent.Oracle.csproj</FullPath>
+  <ProjectGuid>cc19b5cb-6c23-4f2c-9b3a-170e27dcb01e</ProjectGuid>
+  <FullPath>D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\GeneracionReporteDietas\GeneracionReporteDietas.csproj</FullPath>
   <IsExcluded>false</IsExcluded>
   <AnalysisResults>
     <AnalysisResult Id="FilesToAnalyze" Location="D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\.sonarqube\conf\1\FilesToAnalyze.txt" />

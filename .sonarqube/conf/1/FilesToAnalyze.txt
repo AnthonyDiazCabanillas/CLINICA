@@ -1,3 +1,4 @@
-﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Ent.Oracle\MedisynE\CorreosE\GenEnvioMailE.cs
-D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Ent.Oracle\MedisynE\PacientesE\TabPacienteE.cs
-D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Ent.Oracle\MedisynE\ReservasE\AmReservaE.cs
+﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\GeneracionReporteDietas\FileLogger.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\GeneracionReporteDietas\FileLoggerProvider.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\GeneracionReporteDietas\Program.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\GeneracionReporteDietas\appsettings.json

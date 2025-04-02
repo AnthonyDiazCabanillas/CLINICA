@@ -1,8 +1,9 @@
-﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\Program.cs
-D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\Worker.cs
-D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\obj\Debug\net6.0\WSAgenda.GlobalUsings.g.cs
-D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs
-D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\obj\Debug\net6.0\WSAgenda.AssemblyInfo.cs
-D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\appsettings.Development.json
-D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\appsettings.json
-D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\Properties\launchSettings.json
+﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\Controlller\ContratoConsultorio.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\Program.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\Worker.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\obj\Debug\net8.0\WS.ContratoConsultorios.GlobalUsings.g.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\obj\Debug\net8.0\WS.ContratoConsultorios.AssemblyInfo.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\appsettings.Development.json
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\appsettings.json
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\Properties\launchSettings.json

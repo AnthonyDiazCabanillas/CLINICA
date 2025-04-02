@@ -245,7 +245,23 @@ ZD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion
 ÆÆ 
 ÆÆ 
 ÆÆ& )
-ÆÆ+ .Ñ
+ÆÆ+ .“
+gD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\Clases\TokenResponse.cs
+ Y
+ M
+ 
+ ;
+ >
+ Z
+ 
+ 
+		 
+
+
+ 
+ 
+ 	 
+     !# &  ( +- 0Ñ
 eD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\FileLoggerProvider.cs
  Y
  M
@@ -282,23 +298,7 @@ eD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion
    	   	   &( .9 = 	   . 2 	   "- 4> DL Ua ef ln wy   
    !! !! ## 
 && && && && !&&+ -&&6 7&&B C(( ** **+ 6,, ,,
- “
-gD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\Clases\TokenResponse.cs
- Y
- M
- 
- ;
- >
- Z
- 
- 
-		 
-
-
- 
- 
- 	 
-     !# &  ( +- 0’
+ ’
 fD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WsEnvioDocumentoDigitalizacion\Clases\TokenRequest.cs
  Y
  M

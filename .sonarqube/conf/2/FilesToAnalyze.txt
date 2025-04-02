@@ -1,8 +1,3 @@
-﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\frmCrearApiKey.cs
-D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\frmCrearApiKey.Designer.cs
-D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\FrmMain.cs
-D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\FrmMain.Designer.cs
-D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\GlobalVariables.cs
-D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\Program.cs
-D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\frmCrearApiKey.resx
-D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\FrmMain.resx
+﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Ent.Oracle\MedisynE\CorreosE\GenEnvioMailE.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Ent.Oracle\MedisynE\PacientesE\TabPacienteE.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Ent.Oracle\MedisynE\ReservasE\AmReservaE.cs

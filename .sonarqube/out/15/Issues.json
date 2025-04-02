@@ -12,18 +12,31 @@
       },
       "results": [
         {
-          "ruleId": "CS8601",
+          "ruleId": "CS8618",
           "level": "warning",
-          "message": "Posible asignación de referencia nula.",
+          "message": "El elemento propiedad \"LogName\" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required'\"o declarar el propiedad como un valor que acepta valores NULL.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
                 "region": {
-                  "startLine": 92,
-                  "startColumn": 49,
-                  "endLine": 92,
-                  "endColumn": 80
+                  "startLine": 168,
+                  "startColumn": 19,
+                  "endLine": 168,
+                  "endColumn": 26
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 168,
+                  "startColumn": 19,
+                  "endLine": 168,
+                  "endColumn": 26
                 }
               }
             }
@@ -33,815 +46,30 @@
           }
         },
         {
-          "ruleId": "CS8604",
+          "ruleId": "CS8618",
           "level": "warning",
-          "message": "Posible argumento de referencia nulo para el parámetro \"pNameConectionString\" en \"void VarGlobal.LoadConectionString(string pNameConectionString, ListDataBase pDataBaseServer)\".",
+          "message": "El elemento propiedad \"SourceName\" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required'\"o declarar el propiedad como un valor que acepta valores NULL.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
                 "region": {
-                  "startLine": 93,
-                  "startColumn": 43,
-                  "endLine": 93,
-                  "endColumn": 90
+                  "startLine": 169,
+                  "startColumn": 19,
+                  "endLine": 169,
+                  "endColumn": 29
                 }
               }
             }
           ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8602",
-          "level": "warning",
-          "message": "Desreferencia de una referencia posiblemente NULL.",
-          "locations": [
+          "relatedLocations": [
             {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
                 "region": {
-                  "startLine": 105,
-                  "startColumn": 17,
-                  "endLine": 105,
-                  "endColumn": 37
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8602",
-          "level": "warning",
-          "message": "Desreferencia de una referencia posiblemente NULL.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 60,
-                  "startColumn": 63,
-                  "endLine": 60,
-                  "endColumn": 89
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8602",
-          "level": "warning",
-          "message": "Desreferencia de una referencia posiblemente NULL.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 64,
-                  "startColumn": 36,
-                  "endLine": 64,
-                  "endColumn": 52
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8604",
-          "level": "warning",
-          "message": "Posible argumento de referencia nulo para el parámetro \"xPrestacion\" en \"string GeneralContratos.RegistroPresotor(string xAtencion, string xPrestacion, int xIDUser, decimal xRentaMensual, string Dim1)\".",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 266,
-                  "startColumn": 75,
-                  "endLine": 266,
-                  "endColumn": 85
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8604",
-          "level": "warning",
-          "message": "Posible argumento de referencia nulo para el parámetro \"Dim1\" en \"string GeneralContratos.RegistroPresotor(string xAtencion, string xPrestacion, int xIDUser, decimal xRentaMensual, string Dim1)\".",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 266,
-                  "startColumn": 135,
-                  "endLine": 266,
-                  "endColumn": 139
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8604",
-          "level": "warning",
-          "message": "Posible argumento de referencia nulo para el parámetro \"xCodPresotor\" en \"string GeneralContratos.RegistrarLiquidaciones(string xAtencion, string xCodPresotor)\".",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 275,
-                  "startColumn": 84,
-                  "endLine": 275,
-                  "endColumn": 95
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 294,
-                  "startColumn": 64,
-                  "endLine": 294,
-                  "endColumn": 87
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8602",
-          "level": "warning",
-          "message": "Desreferencia de una referencia posiblemente NULL.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 396,
-                  "startColumn": 85,
-                  "endLine": 396,
-                  "endColumn": 103
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8602",
-          "level": "warning",
-          "message": "Desreferencia de una referencia posiblemente NULL.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 399,
-                  "startColumn": 109,
-                  "endLine": 399,
-                  "endColumn": 124
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8604",
-          "level": "warning",
-          "message": "Posible argumento de referencia nulo para el parámetro \"pComprobante\" en \"void ContratoConsultorio.CorreoConfirmacionPago(int pIdePagocontrato, int pIdePagosBot, string pComprobante)\".",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 426,
-                  "startColumn": 96,
-                  "endLine": 426,
-                  "endColumn": 119
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8604",
-          "level": "warning",
-          "message": "Posible argumento de referencia nulo para el parámetro \"value\" en \"Response? JsonConvert.DeserializeObject<Response>(string value)\".",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 478,
-                  "startColumn": 87,
-                  "endLine": 478,
-                  "endColumn": 104
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8602",
-          "level": "warning",
-          "message": "Desreferencia de una referencia posiblemente NULL.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 479,
-                  "startColumn": 26,
-                  "endLine": 479,
-                  "endColumn": 34
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 530,
-                  "startColumn": 42,
-                  "endLine": 530,
-                  "endColumn": 65
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 531,
-                  "startColumn": 42,
-                  "endLine": 531,
-                  "endColumn": 65
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 533,
-                  "startColumn": 43,
-                  "endLine": 533,
-                  "endColumn": 66
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 535,
-                  "startColumn": 42,
-                  "endLine": 535,
-                  "endColumn": 65
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 536,
-                  "startColumn": 31,
-                  "endLine": 536,
-                  "endColumn": 43
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 537,
-                  "startColumn": 34,
-                  "endLine": 537,
-                  "endColumn": 52
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 538,
-                  "startColumn": 41,
-                  "endLine": 538,
-                  "endColumn": 63
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 541,
-                  "startColumn": 37,
-                  "endLine": 541,
-                  "endColumn": 55
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 542,
-                  "startColumn": 42,
-                  "endLine": 542,
-                  "endColumn": 65
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 544,
-                  "startColumn": 38,
-                  "endLine": 544,
-                  "endColumn": 54
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 545,
-                  "startColumn": 39,
-                  "endLine": 545,
-                  "endColumn": 59
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 546,
-                  "startColumn": 36,
-                  "endLine": 546,
-                  "endColumn": 53
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 547,
-                  "startColumn": 44,
-                  "endLine": 547,
-                  "endColumn": 62
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 548,
-                  "startColumn": 37,
-                  "endLine": 548,
-                  "endColumn": 55
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 549,
-                  "startColumn": 43,
-                  "endLine": 549,
-                  "endColumn": 67
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 550,
-                  "startColumn": 40,
-                  "endLine": 550,
-                  "endColumn": 61
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 551,
-                  "startColumn": 42,
-                  "endLine": 551,
-                  "endColumn": 65
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 552,
-                  "startColumn": 36,
-                  "endLine": 552,
-                  "endColumn": 53
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 553,
-                  "startColumn": 36,
-                  "endLine": 553,
-                  "endColumn": 52
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 554,
-                  "startColumn": 41,
-                  "endLine": 554,
-                  "endColumn": 57
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 555,
-                  "startColumn": 41,
-                  "endLine": 555,
-                  "endColumn": 63
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8601",
-          "level": "warning",
-          "message": "Posible asignación de referencia nula.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 556,
-                  "startColumn": 39,
-                  "endLine": 556,
-                  "endColumn": 60
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS0169",
-          "level": "warning",
-          "message": "El campo 'ContratoConsultorio.MontoSinIGV' nunca se usa",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 49,
-                  "startColumn": 29,
-                  "endLine": 49,
-                  "endColumn": 40
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 3
-          }
-        },
-        {
-          "ruleId": "CS0414",
-          "level": "warning",
-          "message": "El campo 'Worker.RutaAccesoEjecutable' está asignado pero su valor nunca se usa",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
-                "region": {
-                  "startLine": 25,
-                  "startColumn": 17,
-                  "endLine": 25,
-                  "endColumn": 37
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 3
-          }
-        },
-        {
-          "ruleId": "CS0414",
-          "level": "warning",
-          "message": "El campo 'Worker.RutaLogs' está asignado pero su valor nunca se usa",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
-                "region": {
-                  "startLine": 26,
-                  "startColumn": 17,
-                  "endLine": 26,
-                  "endColumn": 25
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 3
-          }
-        },
-        {
-          "ruleId": "S125",
-          "level": "warning",
-          "message": "Remove this commented out code.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 243,
-                  "startColumn": 15,
-                  "endLine": 243,
+                  "startLine": 169,
+                  "startColumn": 19,
+                  "endLine": 169,
                   "endColumn": 29
                 }
               }
@@ -852,18 +80,18 @@
           }
         },
         {
-          "ruleId": "S125",
+          "ruleId": "CS1998",
           "level": "warning",
-          "message": "Remove this commented out code.",
+          "message": "El método asincrónico carece de operadores \"await\" y se ejecutará de forma sincrónica. Puede usar el operador 'await' para esperar llamadas API que no sean de bloqueo o 'await Task.Run(...)' para hacer tareas enlazadas a la CPU en un subproceso en segundo plano.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
                 "region": {
-                  "startLine": 293,
-                  "startColumn": 62,
-                  "endLine": 293,
-                  "endColumn": 140
+                  "startLine": 54,
+                  "startColumn": 27,
+                  "endLine": 54,
+                  "endColumn": 44
                 }
               }
             }
@@ -873,18 +101,18 @@
           }
         },
         {
-          "ruleId": "S125",
+          "ruleId": "CS1998",
           "level": "warning",
-          "message": "Remove this commented out code.",
+          "message": "El método asincrónico carece de operadores \"await\" y se ejecutará de forma sincrónica. Puede usar el operador 'await' para esperar llamadas API que no sean de bloqueo o 'await Task.Run(...)' para hacer tareas enlazadas a la CPU en un subproceso en segundo plano.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
                 "region": {
-                  "startLine": 297,
-                  "startColumn": 37,
-                  "endLine": 297,
-                  "endColumn": 87
+                  "startLine": 57,
+                  "startColumn": 27,
+                  "endLine": 57,
+                  "endColumn": 44
                 }
               }
             }
@@ -894,18 +122,18 @@
           }
         },
         {
-          "ruleId": "S2930",
+          "ruleId": "CS8600",
           "level": "warning",
-          "message": "Dispose 'cts' when it is no longer needed.",
+          "message": "Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
                 "region": {
-                  "startLine": 58,
-                  "startColumn": 33,
-                  "endLine": 58,
-                  "endColumn": 68
+                  "startLine": 16,
+                  "startColumn": 31,
+                  "endLine": 16,
+                  "endColumn": 94
                 }
               }
             }
@@ -915,18 +143,39 @@
           }
         },
         {
-          "ruleId": "S2933",
+          "ruleId": "CS8601",
           "level": "warning",
-          "message": "Make 'RutaAccesoEjecutable' 'readonly'.",
+          "message": "Posible asignación de referencia nula.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
+                "region": {
+                  "startLine": 24,
+                  "startColumn": 60,
+                  "endLine": 24,
+                  "endColumn": 117
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8601",
+          "level": "warning",
+          "message": "Posible asignación de referencia nula.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
                 "region": {
                   "startLine": 25,
-                  "startColumn": 17,
+                  "startColumn": 61,
                   "endLine": 25,
-                  "endColumn": 37
+                  "endColumn": 120
                 }
               }
             }
@@ -936,18 +185,18 @@
           }
         },
         {
-          "ruleId": "S2933",
+          "ruleId": "CS8601",
           "level": "warning",
-          "message": "Make 'RutaLogs' 'readonly'.",
+          "message": "Posible asignación de referencia nula.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
                 "region": {
                   "startLine": 26,
-                  "startColumn": 17,
+                  "startColumn": 62,
                   "endLine": 26,
-                  "endColumn": 25
+                  "endColumn": 115
                 }
               }
             }
@@ -957,39 +206,18 @@
           }
         },
         {
-          "ruleId": "S2933",
+          "ruleId": "CS8601",
           "level": "warning",
-          "message": "Make 'oGCC' 'readonly'.",
+          "message": "Posible asignación de referencia nula.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
-                "region": {
-                  "startLine": 27,
-                  "startColumn": 26,
-                  "endLine": 27,
-                  "endColumn": 30
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S2933",
-          "level": "warning",
-          "message": "Make 'CntlrContratos' 'readonly'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
                 "region": {
                   "startLine": 28,
-                  "startColumn": 29,
+                  "startColumn": 57,
                   "endLine": 28,
-                  "endColumn": 43
+                  "endColumn": 111
                 }
               }
             }
@@ -999,17 +227,80 @@
           }
         },
         {
-          "ruleId": "S2933",
+          "ruleId": "CS8601",
           "level": "warning",
-          "message": "Make 'oTablas' 'readonly'.",
+          "message": "Posible asignación de referencia nula.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
                 "region": {
                   "startLine": 29,
-                  "startColumn": 41,
+                  "startColumn": 58,
                   "endLine": 29,
+                  "endColumn": 110
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8602",
+          "level": "warning",
+          "message": "Desreferencia de una referencia posiblemente NULL.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
+                "region": {
+                  "startLine": 34,
+                  "startColumn": 65,
+                  "endLine": 34,
+                  "endColumn": 71
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8600",
+          "level": "warning",
+          "message": "Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
+                "region": {
+                  "startLine": 37,
+                  "startColumn": 25,
+                  "endLine": 37,
+                  "endColumn": 81
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8602",
+          "level": "warning",
+          "message": "Desreferencia de una referencia posiblemente NULL.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
+                "region": {
+                  "startLine": 57,
+                  "startColumn": 38,
+                  "endLine": 57,
                   "endColumn": 48
                 }
               }
@@ -1020,18 +311,18 @@
           }
         },
         {
-          "ruleId": "S1144",
+          "ruleId": "S125",
           "level": "warning",
-          "message": "Remove the unused private field 'RutaAccesoEjecutable'.",
+          "message": "Remove this commented out code.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
                 "region": {
-                  "startLine": 25,
-                  "startColumn": 9,
-                  "endLine": 25,
-                  "endColumn": 43
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 8
                 }
               }
             }
@@ -1041,39 +332,18 @@
           }
         },
         {
-          "ruleId": "S1144",
+          "ruleId": "S125",
           "level": "warning",
-          "message": "Remove the unused private field 'RutaLogs'.",
+          "message": "Remove this commented out code.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
-                "region": {
-                  "startLine": 26,
-                  "startColumn": 9,
-                  "endLine": 26,
-                  "endColumn": 31
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1144",
-          "level": "warning",
-          "message": "Remove the unused private field 'oGCC'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
                 "region": {
                   "startLine": 27,
-                  "startColumn": 9,
+                  "startColumn": 1,
                   "endLine": 27,
-                  "endColumn": 56
+                  "endColumn": 114
                 }
               }
             }
@@ -1083,17 +353,38 @@
           }
         },
         {
-          "ruleId": "S4487",
+          "ruleId": "S125",
           "level": "warning",
-          "message": "Remove this unread private field 'Reinicio' or refactor the code to use its value.",
+          "message": "Remove this commented out code.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
                 "region": {
-                  "startLine": 24,
-                  "startColumn": 17,
-                  "endLine": 24,
+                  "startLine": 70,
+                  "startColumn": 1,
+                  "endLine": 70,
+                  "endColumn": 23
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S125",
+          "level": "warning",
+          "message": "Remove this commented out code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
                   "endColumn": 30
                 }
               }
@@ -1104,39 +395,18 @@
           }
         },
         {
-          "ruleId": "S4487",
-          "level": "warning",
-          "message": "Remove this unread private field '_logger' or refactor the code to use its value.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
-                "region": {
-                  "startLine": 32,
-                  "startColumn": 42,
-                  "endLine": 32,
-                  "endColumn": 49
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
           "ruleId": "S125",
           "level": "warning",
           "message": "Remove this commented out code.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Program.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
                 "region": {
-                  "startLine": 3,
+                  "startLine": 20,
                   "startColumn": 1,
-                  "endLine": 3,
-                  "endColumn": 53
+                  "endLine": 20,
+                  "endColumn": 34
                 }
               }
             }
@@ -1152,12 +422,33 @@
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
                 "region": {
-                  "startLine": 77,
+                  "startLine": 41,
+                  "startColumn": 9,
+                  "endLine": 41,
+                  "endColumn": 12
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S125",
+          "level": "warning",
+          "message": "Remove this commented out code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 62,
                   "startColumn": 13,
-                  "endLine": 77,
-                  "endColumn": 102
+                  "endLine": 62,
+                  "endColumn": 70
                 }
               }
             }
@@ -1167,18 +458,18 @@
           }
         },
         {
-          "ruleId": "S1450",
+          "ruleId": "S125",
           "level": "warning",
-          "message": "Remove the field 'olistTabla' and declare it as a local variable in the relevant methods.",
+          "message": "Remove this commented out code.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
                 "region": {
-                  "startLine": 30,
-                  "startColumn": 47,
-                  "endLine": 30,
-                  "endColumn": 103
+                  "startLine": 116,
+                  "startColumn": 17,
+                  "endLine": 116,
+                  "endColumn": 36
                 }
               }
             }
@@ -1188,18 +479,81 @@
           }
         },
         {
-          "ruleId": "S2325",
+          "ruleId": "S125",
           "level": "warning",
-          "message": "Make 'GrabarLog' a static method.",
+          "message": "Remove this commented out code.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
                 "region": {
-                  "startLine": 110,
+                  "startLine": 147,
+                  "startColumn": 17,
+                  "endLine": 147,
+                  "endColumn": 35
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2068",
+          "level": "warning",
+          "message": "\"password\" detected here, make sure this is not a hard-coded credential.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/appsettings.json",
+                "region": {
+                  "startLine": 9,
+                  "startColumn": 20,
+                  "endLine": 9,
+                  "endColumn": 110
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2068",
+          "level": "warning",
+          "message": "\"password\" detected here, make sure this is not a hard-coded credential.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/appsettings.json",
+                "region": {
+                  "startLine": 10,
                   "startColumn": 22,
-                  "endLine": 110,
-                  "endColumn": 31
+                  "endLine": 10,
+                  "endColumn": 114
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2068",
+          "level": "warning",
+          "message": "\"password\" detected here, make sure this is not a hard-coded credential.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/appsettings.json",
+                "region": {
+                  "startLine": 11,
+                  "startColumn": 22,
+                  "endLine": 11,
+                  "endColumn": 111
                 }
               }
             }
@@ -1211,16 +565,16 @@
         {
           "ruleId": "S2933",
           "level": "warning",
-          "message": "Make 'oGCC' 'readonly'.",
+          "message": "Make 'oAdmisionHospitalaria' 'readonly'.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
                 "region": {
-                  "startLine": 47,
-                  "startColumn": 26,
-                  "endLine": 47,
-                  "endColumn": 30
+                  "startLine": 29,
+                  "startColumn": 32,
+                  "endLine": 29,
+                  "endColumn": 53
                 }
               }
             }
@@ -1236,11 +590,11 @@
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
                 "region": {
-                  "startLine": 48,
+                  "startLine": 30,
                   "startColumn": 19,
-                  "endLine": 48,
+                  "endLine": 30,
                   "endColumn": 29
                 }
               }
@@ -1251,18 +605,60 @@
           }
         },
         {
-          "ruleId": "S3267",
+          "ruleId": "S2933",
           "level": "warning",
-          "message": "Loop should be simplified by calling Select(Contrato => Contrato.IdePagocontrato))",
+          "message": "Make 'objCorreoAgenda' 'readonly'.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
                 "region": {
-                  "startLine": 108,
+                  "startLine": 31,
+                  "startColumn": 22,
+                  "endLine": 31,
+                  "endColumn": 37
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CA1050",
+          "level": "note",
+          "message": "Declarar tipos en espacios de nombres",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 166,
+                  "startColumn": 14,
+                  "endLine": 166,
+                  "endColumn": 24
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S4487",
+          "level": "warning",
+          "message": "Remove this unread private field '_logger' or refactor the code to use its value.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 33,
                   "startColumn": 42,
-                  "endLine": 108,
-                  "endColumn": 48
+                  "endLine": 33,
+                  "endColumn": 49
                 }
               }
             }
@@ -1272,18 +668,18 @@
           }
         },
         {
-          "ruleId": "S1144",
+          "ruleId": "S3903",
           "level": "warning",
-          "message": "Remove the unused private field 'MontoSinIGV'.",
+          "message": "Move 'MiServicio' into a named namespace.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
                 "region": {
-                  "startLine": 49,
-                  "startColumn": 29,
-                  "endLine": 49,
-                  "endColumn": 40
+                  "startLine": 166,
+                  "startColumn": 14,
+                  "endLine": 166,
+                  "endColumn": 24
                 }
               }
             }
@@ -1293,60 +689,18 @@
           }
         },
         {
-          "ruleId": "S4487",
+          "ruleId": "S1192",
           "level": "warning",
-          "message": "Remove this unread private field 'MontoLimite' or refactor the code to use its value.",
+          "message": "Define a constant instead of using this literal 'ProcesoServicio' 4 times.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
                 "region": {
-                  "startLine": 49,
-                  "startColumn": 16,
-                  "endLine": 49,
-                  "endColumn": 27
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S4487",
-          "level": "warning",
-          "message": "Remove this unread private field 'PorcentajeDetraccion' or refactor the code to use its value.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 52,
-                  "startColumn": 17,
-                  "endLine": 52,
-                  "endColumn": 41
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S3776",
-          "level": "warning",
-          "message": "Refactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 177,
-                  "startColumn": 21,
-                  "endLine": 177,
-                  "endColumn": 34
+                  "startLine": 89,
+                  "startColumn": 70,
+                  "endLine": 89,
+                  "endColumn": 87
                 }
               }
             }
@@ -1354,111 +708,34 @@
           "relatedLocations": [
             {
               "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
                 "region": {
-                  "startLine": 188,
-                  "startColumn": 17,
-                  "endLine": 188,
-                  "endColumn": 24
+                  "startLine": 104,
+                  "startColumn": 70,
+                  "endLine": 104,
+                  "endColumn": 87
                 }
               }
             },
             {
               "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
                 "region": {
-                  "startLine": 193,
-                  "startColumn": 25,
-                  "endLine": 193,
-                  "endColumn": 27
+                  "startLine": 129,
+                  "startColumn": 70,
+                  "endLine": 129,
+                  "endColumn": 87
                 }
               }
             },
             {
               "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
                 "region": {
-                  "startLine": 196,
-                  "startColumn": 29,
-                  "endLine": 196,
-                  "endColumn": 36
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 199,
-                  "startColumn": 25,
-                  "endLine": 199,
-                  "endColumn": 29
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 202,
-                  "startColumn": 29,
-                  "endLine": 202,
-                  "endColumn": 36
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 207,
-                  "startColumn": 25,
-                  "endLine": 207,
-                  "endColumn": 27
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 212,
-                  "startColumn": 25,
-                  "endLine": 212,
-                  "endColumn": 29
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 225,
-                  "startColumn": 29,
-                  "endLine": 225,
-                  "endColumn": 31
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 232,
-                  "startColumn": 21,
-                  "endLine": 232,
-                  "endColumn": 26
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 236,
-                  "startColumn": 13,
-                  "endLine": 236,
-                  "endColumn": 18
+                  "startLine": 156,
+                  "startColumn": 70,
+                  "endLine": 156,
+                  "endColumn": 87
                 }
               }
             }
@@ -1466,32 +743,25 @@
           "properties": {
             "warningLevel": 1,
             "customProperties": {
-              "0": "+1",
-              "1": "+2 (incl 1 for nesting)",
-              "2": "+3 (incl 2 for nesting)",
-              "3": "+1",
-              "4": "+3 (incl 2 for nesting)",
-              "5": "+2 (incl 1 for nesting)",
-              "6": "+1",
-              "7": "+3 (incl 2 for nesting)",
-              "8": "+2 (incl 1 for nesting)",
-              "9": "+1"
+              "0": null,
+              "1": null,
+              "2": null
             }
           }
         },
         {
           "ruleId": "S6966",
           "level": "warning",
-          "message": "Await CancelAsync instead.",
+          "message": "Await ProcesoCreaCitaAsync instead.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
                 "region": {
-                  "startLine": 59,
-                  "startColumn": 29,
-                  "endLine": 59,
-                  "endColumn": 41
+                  "startLine": 55,
+                  "startColumn": 11,
+                  "endLine": 55,
+                  "endColumn": 28
                 }
               }
             }
@@ -1501,196 +771,87 @@
           }
         },
         {
-          "ruleId": "S3776",
+          "ruleId": "S6966",
           "level": "warning",
-          "message": "Refactor this method to reduce its Cognitive Complexity from 22 to the 15 allowed.",
+          "message": "Await ProcesoServicioAsync instead.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
                 "region": {
-                  "startLine": 388,
-                  "startColumn": 21,
-                  "endLine": 388,
-                  "endColumn": 41
-                }
-              }
-            }
-          ],
-          "relatedLocations": [
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 391,
-                  "startColumn": 13,
-                  "endLine": 391,
-                  "endColumn": 20
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 395,
-                  "startColumn": 21,
-                  "endLine": 395,
-                  "endColumn": 23
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 395,
-                  "startColumn": 44,
-                  "endLine": 395,
-                  "endColumn": 46
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 396,
-                  "startColumn": 21,
-                  "endLine": 396,
-                  "endColumn": 25
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 396,
-                  "startColumn": 49,
-                  "endLine": 396,
-                  "endColumn": 51
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 397,
-                  "startColumn": 21,
-                  "endLine": 397,
-                  "endColumn": 25
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 397,
-                  "startColumn": 49,
-                  "endLine": 397,
-                  "endColumn": 51
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 399,
-                  "startColumn": 21,
-                  "endLine": 399,
-                  "endColumn": 23
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 401,
-                  "startColumn": 25,
-                  "endLine": 401,
-                  "endColumn": 27
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 401,
-                  "startColumn": 48,
-                  "endLine": 401,
-                  "endColumn": 50
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 404,
-                  "startColumn": 29,
-                  "endLine": 404,
-                  "endColumn": 36
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 407,
-                  "startColumn": 25,
-                  "endLine": 407,
-                  "endColumn": 29
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 410,
-                  "startColumn": 21,
-                  "endLine": 410,
-                  "endColumn": 25
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 413,
-                  "startColumn": 17,
-                  "endLine": 413,
-                  "endColumn": 22
+                  "startLine": 58,
+                  "startColumn": 11,
+                  "endLine": 58,
+                  "endColumn": 28
                 }
               }
             }
           ],
           "properties": {
-            "warningLevel": 1,
-            "customProperties": {
-              "0": "+1",
-              "1": "+2 (incl 1 for nesting)",
-              "10": "+4 (incl 3 for nesting)",
-              "11": "+1",
-              "12": "+1",
-              "13": "+2 (incl 1 for nesting)",
-              "2": "+1",
-              "3": "+1",
-              "4": "+1",
-              "5": "+1",
-              "6": "+1",
-              "7": "+2 (incl 1 for nesting)",
-              "8": "+3 (incl 2 for nesting)",
-              "9": "+1"
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6966",
+          "level": "warning",
+          "message": "Await ProcesoCreaCitaAsync instead.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 71,
+                  "startColumn": 21,
+                  "endLine": 71,
+                  "endColumn": 38
+                }
+              }
             }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S6966",
+          "level": "warning",
+          "message": "Await ProcesoServicioAsync instead.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Worker.cs",
+                "region": {
+                  "startLine": 72,
+                  "startColumn": 21,
+                  "endLine": 72,
+                  "endColumn": 38
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "IL3000",
+          "level": "warning",
+          "message": "'System.Reflection.Assembly.Location' always returns an empty string for assemblies embedded in a single-file app. If the path to the app directory is needed, consider calling 'System.AppContext.BaseDirectory'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
+                "region": {
+                  "startLine": 16,
+                  "startColumn": 53,
+                  "endLine": 16,
+                  "endColumn": 93
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
           }
         },
         {
@@ -1700,1080 +861,12 @@
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
-                "region": {
-                  "startLine": 80,
-                  "startColumn": 17,
-                  "endLine": 80,
-                  "endColumn": 33
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S3776",
-          "level": "warning",
-          "message": "Refactor this method to reduce its Cognitive Complexity from 41 to the 15 allowed.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 240,
-                  "startColumn": 21,
-                  "endLine": 240,
-                  "endColumn": 35
-                }
-              }
-            }
-          ],
-          "relatedLocations": [
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 248,
-                  "startColumn": 17,
-                  "endLine": 248,
-                  "endColumn": 24
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 262,
-                  "startColumn": 25,
-                  "endLine": 262,
-                  "endColumn": 27
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 267,
-                  "startColumn": 29,
-                  "endLine": 267,
-                  "endColumn": 31
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 273,
-                  "startColumn": 25,
-                  "endLine": 273,
-                  "endColumn": 27
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 277,
-                  "startColumn": 29,
-                  "endLine": 277,
-                  "endColumn": 31
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 283,
-                  "startColumn": 25,
-                  "endLine": 283,
-                  "endColumn": 27
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 285,
-                  "startColumn": 29,
-                  "endLine": 285,
-                  "endColumn": 36
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 291,
-                  "startColumn": 33,
-                  "endLine": 291,
-                  "endColumn": 35
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 291,
-                  "startColumn": 72,
-                  "endLine": 291,
-                  "endColumn": 74
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 303,
-                  "startColumn": 37,
-                  "endLine": 303,
-                  "endColumn": 39
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 309,
-                  "startColumn": 33,
-                  "endLine": 309,
-                  "endColumn": 37
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 309,
-                  "startColumn": 77,
-                  "endLine": 309,
-                  "endColumn": 79
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 317,
-                  "startColumn": 25,
-                  "endLine": 317,
-                  "endColumn": 27
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 319,
-                  "startColumn": 29,
-                  "endLine": 319,
-                  "endColumn": 31
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 319,
-                  "startColumn": 66,
-                  "endLine": 319,
-                  "endColumn": 68
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 330,
-                  "startColumn": 33,
-                  "endLine": 330,
-                  "endColumn": 35
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 341,
-                  "startColumn": 21,
-                  "endLine": 341,
-                  "endColumn": 26
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 345,
-                  "startColumn": 13,
-                  "endLine": 345,
-                  "endColumn": 18
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1,
-            "customProperties": {
-              "0": "+1",
-              "1": "+2 (incl 1 for nesting)",
-              "10": "+1",
-              "11": "+1",
-              "12": "+2 (incl 1 for nesting)",
-              "13": "+3 (incl 2 for nesting)",
-              "14": "+1",
-              "15": "+4 (incl 3 for nesting)",
-              "16": "+2 (incl 1 for nesting)",
-              "17": "+1",
-              "2": "+3 (incl 2 for nesting)",
-              "3": "+2 (incl 1 for nesting)",
-              "4": "+3 (incl 2 for nesting)",
-              "5": "+2 (incl 1 for nesting)",
-              "6": "+3 (incl 2 for nesting)",
-              "7": "+4 (incl 3 for nesting)",
-              "8": "+1",
-              "9": "+5 (incl 4 for nesting)"
-            }
-          }
-        },
-        {
-          "ruleId": "CA1822",
-          "level": "note",
-          "message": "El miembro \"GrabarLog\" no tiene acceso a los datos de la instancia y se puede marcar como static.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Worker.cs",
-                "region": {
-                  "startLine": 110,
-                  "startColumn": 22,
-                  "endLine": 110,
-                  "endColumn": 31
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1450",
-          "level": "warning",
-          "message": "Remove the field 'oListaDetraccion' and declare it as a local variable in the relevant methods.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 51,
-                  "startColumn": 23,
-                  "endLine": 51,
-                  "endColumn": 61
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1192",
-          "level": "warning",
-          "message": "Define a constant instead of using this literal 'Error:' 14 times.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 89,
-                  "startColumn": 47,
-                  "endLine": 89,
-                  "endColumn": 55
-                }
-              }
-            }
-          ],
-          "relatedLocations": [
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 100,
-                  "startColumn": 58,
-                  "endLine": 100,
-                  "endColumn": 66
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 115,
-                  "startColumn": 53,
-                  "endLine": 115,
-                  "endColumn": 61
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 127,
-                  "startColumn": 58,
-                  "endLine": 127,
-                  "endColumn": 66
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 150,
-                  "startColumn": 47,
-                  "endLine": 150,
-                  "endColumn": 55
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 164,
-                  "startColumn": 49,
-                  "endLine": 164,
-                  "endColumn": 57
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 175,
-                  "startColumn": 51,
-                  "endLine": 175,
-                  "endColumn": 59
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 237,
-                  "startColumn": 43,
-                  "endLine": 237,
-                  "endColumn": 51
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 346,
-                  "startColumn": 44,
-                  "endLine": 346,
-                  "endColumn": 52
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 386,
-                  "startColumn": 49,
-                  "endLine": 386,
-                  "endColumn": 57
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 414,
-                  "startColumn": 112,
-                  "endLine": 414,
-                  "endColumn": 120
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 434,
-                  "startColumn": 116,
-                  "endLine": 434,
-                  "endColumn": 124
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 438,
-                  "startColumn": 50,
-                  "endLine": 438,
-                  "endColumn": 58
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 462,
-                  "startColumn": 53,
-                  "endLine": 462,
-                  "endColumn": 61
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1,
-            "customProperties": {
-              "0": null,
-              "1": null,
-              "10": null,
-              "11": null,
-              "12": null,
-              "2": null,
-              "3": null,
-              "4": null,
-              "5": null,
-              "6": null,
-              "7": null,
-              "8": null,
-              "9": null
-            }
-          }
-        },
-        {
-          "ruleId": "S1192",
-          "level": "warning",
-          "message": "Define a constant instead of using this literal 'MM/dd/yyyy HH:mm:ss' 5 times.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 96,
-                  "startColumn": 59,
-                  "endLine": 96,
-                  "endColumn": 80
-                }
-              }
-            }
-          ],
-          "relatedLocations": [
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 210,
-                  "startColumn": 134,
-                  "endLine": 210,
-                  "endColumn": 155
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 222,
-                  "startColumn": 88,
-                  "endLine": 222,
-                  "endColumn": 109
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 228,
-                  "startColumn": 138,
-                  "endLine": 228,
-                  "endColumn": 159
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 336,
-                  "startColumn": 144,
-                  "endLine": 336,
-                  "endColumn": 165
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1,
-            "customProperties": {
-              "0": null,
-              "1": null,
-              "2": null,
-              "3": null
-            }
-          }
-        },
-        {
-          "ruleId": "S1192",
-          "level": "warning",
-          "message": "Define a constant instead of using this literal ' - Error:' 5 times.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 342,
-                  "startColumn": 135,
-                  "endLine": 342,
-                  "endColumn": 146
-                }
-              }
-            }
-          ],
-          "relatedLocations": [
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 458,
-                  "startColumn": 121,
-                  "endLine": 458,
-                  "endColumn": 132
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 518,
-                  "startColumn": 184,
-                  "endLine": 518,
-                  "endColumn": 195
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 525,
-                  "startColumn": 244,
-                  "endLine": 525,
-                  "endColumn": 255
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 564,
-                  "startColumn": 178,
-                  "endLine": 564,
-                  "endColumn": 189
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1,
-            "customProperties": {
-              "0": null,
-              "1": null,
-              "2": null,
-              "3": null
-            }
-          }
-        },
-        {
-          "ruleId": "S1192",
-          "level": "warning",
-          "message": "Define a constant instead of using this literal 'flg_Correo' 6 times.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 405,
-                  "startColumn": 103,
-                  "endLine": 405,
-                  "endColumn": 115
-                }
-              }
-            }
-          ],
-          "relatedLocations": [
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 408,
-                  "startColumn": 98,
-                  "endLine": 408,
-                  "endColumn": 110
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 411,
-                  "startColumn": 80,
-                  "endLine": 411,
-                  "endColumn": 92
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 430,
-                  "startColumn": 152,
-                  "endLine": 430,
-                  "endColumn": 164
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 455,
-                  "startColumn": 159,
-                  "endLine": 455,
-                  "endColumn": 171
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 489,
-                  "startColumn": 144,
-                  "endLine": 489,
-                  "endColumn": 156
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1,
-            "customProperties": {
-              "0": null,
-              "1": null,
-              "2": null,
-              "3": null,
-              "4": null
-            }
-          }
-        },
-        {
-          "ruleId": "S1854",
-          "level": "warning",
-          "message": "Remove this useless assignment to local variable 'DatosPagosConsultorios'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 181,
-                  "startColumn": 44,
-                  "endLine": 181,
-                  "endColumn": 101
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1854",
-          "level": "warning",
-          "message": "Remove this useless assignment to local variable 'ex'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 495,
-                  "startColumn": 23,
-                  "endLine": 495,
-                  "endColumn": 53
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S2325",
-          "level": "warning",
-          "message": "Make 'CargarDatosGenerar' a static method.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 527,
-                  "startColumn": 31,
-                  "endLine": 527,
-                  "endColumn": 49
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S2325",
-          "level": "warning",
-          "message": "Make 'GrabarLog' a static method.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 566,
-                  "startColumn": 22,
-                  "endLine": 566,
-                  "endColumn": 31
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S2325",
-          "level": "warning",
-          "message": "Make 'CorreoConfirmacionPago' a static method.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 464,
-                  "startColumn": 22,
-                  "endLine": 464,
-                  "endColumn": 44
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1854",
-          "level": "warning",
-          "message": "Remove this useless assignment to local variable 'CodComprobante'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 255,
-                  "startColumn": 21,
-                  "endLine": 255,
-                  "endColumn": 61
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1854",
-          "level": "warning",
-          "message": "Remove this useless assignment to local variable 'CodLiquidacion'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 254,
-                  "startColumn": 21,
-                  "endLine": 254,
-                  "endColumn": 61
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1199",
-          "level": "warning",
-          "message": "Extract this nested code block into a separate method.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 204,
-                  "startColumn": 33,
-                  "endLine": 204,
-                  "endColumn": 34
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1854",
-          "level": "warning",
-          "message": "Remove this useless assignment to local variable 'oResult'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 287,
-                  "startColumn": 67,
-                  "endLine": 287,
-                  "endColumn": 116
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1854",
-          "level": "warning",
-          "message": "Remove this useless assignment to local variable 'Comprobante'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 324,
-                  "startColumn": 47,
-                  "endLine": 324,
-                  "endColumn": 80
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1244",
-          "level": "warning",
-          "message": "Do not check floating point equality with exact values, use a range instead.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 264,
-                  "startColumn": 88,
-                  "endLine": 264,
-                  "endColumn": 90
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1244",
-          "level": "warning",
-          "message": "Do not check floating point equality with exact values, use a range instead.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 291,
-                  "startColumn": 89,
-                  "endLine": 291,
-                  "endColumn": 91
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1244",
-          "level": "warning",
-          "message": "Do not check floating point equality with exact values, use a range instead.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 309,
-                  "startColumn": 94,
-                  "endLine": 309,
-                  "endColumn": 96
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1066",
-          "level": "warning",
-          "message": "Merge this if statement with the enclosing one.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 319,
-                  "startColumn": 29,
-                  "endLine": 319,
-                  "endColumn": 31
-                }
-              }
-            }
-          ],
-          "relatedLocations": [
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 317,
-                  "startColumn": 25,
-                  "endLine": 317,
-                  "endColumn": 27
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1,
-            "customProperties": {
-              "0": "Merge this if statement with its nested one."
-            }
-          }
-        },
-        {
-          "ruleId": "CA1822",
-          "level": "note",
-          "message": "El miembro \"GrabarLog\" no tiene acceso a los datos de la instancia y se puede marcar como static.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 566,
-                  "startColumn": 22,
-                  "endLine": 566,
-                  "endColumn": 31
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CA1822",
-          "level": "note",
-          "message": "El miembro \"CargarDatosGenerar\" no tiene acceso a los datos de la instancia y se puede marcar como static.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 527,
-                  "startColumn": 31,
-                  "endLine": 527,
-                  "endColumn": 49
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CA1822",
-          "level": "note",
-          "message": "El miembro \"CorreoConfirmacionPago\" no tiene acceso a los datos de la instancia y se puede marcar como static.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WS.ContratoConsultorios/Controlller/ContratoConsultorio.cs",
-                "region": {
-                  "startLine": 464,
-                  "startColumn": 22,
-                  "endLine": 464,
-                  "endColumn": 44
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WSAgenda/Program.cs",
+                "region": {
+                  "startLine": 18,
+                  "startColumn": 5,
+                  "endLine": 18,
+                  "endColumn": 21
                 }
               }
             }
@@ -2784,14 +877,14 @@
         }
       ],
       "rules": {
-        "CA1822": {
-          "id": "CA1822",
-          "shortDescription": "Marcar miembros como static",
-          "fullDescription": "Los miembros que no tienen acceso a datos de instancia o que llaman a métodos de instancia se pueden marcar como static. Después de marcar los métodos como static, el compilador emitirá los sitios de llamada no virtuales para estos miembros. Esto puede proporcionar una mejora apreciable del rendimiento del código sensible al rendimiento.",
+        "CA1050": {
+          "id": "CA1050",
+          "shortDescription": "Declarar tipos en espacios de nombres",
+          "fullDescription": "Los tipos se declaran en los espacios de nombres para evitar conflictos de nombre y como forma de organizar los tipos relacionados en una jerarquía de objetos.",
           "defaultLevel": "note",
-          "helpUri": "https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1822",
+          "helpUri": "https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1050",
           "properties": {
-            "category": "Performance",
+            "category": "Design",
             "isEnabledByDefault": true,
             "tags": [
               "PortedFromFxCop",
@@ -2800,11 +893,11 @@
             ]
           }
         },
-        "CS0169": {
-          "id": "CS0169",
-          "shortDescription": "Nunca se usa el campo",
+        "CS1998": {
+          "id": "CS1998",
+          "shortDescription": "El método asincrónico carece de operadores \"await\" y se ejecutará de forma sincrónica",
           "defaultLevel": "warning",
-          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS0169)",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS1998)",
           "properties": {
             "category": "Compiler",
             "isEnabledByDefault": true,
@@ -2814,11 +907,11 @@
             ]
           }
         },
-        "CS0414": {
-          "id": "CS0414",
-          "shortDescription": "El campo está asignado pero nunca se usa su valor",
+        "CS8600": {
+          "id": "CS8600",
+          "shortDescription": "Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL",
           "defaultLevel": "warning",
-          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS0414)",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS8600)",
           "properties": {
             "category": "Compiler",
             "isEnabledByDefault": true,
@@ -2856,11 +949,11 @@
             ]
           }
         },
-        "CS8604": {
-          "id": "CS8604",
-          "shortDescription": "Posible argumento de referencia nulo",
+        "CS8618": {
+          "id": "CS8618",
+          "shortDescription": "Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required\" o declararlo como un valor que acepta valores NULL.",
           "defaultLevel": "warning",
-          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS8604)",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS8618)",
           "properties": {
             "category": "Compiler",
             "isEnabledByDefault": true,
@@ -2870,38 +963,14 @@
             ]
           }
         },
-        "S1066": {
-          "id": "S1066",
-          "shortDescription": "Mergeable \"if\" statements should be combined",
-          "fullDescription": "Nested code - blocks of code inside blocks of code - is eventually necessary, but increases complexity. This is why keeping the code as flat as possible, by avoiding unnecessary nesting, is considered a good practice.",
+        "IL3000": {
+          "id": "IL3000",
+          "shortDescription": "Avoid accessing Assembly file path when publishing as a single file",
+          "fullDescription": "https://docs.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/il3000",
           "defaultLevel": "warning",
-          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-1066",
           "properties": {
-            "category": "Major Code Smell",
-            "isEnabledByDefault": true,
-            "tags": [
-              "C#",
-              "MainSourceScope",
-              "TestSourceScope",
-              "SonarWay"
-            ]
-          }
-        },
-        "S1144": {
-          "id": "S1144",
-          "shortDescription": "Unused private types or members should be removed",
-          "fullDescription": "This rule raises an issue when a private/internal type or member is never referenced in the code.",
-          "defaultLevel": "warning",
-          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-1144",
-          "properties": {
-            "category": "Major Code Smell",
-            "isEnabledByDefault": true,
-            "tags": [
-              "C#",
-              "MainSourceScope",
-              "TestSourceScope",
-              "SonarWay"
-            ]
+            "category": "SingleFile",
+            "isEnabledByDefault": true
           }
         },
         "S1192": {
@@ -2916,40 +985,6 @@
             "tags": [
               "C#",
               "MainSourceScope",
-              "SonarWay"
-            ]
-          }
-        },
-        "S1199": {
-          "id": "S1199",
-          "shortDescription": "Nested code blocks should not be used",
-          "fullDescription": "Nested code blocks create new scopes where variables declared within are inaccessible from the outside, and their lifespan ends with the block.",
-          "defaultLevel": "warning",
-          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-1199",
-          "properties": {
-            "category": "Minor Code Smell",
-            "isEnabledByDefault": true,
-            "tags": [
-              "C#",
-              "MainSourceScope",
-              "TestSourceScope",
-              "SonarWay"
-            ]
-          }
-        },
-        "S1244": {
-          "id": "S1244",
-          "shortDescription": "Floating point numbers should not be tested for equality",
-          "fullDescription": "Floating point numbers in C# (and in most other programming languages) are not precise. They are a binary approximation of the actual value. This means that even if two floating point numbers appear to be equal, they might not be due to the tiny differences in their binary representation.",
-          "defaultLevel": "warning",
-          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-1244",
-          "properties": {
-            "category": "Major Bug",
-            "isEnabledByDefault": true,
-            "tags": [
-              "C#",
-              "MainSourceScope",
-              "TestSourceScope",
               "SonarWay"
             ]
           }
@@ -2971,22 +1006,6 @@
             ]
           }
         },
-        "S1450": {
-          "id": "S1450",
-          "shortDescription": "Private fields only used as local variables in methods should become local variables",
-          "fullDescription": "When the value of a private field is always assigned to in a class' methods before being read, then it is not being used to store class information. Therefore, it should become a local variable in the relevant methods to prevent any misunderstanding.",
-          "defaultLevel": "warning",
-          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-1450",
-          "properties": {
-            "category": "Minor Code Smell",
-            "isEnabledByDefault": true,
-            "tags": [
-              "C#",
-              "MainSourceScope",
-              "SonarWay"
-            ]
-          }
-        },
         "S1481": {
           "id": "S1481",
           "shortDescription": "Unused local variables should be removed",
@@ -3004,53 +1023,18 @@
             ]
           }
         },
-        "S1854": {
-          "id": "S1854",
-          "shortDescription": "Unused assignments should be removed",
-          "fullDescription": "Dead stores refer to assignments made to local variables that are subsequently never used or immediately overwritten. Such assignments are unnecessary and don’t contribute to the functionality or clarity of the code. They may even negatively impact performance. Removing them enhances code cleanliness and readability. Even if the unnecessary operations do not do any harm in terms of the program’s correctness, they are - at best - a waste of computing resources.",
+        "S2068": {
+          "id": "S2068",
+          "shortDescription": "Hard-coded credentials are security-sensitive",
+          "fullDescription": "Because it is easy to extract strings from an application source code or binary, credentials should not be hard-coded. This is particularly true for applications that are distributed or that are open-source.",
           "defaultLevel": "warning",
-          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-1854",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-2068",
           "properties": {
-            "category": "Major Code Smell",
+            "category": "Blocker Security Hotspot",
             "isEnabledByDefault": true,
             "tags": [
               "C#",
               "MainSourceScope",
-              "TestSourceScope",
-              "SonarWay"
-            ]
-          }
-        },
-        "S2325": {
-          "id": "S2325",
-          "shortDescription": "Methods and properties that don't access instance data should be static",
-          "fullDescription": "Methods and properties that don’t access instance data should be marked as static for the following reasons:",
-          "defaultLevel": "warning",
-          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-2325",
-          "properties": {
-            "category": "Minor Code Smell",
-            "isEnabledByDefault": true,
-            "tags": [
-              "C#",
-              "MainSourceScope",
-              "TestSourceScope",
-              "SonarWay"
-            ]
-          }
-        },
-        "S2930": {
-          "id": "S2930",
-          "shortDescription": "\"IDisposables\" should be disposed",
-          "fullDescription": "When writing managed code, there is no need to worry about memory allocation or deallocation as it is taken care of by the garbage collector. However, certain objects, such as Bitmap, utilize unmanaged memory for specific purposes like pointer arithmetic. These objects may have substantial unmanaged memory footprints while having minimal managed footprints. Unfortunately, the garbage collector only recognizes the small managed footprint and does not promptly reclaim the corresponding unmanaged memory (by invoking the finalizer method of Bitmap) for efficiency reasons.",
-          "defaultLevel": "warning",
-          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-2930",
-          "properties": {
-            "category": "Blocker Bug",
-            "isEnabledByDefault": true,
-            "tags": [
-              "C#",
-              "MainSourceScope",
-              "TestSourceScope",
               "SonarWay"
             ]
           }
@@ -3072,31 +1056,15 @@
             ]
           }
         },
-        "S3267": {
-          "id": "S3267",
-          "shortDescription": "Loops should be simplified with \"LINQ\" expressions",
-          "fullDescription": "When a loop is filtering, selecting or aggregating, those functions can be handled with a clearer, more concise LINQ expression instead.",
+        "S3903": {
+          "id": "S3903",
+          "shortDescription": "Types should be defined in named namespaces",
+          "fullDescription": "Types are declared in namespaces in order to prevent name collisions and as a way to organize them into the object hierarchy. Types that are defined outside any named namespace are in a global namespace that cannot be referenced in code.",
           "defaultLevel": "warning",
-          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-3267",
+          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-3903",
           "properties": {
-            "category": "Minor Code Smell",
+            "category": "Major Bug",
             "isEnabledByDefault": true,
-            "tags": [
-              "C#",
-              "MainSourceScope",
-              "SonarWay"
-            ]
-          }
-        },
-        "S3776": {
-          "id": "S3776",
-          "shortDescription": "Cognitive Complexity of methods should not be too high",
-          "fullDescription": "This rule raises an issue when the code cognitive complexity of a function is above a certain threshold.",
-          "defaultLevel": "warning",
-          "helpUri": "https://rules.sonarsource.com/csharp/RSPEC-3776",
-          "properties": {
-            "category": "Critical Code Smell",
-            "isEnabledByDefault": false,
             "tags": [
               "C#",
               "MainSourceScope",

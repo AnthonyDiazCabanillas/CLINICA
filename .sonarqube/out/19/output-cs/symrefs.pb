@@ -1,12 +1,4 @@
-‹
-GD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Api.Clinica\Program.cs<
-		     
- && 
- * <88 
-  
-> BD Hd
-  "** **' *-- .. 11 33 55 88 :: P
- * 7* 7* 7* 7""' 4## &$$  -—
+—
 OD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Api.Clinica\WeatherForecast.cs
 
  
@@ -16,7 +8,15 @@ OD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Api.Clinica\WeatherForecast.cs
 
 		 
 
- ‹
+ ‹
+GD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Api.Clinica\Program.cs<
+		     
+ && 
+ * <88 
+  
+> BD Hd
+  "** **' *-- .. 11 33 55 88 :: P
+ * 7* 7* 7* 7""' 4## &$$  -‹
 MD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Api.Clinica\Model\Request.cs
 
 		 
@@ -72,7 +72,20 @@ KD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Api.Clinica\Data\Config.cs
 MMS [TTL T
 QQ RR 
 QQY ZQQ^ _(
-TT #UU #WW* 5[[ )¦
+TT #UU #WW* 5[[ )—
+YD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Api.Clinica\Controllers\TCIController.cs
+
+ 
+
+ 
+ ** $
+
+### <*
+##D O'' ''5 @
+++‹ –(
+(($ 8++ &-- &.. +
+)) ** 
+))Y Z))^ _¦
 
 iD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Api.Clinica\Controllers\SeguridadDePasswordController.cs
 
@@ -166,20 +179,7 @@ YD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Api.Clinica\Controllers\RoeCon
 .." )00i p
 00 &22> E
 22 $44. 6
-44 %55" +—
-YD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Api.Clinica\Controllers\TCIController.cs
-
- 
-
- 
- ** $
-
-### <*
-##D O'' ''5 @
-++‹ –(
-(($ 8++ &-- &.. +
-)) ** 
-))Y Z))^ _·
+44 %55" +·
 iD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Api.Clinica\Controllers\PrestacionesClinicaController.cs
 
  .2

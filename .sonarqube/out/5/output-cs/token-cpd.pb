@@ -162669,7 +162669,42 @@ Parameters11= G
 }<< 
 }== 	
 }>> 
-}?? ÓX
+}?? ˝
+fD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\HospitalAD\HospitalExclusionesAD.cs
+	namespace
+
+ 	
+Dat
+
+
+ 
+.
+
+ 
+Sql
+
+ 
+.
+
+ 
+	ClinicaAD
+
+ 
+.
+
+ 
+
+HospitalAD
+
+ &
+{ 
+public 
+
+class !
+HospitalExclusionesAD &
+{ 
+} 
+} ÓX
 cD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\HospitalAD\HospitalEncuestaAD.cs
 	namespace
 
@@ -163334,42 +163369,7 @@ Parameters``F P
 }mm 
 }nn 	
 }oo 
-}pp ˝
-fD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\HospitalAD\HospitalExclusionesAD.cs
-	namespace
-
- 	
-Dat
-
-
- 
-.
-
- 
-Sql
-
- 
-.
-
- 
-	ClinicaAD
-
- 
-.
-
- 
-
-HospitalAD
-
- &
-{ 
-public 
-
-class !
-HospitalExclusionesAD &
-{ 
-} 
-} ﬁU
+}pp ﬁU
 ^D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\HospitalAD\HospitalDocAD.cs
 	namespace 	
 Dat
@@ -210393,161 +210393,1724 @@ $oHisContratoconsultoriobeneficioMaeE@@$ H
 ;FF 
 }GG 	
 }HH 
-}II å
-aD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\ComprobantesAD\CuadreCajaAD.cs
-	namespace
-
- 	
-Dat
-
-
+}II òæ
+sD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\ContratosAD\HisContratoconsultorioadendaDetAD.cs
+	namespace 	
+Dat
  
-.
-
- 
-Sql
-
- 
-.
-
- 
-	ClinicaAD
-
- 
-.
-
- 
-ComprobantesAD
-
- *
-{ 
-public 
+. 
+Sql 
+. 
+	ClinicaAD 
+. 
+ContratosAD '
+{ 
+public 
 
-class 
-CuadreCajaAD 
-{ 
-public 
-bool &
-Sp_CuadreCajaOnline_Update .
-(. /
-ref/ 2
-CuadreCajaE3 >
-pCuadreCajaE? K
-)K L
-{ 	
-bool 
-xResult 
-= 
-false  
-;  !
-try 
-{ 
-using 
-( 
-SqlConnection $
-cnn% (
-=) *
-new+ .
-SqlConnection/ <
-(< =
-VariablesGlobales= N
-.N O
+class -
+!HisContratoconsultorioadendaDetAD 2
+{ 
+private ,
+ HisContratoconsultorioadendaDetE 0
+LlenarEntidad1 >
+(> ?
+IDataReader? J
+drK M
+,M N,
+ HisContratoconsultorioadendaDetE' G-
+!pHisContratoconsultorioadendaDetEH i
+)i j
+{ 	,
+ HisContratoconsultorioadendaDetE ,-
+!oHisContratoconsultorioadendaDetE- N
+=O P
+newQ T,
+ HisContratoconsultorioadendaDetEU u
+(u v
+)v w
+;w x
+switch 
+( -
+!pHisContratoconsultorioadendaDetE 5
+.5 6
+Orden6 ;
+); <
+{ 
+case 
+$num 
+: -
+!oHisContratoconsultorioadendaDetE   5
+.  5 6
+IdeAdendaCab  6 B
+=  C D
+Convert  E L
+.  L M
+ToInt32  M T
+(  T U
+dr  U W
+[  W X
+$str  X h
+]  h i
+)  i j
+;  j k-
+!oHisContratoconsultorioadendaDetE!! 5
+.!!5 6
+IdeCalendario!!6 C
+=!!D E
+Convert!!F M
+.!!M N
+ToInt32!!N U
+(!!U V
+dr!!V X
+[!!X Y
+$str!!Y i
+]!!i j
+)!!j k
+;!!k l-
+!oHisContratoconsultorioadendaDetE"" 5
+.""5 6
+IdeBeneficiosadenda""6 I
+=""J K
+Convert""L S
+.""S T
+ToInt32""T [
+(""[ \
+dr""\ ^
+[""^ _
+$str""_ u
+]""u v
+)""v w
+;""w x-
+!oHisContratoconsultorioadendaDetE## 5
+.##5 6
+Estado##6 <
+=##= >
+Convert##? F
+.##F G
+ToString##G O
+(##O P
+dr##P R
+[##R S
+$str##S [
+]##[ \
+)##\ ]
+;##] ^
+break$$ 
+;$$ 
+case%% 
+$num%% 
+:%% 
+case&& 
+$num&& 
+:&& -
+!oHisContratoconsultorioadendaDetE'' 5
+.''5 6
+IdeAdendaCab''6 B
+=''C D
+Convert''E L
+.''L M
+ToInt32''M T
+(''T U
+dr''U W
+[''W X
+$str''X h
+]''h i
+)''i j
+;''j k-
+!oHisContratoconsultorioadendaDetE(( 5
+.((5 6
+IdeCalendario((6 C
+=((D E
+Convert((F M
+.((M N
+ToInt32((N U
+(((U V
+dr((V X
+[((X Y
+$str((Y i
+]((i j
+)((j k
+;((k l-
+!oHisContratoconsultorioadendaDetE)) 5
+.))5 6
+IdeBeneficiosadenda))6 I
+=))J K
+Convert))L S
+.))S T
+ToInt32))T [
+())[ \
+dr))\ ^
+[))^ _
+$str))_ u
+]))u v
+)))v w
+;))w x-
+!oHisContratoconsultorioadendaDetE** 5
+.**5 6
+IdeBeneficio**6 B
+=**C D
+Convert**E L
+.**L M
+ToInt32**M T
+(**T U
+dr**U W
+[**W X
+$str**X g
+]**g h
+)**h i
+;**i j-
+!oHisContratoconsultorioadendaDetE++ 5
+.++5 6
+CntDescuento++6 B
+=++C D
+Convert++E L
+.++L M
+ToInt32++M T
+(++T U
+dr++U W
+[++W X
+$str++X g
+]++g h
+)++h i
+;++i j-
+!oHisContratoconsultorioadendaDetE,, 5
+.,,5 6
+PrecioxHora,,6 A
+=,,B C
+Convert,,D K
+.,,K L
+	ToDecimal,,L U
+(,,U V
+dr,,V X
+[,,X Y
+$str,,Y f
+],,f g
+),,g h
+;,,h i-
+!oHisContratoconsultorioadendaDetE-- 5
+.--5 6
+TipDescuento--6 B
+=--C D
+Convert--E L
+.--L M
+ToString--M U
+(--U V
+dr--V X
+[--X Y
+$str--Y h
+]--h i
+)--i j
+;--j k
+break.. 
+;.. 
+}// 
+return00 -
+!oHisContratoconsultorioadendaDetE00 4
+;004 5
+}11 	
+public33 
+List33 
+<33 ,
+ HisContratoconsultorioadendaDetE33 4
+>334 57
++Sp_HisContratoconsultorioadendaDet_Consulta336 a
+(33a b-
+ HisContratoconsultorioadendaDetE	33b Ç/
+!pHisContratoconsultorioadendaDetE
+33É §
+)
+33§ •
+{44 	
+List55 
+<55 ,
+ HisContratoconsultorioadendaDetE55 1
+>551 2
+oListar553 :
+=55; <
+new55= @
+List55A E
+<55E F,
+ HisContratoconsultorioadendaDetE55F f
+>55f g
+(55g h
+)55h i
+;55i j,
+ HisContratoconsultorioadendaDetE66 ,-
+!oHisContratoconsultorioadendaDetE66- N
+=66O P
+null66Q U
+;66U V
+using77 
+(77 
+SqlConnection77  
+cnn77! $
+=77% &
+new77' *
+SqlConnection77+ 8
+(778 9
+VariablesGlobales779 J
+.77J K
 
-CnnClinicaO Y
-)Y Z
-)Z [
-{ 
-using 
-( 
+CnnClinica77K U
+)77U V
+)77V W
+{88 
+using99 
+(99 
 
-SqlCommand %
-cmd& )
-=* +
-new, /
+SqlCommand99 !
+cmd99" %
+=99& '
+new99( +
 
-SqlCommand0 :
-(: ;
-$str; W
-,W X
-cnnY \
-)\ ]
-)] ^
-{ 
-cmd 
-. 
-CommandType '
-=( )
-CommandType* 5
-.5 6
-StoredProcedure6 E
-;E F
-cmd 
-. 
+SqlCommand99, 6
+(996 7
+$str997 d
+,99d e
+cnn99f i
+)99i j
+)99j k
+{:: 
+cmd;; 
+.;; 
+CommandType;; #
+=;;$ %
+System;;& ,
+.;;, -
+Data;;- 1
+.;;1 2
+CommandType;;2 =
+.;;= >
+StoredProcedure;;> M
+;;;M N
+cmd== 
+.== 
 
-Parameters &
-.& '
-AddWithValue' 3
-(3 4
-$str4 E
-,E F
-pCuadreCajaEG S
-.S T
-CodComprobanteT b
-)b c
-;c d
-cnn 
-. 
-Open  
-(  !
-)! "
-;" #
-cmd 
-. 
-ExecuteNonQuery +
-(+ ,
-), -
-;- .
-xResult 
-=  !
-true" &
-;& '
-cnn 
-. 
-Close !
-(! "
-)" #
-;# $
-cmd 
-. 
-Dispose #
-(# $
-)$ %
-;% &
-} 
-}   
-return"" 
-xResult"" 
-;"" 
-}## 
-catch$$ 
-($$ 
-	Exception$$ 
-ex$$ 
-)$$  
-{%% 
-throw&& 
-new&& 
-	Exception&& #
-(&&# $
-ex&&$ &
-.&&& '
-Message&&' .
-)&&. /
-;&&/ 0
-}'' 
-}(( 	
-}** 
-}++ ≠‘
+Parameters== "
+.==" #
+AddWithValue==# /
+(==/ 0
+$str==0 =
+,=== >-
+!pHisContratoconsultorioadendaDetE==? `
+.==` a
+IDBuscar==a i
+)==i j
+;==j k
+cmd>> 
+.>> 
+
+Parameters>> "
+.>>" #
+AddWithValue>># /
+(>>/ 0
+$str>>0 9
+,>>9 :-
+!pHisContratoconsultorioadendaDetE>>; \
+.>>\ ]
+Buscar>>] c
+)>>c d
+;>>d e
+cmd?? 
+.?? 
+
+Parameters?? "
+.??" #
+AddWithValue??# /
+(??/ 0
+$str??0 ?
+,??? @-
+!pHisContratoconsultorioadendaDetE??A b
+.??b c
+NumeroLineas??c o
+)??o p
+;??p q
+cmd@@ 
+.@@ 
+
+Parameters@@ "
+.@@" #
+AddWithValue@@# /
+(@@/ 0
+$str@@0 8
+,@@8 9-
+!pHisContratoconsultorioadendaDetE@@: [
+.@@[ \
+Orden@@\ a
+)@@a b
+;@@b c
+cnnAA 
+.AA 
+OpenAA 
+(AA 
+)AA 
+;AA 
+IDataReaderBB 
+drBB  "
+=BB# $
+cmdBB% (
+.BB( )
+ExecuteReaderBB) 6
+(BB6 7
+)BB7 8
+;BB8 9
+whileCC 
+(CC 
+drCC 
+.CC 
+ReadCC "
+(CC" #
+)CC# $
+)CC$ %
+{DD -
+!oHisContratoconsultorioadendaDetEEE 9
+=EE: ;
+LlenarEntidadEE< I
+(EEI J
+drEEJ L
+,EEL M-
+!pHisContratoconsultorioadendaDetEEEN o
+)EEo p
+;EEp q
+oListarFF 
+.FF  
+AddFF  #
+(FF# $-
+!oHisContratoconsultorioadendaDetEFF$ E
+)FFE F
+;FFF G
+}GG 
+drHH 
+.HH 
+CloseHH 
+(HH 
+)HH 
+;HH 
+cnnII 
+.II 
+CloseII 
+(II 
+)II 
+;II  
+}JJ 
+}KK 
+returnLL 
+oListarLL 
+;LL 
+}MM 	
+publicOO 
+boolOO 5
+)Sp_HisContratoconsultorioadendaDet_InsertOO =
+(OO= >,
+ HisContratoconsultorioadendaDetEOO> ^.
+!pHisContratoconsultorioadendaDetE	OO_ Ä
+)
+OOÄ Å
+{PP 	
+tryQQ 
+{RR 
+usingSS 
+(SS 
+SqlConnectionSS $
+cnnSS% (
+=SS) *
+newSS+ .
+SqlConnectionSS/ <
+(SS< =
+VariablesGlobalesSS= N
+.SSN O
+
+CnnClinicaSSO Y
+)SSY Z
+)SSZ [
+{TT 
+usingUU 
+(UU 
+
+SqlCommandUU %
+cmdUU& )
+=UU* +
+newUU, /
+
+SqlCommandUU0 :
+(UU: ;
+$strUU; f
+,UUf g
+cnnUUh k
+)UUk l
+)UUl m
+{VV 
+cmdWW 
+.WW 
+CommandTypeWW '
+=WW( )
+SystemWW* 0
+.WW0 1
+DataWW1 5
+.WW5 6
+CommandTypeWW6 A
+.WWA B
+StoredProcedureWWB Q
+;WWQ R
+cmdYY 
+.YY 
+
+ParametersYY &
+.YY& '
+AddWithValueYY' 3
+(YY3 4
+$strYY4 E
+,YYE F-
+!pHisContratoconsultorioadendaDetEYYG h
+.YYh i
+IdeAdendaCabYYi u
+)YYu v
+;YYv w
+cmdZZ 
+.ZZ 
+
+ParametersZZ &
+.ZZ& '
+AddWithValueZZ' 3
+(ZZ3 4
+$strZZ4 E
+,ZZE F-
+!pHisContratoconsultorioadendaDetEZZG h
+.ZZh i
+IdeCalendarioZZi v
+)ZZv w
+;ZZw x
+cmd[[ 
+.[[ 
+
+Parameters[[ &
+.[[& '
+AddWithValue[[' 3
+([[3 4
+$str[[4 K
+,[[K L-
+!pHisContratoconsultorioadendaDetE[[M n
+.[[n o 
+IdeBeneficiosadenda	[[o Ç
+)
+[[Ç É
+;
+[[É Ñ
+cmd\\ 
+.\\ 
+
+Parameters\\ &
+.\\& '
+AddWithValue\\' 3
+(\\3 4
+$str\\4 D
+,\\D E-
+!pHisContratoconsultorioadendaDetE\\F g
+.\\g h
+CntDescuento\\h t
+)\\t u
+;\\u v
+cmd]] 
+.]] 
+
+Parameters]] &
+.]]& '
+AddWithValue]]' 3
+(]]3 4
+$str]]4 =
+,]]= >-
+!pHisContratoconsultorioadendaDetE]]? `
+.]]` a
+Estado]]a g
+)]]g h
+;]]h i
+cnn__ 
+.__ 
+Open__  
+(__  !
+)__! "
+;__" #
+intaa 
+exitoaa !
+=aa" #
+cmdaa$ '
+.aa' (
+ExecuteNonQueryaa( 7
+(aa7 8
+)aa8 9
+;aa9 :
+cnnbb 
+.bb 
+Closebb !
+(bb! "
+)bb" #
+;bb# $
+cmdcc 
+.cc 
+Disposecc #
+(cc# $
+)cc$ %
+;cc% &
+ifdd 
+(dd 
+exitodd !
+>=dd" $
+$numdd% &
+)dd& '
+{ee 
+returnff "
+trueff# '
+;ff' (
+}gg 
+elsehh 
+{ii 
+returnjj "
+falsejj# (
+;jj( )
+}kk 
+}ll 
+}mm 
+}nn 
+catchoo 
+(oo 
+	Exceptionoo 
+eoo 
+)oo 
+{pp 
+throwpp 
+epp 
+=pp 
+newpp 
+	Exceptionpp %
+(pp% &
+epp& '
+.pp' (
+Messagepp( /
+)pp/ 0
+;pp0 1
+}pp2 3
+}qq 	
+publicss 
+intss 8
+,Sp_HisContratoconsultorioadendaDet_Insert_RBss ?
+(ss? @,
+ HisContratoconsultorioadendaDetEss@ `.
+!pHisContratoconsultorioadendaDetE	ssa Ç
+,
+ssÇ É
+SqlConnection
+ssÑ ë
+cnn
+ssí ï
+,
+ssï ñ
+
+SqlCommand
+ssó °
+cmd
+ss¢ •
+,
+ss• ¶
+SqlTransaction
+ssß µ
+transaction
+ss∂ ¡
+)
+ss¡ ¬
+{tt 	
+intuu 
+exitouu 
+;uu 
+cmdvv 
+=vv 
+newvv 
+
+SqlCommandvv  
+(vv  !
+$strvv! L
+,vvL M
+cnnvvN Q
+,vvQ R
+transactionvvS ^
+)vv^ _
+;vv_ `
+cmdww 
+.ww 
+CommandTypeww 
+=ww 
+Systemww $
+.ww$ %
+Dataww% )
+.ww) *
+CommandTypeww* 5
+.ww5 6
+StoredProcedureww6 E
+;wwE F
+cmdxx 
+.xx 
+
+Parametersxx 
+.xx 
+AddWithValuexx '
+(xx' (
+$strxx( 9
+,xx9 :-
+!pHisContratoconsultorioadendaDetExx; \
+.xx\ ]
+IdeAdendaCabxx] i
+)xxi j
+;xxj k
+cmdyy 
+.yy 
+
+Parametersyy 
+.yy 
+AddWithValueyy '
+(yy' (
+$stryy( 9
+,yy9 :-
+!pHisContratoconsultorioadendaDetEyy; \
+.yy\ ]
+IdeCalendarioyy] j
+)yyj k
+;yyk l
+cmdzz 
+.zz 
+
+Parameterszz 
+.zz 
+AddWithValuezz '
+(zz' (
+$strzz( ?
+,zz? @-
+!pHisContratoconsultorioadendaDetEzzA b
+.zzb c
+IdeBeneficiosadendazzc v
+)zzv w
+;zzw x
+cmd{{ 
+.{{ 
+
+Parameters{{ 
+.{{ 
+AddWithValue{{ '
+({{' (
+$str{{( 8
+,{{8 9-
+!pHisContratoconsultorioadendaDetE{{: [
+.{{[ \
+CntDescuento{{\ h
+){{h i
+;{{i j
+cmd|| 
+.|| 
+
+Parameters|| 
+.|| 
+AddWithValue|| '
+(||' (
+$str||( 8
+,||8 9-
+!pHisContratoconsultorioadendaDetE||: [
+.||[ \
+TipDescuento||\ h
+)||h i
+;||i j
+cmd}} 
+.}} 
+
+Parameters}} 
+.}} 
+AddWithValue}} '
+(}}' (
+$str}}( 6
+,}}6 7-
+!pHisContratoconsultorioadendaDetE}}8 Y
+.}}Y Z
+PrecioxHora}}Z e
+)}}e f
+;}}f g
+cmd~~ 
+.~~ 
+
+Parameters~~ 
+.~~ 
+AddWithValue~~ '
+(~~' (
+$str~~( 1
+,~~1 2-
+!pHisContratoconsultorioadendaDetE~~3 T
+.~~T U
+Estado~~U [
+)~~[ \
+;~~\ ]
+cmd 
+. 
+
+Parameters 
+. 
+AddWithValue '
+(' (
+$str( ;
+,; <-
+!pHisContratoconsultorioadendaDetE= ^
+.^ _
+FlgNewBeneficio_ n
+)n o
+;o p
+return
+ÅÅ 
+exito
+ÅÅ 
+=
+ÅÅ 
+cmd
+ÅÅ 
+.
+ÅÅ 
+ExecuteNonQuery
+ÅÅ .
+(
+ÅÅ. /
+)
+ÅÅ/ 0
+;
+ÅÅ0 1
+}
+ÇÇ 	
+public
+ÑÑ 
+bool
+ÑÑ 7
+)Sp_HisContratoconsultorioadendaDet_Update
+ÑÑ =
+(
+ÑÑ= >.
+ HisContratoconsultorioadendaDetE
+ÑÑ> ^0
+!pHisContratoconsultorioadendaDetEÑÑ_ Ä
+)ÑÑÄ Å
+{
+ÖÖ 	
+try
+ÜÜ 
+{
+áá 
+using
+àà 
+(
+àà 
+SqlConnection
+àà $
+cnn
+àà% (
+=
+àà) *
+new
+àà+ .
+SqlConnection
+àà/ <
+(
+àà< =
+VariablesGlobales
+àà= N
+.
+ààN O
+
+CnnClinica
+ààO Y
+)
+ààY Z
+)
+ààZ [
+{
+ââ 
+using
+ää 
+(
+ää 
+
+SqlCommand
+ää %
+cmd
+ää& )
+=
+ää* +
+new
+ää, /
+
+SqlCommand
+ää0 :
+(
+ää: ;
+$str
+ää; f
+,
+ääf g
+cnn
+ääh k
+)
+ääk l
+)
+ääl m
+{
+ãã 
+cmd
+åå 
+.
+åå 
+CommandType
+åå '
+=
+åå( )
+System
+åå* 0
+.
+åå0 1
+Data
+åå1 5
+.
+åå5 6
+CommandType
+åå6 A
+.
+ååA B
+StoredProcedure
+ååB Q
+;
+ååQ R
+cmd
+éé 
+.
+éé 
+
+Parameters
+éé &
+.
+éé& '
+AddWithValue
+éé' 3
+(
+éé3 4
+$str
+éé4 E
+,
+ééE F/
+!pHisContratoconsultorioadendaDetE
+ééG h
+.
+ééh i
+IdeAdendaCab
+ééi u
+)
+ééu v
+;
+éév w
+cmd
+èè 
+.
+èè 
+
+Parameters
+èè &
+.
+èè& '
+AddWithValue
+èè' 3
+(
+èè3 4
+$str
+èè4 E
+,
+èèE F/
+!pHisContratoconsultorioadendaDetE
+èèG h
+.
+èèh i
+IdeCalendario
+èèi v
+)
+èèv w
+;
+èèw x
+cmd
+êê 
+.
+êê 
+
+Parameters
+êê &
+.
+êê& '
+AddWithValue
+êê' 3
+(
+êê3 4
+$str
+êê4 K
+,
+êêK L/
+!pHisContratoconsultorioadendaDetE
+êêM n
+.
+êên o"
+IdeBeneficiosadendaêêo Ç
+)êêÇ É
+;êêÉ Ñ
+cmd
+ëë 
+.
+ëë 
+
+Parameters
+ëë &
+.
+ëë& '
+AddWithValue
+ëë' 3
+(
+ëë3 4
+$str
+ëë4 D
+,
+ëëD E/
+!pHisContratoconsultorioadendaDetE
+ëëF g
+.
+ëëg h
+CntDescuento
+ëëh t
+)
+ëët u
+;
+ëëu v
+cmd
+íí 
+.
+íí 
+
+Parameters
+íí &
+.
+íí& '
+AddWithValue
+íí' 3
+(
+íí3 4
+$str
+íí4 =
+,
+íí= >/
+!pHisContratoconsultorioadendaDetE
+íí? `
+.
+íí` a
+Estado
+íía g
+)
+ííg h
+;
+ííh i
+cnn
+îî 
+.
+îî 
+Open
+îî  
+(
+îî  !
+)
+îî! "
+;
+îî" #
+int
+ññ 
+exito
+ññ !
+=
+ññ" #
+cmd
+ññ$ '
+.
+ññ' (
+ExecuteNonQuery
+ññ( 7
+(
+ññ7 8
+)
+ññ8 9
+;
+ññ9 :
+cnn
+óó 
+.
+óó 
+Close
+óó !
+(
+óó! "
+)
+óó" #
+;
+óó# $
+cmd
+òò 
+.
+òò 
+Dispose
+òò #
+(
+òò# $
+)
+òò$ %
+;
+òò% &
+if
+ôô 
+(
+ôô 
+exito
+ôô !
+>=
+ôô" $
+$num
+ôô% &
+)
+ôô& '
+{
+öö 
+return
+öö  
+true
+öö! %
+;
+öö% &
+}
+öö' (
+else
+õõ 
+{
+úú 
+return
+úú  
+false
+úú! &
+;
+úú& '
+}
+úú( )
+}
+ùù 
+}
+ûû 
+}
+üü 
+catch
+†† 
+(
+†† 
+	Exception
+†† 
+e
+†† 
+)
+†† 
+{
+°° 
+throw
+°° 
+e
+°° 
+=
+°° 
+new
+°° 
+	Exception
+°° %
+(
+°°% &
+e
+°°& '
+.
+°°' (
+Message
+°°( /
+)
+°°/ 0
+;
+°°0 1
+}
+°°2 3
+}
+¢¢ 	
+public
+§§ 
+bool
+§§ =
+/Sp_HisContratoconsultorioadendaDet_UpdatexCampo
+§§ C
+(
+§§C D.
+ HisContratoconsultorioadendaDetE
+§§D d0
+!pHisContratoconsultorioadendaDetE§§e Ü
+)§§Ü á
+{
+•• 	
+try
+¶¶ 
+{
+ßß 
+using
+®® 
+(
+®® 
+SqlConnection
+®® $
+cnn
+®®% (
+=
+®®) *
+new
+®®+ .
+SqlConnection
+®®/ <
+(
+®®< =
+VariablesGlobales
+®®= N
+.
+®®N O
+
+CnnClinica
+®®O Y
+)
+®®Y Z
+)
+®®Z [
+{
+©© 
+using
+™™ 
+(
+™™ 
+
+SqlCommand
+™™ %
+cmd
+™™& )
+=
+™™* +
+new
+™™, /
+
+SqlCommand
+™™0 :
+(
+™™: ;
+$str
+™™; l
+,
+™™l m
+cnn
+™™n q
+)
+™™q r
+)
+™™r s
+{
+´´ 
+cmd
+¨¨ 
+.
+¨¨ 
+CommandType
+¨¨ '
+=
+¨¨( )
+System
+¨¨* 0
+.
+¨¨0 1
+Data
+¨¨1 5
+.
+¨¨5 6
+CommandType
+¨¨6 A
+.
+¨¨A B
+StoredProcedure
+¨¨B Q
+;
+¨¨Q R
+cmd
+ÆÆ 
+.
+ÆÆ 
+
+Parameters
+ÆÆ &
+.
+ÆÆ& '
+AddWithValue
+ÆÆ' 3
+(
+ÆÆ3 4
+$str
+ÆÆ4 B
+,
+ÆÆB C/
+!pHisContratoconsultorioadendaDetE
+ÆÆD e
+.
+ÆÆe f
+
+NuevoValor
+ÆÆf p
+)
+ÆÆp q
+;
+ÆÆq r
+cmd
+ØØ 
+.
+ØØ 
+
+Parameters
+ØØ &
+.
+ØØ& '
+AddWithValue
+ØØ' 3
+(
+ØØ3 4
+$str
+ØØ4 <
+,
+ØØ< =/
+!pHisContratoconsultorioadendaDetE
+ØØ> _
+.
+ØØ_ `
+Campo
+ØØ` e
+)
+ØØe f
+;
+ØØf g
+cnn
+±± 
+.
+±± 
+Open
+±±  
+(
+±±  !
+)
+±±! "
+;
+±±" #
+int
+≥≥ 
+exito
+≥≥ !
+=
+≥≥" #
+cmd
+≥≥$ '
+.
+≥≥' (
+ExecuteNonQuery
+≥≥( 7
+(
+≥≥7 8
+)
+≥≥8 9
+;
+≥≥9 :
+cnn
+¥¥ 
+.
+¥¥ 
+Close
+¥¥ !
+(
+¥¥! "
+)
+¥¥" #
+;
+¥¥# $
+cmd
+µµ 
+.
+µµ 
+Dispose
+µµ #
+(
+µµ# $
+)
+µµ$ %
+;
+µµ% &
+if
+∂∂ 
+(
+∂∂ 
+exito
+∂∂ !
+>=
+∂∂" $
+$num
+∂∂% &
+)
+∂∂& '
+{
+∑∑ 
+return
+∑∑  
+true
+∑∑! %
+;
+∑∑% &
+}
+∑∑' (
+else
+∏∏ 
+{
+ππ 
+return
+ππ  
+false
+ππ! &
+;
+ππ& '
+}
+ππ( )
+}
+∫∫ 
+}
+ªª 
+}
+ºº 
+catch
+ΩΩ 
+(
+ΩΩ 
+	Exception
+ΩΩ 
+e
+ΩΩ 
+)
+ΩΩ 
+{
+ææ 
+throw
+ææ 
+e
+ææ 
+=
+ææ 
+new
+ææ 
+	Exception
+ææ %
+(
+ææ% &
+e
+ææ& '
+.
+ææ' (
+Message
+ææ( /
+)
+ææ/ 0
+;
+ææ0 1
+}
+ææ2 3
+}
+øø 	
+public
+¡¡ 
+void
+¡¡ @
+2Sp_HisContratoconsultorioadendaDet_UpdatexCampo_RB
+¡¡ F
+(
+¡¡F G.
+ HisContratoconsultorioadendaDetE
+¡¡G g0
+!pHisContratoconsultorioadendaDetE¡¡h â
+,¡¡â ä
+SqlConnection¡¡ã ò
+cnn¡¡ô ú
+,¡¡ú ù
+
+SqlCommand¡¡û ®
+cmd¡¡© ¨
+,¡¡¨ ≠
+SqlTransaction¡¡Æ º
+transaction¡¡Ω »
+)¡¡» …
+{
+¬¬ 	
+cmd
+√√ 
+=
+√√ 
+new
+√√ 
+
+SqlCommand
+√√  
+(
+√√  !
+$str
+√√! R
+,
+√√R S
+cnn
+√√T W
+,
+√√W X
+transaction
+√√Y d
+)
+√√d e
+;
+√√e f
+cmd
+ƒƒ 
+.
+ƒƒ 
+CommandType
+ƒƒ 
+=
+ƒƒ 
+System
+ƒƒ $
+.
+ƒƒ$ %
+Data
+ƒƒ% )
+.
+ƒƒ) *
+CommandType
+ƒƒ* 5
+.
+ƒƒ5 6
+StoredProcedure
+ƒƒ6 E
+;
+ƒƒE F
+cmd
+∆∆ 
+.
+∆∆ 
+
+Parameters
+∆∆ 
+.
+∆∆ 
+AddWithValue
+∆∆ '
+(
+∆∆' (
+$str
+∆∆( 9
+,
+∆∆9 :/
+!pHisContratoconsultorioadendaDetE
+∆∆; \
+.
+∆∆\ ]
+IdeAdendaCab
+∆∆] i
+)
+∆∆i j
+;
+∆∆j k
+cmd
+«« 
+.
+«« 
+
+Parameters
+«« 
+.
+«« 
+AddWithValue
+«« '
+(
+««' (
+$str
+««( 9
+,
+««9 :/
+!pHisContratoconsultorioadendaDetE
+««; \
+.
+««\ ]
+IdeCalendario
+««] j
+)
+««j k
+;
+««k l
+cmd
+»» 
+.
+»» 
+
+Parameters
+»» 
+.
+»» 
+AddWithValue
+»» '
+(
+»»' (
+$str
+»»( ?
+,
+»»? @/
+!pHisContratoconsultorioadendaDetE
+»»A b
+.
+»»b c!
+IdeBeneficiosadenda
+»»c v
+)
+»»v w
+;
+»»w x
+cmd
+…… 
+.
+…… 
+
+Parameters
+…… 
+.
+…… 
+AddWithValue
+…… '
+(
+……' (
+$str
+……( 1
+,
+……1 2/
+!pHisContratoconsultorioadendaDetE
+……3 T
+.
+……T U
+Buscar
+……U [
+)
+……[ \
+;
+……\ ]
+cmd
+   
+.
+   
+
+Parameters
+   
+.
+   
+AddWithValue
+   '
+(
+  ' (
+$str
+  ( 6
+,
+  6 7/
+!pHisContratoconsultorioadendaDetE
+  8 Y
+.
+  Y Z
+
+NuevoValor
+  Z d
+)
+  d e
+;
+  e f
+cmd
+ÀÀ 
+.
+ÀÀ 
+
+Parameters
+ÀÀ 
+.
+ÀÀ 
+AddWithValue
+ÀÀ '
+(
+ÀÀ' (
+$str
+ÀÀ( 0
+,
+ÀÀ0 1/
+!pHisContratoconsultorioadendaDetE
+ÀÀ2 S
+.
+ÀÀS T
+Campo
+ÀÀT Y
+)
+ÀÀY Z
+;
+ÀÀZ [
+cmd
+ÃÃ 
+.
+ÃÃ 
+
+Parameters
+ÃÃ 
+.
+ÃÃ 
+AddWithValue
+ÃÃ '
+(
+ÃÃ' (
+$str
+ÃÃ( 0
+,
+ÃÃ0 1/
+!pHisContratoconsultorioadendaDetE
+ÃÃ2 S
+.
+ÃÃS T
+Orden
+ÃÃT Y
+)
+ÃÃY Z
+;
+ÃÃZ [
+cmd
+ÕÕ 
+.
+ÕÕ 
+ExecuteNonQuery
+ÕÕ 
+(
+ÕÕ  
+)
+ÕÕ  !
+;
+ÕÕ! "
+}
+ŒŒ 	
+}
+œœ 
+}–– ≠‘
 sD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\ContratosAD\HisContratoconsultorioadendaCabAD.cs
 	namespace 	
 Dat
@@ -214501,1724 +216064,161 @@ Parameters##/ 9
 }00 
 }11 	
 }22 
-}33 òæ
-sD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\ContratosAD\HisContratoconsultorioadendaDetAD.cs
-	namespace 	
-Dat
+}33 å
+aD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\ComprobantesAD\CuadreCajaAD.cs
+	namespace
+
+ 	
+Dat
+
+
  
-. 
-Sql 
-. 
-	ClinicaAD 
-. 
-ContratosAD '
-{ 
-public 
+.
+
+ 
+Sql
+
+ 
+.
+
+ 
+	ClinicaAD
+
+ 
+.
+
+ 
+ComprobantesAD
+
+ *
+{ 
+public 
 
-class -
-!HisContratoconsultorioadendaDetAD 2
-{ 
-private ,
- HisContratoconsultorioadendaDetE 0
-LlenarEntidad1 >
-(> ?
-IDataReader? J
-drK M
-,M N,
- HisContratoconsultorioadendaDetE' G-
-!pHisContratoconsultorioadendaDetEH i
-)i j
-{ 	,
- HisContratoconsultorioadendaDetE ,-
-!oHisContratoconsultorioadendaDetE- N
-=O P
-newQ T,
- HisContratoconsultorioadendaDetEU u
-(u v
-)v w
-;w x
-switch 
-( -
-!pHisContratoconsultorioadendaDetE 5
-.5 6
-Orden6 ;
-); <
-{ 
-case 
-$num 
-: -
-!oHisContratoconsultorioadendaDetE   5
-.  5 6
-IdeAdendaCab  6 B
-=  C D
-Convert  E L
-.  L M
-ToInt32  M T
-(  T U
-dr  U W
-[  W X
-$str  X h
-]  h i
-)  i j
-;  j k-
-!oHisContratoconsultorioadendaDetE!! 5
-.!!5 6
-IdeCalendario!!6 C
-=!!D E
-Convert!!F M
-.!!M N
-ToInt32!!N U
-(!!U V
-dr!!V X
-[!!X Y
-$str!!Y i
-]!!i j
-)!!j k
-;!!k l-
-!oHisContratoconsultorioadendaDetE"" 5
-.""5 6
-IdeBeneficiosadenda""6 I
-=""J K
-Convert""L S
-.""S T
-ToInt32""T [
-(""[ \
-dr""\ ^
-[""^ _
-$str""_ u
-]""u v
-)""v w
-;""w x-
-!oHisContratoconsultorioadendaDetE## 5
-.##5 6
-Estado##6 <
-=##= >
-Convert##? F
-.##F G
-ToString##G O
-(##O P
-dr##P R
-[##R S
-$str##S [
-]##[ \
-)##\ ]
-;##] ^
-break$$ 
-;$$ 
-case%% 
-$num%% 
-:%% 
-case&& 
-$num&& 
-:&& -
-!oHisContratoconsultorioadendaDetE'' 5
-.''5 6
-IdeAdendaCab''6 B
-=''C D
-Convert''E L
-.''L M
-ToInt32''M T
-(''T U
-dr''U W
-[''W X
-$str''X h
-]''h i
-)''i j
-;''j k-
-!oHisContratoconsultorioadendaDetE(( 5
-.((5 6
-IdeCalendario((6 C
-=((D E
-Convert((F M
-.((M N
-ToInt32((N U
-(((U V
-dr((V X
-[((X Y
-$str((Y i
-]((i j
-)((j k
-;((k l-
-!oHisContratoconsultorioadendaDetE)) 5
-.))5 6
-IdeBeneficiosadenda))6 I
-=))J K
-Convert))L S
-.))S T
-ToInt32))T [
-())[ \
-dr))\ ^
-[))^ _
-$str))_ u
-]))u v
-)))v w
-;))w x-
-!oHisContratoconsultorioadendaDetE** 5
-.**5 6
-IdeBeneficio**6 B
-=**C D
-Convert**E L
-.**L M
-ToInt32**M T
-(**T U
-dr**U W
-[**W X
-$str**X g
-]**g h
-)**h i
-;**i j-
-!oHisContratoconsultorioadendaDetE++ 5
-.++5 6
-CntDescuento++6 B
-=++C D
-Convert++E L
-.++L M
-ToInt32++M T
-(++T U
-dr++U W
-[++W X
-$str++X g
-]++g h
-)++h i
-;++i j-
-!oHisContratoconsultorioadendaDetE,, 5
-.,,5 6
-PrecioxHora,,6 A
-=,,B C
-Convert,,D K
-.,,K L
-	ToDecimal,,L U
-(,,U V
-dr,,V X
-[,,X Y
-$str,,Y f
-],,f g
-),,g h
-;,,h i-
-!oHisContratoconsultorioadendaDetE-- 5
-.--5 6
-TipDescuento--6 B
-=--C D
-Convert--E L
-.--L M
-ToString--M U
-(--U V
-dr--V X
-[--X Y
-$str--Y h
-]--h i
-)--i j
-;--j k
-break.. 
-;.. 
-}// 
-return00 -
-!oHisContratoconsultorioadendaDetE00 4
-;004 5
-}11 	
-public33 
-List33 
-<33 ,
- HisContratoconsultorioadendaDetE33 4
->334 57
-+Sp_HisContratoconsultorioadendaDet_Consulta336 a
-(33a b-
- HisContratoconsultorioadendaDetE	33b Ç/
-!pHisContratoconsultorioadendaDetE
-33É §
-)
-33§ •
-{44 	
-List55 
-<55 ,
- HisContratoconsultorioadendaDetE55 1
->551 2
-oListar553 :
-=55; <
-new55= @
-List55A E
-<55E F,
- HisContratoconsultorioadendaDetE55F f
->55f g
-(55g h
-)55h i
-;55i j,
- HisContratoconsultorioadendaDetE66 ,-
-!oHisContratoconsultorioadendaDetE66- N
-=66O P
-null66Q U
-;66U V
-using77 
-(77 
-SqlConnection77  
-cnn77! $
-=77% &
-new77' *
-SqlConnection77+ 8
-(778 9
-VariablesGlobales779 J
-.77J K
+class 
+CuadreCajaAD 
+{ 
+public 
+bool &
+Sp_CuadreCajaOnline_Update .
+(. /
+ref/ 2
+CuadreCajaE3 >
+pCuadreCajaE? K
+)K L
+{ 	
+bool 
+xResult 
+= 
+false  
+;  !
+try 
+{ 
+using 
+( 
+SqlConnection $
+cnn% (
+=) *
+new+ .
+SqlConnection/ <
+(< =
+VariablesGlobales= N
+.N O
 
-CnnClinica77K U
-)77U V
-)77V W
-{88 
-using99 
-(99 
+CnnClinicaO Y
+)Y Z
+)Z [
+{ 
+using 
+( 
 
-SqlCommand99 !
-cmd99" %
-=99& '
-new99( +
+SqlCommand %
+cmd& )
+=* +
+new, /
 
-SqlCommand99, 6
-(996 7
-$str997 d
-,99d e
-cnn99f i
-)99i j
-)99j k
-{:: 
-cmd;; 
-.;; 
-CommandType;; #
-=;;$ %
-System;;& ,
-.;;, -
-Data;;- 1
-.;;1 2
-CommandType;;2 =
-.;;= >
-StoredProcedure;;> M
-;;;M N
-cmd== 
-.== 
+SqlCommand0 :
+(: ;
+$str; W
+,W X
+cnnY \
+)\ ]
+)] ^
+{ 
+cmd 
+. 
+CommandType '
+=( )
+CommandType* 5
+.5 6
+StoredProcedure6 E
+;E F
+cmd 
+. 
 
-Parameters== "
-.==" #
-AddWithValue==# /
-(==/ 0
-$str==0 =
-,=== >-
-!pHisContratoconsultorioadendaDetE==? `
-.==` a
-IDBuscar==a i
-)==i j
-;==j k
-cmd>> 
-.>> 
-
-Parameters>> "
-.>>" #
-AddWithValue>># /
-(>>/ 0
-$str>>0 9
-,>>9 :-
-!pHisContratoconsultorioadendaDetE>>; \
-.>>\ ]
-Buscar>>] c
-)>>c d
-;>>d e
-cmd?? 
-.?? 
-
-Parameters?? "
-.??" #
-AddWithValue??# /
-(??/ 0
-$str??0 ?
-,??? @-
-!pHisContratoconsultorioadendaDetE??A b
-.??b c
-NumeroLineas??c o
-)??o p
-;??p q
-cmd@@ 
-.@@ 
-
-Parameters@@ "
-.@@" #
-AddWithValue@@# /
-(@@/ 0
-$str@@0 8
-,@@8 9-
-!pHisContratoconsultorioadendaDetE@@: [
-.@@[ \
-Orden@@\ a
-)@@a b
-;@@b c
-cnnAA 
-.AA 
-OpenAA 
-(AA 
-)AA 
-;AA 
-IDataReaderBB 
-drBB  "
-=BB# $
-cmdBB% (
-.BB( )
-ExecuteReaderBB) 6
-(BB6 7
-)BB7 8
-;BB8 9
-whileCC 
-(CC 
-drCC 
-.CC 
-ReadCC "
-(CC" #
-)CC# $
-)CC$ %
-{DD -
-!oHisContratoconsultorioadendaDetEEE 9
-=EE: ;
-LlenarEntidadEE< I
-(EEI J
-drEEJ L
-,EEL M-
-!pHisContratoconsultorioadendaDetEEEN o
-)EEo p
-;EEp q
-oListarFF 
-.FF  
-AddFF  #
-(FF# $-
-!oHisContratoconsultorioadendaDetEFF$ E
-)FFE F
-;FFF G
-}GG 
-drHH 
-.HH 
-CloseHH 
-(HH 
-)HH 
-;HH 
-cnnII 
-.II 
-CloseII 
-(II 
-)II 
-;II  
-}JJ 
-}KK 
-returnLL 
-oListarLL 
-;LL 
-}MM 	
-publicOO 
-boolOO 5
-)Sp_HisContratoconsultorioadendaDet_InsertOO =
-(OO= >,
- HisContratoconsultorioadendaDetEOO> ^.
-!pHisContratoconsultorioadendaDetE	OO_ Ä
-)
-OOÄ Å
-{PP 	
-tryQQ 
-{RR 
-usingSS 
-(SS 
-SqlConnectionSS $
-cnnSS% (
-=SS) *
-newSS+ .
-SqlConnectionSS/ <
-(SS< =
-VariablesGlobalesSS= N
-.SSN O
-
-CnnClinicaSSO Y
-)SSY Z
-)SSZ [
-{TT 
-usingUU 
-(UU 
-
-SqlCommandUU %
-cmdUU& )
-=UU* +
-newUU, /
-
-SqlCommandUU0 :
-(UU: ;
-$strUU; f
-,UUf g
-cnnUUh k
-)UUk l
-)UUl m
-{VV 
-cmdWW 
-.WW 
-CommandTypeWW '
-=WW( )
-SystemWW* 0
-.WW0 1
-DataWW1 5
-.WW5 6
-CommandTypeWW6 A
-.WWA B
-StoredProcedureWWB Q
-;WWQ R
-cmdYY 
-.YY 
-
-ParametersYY &
-.YY& '
-AddWithValueYY' 3
-(YY3 4
-$strYY4 E
-,YYE F-
-!pHisContratoconsultorioadendaDetEYYG h
-.YYh i
-IdeAdendaCabYYi u
-)YYu v
-;YYv w
-cmdZZ 
-.ZZ 
-
-ParametersZZ &
-.ZZ& '
-AddWithValueZZ' 3
-(ZZ3 4
-$strZZ4 E
-,ZZE F-
-!pHisContratoconsultorioadendaDetEZZG h
-.ZZh i
-IdeCalendarioZZi v
-)ZZv w
-;ZZw x
-cmd[[ 
-.[[ 
-
-Parameters[[ &
-.[[& '
-AddWithValue[[' 3
-([[3 4
-$str[[4 K
-,[[K L-
-!pHisContratoconsultorioadendaDetE[[M n
-.[[n o 
-IdeBeneficiosadenda	[[o Ç
-)
-[[Ç É
-;
-[[É Ñ
-cmd\\ 
-.\\ 
-
-Parameters\\ &
-.\\& '
-AddWithValue\\' 3
-(\\3 4
-$str\\4 D
-,\\D E-
-!pHisContratoconsultorioadendaDetE\\F g
-.\\g h
-CntDescuento\\h t
-)\\t u
-;\\u v
-cmd]] 
-.]] 
-
-Parameters]] &
-.]]& '
-AddWithValue]]' 3
-(]]3 4
-$str]]4 =
-,]]= >-
-!pHisContratoconsultorioadendaDetE]]? `
-.]]` a
-Estado]]a g
-)]]g h
-;]]h i
-cnn__ 
-.__ 
-Open__  
-(__  !
-)__! "
-;__" #
-intaa 
-exitoaa !
-=aa" #
-cmdaa$ '
-.aa' (
-ExecuteNonQueryaa( 7
-(aa7 8
-)aa8 9
-;aa9 :
-cnnbb 
-.bb 
-Closebb !
-(bb! "
-)bb" #
-;bb# $
-cmdcc 
-.cc 
-Disposecc #
-(cc# $
-)cc$ %
-;cc% &
-ifdd 
-(dd 
-exitodd !
->=dd" $
-$numdd% &
-)dd& '
-{ee 
-returnff "
-trueff# '
-;ff' (
-}gg 
-elsehh 
-{ii 
-returnjj "
-falsejj# (
-;jj( )
-}kk 
-}ll 
-}mm 
-}nn 
-catchoo 
-(oo 
-	Exceptionoo 
-eoo 
-)oo 
-{pp 
-throwpp 
-epp 
-=pp 
-newpp 
-	Exceptionpp %
-(pp% &
-epp& '
-.pp' (
-Messagepp( /
-)pp/ 0
-;pp0 1
-}pp2 3
-}qq 	
-publicss 
-intss 8
-,Sp_HisContratoconsultorioadendaDet_Insert_RBss ?
-(ss? @,
- HisContratoconsultorioadendaDetEss@ `.
-!pHisContratoconsultorioadendaDetE	ssa Ç
-,
-ssÇ É
-SqlConnection
-ssÑ ë
-cnn
-ssí ï
-,
-ssï ñ
-
-SqlCommand
-ssó °
-cmd
-ss¢ •
-,
-ss• ¶
-SqlTransaction
-ssß µ
-transaction
-ss∂ ¡
-)
-ss¡ ¬
-{tt 	
-intuu 
-exitouu 
-;uu 
-cmdvv 
-=vv 
-newvv 
-
-SqlCommandvv  
-(vv  !
-$strvv! L
-,vvL M
-cnnvvN Q
-,vvQ R
-transactionvvS ^
-)vv^ _
-;vv_ `
-cmdww 
-.ww 
-CommandTypeww 
-=ww 
-Systemww $
-.ww$ %
-Dataww% )
-.ww) *
-CommandTypeww* 5
-.ww5 6
-StoredProcedureww6 E
-;wwE F
-cmdxx 
-.xx 
-
-Parametersxx 
-.xx 
-AddWithValuexx '
-(xx' (
-$strxx( 9
-,xx9 :-
-!pHisContratoconsultorioadendaDetExx; \
-.xx\ ]
-IdeAdendaCabxx] i
-)xxi j
-;xxj k
-cmdyy 
-.yy 
-
-Parametersyy 
-.yy 
-AddWithValueyy '
-(yy' (
-$stryy( 9
-,yy9 :-
-!pHisContratoconsultorioadendaDetEyy; \
-.yy\ ]
-IdeCalendarioyy] j
-)yyj k
-;yyk l
-cmdzz 
-.zz 
-
-Parameterszz 
-.zz 
-AddWithValuezz '
-(zz' (
-$strzz( ?
-,zz? @-
-!pHisContratoconsultorioadendaDetEzzA b
-.zzb c
-IdeBeneficiosadendazzc v
-)zzv w
-;zzw x
-cmd{{ 
-.{{ 
-
-Parameters{{ 
-.{{ 
-AddWithValue{{ '
-({{' (
-$str{{( 8
-,{{8 9-
-!pHisContratoconsultorioadendaDetE{{: [
-.{{[ \
-CntDescuento{{\ h
-){{h i
-;{{i j
-cmd|| 
-.|| 
-
-Parameters|| 
-.|| 
-AddWithValue|| '
-(||' (
-$str||( 8
-,||8 9-
-!pHisContratoconsultorioadendaDetE||: [
-.||[ \
-TipDescuento||\ h
-)||h i
-;||i j
-cmd}} 
-.}} 
-
-Parameters}} 
-.}} 
-AddWithValue}} '
-(}}' (
-$str}}( 6
-,}}6 7-
-!pHisContratoconsultorioadendaDetE}}8 Y
-.}}Y Z
-PrecioxHora}}Z e
-)}}e f
-;}}f g
-cmd~~ 
-.~~ 
-
-Parameters~~ 
-.~~ 
-AddWithValue~~ '
-(~~' (
-$str~~( 1
-,~~1 2-
-!pHisContratoconsultorioadendaDetE~~3 T
-.~~T U
-Estado~~U [
-)~~[ \
-;~~\ ]
-cmd 
-. 
-
-Parameters 
-. 
-AddWithValue '
-(' (
-$str( ;
-,; <-
-!pHisContratoconsultorioadendaDetE= ^
-.^ _
-FlgNewBeneficio_ n
-)n o
-;o p
-return
-ÅÅ 
-exito
-ÅÅ 
-=
-ÅÅ 
-cmd
-ÅÅ 
-.
-ÅÅ 
-ExecuteNonQuery
-ÅÅ .
-(
-ÅÅ. /
-)
-ÅÅ/ 0
-;
-ÅÅ0 1
-}
-ÇÇ 	
-public
-ÑÑ 
-bool
-ÑÑ 7
-)Sp_HisContratoconsultorioadendaDet_Update
-ÑÑ =
-(
-ÑÑ= >.
- HisContratoconsultorioadendaDetE
-ÑÑ> ^0
-!pHisContratoconsultorioadendaDetEÑÑ_ Ä
-)ÑÑÄ Å
-{
-ÖÖ 	
-try
-ÜÜ 
-{
-áá 
-using
-àà 
-(
-àà 
-SqlConnection
-àà $
-cnn
-àà% (
-=
-àà) *
-new
-àà+ .
-SqlConnection
-àà/ <
-(
-àà< =
-VariablesGlobales
-àà= N
-.
-ààN O
-
-CnnClinica
-ààO Y
-)
-ààY Z
-)
-ààZ [
-{
-ââ 
-using
-ää 
-(
-ää 
-
-SqlCommand
-ää %
-cmd
-ää& )
-=
-ää* +
-new
-ää, /
-
-SqlCommand
-ää0 :
-(
-ää: ;
-$str
-ää; f
-,
-ääf g
-cnn
-ääh k
-)
-ääk l
-)
-ääl m
-{
-ãã 
-cmd
-åå 
-.
-åå 
-CommandType
-åå '
-=
-åå( )
-System
-åå* 0
-.
-åå0 1
-Data
-åå1 5
-.
-åå5 6
-CommandType
-åå6 A
-.
-ååA B
-StoredProcedure
-ååB Q
-;
-ååQ R
-cmd
-éé 
-.
-éé 
-
-Parameters
-éé &
-.
-éé& '
-AddWithValue
-éé' 3
-(
-éé3 4
-$str
-éé4 E
-,
-ééE F/
-!pHisContratoconsultorioadendaDetE
-ééG h
-.
-ééh i
-IdeAdendaCab
-ééi u
-)
-ééu v
-;
-éév w
-cmd
-èè 
-.
-èè 
-
-Parameters
-èè &
-.
-èè& '
-AddWithValue
-èè' 3
-(
-èè3 4
-$str
-èè4 E
-,
-èèE F/
-!pHisContratoconsultorioadendaDetE
-èèG h
-.
-èèh i
-IdeCalendario
-èèi v
-)
-èèv w
-;
-èèw x
-cmd
-êê 
-.
-êê 
-
-Parameters
-êê &
-.
-êê& '
-AddWithValue
-êê' 3
-(
-êê3 4
-$str
-êê4 K
-,
-êêK L/
-!pHisContratoconsultorioadendaDetE
-êêM n
-.
-êên o"
-IdeBeneficiosadendaêêo Ç
-)êêÇ É
-;êêÉ Ñ
-cmd
-ëë 
-.
-ëë 
-
-Parameters
-ëë &
-.
-ëë& '
-AddWithValue
-ëë' 3
-(
-ëë3 4
-$str
-ëë4 D
-,
-ëëD E/
-!pHisContratoconsultorioadendaDetE
-ëëF g
-.
-ëëg h
-CntDescuento
-ëëh t
-)
-ëët u
-;
-ëëu v
-cmd
-íí 
-.
-íí 
-
-Parameters
-íí &
-.
-íí& '
-AddWithValue
-íí' 3
-(
-íí3 4
-$str
-íí4 =
-,
-íí= >/
-!pHisContratoconsultorioadendaDetE
-íí? `
-.
-íí` a
-Estado
-íía g
-)
-ííg h
-;
-ííh i
-cnn
-îî 
-.
-îî 
-Open
-îî  
-(
-îî  !
-)
-îî! "
-;
-îî" #
-int
-ññ 
-exito
-ññ !
-=
-ññ" #
-cmd
-ññ$ '
-.
-ññ' (
-ExecuteNonQuery
-ññ( 7
-(
-ññ7 8
-)
-ññ8 9
-;
-ññ9 :
-cnn
-óó 
-.
-óó 
-Close
-óó !
-(
-óó! "
-)
-óó" #
-;
-óó# $
-cmd
-òò 
-.
-òò 
-Dispose
-òò #
-(
-òò# $
-)
-òò$ %
-;
-òò% &
-if
-ôô 
-(
-ôô 
-exito
-ôô !
->=
-ôô" $
-$num
-ôô% &
-)
-ôô& '
-{
-öö 
-return
-öö  
-true
-öö! %
-;
-öö% &
-}
-öö' (
-else
-õõ 
-{
-úú 
-return
-úú  
-false
-úú! &
-;
-úú& '
-}
-úú( )
-}
-ùù 
-}
-ûû 
-}
-üü 
-catch
-†† 
-(
-†† 
-	Exception
-†† 
-e
-†† 
-)
-†† 
-{
-°° 
-throw
-°° 
-e
-°° 
-=
-°° 
-new
-°° 
-	Exception
-°° %
-(
-°°% &
-e
-°°& '
-.
-°°' (
-Message
-°°( /
-)
-°°/ 0
-;
-°°0 1
-}
-°°2 3
-}
-¢¢ 	
-public
-§§ 
-bool
-§§ =
-/Sp_HisContratoconsultorioadendaDet_UpdatexCampo
-§§ C
-(
-§§C D.
- HisContratoconsultorioadendaDetE
-§§D d0
-!pHisContratoconsultorioadendaDetE§§e Ü
-)§§Ü á
-{
-•• 	
-try
-¶¶ 
-{
-ßß 
-using
-®® 
-(
-®® 
-SqlConnection
-®® $
-cnn
-®®% (
-=
-®®) *
-new
-®®+ .
-SqlConnection
-®®/ <
-(
-®®< =
-VariablesGlobales
-®®= N
-.
-®®N O
-
-CnnClinica
-®®O Y
-)
-®®Y Z
-)
-®®Z [
-{
-©© 
-using
-™™ 
-(
-™™ 
-
-SqlCommand
-™™ %
-cmd
-™™& )
-=
-™™* +
-new
-™™, /
-
-SqlCommand
-™™0 :
-(
-™™: ;
-$str
-™™; l
-,
-™™l m
-cnn
-™™n q
-)
-™™q r
-)
-™™r s
-{
-´´ 
-cmd
-¨¨ 
-.
-¨¨ 
-CommandType
-¨¨ '
-=
-¨¨( )
-System
-¨¨* 0
-.
-¨¨0 1
-Data
-¨¨1 5
-.
-¨¨5 6
-CommandType
-¨¨6 A
-.
-¨¨A B
-StoredProcedure
-¨¨B Q
-;
-¨¨Q R
-cmd
-ÆÆ 
-.
-ÆÆ 
-
-Parameters
-ÆÆ &
-.
-ÆÆ& '
-AddWithValue
-ÆÆ' 3
-(
-ÆÆ3 4
-$str
-ÆÆ4 B
-,
-ÆÆB C/
-!pHisContratoconsultorioadendaDetE
-ÆÆD e
-.
-ÆÆe f
-
-NuevoValor
-ÆÆf p
-)
-ÆÆp q
-;
-ÆÆq r
-cmd
-ØØ 
-.
-ØØ 
-
-Parameters
-ØØ &
-.
-ØØ& '
-AddWithValue
-ØØ' 3
-(
-ØØ3 4
-$str
-ØØ4 <
-,
-ØØ< =/
-!pHisContratoconsultorioadendaDetE
-ØØ> _
-.
-ØØ_ `
-Campo
-ØØ` e
-)
-ØØe f
-;
-ØØf g
-cnn
-±± 
-.
-±± 
-Open
-±±  
-(
-±±  !
-)
-±±! "
-;
-±±" #
-int
-≥≥ 
-exito
-≥≥ !
-=
-≥≥" #
-cmd
-≥≥$ '
-.
-≥≥' (
-ExecuteNonQuery
-≥≥( 7
-(
-≥≥7 8
-)
-≥≥8 9
-;
-≥≥9 :
-cnn
-¥¥ 
-.
-¥¥ 
-Close
-¥¥ !
-(
-¥¥! "
-)
-¥¥" #
-;
-¥¥# $
-cmd
-µµ 
-.
-µµ 
-Dispose
-µµ #
-(
-µµ# $
-)
-µµ$ %
-;
-µµ% &
-if
-∂∂ 
-(
-∂∂ 
-exito
-∂∂ !
->=
-∂∂" $
-$num
-∂∂% &
-)
-∂∂& '
-{
-∑∑ 
-return
-∑∑  
-true
-∑∑! %
-;
-∑∑% &
-}
-∑∑' (
-else
-∏∏ 
-{
-ππ 
-return
-ππ  
-false
-ππ! &
-;
-ππ& '
-}
-ππ( )
-}
-∫∫ 
-}
-ªª 
-}
-ºº 
-catch
-ΩΩ 
-(
-ΩΩ 
-	Exception
-ΩΩ 
-e
-ΩΩ 
-)
-ΩΩ 
-{
-ææ 
-throw
-ææ 
-e
-ææ 
-=
-ææ 
-new
-ææ 
-	Exception
-ææ %
-(
-ææ% &
-e
-ææ& '
-.
-ææ' (
-Message
-ææ( /
-)
-ææ/ 0
-;
-ææ0 1
-}
-ææ2 3
-}
-øø 	
-public
-¡¡ 
-void
-¡¡ @
-2Sp_HisContratoconsultorioadendaDet_UpdatexCampo_RB
-¡¡ F
-(
-¡¡F G.
- HisContratoconsultorioadendaDetE
-¡¡G g0
-!pHisContratoconsultorioadendaDetE¡¡h â
-,¡¡â ä
-SqlConnection¡¡ã ò
-cnn¡¡ô ú
-,¡¡ú ù
-
-SqlCommand¡¡û ®
-cmd¡¡© ¨
-,¡¡¨ ≠
-SqlTransaction¡¡Æ º
-transaction¡¡Ω »
-)¡¡» …
-{
-¬¬ 	
-cmd
-√√ 
-=
-√√ 
-new
-√√ 
-
-SqlCommand
-√√  
-(
-√√  !
-$str
-√√! R
-,
-√√R S
-cnn
-√√T W
-,
-√√W X
-transaction
-√√Y d
-)
-√√d e
-;
-√√e f
-cmd
-ƒƒ 
-.
-ƒƒ 
-CommandType
-ƒƒ 
-=
-ƒƒ 
-System
-ƒƒ $
-.
-ƒƒ$ %
-Data
-ƒƒ% )
-.
-ƒƒ) *
-CommandType
-ƒƒ* 5
-.
-ƒƒ5 6
-StoredProcedure
-ƒƒ6 E
-;
-ƒƒE F
-cmd
-∆∆ 
-.
-∆∆ 
-
-Parameters
-∆∆ 
-.
-∆∆ 
-AddWithValue
-∆∆ '
-(
-∆∆' (
-$str
-∆∆( 9
-,
-∆∆9 :/
-!pHisContratoconsultorioadendaDetE
-∆∆; \
-.
-∆∆\ ]
-IdeAdendaCab
-∆∆] i
-)
-∆∆i j
-;
-∆∆j k
-cmd
-«« 
-.
-«« 
-
-Parameters
-«« 
-.
-«« 
-AddWithValue
-«« '
-(
-««' (
-$str
-««( 9
-,
-««9 :/
-!pHisContratoconsultorioadendaDetE
-««; \
-.
-««\ ]
-IdeCalendario
-««] j
-)
-««j k
-;
-««k l
-cmd
-»» 
-.
-»» 
-
-Parameters
-»» 
-.
-»» 
-AddWithValue
-»» '
-(
-»»' (
-$str
-»»( ?
-,
-»»? @/
-!pHisContratoconsultorioadendaDetE
-»»A b
-.
-»»b c!
-IdeBeneficiosadenda
-»»c v
-)
-»»v w
-;
-»»w x
-cmd
-…… 
-.
-…… 
-
-Parameters
-…… 
-.
-…… 
-AddWithValue
-…… '
-(
-……' (
-$str
-……( 1
-,
-……1 2/
-!pHisContratoconsultorioadendaDetE
-……3 T
-.
-……T U
-Buscar
-……U [
-)
-……[ \
-;
-……\ ]
-cmd
-   
-.
-   
-
-Parameters
-   
-.
-   
-AddWithValue
-   '
-(
-  ' (
-$str
-  ( 6
-,
-  6 7/
-!pHisContratoconsultorioadendaDetE
-  8 Y
-.
-  Y Z
-
-NuevoValor
-  Z d
-)
-  d e
-;
-  e f
-cmd
-ÀÀ 
-.
-ÀÀ 
-
-Parameters
-ÀÀ 
-.
-ÀÀ 
-AddWithValue
-ÀÀ '
-(
-ÀÀ' (
-$str
-ÀÀ( 0
-,
-ÀÀ0 1/
-!pHisContratoconsultorioadendaDetE
-ÀÀ2 S
-.
-ÀÀS T
-Campo
-ÀÀT Y
-)
-ÀÀY Z
-;
-ÀÀZ [
-cmd
-ÃÃ 
-.
-ÃÃ 
-
-Parameters
-ÃÃ 
-.
-ÃÃ 
-AddWithValue
-ÃÃ '
-(
-ÃÃ' (
-$str
-ÃÃ( 0
-,
-ÃÃ0 1/
-!pHisContratoconsultorioadendaDetE
-ÃÃ2 S
-.
-ÃÃS T
-Orden
-ÃÃT Y
-)
-ÃÃY Z
-;
-ÃÃZ [
-cmd
-ÕÕ 
-.
-ÕÕ 
-ExecuteNonQuery
-ÕÕ 
-(
-ÕÕ  
-)
-ÕÕ  !
-;
-ÕÕ! "
-}
-ŒŒ 	
-}
-œœ 
-}–– ßÚ
+Parameters &
+.& '
+AddWithValue' 3
+(3 4
+$str4 E
+,E F
+pCuadreCajaEG S
+.S T
+CodComprobanteT b
+)b c
+;c d
+cnn 
+. 
+Open  
+(  !
+)! "
+;" #
+cmd 
+. 
+ExecuteNonQuery +
+(+ ,
+), -
+;- .
+xResult 
+=  !
+true" &
+;& '
+cnn 
+. 
+Close !
+(! "
+)" #
+;# $
+cmd 
+. 
+Dispose #
+(# $
+)$ %
+;% &
+} 
+}   
+return"" 
+xResult"" 
+;"" 
+}## 
+catch$$ 
+($$ 
+	Exception$$ 
+ex$$ 
+)$$  
+{%% 
+throw&& 
+new&& 
+	Exception&& #
+(&&# $
+ex&&$ &
+.&&& '
+Message&&' .
+)&&. /
+;&&/ 0
+}'' 
+}(( 	
+}** 
+}++ ßÚ
 oD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\ComprobantesAD\ComprobantesElectronicosAD.cs
 	namespace 	
 Dat

@@ -48,6 +48,40 @@
         {
           "ruleId": "CS8618",
           "level": "warning",
+          "message": "El elemento campo \"Configuration\" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required'\"o declarar el campo como un valor que acepta valores NULL.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Program.cs",
+                "region": {
+                  "startLine": 11,
+                  "startColumn": 38,
+                  "endLine": 11,
+                  "endColumn": 51
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Program.cs",
+                "region": {
+                  "startLine": 11,
+                  "startColumn": 38,
+                  "endLine": 11,
+                  "endColumn": 51
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8618",
+          "level": "warning",
           "message": "El elemento campo \"stringJson\" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required'\"o declarar el campo como un valor que acepta valores NULL.",
           "locations": [
             {
@@ -241,40 +275,6 @@
                   "startColumn": 28,
                   "endLine": 74,
                   "endColumn": 30
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8618",
-          "level": "warning",
-          "message": "El elemento campo \"Configuration\" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required'\"o declarar el campo como un valor que acepta valores NULL.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Program.cs",
-                "region": {
-                  "startLine": 11,
-                  "startColumn": 38,
-                  "endLine": 11,
-                  "endColumn": 51
-                }
-              }
-            }
-          ],
-          "relatedLocations": [
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Program.cs",
-                "region": {
-                  "startLine": 11,
-                  "startColumn": 38,
-                  "endLine": 11,
-                  "endColumn": 51
                 }
               }
             }
@@ -748,16 +748,16 @@
         {
           "ruleId": "CS0414",
           "level": "warning",
-          "message": "El campo 'frmSiteds.Swich' está asignado pero su valor nunca se usa",
+          "message": "El campo 'frmDatosReserva.form_started' está asignado pero su valor nunca se usa",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmSiteds.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmDatosReserva.cs",
                 "region": {
-                  "startLine": 73,
+                  "startLine": 22,
                   "startColumn": 14,
-                  "endLine": 73,
-                  "endColumn": 19
+                  "endLine": 22,
+                  "endColumn": 26
                 }
               }
             }
@@ -790,16 +790,16 @@
         {
           "ruleId": "CS0414",
           "level": "warning",
-          "message": "El campo 'frmDatosReserva.form_started' está asignado pero su valor nunca se usa",
+          "message": "El campo 'frmSiteds.Swich' está asignado pero su valor nunca se usa",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmDatosReserva.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmSiteds.cs",
                 "region": {
-                  "startLine": 22,
+                  "startLine": 73,
                   "startColumn": 14,
-                  "endLine": 22,
-                  "endColumn": 26
+                  "endLine": 73,
+                  "endColumn": 19
                 }
               }
             }
@@ -863,6 +863,27 @@
                   "startColumn": 13,
                   "endLine": 60,
                   "endColumn": 229
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2223",
+          "level": "warning",
+          "message": "Change the visibility of 'Configuration' or make it 'const' or 'readonly'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Program.cs",
+                "region": {
+                  "startLine": 11,
+                  "startColumn": 38,
+                  "endLine": 11,
+                  "endColumn": 51
                 }
               }
             }
@@ -998,27 +1019,6 @@
           }
         },
         {
-          "ruleId": "S2223",
-          "level": "warning",
-          "message": "Change the visibility of 'Configuration' or make it 'const' or 'readonly'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Program.cs",
-                "region": {
-                  "startLine": 11,
-                  "startColumn": 38,
-                  "endLine": 11,
-                  "endColumn": 51
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
           "ruleId": "S125",
           "level": "warning",
           "message": "Remove this commented out code.",
@@ -1145,6 +1145,14 @@
           }
         },
         {
+          "ruleId": "CA1824",
+          "level": "note",
+          "message": "Marcar ensamblados con NeutralResourcesLanguageAttribute",
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
           "ruleId": "S125",
           "level": "warning",
           "message": "Remove this commented out code.",
@@ -1178,56 +1186,6 @@
                   "startColumn": 13,
                   "endLine": 20,
                   "endColumn": 53
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CA1824",
-          "level": "note",
-          "message": "Marcar ensamblados con NeutralResourcesLanguageAttribute",
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S5332",
-          "level": "warning",
-          "message": "Using http protocol is insecure. Use https instead.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmSiteds.cs",
-                "region": {
-                  "startLine": 66,
-                  "startColumn": 32,
-                  "endLine": 66,
-                  "endColumn": 72
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S4487",
-          "level": "warning",
-          "message": "Remove this unread private field 'form_started' or refactor the code to use its value.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmDatosReserva.cs",
-                "region": {
-                  "startLine": 22,
-                  "startColumn": 14,
-                  "endLine": 22,
-                  "endColumn": 34
                 }
               }
             }
@@ -1291,6 +1249,48 @@
                   "startColumn": 22,
                   "endLine": 12,
                   "endColumn": 111
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S4487",
+          "level": "warning",
+          "message": "Remove this unread private field 'form_started' or refactor the code to use its value.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmDatosReserva.cs",
+                "region": {
+                  "startLine": 22,
+                  "startColumn": 14,
+                  "endLine": 22,
+                  "endColumn": 34
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S5332",
+          "level": "warning",
+          "message": "Using http protocol is insecure. Use https instead.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmSiteds.cs",
+                "region": {
+                  "startLine": 66,
+                  "startColumn": 32,
+                  "endLine": 66,
+                  "endColumn": 72
                 }
               }
             }
@@ -1468,27 +1468,6 @@
           }
         },
         {
-          "ruleId": "S1854",
-          "level": "warning",
-          "message": "Remove this useless assignment to local variable 'LineasCoberturas'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmSiteds.cs",
-                "region": {
-                  "startLine": 297,
-                  "startColumn": 17,
-                  "endLine": 301,
-                  "endColumn": 58
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
           "ruleId": "S1186",
           "level": "warning",
           "message": "Add a nested comment explaining why this method is empty, throw a 'NotSupportedException' or complete the implementation.",
@@ -1501,6 +1480,27 @@
                   "startColumn": 22,
                   "endLine": 308,
                   "endColumn": 48
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1854",
+          "level": "warning",
+          "message": "Remove this useless assignment to local variable 'LineasCoberturas'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmSiteds.cs",
+                "region": {
+                  "startLine": 297,
+                  "startColumn": 17,
+                  "endLine": 301,
+                  "endColumn": 58
                 }
               }
             }
@@ -1560,27 +1560,6 @@
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmSiteds.cs",
                 "region": {
-                  "startLine": 323,
-                  "startColumn": 22,
-                  "endLine": 323,
-                  "endColumn": 34
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1186",
-          "level": "warning",
-          "message": "Add a nested comment explaining why this method is empty, throw a 'NotSupportedException' or complete the implementation.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmSiteds.cs",
-                "region": {
                   "startLine": 328,
                   "startColumn": 22,
                   "endLine": 328,
@@ -1602,10 +1581,31 @@
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmSiteds.cs",
                 "region": {
-                  "startLine": 419,
+                  "startLine": 323,
                   "startColumn": 22,
-                  "endLine": 419,
-                  "endColumn": 40
+                  "endLine": 323,
+                  "endColumn": 34
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1481",
+          "level": "warning",
+          "message": "Remove the unused local variable 'TipoAfiliacion'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmSiteds.cs",
+                "region": {
+                  "startLine": 210,
+                  "startColumn": 20,
+                  "endLine": 210,
+                  "endColumn": 34
                 }
               }
             }
@@ -1644,52 +1644,10 @@
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmSiteds.cs",
                 "region": {
-                  "startLine": 454,
+                  "startLine": 419,
                   "startColumn": 22,
-                  "endLine": 454,
-                  "endColumn": 50
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1481",
-          "level": "warning",
-          "message": "Remove the unused local variable 'TipoAfiliacion'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmSiteds.cs",
-                "region": {
-                  "startLine": 210,
-                  "startColumn": 20,
-                  "endLine": 210,
-                  "endColumn": 34
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1117",
-          "level": "warning",
-          "message": "Rename 'oWsSiteds' which hides the field with the same name.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmSiteds.cs",
-                "region": {
-                  "startLine": 435,
-                  "startColumn": 22,
-                  "endLine": 435,
-                  "endColumn": 31
+                  "endLine": 419,
+                  "endColumn": 40
                 }
               }
             }
@@ -1707,10 +1665,10 @@
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmSiteds.cs",
                 "region": {
-                  "startLine": 496,
+                  "startLine": 454,
                   "startColumn": 22,
-                  "endLine": 496,
-                  "endColumn": 45
+                  "endLine": 454,
+                  "endColumn": 50
                 }
               }
             }
@@ -1749,10 +1707,10 @@
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmSiteds.cs",
                 "region": {
-                  "startLine": 536,
+                  "startLine": 496,
                   "startColumn": 22,
-                  "endLine": 536,
-                  "endColumn": 36
+                  "endLine": 496,
+                  "endColumn": 45
                 }
               }
             }
@@ -1774,6 +1732,48 @@
                   "startColumn": 22,
                   "endLine": 470,
                   "endColumn": 31
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1117",
+          "level": "warning",
+          "message": "Rename 'oWsSiteds' which hides the field with the same name.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmSiteds.cs",
+                "region": {
+                  "startLine": 435,
+                  "startColumn": 22,
+                  "endLine": 435,
+                  "endColumn": 31
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1186",
+          "level": "warning",
+          "message": "Add a nested comment explaining why this method is empty, throw a 'NotSupportedException' or complete the implementation.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.Clinica/Cita/frmSiteds.cs",
+                "region": {
+                  "startLine": 536,
+                  "startColumn": 22,
+                  "endLine": 536,
+                  "endColumn": 36
                 }
               }
             }

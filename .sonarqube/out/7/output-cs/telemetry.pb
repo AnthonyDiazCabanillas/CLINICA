@@ -1,1 +1,1 @@
-mROD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.General\App.General.csproj¢net6.0-windowsòCSharp10
+iRSD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Utilities\Bus.Utilities.csproj¢net6.0òCSharp10

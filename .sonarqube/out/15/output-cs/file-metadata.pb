@@ -1,7 +1,6 @@
-ç
-ÅD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\obj\Debug\net8.0\WS.ContratoConsultorios.AssemblyInfo.csutf-8î
-àD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.csutf-8è
-ÉD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\obj\Debug\net8.0\WS.ContratoConsultorios.GlobalUsings.g.csutf-8[
-RD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\Worker.csutf-8\
-SD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\Program.csutf-8t
-kD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\Controlller\ContratoConsultorio.csutf-8
+n
+cD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\obj\Debug\net6.0\WSAgenda.AssemblyInfo.csutf-8Ñ
+yD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.csutf-8p
+eD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\obj\Debug\net6.0\WSAgenda.GlobalUsings.g.csutf-8S
+CD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\Worker.cswindows-1252M
+DD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\Program.csutf-8

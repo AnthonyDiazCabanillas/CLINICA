@@ -1,1 +1,1 @@
-oRYD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WebAppCitaAgenda\WebAppCitaAgenda.csproj¢net6.0òCSharp10
+qR[D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiWebClinicaMedico\ApiPaginaWebCSF.csproj¢net6.0òCSharp10

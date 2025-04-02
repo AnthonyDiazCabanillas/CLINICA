@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SonarProjectConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.sonarsource.com/msbuild/analyzer/2021/1">
   <AnalysisConfigPath>D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\.sonarqube\conf\SonarQubeAnalysisConfig.xml</AnalysisConfigPath>
-  <ProjectPath>D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Utilities\Bus.Utilities.csproj</ProjectPath>
+  <ProjectPath>D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.General\App.General.csproj</ProjectPath>
   <FilesToAnalyzePath>D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\.sonarqube\conf\6\FilesToAnalyze.txt</FilesToAnalyzePath>
   <OutPath>D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\.sonarqube\out\6</OutPath>
   <ProjectType>Product</ProjectType>
-  <TargetFramework>net6.0</TargetFramework>
+  <TargetFramework>net6.0-windows</TargetFramework>
 </SonarProjectConfig>

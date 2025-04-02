@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ProjectInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.sonarsource.com/msbuild/integration/2015/1">
-  <ProjectName>Ent.Sql</ProjectName>
+  <ProjectName>App.EncriptarClave</ProjectName>
   <ProjectLanguage>C#</ProjectLanguage>
   <ProjectType>Product</ProjectType>
-  <ProjectGuid>d932cdd3-4a4b-4ec1-b8f4-3634f29bc23f</ProjectGuid>
-  <FullPath>D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Ent.Sql\Ent.Sql.csproj</FullPath>
+  <ProjectGuid>30285f58-6c3a-4bdd-9192-ad97daf06255</ProjectGuid>
+  <FullPath>D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.EncriptarClave\App.EncriptarClave.csproj</FullPath>
   <IsExcluded>false</IsExcluded>
   <AnalysisResults>
     <AnalysisResult Id="FilesToAnalyze" Location="D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\.sonarqube\conf\0\FilesToAnalyze.txt" />
@@ -15,5 +15,5 @@
   </AnalysisSettings>
   <Configuration>Debug</Configuration>
   <Platform>AnyCPU</Platform>
-  <TargetFramework>net6.0</TargetFramework>
+  <TargetFramework>net6.0-windows</TargetFramework>
 </ProjectInfo>

@@ -8,14 +8,14 @@ SD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Logistica\Producto
 SD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Logistica\Convenios.cs
  8r!	
  !"#%&xÇ "y
-RD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Logistica\Clientes.cs 8r	
-xÇú
+MD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Token.cs 8r	
+Çú
 YD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\ValorPrestaciones.cs 8jr%	
  !"$%&'()*+,-/0xÇ!),|
 PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\TramaBus.cs 8r
 Çy
-MD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Token.cs 8r	
-Çú
+RD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Logistica\Clientes.cs 8r	
+xÇú
 ND:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Tablas.cs 8j1=r1	
  !"#&'()*+,-./023456789:;<?@xÇ "*.6:ß
 PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Sistemas.cs 8r8	
@@ -42,33 +42,33 @@ TD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Liqxtercer
 8
 rS !"#%&'()*+,-./0126789:;<>?@ABCDFGHIJKLNOPQRSTXYZ[\]^`abcdefhijklmnpqrstuvxyx
 Ç(*/19;ACIKQS[]cekmsu«
-PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Hospital.cs1 8j !"$3r§	'()*+./01245678:;<=>?@ABCDEFGHIJKMNOPQVWXYZ^_`abfghijlmopqrstuvwy{|}~ÄÅÇÑÖÜáàâäåçéèêëíîïñóòôöõùûü†°¢£§¶ß©™´¨≠Æ±≤xÇ-48:<>?@ABDGKMPYajlqrvwÅáâêëòö°£´≠
-VD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\EnviaCorreoHis.cs 8r !"#$%&'()*+,-.xÇ(+s
+PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Hospital.cs1 8j !"$3r§	'()*+./01245678:;<=>?@ABCDEFGHIJKMNOPQVWXYZ^_`abfghijlmopqrstuvwy{|}~ÄÅÇÑÖÜáàâäåçéèêëíîïñóòôöõùûü†°¢£§¶ß©™´¨≠Æ±≤xÇ-48:<>?@ABDGKMPYajlqrvwÅáâêëòö°£´≠s
 QD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\HorariosB.cs 8r	
-Çz
+Ç∏
+aD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\FinanciamientoLaboratorio.cs 8r8
+ !#$%&'(*+,-./12345689:;<=?@ABCDEFÇ &'-.45;<BCø
+\D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\ContratoConsultorios.csñ (83j)*+,afmrí	
+ !"%&'(./0123456789:;<=>@ABCDEFGHIKLMNOPRSTUVXY[\]^_`bcdeghijklnopqrsuvwxy{|}~ÄÅÇÉÑÖÜáàâäãåçéèêëíìñóòôöõúùû†°¢£§•¶®©™´¨≠Æ∞±≤≥¥µ∂∑ªºΩæø¿¡¬√ƒ»… ÀÃÕŒœ–—’÷◊ÿŸ⁄€‹›ﬁﬂ‡·‚„‰ÂÊÁËÈÍÎÏÒÚÛÙıˆ˜¯˘˙˚¸˝˛ˇÅÇÉÑÖÜáàäãåçéèêëíìîïñöõúùûü†°¢£§•¶ß´¨≠ÆØ∞±≤≥µ∂∑∏π∫ªΩæø¿¡¬√≈∆«»… ÀÃ–—“”‘’÷◊ÿ⁄€‹›ﬁﬂ‡‚„‰ÂÊÁËÍÎÏÌÓÔÒıˆ˜¯˘˙˚¸˝ˇÄÅÇÉÑÖáàâäãåçèêëíìîïñöõúùûü†°¢§•¶ß®©™¨≠ÆØ∞±≤¥µ∂∑∏π∫ºΩæø¿¡¬√∆x-Ç¥01289:;>CDEFGHIKSUVXY\`bjknpqrsuvw~ÅÇÉÖâäãèêëõù£•´≠≥µ¿¬Õœ⁄‹·„ËÍı˜¸˛ÑÜíî£•∞≤∏∫¿¬» ’◊›ﬂÂÁÌÔ˙¸ÇÑäåíîü°ß©Ø±∑πø¡z
 VD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Especialidades.cs 8r
 Ç´
 [D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\EscalaEIndicaciones.cs 8r5
  !"#$%&'()*+,-.0123456789xÇ
-#%+-46ø
-\D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\ContratoConsultorios.csñ (83j)*+,afmrí	
- !"%&'(./0123456789:;<=>@ABCDEFGHIKLMNOPRSTUVXY[\]^_`bcdeghijklnopqrsuvwxy{|}~ÄÅÇÉÑÖÜáàâäãåçéèêëíìñóòôöõúùû†°¢£§•¶®©™´¨≠Æ∞±≤≥¥µ∂∑ªºΩæø¿¡¬√ƒ»… ÀÃÕŒœ–—’÷◊ÿŸ⁄€‹›ﬁﬂ‡·‚„‰ÂÊÁËÈÍÎÏÒÚÛÙıˆ˜¯˘˙˚¸˝˛ˇÅÇÉÑÖÜáàäãåçéèêëíìîïñöõúùûü†°¢£§•¶ß´¨≠ÆØ∞±≤≥µ∂∑∏π∫ªΩæø¿¡¬√≈∆«»… ÀÃ–—“”‘’÷◊ÿ⁄€‹›ﬁﬂ‡‚„‰ÂÊÁËÍÎÏÌÓÔÒıˆ˜¯˘˙˚¸˝ˇÄÅÇÉÑÖáàâäãåçèêëíìîïñöõúùûü†°¢§•¶ß®©™¨≠ÆØ∞±≤¥µ∂∑∏π∫ºΩæø¿¡¬√∆x-Ç¥01289:;>CDEFGHIKSUVXY\`bjknpqrsuvw~ÅÇÉÖâäãèêëõù£•´≠≥µ¿¬Õœ⁄‹·„ËÍı˜¸˛ÑÜíî£•∞≤∏∫¿¬» ’◊›ﬂÂÁÌÔ˙¸ÇÑäåíîü°ß©Ø±∑πø¡∏
-aD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\FinanciamientoLaboratorio.cs 8r8
- !#$%&'(*+,-./12345689:;<=?@ABCDEFÇ &'-.45;<BCä
-ZD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Detalleliquidacion.cs 8r !"#$%&'()*+,-./0123xÇ').0{
-QD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Dashboard.cs 8r !"#$%&'()*+-./0xÇ)+Ö
-SD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\EnvioCorreo.cs 8r	xÇî
+#%+-46
+VD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\EnviaCorreoHis.cs 8r !"#$%&'()*+,-.xÇ(+ä
+ZD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Detalleliquidacion.cs 8r !"#$%&'()*+,-./0123xÇ').0Ö
+SD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\EnvioCorreo.cs 8r	xÇ{
+QD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Dashboard.cs 8r !"#$%&'()*+-./0xÇ)+
+TD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Aseguradoras.cs 8r	
+xÇî
 TD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Comprobantes.cs	 8r)	
  !"#$%&(*+,-./01234xÇ#%/1{
 OD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Cirugia.cs 8r
-Çr
-PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\Campos.cs 8r	
-xÇ
-TD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Aseguradoras.cs 8r	
-xÇt
+Çt
 RD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\Tablasbd.cs 8r	
 xÇr
 PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\BDatos.cs 8r	
+xÇr
+PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\Campos.cs 8r	
 xÇz
 SD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\Auditoria.cs 8r	
 xÇ

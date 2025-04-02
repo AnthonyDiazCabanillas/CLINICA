@@ -1,7 +1,7 @@
-e
-\D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Ent.Oracle\MedisynE\ReservasE\AmReservaE.csutf-8r
-gD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Ent.Oracle\obj\Debug\net6.0\Ent.Oracle.AssemblyInfo.csutf-8Ü
-{D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Ent.Oracle\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.csutf-8t
-iD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Ent.Oracle\obj\Debug\net6.0\Ent.Oracle.GlobalUsings.g.csutf-8h
-_D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Ent.Oracle\MedisynE\PacientesE\TabPacienteE.csutf-8g
-^D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Ent.Oracle\MedisynE\CorreosE\GenEnvioMailE.csutf-8
+ç
+ÅD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\GeneracionReporteDietas\obj\Debug\net6.0\GeneracionReporteDietas.AssemblyInfo.csutf-8î
+àD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\GeneracionReporteDietas\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.csutf-8è
+ÉD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\GeneracionReporteDietas\obj\Debug\net6.0\GeneracionReporteDietas.GlobalUsings.g.csutf-8\
+SD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\GeneracionReporteDietas\Program.csutf-8g
+^D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\GeneracionReporteDietas\FileLoggerProvider.csutf-8_
+VD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\GeneracionReporteDietas\FileLogger.csutf-8

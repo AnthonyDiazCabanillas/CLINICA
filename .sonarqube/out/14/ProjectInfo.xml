@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ProjectInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.sonarsource.com/msbuild/integration/2015/1">
-  <ProjectName>WS.RisCopyService</ProjectName>
+  <ProjectName>WF.RisCopyService</ProjectName>
   <ProjectLanguage>C#</ProjectLanguage>
   <ProjectType>Product</ProjectType>
-  <ProjectGuid>b767bd90-5b2f-432c-8bbe-258f3f9c8d51</ProjectGuid>
-  <FullPath>D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.RisCopyService\WS.RisCopyService.csproj</FullPath>
+  <ProjectGuid>9b106fc6-6241-4293-b706-a7c2c20457d1</ProjectGuid>
+  <FullPath>D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WF.RisCopyService\WF.RisCopyService.csproj</FullPath>
   <IsExcluded>false</IsExcluded>
   <AnalysisResults>
     <AnalysisResult Id="FilesToAnalyze" Location="D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\.sonarqube\conf\14\FilesToAnalyze.txt" />
@@ -15,5 +15,5 @@
   </AnalysisSettings>
   <Configuration>Debug</Configuration>
   <Platform>AnyCPU</Platform>
-  <TargetFramework>net6.0</TargetFramework>
+  <TargetFramework>net6.0-windows</TargetFramework>
 </ProjectInfo>

@@ -145,13 +145,18 @@ SD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Logistica\Convenio
 f r@ L
 
  ,
-8 C  A LÇ
-RD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Logistica\Clientes.cs
+8 C  A Lµ
+MD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Token.cs
 
- 
+ 
+ "  
 
- 3
-> H; Eç
+ 
+
+ &
+5 :- 2
+
+( 7ç
 YD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\ValorPrestaciones.cs
 
  "
@@ -176,18 +181,13 @@ PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\TramaBus.c
 V d= K
 
 7 G
-P X9 Aµ
-MD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Token.cs
+P X9 AÇ
+RD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Logistica\Clientes.cs
 
- 
- "  
+ 
 
- 
-
- &
-5 :- 2
-
-( 7‰
+ 3
+> H; E‰
 ND:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Tablas.cs
 
  
@@ -229,26 +229,36 @@ PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Sistemas.c
 (( /
 ((: D**I S
 
--- .¸
-QD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Seguridad.cs
+-- .á
+MD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Otros.cs
 
- 
+ 
 
- "+
-* /> C	 Ñ
-ê ïP
-    . 6  M U  '' 
-' ,- 2
+ ,
+5 ?6 @
+   
 
-** &
-**2 <,,A K
-,, .. 
+ $
+- 55 =
 
-11 :
-11F J44G K
+ 8
+C M!!P Z
 
-88 *
-886 :;;; ?§
+))( B
+))J P,,L R
+++% *,, -- 
+
+00 0
+008 E55 +
+22 99 :: <
+33 44 55 66 77 99: B
+
+== ,
+==5 =@@6 >
+?? @@ AA 
+
+DD# <
+DDK YGGD R§
 KD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Ris.cs
 
  
@@ -475,36 +485,26 @@ QD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Pacientes.
 = HA L
 
   1 N
-  Z e$$G Rá
-MD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Otros.cs
+  Z e$$G R¸
+QD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Seguridad.cs
 
- 
+ 
 
- ,
-5 ?6 @
-   
+ "+
+* /> C	 Ñ
+ê ïP
+    . 6  M U  '' 
+' ,- 2
 
- $
-- 55 =
+** &
+**2 <,,A K
+,, .. 
 
- 8
-C M!!P Z
+11 :
+11F J44G K
 
-))( B
-))J P,,L R
-++% *,, -- 
-
-00 0
-008 E55 +
-22 99 :: <
-33 44 55 66 77 99: B
-
-== ,
-==5 =@@6 >
-?? @@ AA 
-
-DD# <
-DDK YGGD R‘
+88 *
+886 :;;; ?‘
 VD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\MedicosReporte.cs
 
  
@@ -1157,77 +1157,52 @@ PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Hospital.c
 ¶¶ ;
 
 ¶¶B F
-´´C GÜ
-VD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\EnviaCorreoHis.cs
-
-"" 
-
-$$ &
-$$7 G((? Oó
+´´C Gó
 QD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\HorariosB.cs
 
  
   
 
  3
-; >1 4¶
-VD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Especialidades.cs
+; >1 4≠
+aD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\FinanciamientoLaboratorio.cs
 
- 
+ *
 
-* G
-] sM c
-' ,  †
-[D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\EscalaEIndicaciones.cs
+, J
+b uK ^
+) .  
 
- $<
- $  ## ++ 44 
+, J
+b u[ n
+) .  
 
-* D
-I N9 >
-T \? G
-e hH K
-q uM Q
-	~ ÇS W
+, H
+` sQ d
+) .    
 
-ã èY ]
+##, K
+##c v&&T g
+%%) .&& '' 
 
-3 T
-Y ^@ E
-d lG O
-u xQ T
+**, N
+**f y--W j
+,,) .-- .. 
 
-Å ÖV Z
+11, H
+11f {44T i
 
-é í\ `
+11Å å44k v
+33) 444 55 
 
-õ üb f
+88 ,
+88J _;;I ^
+88e p;;` k
+:: ;; << 
 
-   <
-  O R##= @
-
-''3 T
-''Y ^++@ E
-''d l++G O
-''u x++Q T
-
-''Å Ö++V Z
-
-''é í++\ `
-
-''õ ü++b f
-
-00; e
-00j o44I N
-00u }44P X
-
-00Ü â44Z ]
-
-00í ñ44_ c
-
-00ü £44e i
-
-00¨ ∞44k oä
+??, R
+??j }BB] p
+AA) .BB CC ä
 \D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\ContratoConsultorios.cs
 '' !! 1
 .. 'EE #
@@ -1440,45 +1415,70 @@ VD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Especialid
 ºº =
 
 ººY t
-øøa |≠
-aD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\FinanciamientoLaboratorio.cs
+øøa |¶
+VD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Especialidades.cs
 
- *
+ 
 
-, J
-b uK ^
-) .  
+* G
+] sM c
+' ,  †
+[D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\EscalaEIndicaciones.cs
 
-, J
-b u[ n
-) .  
+ $<
+ $  ## ++ 44 
 
-, H
-` sQ d
-) .    
+* D
+I N9 >
+T \? G
+e hH K
+q uM Q
+	~ ÇS W
 
-##, K
-##c v&&T g
-%%) .&& '' 
+ã èY ]
 
-**, N
-**f y--W j
-,,) .-- .. 
+3 T
+Y ^@ E
+d lG O
+u xQ T
 
-11, H
-11f {44T i
+Å ÖV Z
 
-11Å å44k v
-33) 444 55 
+é í\ `
 
-88 ,
-88J _;;I ^
-88e p;;` k
-:: ;; << 
+õ üb f
 
-??, R
-??j }BB] p
-AA) .BB CC ¨
+   <
+  O R##= @
+
+''3 T
+''Y ^++@ E
+''d l++G O
+''u x++Q T
+
+''Å Ö++V Z
+
+''é í++\ `
+
+''õ ü++b f
+
+00; e
+00j o44I N
+00u }44P X
+
+00Ü â44Z ]
+
+00í ñ44_ c
+
+00ü £44e i
+
+00¨ ∞44k oÜ
+VD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\EnviaCorreoHis.cs
+
+"" 
+
+$$ &
+$$7 G((? O¨
 ZD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Detalleliquidacion.cs
 
 "" #
@@ -1487,15 +1487,7 @@ ZD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Detalleliq
 $$\ p''O c
 
 ++ 6
-++K _..S gç
-QD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Dashboard.cs
-
-"" 
-
-$$ 0
-
-&&( F
-&&V r))N j•
+++K _..S g•
 SD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\EnvioCorreo.cs
 
  
@@ -1504,7 +1496,38 @@ SD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\EnvioCorre
 7 F8 G
 
  +
-4 <8 @·
+4 <8 @ç
+QD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Dashboard.cs
+
+"" 
+
+$$ 0
+
+&&( F
+&&V r))N jÑ
+TD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Aseguradoras.cs
+
+ 
+
+# 7
+F SG T·
+OD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Cirugia.cs
+
+ 
+
+) H
+] pP c
+& +  
+
+) P
+e xW j
+& +  Ç
+RD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\Tablasbd.cs
+
+ 
+
+ &
+1 ;4 >·
 TD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Comprobantes.cs
 
  )
@@ -1520,42 +1543,19 @@ TD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Comprobant
 ** 
 
 ,, -
-,,5 <//5 <·
-OD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Cirugia.cs
-
- 
-
-) H
-] pP c
-& +  
-
-) P
-e xW j
-& +  Ä
-PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\Campos.cs
-
- 
-
- "
-+ 30 8Ñ
-TD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Aseguradoras.cs
-
- 
-
-# 7
-F SG TÇ
-RD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\Tablasbd.cs
-
- 
-
- &
-1 ;4 >Ä
+,,5 <//5 <Ä
 PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\BDatos.cs
 
  
 
  %
-. 63 ;ô
+. 63 ;Ä
+PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\Campos.cs
+
+ 
+
+ "
++ 30 8ô
 SD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\Auditoria.cs
 
  

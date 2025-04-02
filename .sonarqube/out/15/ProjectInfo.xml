@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ProjectInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.sonarsource.com/msbuild/integration/2015/1">
-  <ProjectName>WS.ContratoConsultorios</ProjectName>
+  <ProjectName>WSAgenda</ProjectName>
   <ProjectLanguage>C#</ProjectLanguage>
   <ProjectType>Product</ProjectType>
-  <ProjectGuid>c010ba2b-9eb7-4b5f-bd44-2080269811ab</ProjectGuid>
-  <FullPath>D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.ContratoConsultorios\WS.ContratoConsultorios.csproj</FullPath>
+  <ProjectGuid>b06a43d2-a66e-4e1d-a19b-243b69d179af</ProjectGuid>
+  <FullPath>D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WSAgenda\WSAgenda.csproj</FullPath>
   <IsExcluded>false</IsExcluded>
   <AnalysisResults>
     <AnalysisResult Id="FilesToAnalyze" Location="D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\.sonarqube\conf\15\FilesToAnalyze.txt" />
@@ -15,5 +15,5 @@
   </AnalysisSettings>
   <Configuration>Debug</Configuration>
   <Platform>AnyCPU</Platform>
-  <TargetFramework>net8.0</TargetFramework>
+  <TargetFramework>net6.0</TargetFramework>
 </ProjectInfo>

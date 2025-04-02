@@ -201,79 +201,6 @@
           }
         },
         {
-          "ruleId": "S1192",
-          "level": "warning",
-          "message": "Define a constant instead of using this literal '↑ Lista ↑' 5 times.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.SemaforoEmergencias/frmSemaforo.cs",
-                "region": {
-                  "startLine": 67,
-                  "startColumn": 30,
-                  "endLine": 67,
-                  "endColumn": 41
-                }
-              }
-            }
-          ],
-          "relatedLocations": [
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.SemaforoEmergencias/frmSemaforo.cs",
-                "region": {
-                  "startLine": 77,
-                  "startColumn": 30,
-                  "endLine": 77,
-                  "endColumn": 41
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.SemaforoEmergencias/frmSemaforo.cs",
-                "region": {
-                  "startLine": 87,
-                  "startColumn": 30,
-                  "endLine": 87,
-                  "endColumn": 41
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.SemaforoEmergencias/frmSemaforo.cs",
-                "region": {
-                  "startLine": 98,
-                  "startColumn": 30,
-                  "endLine": 98,
-                  "endColumn": 41
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.SemaforoEmergencias/frmSemaforo.cs",
-                "region": {
-                  "startLine": 111,
-                  "startColumn": 34,
-                  "endLine": 111,
-                  "endColumn": 45
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1,
-            "customProperties": {
-              "0": null,
-              "1": null,
-              "2": null,
-              "3": null
-            }
-          }
-        },
-        {
           "ruleId": "S2325",
           "level": "warning",
           "message": "Make 'GetFigurePath' a static method.",
@@ -376,6 +303,79 @@
           ],
           "properties": {
             "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1192",
+          "level": "warning",
+          "message": "Define a constant instead of using this literal '↑ Lista ↑' 5 times.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.SemaforoEmergencias/frmSemaforo.cs",
+                "region": {
+                  "startLine": 67,
+                  "startColumn": 30,
+                  "endLine": 67,
+                  "endColumn": 41
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.SemaforoEmergencias/frmSemaforo.cs",
+                "region": {
+                  "startLine": 77,
+                  "startColumn": 30,
+                  "endLine": 77,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.SemaforoEmergencias/frmSemaforo.cs",
+                "region": {
+                  "startLine": 87,
+                  "startColumn": 30,
+                  "endLine": 87,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.SemaforoEmergencias/frmSemaforo.cs",
+                "region": {
+                  "startLine": 98,
+                  "startColumn": 30,
+                  "endLine": 98,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/App.SemaforoEmergencias/frmSemaforo.cs",
+                "region": {
+                  "startLine": 111,
+                  "startColumn": 34,
+                  "endLine": 111,
+                  "endColumn": 45
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1,
+            "customProperties": {
+              "0": null,
+              "1": null,
+              "2": null,
+              "3": null
+            }
           }
         }
       ],

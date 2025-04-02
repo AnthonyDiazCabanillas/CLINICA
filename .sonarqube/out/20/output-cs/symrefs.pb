@@ -1,33 +1,11 @@
-í
-GD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\frmMain.cs
+Á
+GD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\Program.cs
+		 !  
+% 2 ! .
 
-  
-
-
-
- )
-
-
-
-1 7
-
-
-
-C D
-! 1 
-
- $
-
-, 2
-
-> ?
- % 
-
- !
-
-) /
-
-; <œ#
+ 
+  #
+ L R  L Rœ#
 ND:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\Cita\frmSiteds.cs
 
  "B
@@ -487,14 +465,36 @@ ND:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\Cita\frmSiteds.cs
 
 ˜˜+ 1
 
-˜˜= >Á
-GD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\Program.cs
-		 !  
-% 2 ! .
+˜˜= >í
+GD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\frmMain.cs
 
- 
-  #
- L R  L R˜
+  
+
+
+
+ )
+
+
+
+1 7
+
+
+
+C D
+! 1 
+
+ $
+
+, 2
+
+> ?
+ % 
+
+ !
+
+) /
+
+; <˜
 TD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\App.Clinica\Cita\frmDatosReserva.cs
 
  (

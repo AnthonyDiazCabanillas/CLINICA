@@ -1,5 +1,8 @@
-﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WF.RisCopyService\Form1.cs
-D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WF.RisCopyService\Form1.Designer.cs
-D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WF.RisCopyService\Program.cs
-D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WF.RisCopyService\Form1.resx
-D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WF.RisCopyService\App.config
+﻿D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.RisCopyService\Program.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.RisCopyService\Worker.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.RisCopyService\obj\Debug\net6.0\WS.RisCopyService.GlobalUsings.g.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.RisCopyService\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.RisCopyService\obj\Debug\net6.0\WS.RisCopyService.AssemblyInfo.cs
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.RisCopyService\appsettings.Development.json
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.RisCopyService\appsettings.json
+D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\WS.RisCopyService\Properties\launchSettings.json

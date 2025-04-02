@@ -56,40 +56,6 @@
         {
           "ruleId": "CS8618",
           "level": "warning",
-          "message": "El elemento propiedad \"username\" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required'\"o declarar el propiedad como un valor que acepta valores NULL.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/Clases/TokenRequest.cs",
-                "region": {
-                  "startLine": 17,
-                  "startColumn": 23,
-                  "endLine": 17,
-                  "endColumn": 31
-                }
-              }
-            }
-          ],
-          "relatedLocations": [
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/Clases/TokenRequest.cs",
-                "region": {
-                  "startLine": 17,
-                  "startColumn": 23,
-                  "endLine": 17,
-                  "endColumn": 31
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8618",
-          "level": "warning",
           "message": "El elemento propiedad \"token\" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required'\"o declarar el propiedad como un valor que acepta valores NULL.",
           "locations": [
             {
@@ -113,40 +79,6 @@
                   "startColumn": 23,
                   "endLine": 17,
                   "endColumn": 28
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8618",
-          "level": "warning",
-          "message": "El elemento propiedad \"password\" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required'\"o declarar el propiedad como un valor que acepta valores NULL.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/Clases/TokenRequest.cs",
-                "region": {
-                  "startLine": 18,
-                  "startColumn": 23,
-                  "endLine": 18,
-                  "endColumn": 31
-                }
-              }
-            }
-          ],
-          "relatedLocations": [
-            {
-              "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/Clases/TokenRequest.cs",
-                "region": {
-                  "startLine": 18,
-                  "startColumn": 23,
-                  "endLine": 18,
-                  "endColumn": 31
                 }
               }
             }
@@ -192,16 +124,16 @@
         {
           "ruleId": "CS8618",
           "level": "warning",
-          "message": "El elemento propiedad \"UrlToken\" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required'\"o declarar el propiedad como un valor que acepta valores NULL.",
+          "message": "El elemento propiedad \"username\" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required'\"o declarar el propiedad como un valor que acepta valores NULL.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/Program.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/Clases/TokenRequest.cs",
                 "region": {
-                  "startLine": 41,
-                  "startColumn": 27,
-                  "endLine": 41,
-                  "endColumn": 35
+                  "startLine": 17,
+                  "startColumn": 23,
+                  "endLine": 17,
+                  "endColumn": 31
                 }
               }
             }
@@ -209,12 +141,12 @@
           "relatedLocations": [
             {
               "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/Program.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/Clases/TokenRequest.cs",
                 "region": {
-                  "startLine": 41,
-                  "startColumn": 27,
-                  "endLine": 41,
-                  "endColumn": 35
+                  "startLine": 17,
+                  "startColumn": 23,
+                  "endLine": 17,
+                  "endColumn": 31
                 }
               }
             }
@@ -226,16 +158,16 @@
         {
           "ruleId": "CS8618",
           "level": "warning",
-          "message": "El elemento propiedad \"UrlEnvioDoc\" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required'\"o declarar el propiedad como un valor que acepta valores NULL.",
+          "message": "El elemento propiedad \"password\" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required'\"o declarar el propiedad como un valor que acepta valores NULL.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/Program.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/Clases/TokenRequest.cs",
                 "region": {
-                  "startLine": 42,
-                  "startColumn": 27,
-                  "endLine": 42,
-                  "endColumn": 38
+                  "startLine": 18,
+                  "startColumn": 23,
+                  "endLine": 18,
+                  "endColumn": 31
                 }
               }
             }
@@ -243,12 +175,33 @@
           "relatedLocations": [
             {
               "physicalLocation": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/Program.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/Clases/TokenRequest.cs",
                 "region": {
-                  "startLine": 42,
-                  "startColumn": 27,
-                  "endLine": 42,
-                  "endColumn": 38
+                  "startLine": 18,
+                  "startColumn": 23,
+                  "endLine": 18,
+                  "endColumn": 31
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8603",
+          "level": "warning",
+          "message": "Posible tipo de valor devuelto de referencia nulo.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/FileLogger.cs",
+                "region": {
+                  "startLine": 21,
+                  "startColumn": 58,
+                  "endLine": 21,
+                  "endColumn": 62
                 }
               }
             }
@@ -428,18 +381,65 @@
           }
         },
         {
-          "ruleId": "CS8603",
+          "ruleId": "CS8618",
           "level": "warning",
-          "message": "Posible tipo de valor devuelto de referencia nulo.",
+          "message": "El elemento propiedad \"UrlToken\" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required'\"o declarar el propiedad como un valor que acepta valores NULL.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/FileLogger.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/Program.cs",
                 "region": {
-                  "startLine": 21,
-                  "startColumn": 58,
-                  "endLine": 21,
-                  "endColumn": 62
+                  "startLine": 41,
+                  "startColumn": 27,
+                  "endLine": 41,
+                  "endColumn": 35
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/Program.cs",
+                "region": {
+                  "startLine": 41,
+                  "startColumn": 27,
+                  "endLine": 41,
+                  "endColumn": 35
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8618",
+          "level": "warning",
+          "message": "El elemento propiedad \"UrlEnvioDoc\" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador \"required'\"o declarar el propiedad como un valor que acepta valores NULL.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/Program.cs",
+                "region": {
+                  "startLine": 42,
+                  "startColumn": 27,
+                  "endLine": 42,
+                  "endColumn": 38
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/Program.cs",
+                "region": {
+                  "startLine": 42,
+                  "startColumn": 27,
+                  "endLine": 42,
+                  "endColumn": 38
                 }
               }
             }
@@ -1192,6 +1192,27 @@
           }
         },
         {
+          "ruleId": "S3241",
+          "level": "warning",
+          "message": "Change return type to 'void'; not a single caller uses the returned value.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/Program.cs",
+                "region": {
+                  "startLine": 169,
+                  "startColumn": 16,
+                  "endLine": 169,
+                  "endColumn": 20
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
           "ruleId": "S3218",
           "level": "warning",
           "message": "Rename this property to not shadow the outer class' member with the same name.",
@@ -1234,27 +1255,6 @@
           }
         },
         {
-          "ruleId": "S3241",
-          "level": "warning",
-          "message": "Change return type to 'void'; not a single caller uses the returned value.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/Program.cs",
-                "region": {
-                  "startLine": 169,
-                  "startColumn": 16,
-                  "endLine": 169,
-                  "endColumn": 20
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
           "ruleId": "S2486",
           "level": "warning",
           "message": "Handle the exception or explain in a comment why it can be ignored.",
@@ -1264,6 +1264,27 @@
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/FileLogger.cs",
                 "region": {
                   "startLine": 44,
+                  "startColumn": 4,
+                  "endLine": 46,
+                  "endColumn": 5
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S108",
+          "level": "warning",
+          "message": "Either remove or fill this block of code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/FileLogger.cs",
+                "region": {
+                  "startLine": 45,
                   "startColumn": 4,
                   "endLine": 46,
                   "endColumn": 5
@@ -1309,27 +1330,6 @@
                   "startColumn": 39,
                   "endLine": 171,
                   "endColumn": 46
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S108",
-          "level": "warning",
-          "message": "Either remove or fill this block of code.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/WsEnvioDocumentoDigitalizacion/FileLogger.cs",
-                "region": {
-                  "startLine": 45,
-                  "startColumn": 4,
-                  "endLine": 46,
-                  "endColumn": 5
                 }
               }
             }

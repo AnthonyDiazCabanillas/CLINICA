@@ -169,6 +169,27 @@
           }
         },
         {
+          "ruleId": "CS8602",
+          "level": "warning",
+          "message": "Desreferencia de una referencia posiblemente NULL.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Controllers/UsuarioController.cs",
+                "region": {
+                  "startLine": 52,
+                  "startColumn": 60,
+                  "endLine": 52,
+                  "endColumn": 63
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
           "ruleId": "CS8604",
           "level": "warning",
           "message": "Posible argumento de referencia nulo para el parámetro \"identity\" en \"dynamic Jwt.validarToken(ClaimsIdentity identity)\".",
@@ -223,27 +244,6 @@
                   "startColumn": 47,
                   "endLine": 43,
                   "endColumn": 62
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CS8602",
-          "level": "warning",
-          "message": "Desreferencia de una referencia posiblemente NULL.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Controllers/UsuarioController.cs",
-                "region": {
-                  "startLine": 52,
-                  "startColumn": 60,
-                  "endLine": 52,
-                  "endColumn": 63
                 }
               }
             }
@@ -337,6 +337,90 @@
           }
         },
         {
+          "ruleId": "S4487",
+          "level": "warning",
+          "message": "Remove this unread private field 'environment' or refactor the code to use its value.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Controllers/UtilitarioController.cs",
+                "region": {
+                  "startLine": 28,
+                  "startColumn": 46,
+                  "endLine": 28,
+                  "endColumn": 57
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S4487",
+          "level": "warning",
+          "message": "Remove this unread private field 'environment' or refactor the code to use its value.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Controllers/DigitalizacionController.cs",
+                "region": {
+                  "startLine": 24,
+                  "startColumn": 46,
+                  "endLine": 24,
+                  "endColumn": 57
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1104",
+          "level": "warning",
+          "message": "Make this field 'private' and encapsulate it in a 'public' property.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Controllers/UsuarioController.cs",
+                "region": {
+                  "startLine": 28,
+                  "startColumn": 31,
+                  "endLine": 28,
+                  "endColumn": 45
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1155",
+          "level": "warning",
+          "message": "Use '.Any()' to test whether this 'IEnumerable<System.Security.Claims.Claim>' is empty or not.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Models/Jwt.cs",
+                "region": {
+                  "startLine": 22,
+                  "startColumn": 36,
+                  "endLine": 22,
+                  "endColumn": 41
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
           "ruleId": "S2068",
           "level": "warning",
           "message": "\"password\" detected here, make sure this is not a hard-coded credential.",
@@ -391,90 +475,6 @@
                   "startColumn": 22,
                   "endLine": 12,
                   "endColumn": 111
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1104",
-          "level": "warning",
-          "message": "Make this field 'private' and encapsulate it in a 'public' property.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Controllers/UsuarioController.cs",
-                "region": {
-                  "startLine": 28,
-                  "startColumn": 31,
-                  "endLine": 28,
-                  "endColumn": 45
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S4487",
-          "level": "warning",
-          "message": "Remove this unread private field 'environment' or refactor the code to use its value.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Controllers/DigitalizacionController.cs",
-                "region": {
-                  "startLine": 24,
-                  "startColumn": 46,
-                  "endLine": 24,
-                  "endColumn": 57
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S4487",
-          "level": "warning",
-          "message": "Remove this unread private field 'environment' or refactor the code to use its value.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Controllers/UtilitarioController.cs",
-                "region": {
-                  "startLine": 28,
-                  "startColumn": 46,
-                  "endLine": 28,
-                  "endColumn": 57
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1155",
-          "level": "warning",
-          "message": "Use '.Any()' to test whether this 'IEnumerable<System.Security.Claims.Claim>' is empty or not.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/ApiDigitalizacion/Models/Jwt.cs",
-                "region": {
-                  "startLine": 22,
-                  "startColumn": 36,
-                  "endLine": 22,
-                  "endColumn": 41
                 }
               }
             }

@@ -186,11 +186,11 @@ _D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\HospitalAD\P
 j9Zhijklrm	
 !"#$%&'()*+,-.012345678:;<=>?@ABCDEFGHIJKLOPQRSTUVWXY[\]^_`abcdefhijklnopqrstuvyzx‚="#$%&)*+-468:;<=>?@ABDEGHKUWY[\]^_`abdehijklntÄ
 bD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\HospitalAD\HospitalvalidarAD.cs 8j)*r9
- !"#$%&'(+,-./01356789:;<=>?x‚$&(+,-./0135;”
-cD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\HospitalAD\HospitalEncuestaAD.cs7 8j.7Wrj
- !"#$%&'()+,-./012345689:;<=>?@ABDEFGHIJKLNOPQRSTUVXYZ[\]^_`abcdefghijklmnopx‚1 !"#$%(24689:;<>?ABDJRTVXYZ[\]^`adeflz
+ !"#$%&'(+,-./01356789:;<=>?x‚$&(+,-./0135;z
 fD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\HospitalAD\HospitalExclusionesAD.csr
-‰
+”
+cD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\HospitalAD\HospitalEncuestaAD.cs7 8j.7Wrj
+ !"#$%&'()+,-./012345689:;<=>?@ABDEFGHIJKLNOPQRSTUVXYZ[\]^_`abcdefghijklmnopx‚1 !"#$%(24689:;<>?ABDJRTVXYZ[\]^`adefl‰
 ^D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\HospitalAD\HospitalDocAD.cs6 8j\re	
  !"#$%&'()*+-./0123456789;<=>?@ACDEFGHIJKLMNOPQSTUVWXYZ[]^_`abcdefghijklmnopqx‚2 !"#$%&'()*245789;=?@CDEFGKOWY[]^_`abcefgm˜
 cD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\HospitalAD\HospitalAdmisionAD.cs6 8j,5>?@ABWbcdrg
@@ -227,17 +227,17 @@ wD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\ContratosAD\
 }D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\ContratosAD\HisContratoconsultoriobeneficiosadendaDetAD.cst 8j69Hemo¥§¿ÃÅ×r–
  !"#$%&'()*+,-./01234578:;<=?@ABCDEFGIJKLMNOPQRSTUVWXYZ\]^_`abcdfghijklnpqrstuvwxyz{|}~€ƒ„…†ˆ‰Š‹Œ‘’”•–—˜™š›œŸ ¡¢£¤¦¨©ª«¬­®¯°±²³´¶·¸¹º»¼½¾ÀÁÂÄÆÇÈÉÊËÌÍÎÏĞÑÒÔÕÖØÙÚÛÜİŞßàáx‚¢!"#$%&'(*+,-./0134578:<CEGIJKLMNOPRSUVY`bdfghijklnpqrsuvz€…†ˆ‰Š‹Œ‘˜šœŸ ¡¢£¤¦¨©ª«¬®³º¼¾ÀÁÂÄÆÇÈÉÊÌÑÖØÙÚÛÜİŞã
 vD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\ContratosAD\HisContratoconsultoriobeneficioMaeAD.cs 8j3r=	
- !"#$%'(*+,-./012456789:;<=>?@ABCDEFGHIx‚ !"#$'.02456789:;<=?@BCF¤
-aD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\ComprobantesAD\CuadreCajaAD.cs 8r'
- "#$%&'(*+x‚"&¯
+ !"#$%'(*+,-./012456789:;<=>?@ABCDEFGHIx‚ !"#$'.02456789:;<=?@BCFš
+sD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\ContratosAD\HisContratoconsultorioadendaDetAD.csg 8j<X^`“•­°²rú	
+ !"#$%&'()*+,-./013456789:;=>?@ABCDEFGHIJKLMOPQRSTUVWYZ[\]_abcdefghijklmnopqstuvwxyz{|}~‚„…†‡ˆ‰Š‹Œ‘’”–—˜™š›œŸ ¡¢¤¥¦§¨©ª«¬®¯±³´µ¶·¸¹º»¼½¾¿ÁÂÃÄÆÇÈÉÊËÌÍÎÏĞx‚ˆ !"#$'()*+,-.079;=>?@ABCEFHILSUWYZ[\]_abcdfjpvwxyz{|}~ˆŠŒ‘’”–—˜™šœ¡¨ª¬®¯±³´µ¶·¹¾ÃÄÆÇÈÉÊËÌÍ¯
 sD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\ContratosAD\HisContratoconsultorioadendaCabAD.cs© 8jFf‚“•—®¾ÁÏßáùÿ“r„
  !"#$%&'()*+,-./0123456789:;<=>?@ABCDEGHIJKLMNOPQRSTUVWXZ[]^_`abcdeghijklmnopqrstuvwyz{|}~€ƒ„…†‡ˆ‰Š‹Œ‘’–˜™š›œŸ ¡¢£¤¥¦§¨ª«¬­¯°±²³´µ¶·¸¹º»¼½ÀÂÃÄÅÆÇÈÉÊËÌÍÎĞÑÒÓÔÕÖ×ØÙÚÛÜİŞàâãäåæçèéêëìíîğñòóôõö÷øúûüış€‚ƒ„…†‡ˆ‰Š‹Œ‘’”•–—˜™š›œx‚ƒ"#$%&'()*+,-./01256789:;<=>?@ABCDEGIJKLNOPQSTUVWZaceghijklmoprsv}ƒ„…†‡ˆ‰Š‹Œ‘’–˜™š›¡§¬­¯°±²³´µ¶·¸¹º»¼½ÀÂÃÄÊÌÎĞÑÒÓÔÕÖ×ØÙÚÛÜİŞàâãäåæèíôöøúûüış€‚ƒ„…†ˆ’”•–—˜™šÅ
 \D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\ComprobantesAD\SerieAD.cs 8j-r;
-!"$%&'()*+,./0123456789:;<=>?x‚!(*,./01235689<š
-sD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\ContratosAD\HisContratoconsultorioadendaDetAD.csg 8j<X^`“•­°²rú	
- !"#$%&'()*+,-./013456789:;=>?@ABCDEFGHIJKLMOPQRSTUVWYZ[\]_abcdefghijklmnopqstuvwxyz{|}~‚„…†‡ˆ‰Š‹Œ‘’”–—˜™š›œŸ ¡¢¤¥¦§¨©ª«¬®¯±³´µ¶·¸¹º»¼½¾¿ÁÂÃÄÆÇÈÉÊËÌÍÎÏĞx‚ˆ !"#$'()*+,-.079;=>?@ABCEFHILSUWYZ[\]_abcdfjpvwxyz{|}~ˆŠŒ‘’”–—˜™šœ¡¨ª¬®¯±³´µ¶·¹¾ÃÄÆÇÈÉÊËÌÍ®
+!"$%&'()*+,./0123456789:;<=>?x‚!(*,./01235689<®
 \D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\ComprobantesAD\NotasAD.cs 8jr.	
- "#$&'()+,-./0123x‚ "#$&'+/µ
+ "#$&'()+,-./0123x‚ "#$&'+/¤
+aD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\ComprobantesAD\CuadreCajaAD.cs 8r'
+ "#$%&'(*+x‚"&µ
 oD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\ComprobantesAD\ComprobantesElectronicosAD.csı 87j´=_`abcdefghikopqstuv…†ˆ‰Š‹Œ”•–—˜™©Éƒ‡‘›¤®¶¿ÆÏÙàáâãäæçèéêëíîïğñòôúü‚Š”™ ¦­´¼½ÁÉĞ×Ûâëïöúƒˆ–œ¡Âí²Õõr…		
  !"#$%&'(*+,./012345789;<=>?@ABCDEFGHJKLMNOPQRSTUVWXYZ\]^_`abcdefghiklmnopqrstuvwyz{|}~€‚ƒ„…†ˆ‰Š‹Œ“”•–—˜™š›Ÿ ¡¢£¤¥¦§¨©ª«¬­®¯°²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÆÇÈÉÊËÍÎÏĞÑÒÓÔÕ×ØÙÚÛÜİŞßàáâãäåæçéêëìíîïğñòóôõö÷øùúûışÿ€ƒ„…ˆ‰Š‹Œ’“”•–—˜™œŸ ¡¢¥¦§¨©ª«¬¯°±²³´·¸¹º»¼½ÀÁÂÃÄÇÈÉÊËÌÍĞÑÒÓÔÕÖ×ÚÛÜİõö÷øûşÿ€ƒ„…†‡ˆŠ‹Œ‘’•–—š›œ¡¢£¤§¨©ª«®¯°±²µ¶·¸¹º½¾¿ÂÃÄÅÆÇÊËÌÍÎÑÒÓÔØÙÜİŞßàãäåæçìíğñòóô÷øûüışÿ€„…†‰Š‹Œ‘’“—˜™šŸ¢£¤¥¨©ª«¬­®¯°±³´¶·¸¹º»¼½¾¿ÀÁÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕ×ØÙÚÛÜİŞßáâãäåæçèéêëìîïğñòóôõö÷ùúûüışÿ€ƒ„…†‡ˆ‰Š‹Œ‘’“”•–—˜™šœŸ ¡¢£¤¦§¨©ª«¬­®¯°±³´µ¶·¸¹º»¼½¿ÀÁÂÃÄÅÆÇÉÊËÌÍÎÏĞÑÒÓÔÖ×ØÙÚÛÜİŞßàâãäåæçèéêìíîïğñòóôö÷øùúüışÿ€‚ƒ„…†‡ˆ‰Š‹ŒxW‚ö !"#$'.2345789;<=>?@ABCDEFGHJKLMNOPQRSTUVWXYZ\]^_`abcdefghiklmnopqrstuvwyz{|}~€‚ƒ„…†ˆ‰Š‹Œ“”•–—˜™šŸ ¡¢£¤¥¦§¨©ª«¬­®¯°²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÆÇÈÉÊËÍÎÏĞÑÒÓÔÕ×ØÙÚÛÜİŞßàáâãäåæçéêëìíîïğñòóôõö÷øùúûışÿ€ˆ‰Š‹Œ’“”•–—˜™œŸ ¡¢¥¦§¨©ª«¬¯°±²³´·¸¹º»¼½ÀÁÂÃÄÇÈÉÊËÌÍĞÑÒÓÔÕÖ×ÚÛÜİõö÷øûşÿ€ƒ„…†‡‘’•–—š›œ¡¢£¤§¨©ª«®¯°±²µ¶·¸¹º½¾¿ÂÃÄÅÆÇÊËÌÍÎÑÒÓÔØÙÜİŞßàãäåæçìíğñòóô÷øûüışÿ€„…†‰Š‹Œ‘’“—˜™šŸ¢£¤¥¨©ª«¬­®¯³½¿ÁÃÄÅÆÇÈÉÊËÌÍÎÏÑÒÔÕ×İèêìîïğñóôö÷ùÿŠŒ‘’“”–—™šœ¢­¯±³´µ¶·¹º¼½¿ÅĞÒÔÖ×ØÙÚÜİßàâèğòôö÷øùúüış€‚ˆ¬
 cD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Dat.Sql\ClinicaAD\ComprobantesAD\ComprobantesAD.csí 8j„­Ï×çƒ¹Æçr»	

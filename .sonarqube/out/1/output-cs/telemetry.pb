@@ -1,1 +1,1 @@
-cRMD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Ent.Oracle\Ent.Oracle.csproj¢net6.0òCSharp10
+}RgD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\GeneracionReporteDietas\GeneracionReporteDietas.csproj¢net6.0òCSharp10

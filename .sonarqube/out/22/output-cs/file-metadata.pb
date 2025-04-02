@@ -1,6 +1,6 @@
-‡
-|D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Web.Clinica\obj\Debug\net6.0\Web.Clinica.MvcApplicationPartsAssemblyInfo.csutf-8y
-nD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Web.Clinica\obj\Debug\net6.0\Web.Clinica.RazorAssemblyInfo.csutf-8t
+y
+nD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Web.Clinica\obj\Debug\net6.0\Web.Clinica.RazorAssemblyInfo.csutf-8‡
+|D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Web.Clinica\obj\Debug\net6.0\Web.Clinica.MvcApplicationPartsAssemblyInfo.csutf-8t
 iD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Web.Clinica\obj\Debug\net6.0\Web.Clinica.AssemblyInfo.csutf-8‡
 |D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Web.Clinica\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.csutf-8v
 kD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Web.Clinica\obj\Debug\net6.0\Web.Clinica.GlobalUsings.g.csutf-8e

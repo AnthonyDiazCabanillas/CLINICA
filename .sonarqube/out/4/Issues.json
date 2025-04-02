@@ -159,27 +159,6 @@
           }
         },
         {
-          "ruleId": "S2325",
-          "level": "warning",
-          "message": "Make 'ObtenerDepatamentos' a static method.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Dat.Oracle/MedisynAD/PacientesAD/TabPacientesAD.cs",
-                "region": {
-                  "startLine": 92,
-                  "startColumn": 24,
-                  "endLine": 92,
-                  "endColumn": 43
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
           "ruleId": "S112",
           "level": "warning",
           "message": "'System.Exception' should not be thrown by user code.",
@@ -222,6 +201,27 @@
           }
         },
         {
+          "ruleId": "S2325",
+          "level": "warning",
+          "message": "Make 'ObtenerDepatamentos' a static method.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Dat.Oracle/MedisynAD/PacientesAD/TabPacientesAD.cs",
+                "region": {
+                  "startLine": 92,
+                  "startColumn": 24,
+                  "endLine": 92,
+                  "endColumn": 43
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
           "ruleId": "S112",
           "level": "warning",
           "message": "'System.Exception' should not be thrown by user code.",
@@ -234,6 +234,27 @@
                   "startColumn": 23,
                   "endLine": 93,
                   "endColumn": 81
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S112",
+          "level": "warning",
+          "message": "'System.Exception' should not be thrown by user code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Dat.Oracle/MedisynAD/ReservasAD/AmReservaAD.cs",
+                "region": {
+                  "startLine": 161,
+                  "startColumn": 23,
+                  "endLine": 161,
+                  "endColumn": 97
                 }
               }
             }
@@ -285,27 +306,6 @@
           }
         },
         {
-          "ruleId": "S112",
-          "level": "warning",
-          "message": "'System.Exception' should not be thrown by user code.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Dat.Oracle/MedisynAD/ReservasAD/AmReservaAD.cs",
-                "region": {
-                  "startLine": 161,
-                  "startColumn": 23,
-                  "endLine": 161,
-                  "endColumn": 97
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
           "ruleId": "S2325",
           "level": "warning",
           "message": "Make 'LlenarEntidad' a static method.",
@@ -317,27 +317,6 @@
                   "startLine": 15,
                   "startColumn": 30,
                   "endLine": 15,
-                  "endColumn": 43
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "CA1822",
-          "level": "note",
-          "message": "El miembro \"ObtenerDepatamentos\" no tiene acceso a los datos de la instancia y se puede marcar como static.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Dat.Oracle/MedisynAD/PacientesAD/TabPacientesAD.cs",
-                "region": {
-                  "startLine": 92,
-                  "startColumn": 24,
-                  "endLine": 92,
                   "endColumn": 43
                 }
               }
@@ -369,18 +348,39 @@
           }
         },
         {
-          "ruleId": "S2325",
+          "ruleId": "S1481",
           "level": "warning",
-          "message": "Make 'VerificarCitaPacienteMedicoDia' a static method.",
+          "message": "Remove the unused local variable 'objAmReservaE'.",
           "locations": [
             {
               "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Dat.Oracle/MedisynAD/ReservasAD/AmReservaAD.cs",
                 "region": {
-                  "startLine": 172,
-                  "startColumn": 21,
-                  "endLine": 172,
-                  "endColumn": 51
+                  "startLine": 101,
+                  "startColumn": 24,
+                  "endLine": 101,
+                  "endColumn": 37
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CA1822",
+          "level": "note",
+          "message": "El miembro \"ObtenerDepatamentos\" no tiene acceso a los datos de la instancia y se puede marcar como static.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Dat.Oracle/MedisynAD/PacientesAD/TabPacientesAD.cs",
+                "region": {
+                  "startLine": 92,
+                  "startColumn": 24,
+                  "endLine": 92,
+                  "endColumn": 43
                 }
               }
             }
@@ -401,27 +401,6 @@
                   "startLine": 68,
                   "startColumn": 24,
                   "endLine": 68,
-                  "endColumn": 37
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1481",
-          "level": "warning",
-          "message": "Remove the unused local variable 'objAmReservaE'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Dat.Oracle/MedisynAD/ReservasAD/AmReservaAD.cs",
-                "region": {
-                  "startLine": 101,
-                  "startColumn": 24,
-                  "endLine": 101,
                   "endColumn": 37
                 }
               }
@@ -516,6 +495,48 @@
           }
         },
         {
+          "ruleId": "S2325",
+          "level": "warning",
+          "message": "Make 'VerificarCitaPacienteMedicoDia' a static method.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Dat.Oracle/MedisynAD/ReservasAD/AmReservaAD.cs",
+                "region": {
+                  "startLine": 172,
+                  "startColumn": 21,
+                  "endLine": 172,
+                  "endColumn": 51
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S112",
+          "level": "warning",
+          "message": "'System.Exception' should not be thrown by user code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Dat.Oracle/MedisynAD/PacientesAD/TabPacientesAD.cs",
+                "region": {
+                  "startLine": 158,
+                  "startColumn": 23,
+                  "endLine": 158,
+                  "endColumn": 76
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
           "ruleId": "S1172",
           "level": "warning",
           "message": "Remove this unused method parameter 'pOrden'.",
@@ -567,54 +588,12 @@
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Dat.Oracle/MedisynAD/PacientesAD/TabPacientesAD.cs",
-                "region": {
-                  "startLine": 158,
-                  "startColumn": 23,
-                  "endLine": 158,
-                  "endColumn": 76
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S112",
-          "level": "warning",
-          "message": "'System.Exception' should not be thrown by user code.",
-          "locations": [
-            {
-              "resultFile": {
                 "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Dat.Oracle/MedisynAD/ReservasAD/AmReservaAD.cs",
                 "region": {
                   "startLine": 205,
                   "startColumn": 23,
                   "endLine": 205,
                   "endColumn": 109
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1481",
-          "level": "warning",
-          "message": "Remove the unused local variable 'objAmReservaE'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Dat.Oracle/MedisynAD/PacientesAD/TabPacientesAD.cs",
-                "region": {
-                  "startLine": 132,
-                  "startColumn": 26,
-                  "endLine": 132,
-                  "endColumn": 39
                 }
               }
             }
@@ -645,18 +624,18 @@
           }
         },
         {
-          "ruleId": "CA1822",
-          "level": "note",
-          "message": "El miembro \"VerificarCitaPacienteMedicoDia\" no tiene acceso a los datos de la instancia y se puede marcar como static.",
+          "ruleId": "S1481",
+          "level": "warning",
+          "message": "Remove the unused local variable 'objAmReservaE'.",
           "locations": [
             {
               "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Dat.Oracle/MedisynAD/ReservasAD/AmReservaAD.cs",
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Dat.Oracle/MedisynAD/PacientesAD/TabPacientesAD.cs",
                 "region": {
-                  "startLine": 172,
-                  "startColumn": 21,
-                  "endLine": 172,
-                  "endColumn": 51
+                  "startLine": 132,
+                  "startColumn": 26,
+                  "endLine": 132,
+                  "endColumn": 39
                 }
               }
             }
@@ -687,6 +666,27 @@
           }
         },
         {
+          "ruleId": "CA1822",
+          "level": "note",
+          "message": "El miembro \"VerificarCitaPacienteMedicoDia\" no tiene acceso a los datos de la instancia y se puede marcar como static.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Dat.Oracle/MedisynAD/ReservasAD/AmReservaAD.cs",
+                "region": {
+                  "startLine": 172,
+                  "startColumn": 21,
+                  "endLine": 172,
+                  "endColumn": 51
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
           "ruleId": "S1481",
           "level": "warning",
           "message": "Remove the unused local variable 'objAmReservaE'.",
@@ -699,6 +699,27 @@
                   "startColumn": 26,
                   "endLine": 171,
                   "endColumn": 39
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S2325",
+          "level": "warning",
+          "message": "Make 'Insert_HIS_ADT' a static method.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Dat.Oracle/MedisynAD/HisADTAD/HisADTAD.cs",
+                "region": {
+                  "startLine": 14,
+                  "startColumn": 23,
+                  "endLine": 14,
+                  "endColumn": 37
                 }
               }
             }
@@ -731,27 +752,6 @@
         {
           "ruleId": "S2325",
           "level": "warning",
-          "message": "Make 'Insert_HIS_ADT' a static method.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Dat.Oracle/MedisynAD/HisADTAD/HisADTAD.cs",
-                "region": {
-                  "startLine": 14,
-                  "startColumn": 23,
-                  "endLine": 14,
-                  "endColumn": 37
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S2325",
-          "level": "warning",
           "message": "Make 'ObtieneAgendaXApellido' a static method.",
           "locations": [
             {
@@ -762,27 +762,6 @@
                   "startColumn": 34,
                   "endLine": 215,
                   "endColumn": 56
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S112",
-          "level": "warning",
-          "message": "'System.Exception' should not be thrown by user code.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Dat.Oracle/MedisynAD/ReservasAD/AmReservaAD.cs",
-                "region": {
-                  "startLine": 297,
-                  "startColumn": 23,
-                  "endLine": 297,
-                  "endColumn": 101
                 }
               }
             }
@@ -825,6 +804,27 @@
                   "startColumn": 37,
                   "endLine": 14,
                   "endColumn": 452
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S112",
+          "level": "warning",
+          "message": "'System.Exception' should not be thrown by user code.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/CLINICA/nsp-csfl-agenda-uti-automatizacion_qa/Dat.Oracle/MedisynAD/ReservasAD/AmReservaAD.cs",
+                "region": {
+                  "startLine": 297,
+                  "startColumn": 23,
+                  "endLine": 297,
+                  "endColumn": 101
                 }
               }
             }

@@ -35,21 +35,7 @@ fD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\Controllers\
 )) **. 6
 ** ++ ++, 2
 -- &.. '
-.. 00j oŠ
-cD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\Controllers\UsuarioController.cs
-
- "
- , 00 (
-0 = *
-
-%% $
-%%: A))h o	))y €(
-)) $++ 77$ +88) 02
-00 44; >;;J M?? @@ 
-22 AA 
-;; <<4 7
-<< CC, 2
->> JJF K 
+.. 00j o 
 jD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\Controllers\DigitalizacionController.cs
 
  )
@@ -71,4 +57,18 @@ jD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\Controllers\
 BB CC CC, 2(
 EE $FF GG JJC M
 II &JJ '
-JJ LLj o
+JJ LLj oŠ
+cD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\ApiDigitalizacion\Controllers\UsuarioController.cs
+
+ "
+ , 00 (
+0 = *
+
+%% $
+%%: A))h o	))y €(
+)) $++ 77$ +88) 02
+00 44; >;;J M?? @@ 
+22 AA 
+;; <<4 7
+<< CC, 2
+>> JJF K

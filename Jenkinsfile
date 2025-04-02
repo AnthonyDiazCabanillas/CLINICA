@@ -372,7 +372,7 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
+       /* stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {
@@ -389,8 +389,8 @@ pipeline {
                         """
                     }
                 }
-            }
-        }
+            
+        }*/
         
         stage('Restore Dependencies') {
             steps {

@@ -19518,7 +19518,69 @@ TD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Asegurador
 } 
 } 	
 } 
-} Ê
+} ¾
+PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\BDatos.cs
+	namespace 	
+Bus
+ 
+. 
+Clinica 
+. 
+	Auditoria 
+{ 
+public 
+class 
+BDatos 
+{ 
+public 
+List	 
+< 
+BDatosE 
+> 
+ListaBasedatos %
+(% &
+BDatosE& -
+pBDatosE. 6
+)6 7
+{ 
+try 
+{ 
+return 
+new 
+BDatosAD 
+( 
+) 
+. #
+Sp_Basedatos_ConsultaV2 2
+(2 3
+pBDatosE3 ;
+); <
+;< =
+}> ?
+catch 
+(	 
+
+	Exception
+ 
+e 
+) 
+{ 
+throw 
+
+e 
+= 
+new 
+	Exception 
+( 
+e 
+. 
+Message &
+)& '
+;' (
+}) *
+} 
+} 
+} Ê
 RD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\Tablasbd.cs
 	namespace 	
 Bus
@@ -19622,68 +19684,6 @@ PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\Campos.c
 )8 9
 ;9 :
 }; <
-catch 
-(	 
-
-	Exception
- 
-e 
-) 
-{ 
-throw 
-
-e 
-= 
-new 
-	Exception 
-( 
-e 
-. 
-Message &
-)& '
-;' (
-}) *
-} 
-} 
-} ¾
-PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\BDatos.cs
-	namespace 	
-Bus
- 
-. 
-Clinica 
-. 
-	Auditoria 
-{ 
-public 
-class 
-BDatos 
-{ 
-public 
-List	 
-< 
-BDatosE 
-> 
-ListaBasedatos %
-(% &
-BDatosE& -
-pBDatosE. 6
-)6 7
-{ 
-try 
-{ 
-return 
-new 
-BDatosAD 
-( 
-) 
-. #
-Sp_Basedatos_ConsultaV2 2
-(2 3
-pBDatosE3 ;
-); <
-;< =
-}> ?
 catch 
 (	 
 

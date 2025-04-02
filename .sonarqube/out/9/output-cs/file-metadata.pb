@@ -35,8 +35,8 @@ QD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Dashboard.
 \D:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\ContratoConsultorios.csutf-8]
 TD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Comprobantes.csutf-8X
 OD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Cirugia.csutf-8]
-TD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Aseguradoras.csutf-8[
+TD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Clinica\Aseguradoras.csutf-8Y
+PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\BDatos.csutf-8[
 RD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\Tablasbd.csutf-8Y
-PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\Campos.csutf-8Y
-PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\BDatos.csutf-8\
+PD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\Campos.csutf-8\
 SD:\CLINICA\nsp-csfl-agenda-uti-automatizacion_qa\Bus.Clinica\Auditoria\Auditoria.csutf-8
