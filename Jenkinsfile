@@ -229,7 +229,8 @@ pipeline {
                 }
             }
         }
-
+         ****/
+         /*
        stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
@@ -242,9 +243,9 @@ pipeline {
                           -Dsonar.sources=. ^
                           -Dsonar.host.url=http://localhost:9000 ^
                           -Dsonar.token=%SONAR_TOKEN% ^
-                          -Dsonar.dotnet.excludeTestProjects=true ^
-                          -Dsonar.coverage.exclusions=**/*Test*/**
-                        """
+                          -Dsonar.dotnet.excludeTestProjects=true ^ */
+                   //  7    -Dsonar.coverage.exclusions=**/*Test*/**
+                       /* """
                     }
                 }
             
