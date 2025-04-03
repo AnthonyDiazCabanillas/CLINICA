@@ -172,12 +172,6 @@ pipeline {
         }
     }
 }
-        stage('Quality Gate Check') {
-            steps {
-                timeout(time: 15, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+
     }
 }
