@@ -74,8 +74,8 @@ pipeline {
                     withCredentials([string(credentialsId: 'Sonnar', variable: 'SONAR_TOKEN')]) {
                       bat """
                             "%SONAR_SCANNER_HOME%\\bin\\sonar-scanner.bat" ^
-                            -Dsonar.projectKey=Integracion2^
-                            -Dsonar.projectName=Integracion2^
+                            -Dsonar.projectKey=Integracion10^
+                            -Dsonar.projectName=Integracion10^
                             -Dsonar.projectVersion=1.0 ^
                             -Dsonar.sources=. ^
                             -Dsonar.host.url=http://localhost:9000 ^
